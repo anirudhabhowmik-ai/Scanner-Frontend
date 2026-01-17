@@ -1,223 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Scan Document - PDFMaster</title>
+    <meta charset="UTF-8">
+    <title>Scan Document - PDFMaster</title>
 
-  <!-- SEO -->
-  <meta name="description" content="Scan documents online like CamScanner. Auto detect edges, crop manually, enhance quality and export PDF or JPG.">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO -->
+    <meta name="description"
+        content="Scan documents online like CamScanner. Auto detect edges, crop manually, enhance quality and export PDF or JPG.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Cropper -->
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+    <!-- Cropper -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
 
-  <style>
-    body {
-      font-family: Inter, system-ui, sans-serif;
-      background: #f9fafb;
-      margin: 0;
-      padding: 20px;
-      text-align: center;
-    }
+    <style>
+        body {
+            font-family: Inter, system-ui, sans-serif;
+            background: #f9fafb;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
 
-    h1 {
-      margin-bottom: 10px;
-    }
+        h1 {
+            margin-bottom: 10px;
+        }
 
-    video, img {
-      max-width: 100%;
-      max-height: 70vh;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
+        video,
+        img {
+            max-width: 100%;
+            max-height: 60vh;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
 
-    .actions {
-      margin-top: 15px;
-    }
+        .actions {
+            margin-top: 15px;
+        }
 
-    button {
-      padding: 12px 18px;
-      margin: 6px;
-      font-size: 15px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #2563eb;
-      color: #fff;
-    }
+        button {
+            padding: 12px 18px;
+            margin: 6px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            background: #2563eb;
+            color: #fff;
+        }
 
-    button.secondary {
-      background: #6b7280;
-    }
+        button.secondary {
+            background: #6b7280;
+        }
 
-    button.danger {
-      background: #dc2626;
-    }
+        button.danger {
+            background: #dc2626;
+        }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  </style>
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .result-buttons {
+            margin-top: 15px;
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .result-buttons a,
+        .result-buttons button {
+            display: inline-block;
+            margin: 6px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #fff;
+            background: #10b981;
+        }
+
+        .result-buttons button {
+            background: #f59e0b;
+        }
+    </style>
 </head>
 
 <body>
 
-<h1>Scan Document</h1>
-<p>Scan like CamScanner – auto detect, crop & enhance</p>
+    <h1>Scan Document</h1>
+    <p>Scan like CamScanner – auto detect & crop. Adjust manually if needed.</p>
 
-<!-- Buttons -->
-<div class="actions">
-  <button id="openCameraBtn">Open Camera</button>
-  <button id="captureBtn" style="display:none;">Capture</button>
-  <button id="retakeBtn" class="secondary" style="display:none;">Retake</button>
-</div>
+    <div class="actions">
+        <button id="openCameraBtn">Open Camera</button>
+        <button id="captureBtn" style="display:none;">Capture</button>
+        <button id="retakeBtn" class="secondary" style="display:none;">Retake</button>
+    </div>
 
-<!-- Camera -->
-<video id="video" autoplay playsinline style="display:none;"></video>
+    <video id="video" autoplay playsinline style="display:none;"></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <img id="preview" style="display:none;" />
 
-<!-- Canvas (hidden) -->
-<canvas id="canvas" style="display:none;"></canvas>
+    <div class="result-buttons" id="resultButtons">
+        <a id="downloadJpg" href="#" download="scanned.jpg">Download JPG</a>
+        <a id="downloadPdf" href="#" download="scanned.pdf">Download PDF</a>
+        <button id="shareBtn">Share</button>
+    </div>
 
-<!-- Preview -->
-<img id="preview" style="display:none;" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-<!-- Process -->
-<div class="actions">
-  <button id="processBtn" style="display:none;">Auto Detect & Enhance</button>
-</div>
+    <script>
+        let stream = null;
+        let cropper = null;
 
-<!-- Cropper -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+        const video = document.getElementById("video");
+        const canvas = document.getElementById("canvas");
+        const preview = document.getElementById("preview");
 
-<script>
-let stream = null;
-let cropper = null;
+        const openCameraBtn = document.getElementById("openCameraBtn");
+        const captureBtn = document.getElementById("captureBtn");
+        const retakeBtn = document.getElementById("retakeBtn");
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
-const preview = document.getElementById("preview");
+        const resultButtons = document.getElementById("resultButtons");
+        const downloadJpg = document.getElementById("downloadJpg");
+        const downloadPdf = document.getElementById("downloadPdf");
+        const shareBtn = document.getElementById("shareBtn");
 
-const openCameraBtn = document.getElementById("openCameraBtn");
-const captureBtn = document.getElementById("captureBtn");
-const retakeBtn = document.getElementById("retakeBtn");
-const processBtn = document.getElementById("processBtn");
+        const BACKEND_SCAN_URL = "https://scanner-backend-production-fa11.up.railway.app/scan";
 
-/* =========================
-   OPEN CAMERA
-========================= */
-openCameraBtn.onclick = async () => {
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: "environment" }
-    });
+        /* =========================
+           OPEN CAMERA
+        ========================= */
+        openCameraBtn.onclick = async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                video.srcObject = stream;
+                video.style.display = "block";
 
-    video.srcObject = stream;
-    video.style.display = "block";
+                openCameraBtn.style.display = "none";
+                captureBtn.style.display = "inline-block";
+                retakeBtn.style.display = "none";
 
-    openCameraBtn.style.display = "none";
-    captureBtn.style.display = "inline-block";
-    retakeBtn.style.display = "none";
-    processBtn.style.display = "none";
-    preview.style.display = "none";
+                preview.style.display = "none";
+                resultButtons.style.display = "none";
 
-    if (cropper) {
-      cropper.destroy();
-      cropper = null;
-    }
+                if (cropper) cropper.destroy();
+            } catch (err) {
+                alert("Camera permission denied or not available.");
+            }
+        };
 
-  } catch (err) {
-    alert("Camera permission denied or not available.");
-  }
-};
+        /* =========================
+           CAPTURE IMAGE
+        ========================= */
+        captureBtn.onclick = () => {
+            // Draw image to canvas
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext("2d").drawImage(video, 0, 0);
 
-/* =========================
-   CAPTURE IMAGE
-========================= */
-captureBtn.onclick = () => {
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext("2d").drawImage(video, 0, 0);
+            // Show preview
+            preview.src = canvas.toDataURL("image/jpeg", 0.95);
+            preview.style.display = "block";
 
-  preview.src = canvas.toDataURL("image/jpeg", 0.95);
-  preview.style.display = "block";
+            // Stop camera
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            video.style.display = "none";
 
-  // Stop camera
-  if (stream) {
-    stream.getTracks().forEach(t => t.stop());
-    stream = null;
-  }
+            captureBtn.style.display = "none";
+            retakeBtn.style.display = "inline-block";
 
-  video.style.display = "none";
-  captureBtn.style.display = "none";
-  retakeBtn.style.display = "inline-block";
-  processBtn.style.display = "inline-block";
+            // Wait until preview image loads before creating cropper
+            preview.onload = () => {
+                cropper = new Cropper(preview, {
+                    viewMode: 1,
+                    autoCropArea: 0.9,
+                    movable: true,
+                    zoomable: true,
+                    scalable: false,
+                    background: false,
+                    ready() {
+                        // Only call backend processing here
+                        processScan();
+                    }
+                });
+            };
+        };
 
-  // Init cropper
-  cropper = new Cropper(preview, {
-    viewMode: 1,
-    autoCropArea: 0.9,
-    movable: true,
-    zoomable: true,
-    scalable: false,
-    background: false
-  });
-};
 
-/* =========================
-   RETAKE
-========================= */
-retakeBtn.onclick = () => {
-  if (cropper) {
-    cropper.destroy();
-    cropper = null;
-  }
+        /* =========================
+           SEND CROPPED IMAGE TO BACKEND
+        ========================= */
+        async function processScan() {
+            if (!cropper) return;
 
-  preview.style.display = "none";
-  processBtn.style.display = "none";
-  retakeBtn.style.display = "none";
+            const croppedCanvas = cropper.getCroppedCanvas({ imageSmoothingQuality: "high" });
+            croppedCanvas.toBlob(async (blob) => {
+                const formData = new FormData();
+                formData.append("image", blob, "scanned.jpg");
 
-  openCameraBtn.style.display = "inline-block";
-};
+                // JPG download (preview)
+                const jpgUrl = URL.createObjectURL(blob);
+                downloadJpg.href = jpgUrl;
+                downloadJpg.download = "scanned.jpg";
 
-/* =========================
-   SEND TO PYTHON BACKEND
-========================= */
-processBtn.onclick = async () => {
-  processBtn.disabled = true;
-  processBtn.innerText = "Processing...";
+                try {
+                    formData.append("format", "pdf"); // backend enhancement + PDF
+                    const res = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
+                    if (!res.ok) throw new Error("Backend processing failed");
 
-  cropper.getCroppedCanvas({
-    imageSmoothingQuality: "high"
-  }).toBlob(async (blob) => {
+                    const processedBlob = await res.blob();
+                    const pdfUrl = URL.createObjectURL(processedBlob);
 
-    const formData = new FormData();
-    formData.append("image", blob);
+                    // Keep JPG preview in <img>
+                    preview.src = jpgUrl;
+                    preview.style.display = "block";
 
-    try {
-      const res = await fetch("http://localhost:5000/scan", {
-        method: "POST",
-        body: formData
-      });
+                    // PDF download
+                    downloadPdf.href = pdfUrl;
+                    downloadPdf.download = "scanned.pdf";
 
-      if (!res.ok) throw new Error("Processing failed");
+                    shareBtn.onclick = () => {
+                        if (navigator.share) {
+                            navigator.share({ files: [new File([processedBlob], "scanned.pdf", { type: processedBlob.type })] })
+                                .catch(console.log);
+                        } else {
+                            alert("Share not supported on this device.");
+                        }
+                    };
 
-      const processedBlob = await res.blob();
-      preview.src = URL.createObjectURL(processedBlob);
+                    resultButtons.style.display = "flex";
 
-      cropper.destroy();
-      cropper = null;
+                } catch (err) {
+                    alert(err.message);
+                }
+            }, "image/jpeg", 0.95);
+        }
 
-    } catch (err) {
-      alert("Backend processing failed");
-    }
 
-    processBtn.disabled = false;
-    processBtn.innerText = "Auto Detect & Enhance";
-  }, "image/jpeg", 0.95);
-};
-</script>
+        /* =========================
+           RETAKE
+        ========================= */
+        retakeBtn.onclick = () => {
+            if (cropper) cropper.destroy();
+            cropper = null;
+
+            preview.style.display = "none";
+            resultButtons.style.display = "none";
+
+            retakeBtn.style.display = "none";
+            openCameraBtn.style.display = "inline-block";
+        };
+    </script>
 
 </body>
+
 </html>

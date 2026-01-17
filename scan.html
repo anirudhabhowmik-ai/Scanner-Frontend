@@ -835,11 +835,11 @@
         resetUI();
       };
 
-      // Download helper with iOS Safari support
+      // Download helper with iOS Safari support (no popups needed)
       function setupDownload(linkElement, blob, filename, mimeType) {
         console.log(`Setting up download for ${filename}:`, blob.size, "bytes");
 
-        // Detect iOS
+        // Detect iOS/Safari
         const isIOS =
           /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         const isSafari = /^((?!chrome|android).)*safari/i.test(
@@ -847,115 +847,46 @@
         );
 
         if (isIOS || isSafari) {
-          // iOS/Safari specific handling
-          linkElement.onclick = (e) => {
+          // iOS/Safari: Use data URL and navigate to it
+          linkElement.onclick = async (e) => {
             e.preventDefault();
 
             try {
-              // Convert blob to data URL for iOS
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                const dataUrl = reader.result;
+              showLoading("Preparing download...");
 
-                // For iOS, we need to open in new window with data URL
-                const newWindow = window.open("", "_blank");
-                if (newWindow) {
-                  if (mimeType === "application/pdf") {
-                    // For PDFs, embed in iframe
-                    newWindow.document.write(`
-                                        <!DOCTYPE html>
-                                        <html>
-                                        <head>
-                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                            <title>${filename}</title>
-                                            <style>
-                                                body { margin: 0; padding: 0; }
-                                                iframe { width: 100vw; height: 100vh; border: none; }
-                                                .download-btn {
-                                                    position: fixed;
-                                                    top: 10px;
-                                                    right: 10px;
-                                                    background: #2563eb;
-                                                    color: white;
-                                                    padding: 12px 20px;
-                                                    border-radius: 8px;
-                                                    text-decoration: none;
-                                                    font-family: system-ui;
-                                                    font-weight: 600;
-                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                                                    z-index: 9999;
-                                                }
-                                            </style>
-                                        </head>
-                                        <body>
-                                            <a href="${dataUrl}" download="${filename}" class="download-btn">📥 Save PDF</a>
-                                            <iframe src="${dataUrl}#toolbar=0"></iframe>
-                                        </body>
-                                        </html>
-                                    `);
-                  } else {
-                    // For JPGs, show image with download link
-                    newWindow.document.write(`
-                                        <!DOCTYPE html>
-                                        <html>
-                                        <head>
-                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                            <title>${filename}</title>
-                                            <style>
-                                                body {
-                                                    margin: 0;
-                                                    padding: 20px;
-                                                    background: #000;
-                                                    display: flex;
-                                                    flex-direction: column;
-                                                    align-items: center;
-                                                    justify-content: center;
-                                                    min-height: 100vh;
-                                                }
-                                                img {
-                                                    max-width: 100%;
-                                                    height: auto;
-                                                    border-radius: 8px;
-                                                }
-                                                .download-btn {
-                                                    position: fixed;
-                                                    top: 10px;
-                                                    right: 10px;
-                                                    background: #2563eb;
-                                                    color: white;
-                                                    padding: 12px 20px;
-                                                    border-radius: 8px;
-                                                    text-decoration: none;
-                                                    font-family: system-ui;
-                                                    font-weight: 600;
-                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-                                                }
-                                                .instructions {
-                                                    color: white;
-                                                    text-align: center;
-                                                    margin-top: 20px;
-                                                    font-family: system-ui;
-                                                    padding: 0 20px;
-                                                }
-                                            </style>
-                                        </head>
-                                        <body>
-                                            <a href="${dataUrl}" download="${filename}" class="download-btn">📥 Save Image</a>
-                                            <img src="${dataUrl}" alt="${filename}">
-                                            <p class="instructions">Long-press image and select "Save Image" or use button above</p>
-                                        </body>
-                                        </html>
-                                    `);
-                  }
-                  newWindow.document.close();
-                  showSuccess(
-                    `Opening ${filename}. Use the save button or long-press to download.`,
-                  );
-                } else {
-                  showError("Please allow popups to download files on iOS.");
-                }
-              };
-              reader.readAsDataURL(blob);
+              // Convert blob to data URL
+              const reader = new FileReader();
+              const dataUrl = await new Promise((resolve, reject) => {
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+
+              // Create a link and trigger download
+              const tempLink = document.createElement("a");
+              tempLink.href = dataUrl;
+              tempLink.download = filename;
+
+              // For iOS, we need to navigate to the data URL
+              // This shows the file and iOS will offer "Share" -> "Save to Files"
+              if (mimeType === "application/pdf") {
+                // For PDF, navigate directly (iOS will open in PDF viewer)
+                window.location.href = dataUrl;
+                hideMessages();
+                setTimeout(() => {
+                  showSuccess("PDF opened. Tap Share (↑) → Save to Files");
+                }, 500);
+              } else {
+                // For images, try standard download first
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+
+                hideMessages();
+                setTimeout(() => {
+                  showSuccess("Tap and hold image, then select 'Save Image'");
+                }, 500);
+              }
             } catch (err) {
               console.error("iOS download error:", err);
               showError("Download failed. Please try again.");
@@ -986,10 +917,7 @@
               setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
             } catch (err) {
               console.error("Download failed:", err);
-              const newWindow = window.open(blobUrl, "_blank");
-              if (!newWindow) {
-                showError("Please allow popups to download files.");
-              }
+              showError("Download failed. Please try again.");
             }
           };
         }

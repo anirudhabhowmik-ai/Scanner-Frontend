@@ -72,7 +72,10 @@
                     <div id="resultCard" class="result-card">
                         <i class="fa fa-file-pdf"></i>
                     </div>
-                    <p class="file-name">merged.pdf</p>
+                    <p class="file-name">
+                        <a href="#" id="fileNameLink">merged.pdf</a>
+                    </p>
+
                     <a id="downloadBtn" href="#" class="cta-button"><i class="fa fa-download"></i> Download</a>
                     <a id="shareBtn" href="#" class="cta-button"><i class="fa fa-share-alt"></i> Share</a>
                     <button id="resetBtn" class="secondary-btn">
@@ -216,7 +219,7 @@
                 const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
 
-                // Hide merge button & show download/share
+                // Hide merge UI & show result buttons
                 fileList.style.display = "none";
                 mergeBtn.style.display = 'none';
                 uploadSection.style.display = 'none';
@@ -227,19 +230,38 @@
                 downloadBtn.href = url;
                 downloadBtn.download = 'merged.pdf';
                 shareBtn.href = url;
-                // Preview merged PDF
+
                 const pdfPreview = document.getElementById('pdfPreview');
                 const pdfFrame = document.getElementById('pdfFrame');
+                const fileNameLink = document.getElementById('fileNameLink');
 
-                pdfFrame.src = url;
-                pdfPreview.style.display = 'block';
+                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+
+                // Desktop / tablet → show preview automatically
+                if (!isSmallDevice) {
+                    pdfFrame.src = url;
+                    pdfPreview.style.display = 'block';
+                }
+
+                // Click on file name → open PDF
+                fileNameLink.onclick = (e) => {
+                    e.preventDefault();
+
+                    if (isSmallDevice) {
+                        // Mobile: open externally
+                        window.open(url, "_blank");
+                    } else {
+                        // Desktop: scroll to preview
+                        pdfPreview.scrollIntoView({ behavior: "smooth" });
+                    }
+                };
+
             } catch (err) {
                 alert('Error merging PDFs: ' + err.message);
                 mergeBtn.disabled = false;
                 loaderIcon.style.display = 'none';
             }
         });
-
 
         const resetBtn = document.getElementById('resetBtn');
 

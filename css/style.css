@@ -387,6 +387,10 @@ footer a:hover {
     font-size: 14px;
 }
 
+#resultBtns .file-name a{
+    text-decoration: none;
+}
+
 #pdfPreview h4 {
     font-size: 20px;
     padding-top: 40px;

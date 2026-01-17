@@ -14,7 +14,8 @@ h3,
 h4,
 h5,
 h6,
-p, a {
+p,
+a {
     font-family: 'Montserrat', sans-serif;
 }
 
@@ -49,7 +50,7 @@ header .header-container {
 }
 
 /* Logo */
-header .logo a{
+header .logo a {
     font-weight: 700;
     font-size: 28px;
     color: white;
@@ -346,24 +347,24 @@ footer a:hover {
 }
 
 .secondary-btn {
-  background: #1e3a8a;
-  border: 2px solid #1e3a8a;
-  color: #ffffff;
-  padding: 15px 35px;
+    background: #1e3a8a;
+    border: 2px solid #1e3a8a;
+    color: #ffffff;
+    padding: 15px 35px;
     border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.3s;
-  font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
 }
 
-.secondary-btn i{
+.secondary-btn i {
     margin-right: 8px;
 }
 
 .secondary-btn:hover {
-  background: #091f5c;
-  color: white;
+    background: #091f5c;
+    color: white;
 }
 
 .result-card {
@@ -389,4 +390,27 @@ footer a:hover {
 #pdfPreview h4 {
     font-size: 20px;
     padding-top: 40px;
+}
+
+@media (max-width: 722px) {
+    #resetBtn {
+        margin-top: 26px;
+    }
+}
+
+@media (max-width: 440px) {
+    .merge-tool p {
+        margin-bottom: 20px;
+    }
+
+    #downloadBtn,
+    #shareBtn {
+        display: block;
+        margin-right: 0;
+    }
+
+    #downloadBtn,
+    #resetBtn {
+        margin-top: 12px;
+    }
 }

@@ -26,6 +26,11 @@
             margin-bottom: 10px;
         }
 
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
         video,
         img {
             max-width: 100%;
@@ -47,14 +52,15 @@
             cursor: pointer;
             background: #2563eb;
             color: #fff;
+            font-weight: 500;
         }
 
         button.secondary {
             background: #6b7280;
         }
 
-        button.danger {
-            background: #dc2626;
+        button.success {
+            background: #10b981;
         }
 
         button:disabled {
@@ -78,6 +84,7 @@
             text-decoration: none;
             color: #fff;
             background: #10b981;
+            font-weight: 500;
         }
 
         .result-buttons button {
@@ -89,31 +96,47 @@
             margin-top: 15px;
             color: #2563eb;
             font-weight: 500;
+            font-size: 16px;
         }
 
         .error {
             color: #dc2626;
             margin-top: 10px;
             display: none;
+            background: #fee;
+            padding: 10px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status {
+            color: #10b981;
+            margin-top: 10px;
+            display: none;
+            font-weight: 500;
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Scan Document</h1>
-    <p>Scan like CamScanner – auto detect & crop. Adjust manually if needed.</p>
+    <h1>📄 Scan Document</h1>
+    <p class="subtitle">Auto-detect edges and crop. Adjust manually if needed.</p>
 
     <div class="actions">
-        <button id="openCameraBtn">Open Camera</button>
-        <button id="uploadBtn">Upload Image</button>
+        <button id="openCameraBtn">📷 Open Camera</button>
+        <button id="uploadBtn">📁 Upload Image</button>
         <input type="file" id="fileInput" accept="image/*" style="display:none;">
-        <button id="captureBtn" style="display:none;">Capture</button>
-        <button id="cropBtn" class="secondary" style="display:none;">Apply Crop & Process</button>
-        <button id="retakeBtn" class="secondary" style="display:none;">Retake</button>
+        <button id="captureBtn" style="display:none;">📸 Capture</button>
+        <button id="debugBtn" class="secondary" style="display:none;">🔍 Show Edge Detection</button>
+        <button id="cropBtn" class="success" style="display:none;">✂️ Apply Crop & Process</button>
+        <button id="retakeBtn" class="secondary" style="display:none;">🔄 Start Over</button>
     </div>
 
-    <div class="loading" id="loading">Processing...</div>
+    <div class="loading" id="loading">⏳ Processing...</div>
+    <div class="status" id="status"></div>
     <div class="error" id="error"></div>
 
     <video id="video" autoplay playsinline style="display:none;"></video>
@@ -121,9 +144,9 @@
     <img id="preview" style="display:none;" />
 
     <div class="result-buttons" id="resultButtons">
-        <a id="downloadJpg" href="#" download="scanned.jpg">Download JPG</a>
-        <a id="downloadPdf" href="#" download="scanned.pdf">Download PDF</a>
-        <button id="shareBtn">Share</button>
+        <a id="downloadJpg" href="#" download="scanned.jpg">📥 Download JPG</a>
+        <a id="downloadPdf" href="#" download="scanned.pdf">📥 Download PDF</a>
+        <button id="shareBtn">📤 Share</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
@@ -131,7 +154,7 @@
     <script>
         let stream = null;
         let cropper = null;
-        let capturedImageData = null;
+        let currentImageBlob = null;
 
         const video = document.getElementById("video");
         const canvas = document.getElementById("canvas");
@@ -141,23 +164,38 @@
         const uploadBtn = document.getElementById("uploadBtn");
         const fileInput = document.getElementById("fileInput");
         const captureBtn = document.getElementById("captureBtn");
+        const debugBtn = document.getElementById("debugBtn");
         const cropBtn = document.getElementById("cropBtn");
         const retakeBtn = document.getElementById("retakeBtn");
 
         const loading = document.getElementById("loading");
+        const statusDiv = document.getElementById("status");
         const errorDiv = document.getElementById("error");
         const resultButtons = document.getElementById("resultButtons");
         const downloadJpg = document.getElementById("downloadJpg");
         const downloadPdf = document.getElementById("downloadPdf");
         const shareBtn = document.getElementById("shareBtn");
 
-        const BACKEND_SCAN_URL = "http://127.0.0.1:5000/scan";
-        const BACKEND_DETECT_URL = "http://127.0.0.1:5000/detect-corners";
+        const BACKEND_URL = "http://127.0.0.1:5000";
 
         function showError(msg) {
-            errorDiv.textContent = msg;
+            console.error("Error:", msg);
+            errorDiv.textContent = "❌ " + msg;
             errorDiv.style.display = "block";
-            setTimeout(() => errorDiv.style.display = "none", 5000);
+            loading.style.display = "none";
+            statusDiv.style.display = "none";
+        }
+
+        function showStatus(msg) {
+            statusDiv.textContent = "✅ " + msg;
+            statusDiv.style.display = "block";
+            errorDiv.style.display = "none";
+            setTimeout(() => statusDiv.style.display = "none", 3000);
+        }
+
+        function hideMessages() {
+            errorDiv.style.display = "none";
+            statusDiv.style.display = "none";
         }
 
         /* =========================
@@ -165,9 +203,15 @@
         ========================= */
         openCameraBtn.onclick = async () => {
             try {
+                hideMessages();
                 stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } } 
+                    video: { 
+                        facingMode: "environment",
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 }
+                    } 
                 });
+                
                 video.srcObject = stream;
                 video.style.display = "block";
 
@@ -185,128 +229,89 @@
                     cropper = null;
                 }
             } catch (err) {
-                showError("Camera permission denied or not available.");
+                showError("Camera permission denied or not available: " + err.message);
             }
         };
 
         /* =========================
            UPLOAD IMAGE
         ========================= */
-        uploadBtn.onclick = () => fileInput.click();
+        uploadBtn.onclick = () => {
+            hideMessages();
+            fileInput.click();
+        };
         
-        fileInput.onchange = (e) => {
+        fileInput.onchange = async (e) => {
             const file = e.target.files[0];
             if (!file) return;
 
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setupCropper(event.target.result);
-            };
-            reader.readAsDataURL(file);
+            hideMessages();
+            loading.style.display = "block";
+
+            try {
+                currentImageBlob = file;
+                const imageUrl = URL.createObjectURL(file);
+                await setupCropper(imageUrl);
+            } catch (err) {
+                showError("Failed to load image: " + err.message);
+            }
         };
 
         /* =========================
            CAPTURE IMAGE
         ========================= */
-        captureBtn.onclick = () => {
-            // Draw image to canvas at full resolution
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext("2d").drawImage(video, 0, 0);
+        captureBtn.onclick = async () => {
+            try {
+                hideMessages();
+                loading.style.display = "block";
 
-            const imageData = canvas.toDataURL("image/jpeg", 0.95);
+                // Draw to canvas
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(video, 0, 0);
 
-            // Stop camera
-            if (stream) {
-                stream.getTracks().forEach(t => t.stop());
-                stream = null;
+                // Stop camera
+                if (stream) {
+                    stream.getTracks().forEach(t => t.stop());
+                    stream = null;
+                }
+                video.style.display = "none";
+                captureBtn.style.display = "none";
+
+                // Convert to blob
+                currentImageBlob = await new Promise(resolve => {
+                    canvas.toBlob(resolve, "image/jpeg", 0.95);
+                });
+
+                const imageUrl = URL.createObjectURL(currentImageBlob);
+                await setupCropper(imageUrl);
+
+            } catch (err) {
+                showError("Failed to capture image: " + err.message);
             }
-            video.style.display = "none";
-
-            captureBtn.style.display = "none";
-
-            setupCropper(imageData);
         };
 
         /* =========================
            SETUP CROPPER WITH AUTO-DETECT
         ========================= */
-        async function setupCropper(imageDataUrl) {
-            capturedImageData = imageDataUrl;
-            
-            preview.src = imageDataUrl;
+        async function setupCropper(imageUrl) {
+            preview.src = imageUrl;
             preview.style.display = "block";
 
             retakeBtn.style.display = "inline-block";
+            debugBtn.style.display = "inline-block";
             cropBtn.style.display = "inline-block";
 
-            // Wait for image to load
-            preview.onload = async () => {
-                if (cropper) cropper.destroy();
+            // Wait for image load
+            await new Promise((resolve, reject) => {
+                preview.onload = resolve;
+                preview.onerror = reject;
+            });
 
-                // Try to auto-detect corners
-                try {
-                    loading.style.display = "block";
-                    
-                    const blob = await (await fetch(imageDataUrl)).blob();
-                    const formData = new FormData();
-                    formData.append("image", blob, "image.jpg");
+            if (cropper) cropper.destroy();
 
-                    const res = await fetch(BACKEND_DETECT_URL, { method: "POST", body: formData });
-                    
-                    if (res.ok) {
-                        const data = await res.json();
-                        
-                        // Initialize cropper with detected corners
-                        cropper = new Cropper(preview, {
-                            viewMode: 1,
-                            autoCropArea: 1,
-                            movable: true,
-                            zoomable: true,
-                            scalable: true,
-                            rotatable: true,
-                            background: false,
-                            ready() {
-                                if (data.corners && data.corners.length === 4) {
-                                    // Set crop box to detected corners
-                                    const imgData = cropper.getImageData();
-                                    const corners = data.corners;
-                                    
-                                    const xs = corners.map(c => c[0]);
-                                    const ys = corners.map(c => c[1]);
-                                    const minX = Math.min(...xs);
-                                    const minY = Math.min(...ys);
-                                    const maxX = Math.max(...xs);
-                                    const maxY = Math.max(...ys);
-                                    
-                                    // Convert image coordinates to cropper coordinates
-                                    const scaleX = imgData.naturalWidth / imgData.width;
-                                    const scaleY = imgData.naturalHeight / imgData.height;
-                                    
-                                    cropper.setCropBoxData({
-                                        left: minX / scaleX + imgData.left,
-                                        top: minY / scaleY + imgData.top,
-                                        width: (maxX - minX) / scaleX,
-                                        height: (maxY - minY) / scaleY
-                                    });
-                                }
-                            }
-                        });
-                    } else {
-                        // Fallback: create cropper without auto-detect
-                        createDefaultCropper();
-                    }
-                    
-                    loading.style.display = "none";
-                } catch (err) {
-                    console.error("Auto-detect failed:", err);
-                    createDefaultCropper();
-                    loading.style.display = "none";
-                }
-            };
-        }
-
-        function createDefaultCropper() {
+            // Create cropper first with default settings
             cropper = new Cropper(preview, {
                 viewMode: 1,
                 autoCropArea: 0.9,
@@ -314,9 +319,116 @@
                 zoomable: true,
                 scalable: true,
                 rotatable: true,
-                background: false
+                background: false,
+                responsive: true
             });
+
+            // Try auto-detect in background
+            tryAutoDetect();
         }
+
+        async function tryAutoDetect() {
+            try {
+                const formData = new FormData();
+                formData.append("image", currentImageBlob, "image.jpg");
+
+                console.log("Sending image for corner detection...");
+                const res = await fetch(`${BACKEND_URL}/detect-corners`, { 
+                    method: "POST", 
+                    body: formData 
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Server responded with ${res.status}`);
+                }
+
+                const data = await res.json();
+                console.log("Corner detection response:", data);
+
+                if (data.detected && data.corners && data.corners.length === 4) {
+                    // Apply detected corners to cropper
+                    const corners = data.corners;
+                    const imageData = cropper.getImageData();
+                    
+                    // Calculate bounding box from corners
+                    const xs = corners.map(c => c[0]);
+                    const ys = corners.map(c => c[1]);
+                    const minX = Math.min(...xs);
+                    const minY = Math.min(...ys);
+                    const maxX = Math.max(...xs);
+                    const maxY = Math.max(...ys);
+                    
+                    // Scale coordinates from natural image to displayed image
+                    const scaleX = imageData.width / imageData.naturalWidth;
+                    const scaleY = imageData.height / imageData.naturalHeight;
+                    
+                    const cropData = {
+                        left: imageData.left + (minX * scaleX),
+                        top: imageData.top + (minY * scaleY),
+                        width: (maxX - minX) * scaleX,
+                        height: (maxY - minY) * scaleY
+                    };
+                    
+                    console.log("Setting crop box:", cropData);
+                    cropper.setCropBoxData(cropData);
+                    
+                    showStatus("Document edges detected! Adjust if needed.");
+                } else {
+                    showStatus("No document detected. Please adjust crop manually.");
+                }
+
+                loading.style.display = "none";
+
+            } catch (err) {
+                console.error("Auto-detect error:", err);
+                showStatus("Auto-detect unavailable. Please crop manually.");
+                loading.style.display = "none";
+            }
+        }
+
+        /* =========================
+           DEBUG: Show Edge Detection
+        ========================= */
+        debugBtn.onclick = async () => {
+            if (!currentImageBlob) {
+                showError("No image to debug");
+                return;
+            }
+
+            hideMessages();
+            loading.style.display = "block";
+
+            try {
+                const formData = new FormData();
+                formData.append("image", currentImageBlob, "image.jpg");
+
+                const res = await fetch(`${BACKEND_URL}/debug-edges`, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!res.ok) {
+                    throw new Error(`Debug failed: ${res.status}`);
+                }
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Show debug image temporarily
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+
+                preview.src = url;
+                showStatus("Green = All contours, Red = Best 4-sided shape. Close and try again!");
+                
+            } catch (err) {
+                showError("Debug failed: " + err.message);
+            } finally {
+                loading.style.display = "none";
+            }
+        };
 
         /* =========================
            PROCESS CROPPED IMAGE
@@ -327,63 +439,88 @@
                 return;
             }
 
+            hideMessages();
             loading.style.display = "block";
             cropBtn.disabled = true;
 
             try {
-                // Get cropped canvas
+                // Get cropped image
                 const croppedCanvas = cropper.getCroppedCanvas({ 
                     imageSmoothingQuality: "high",
                     maxWidth: 2400,
                     maxHeight: 2400
                 });
-                
-                // Convert to blob
-                const blob = await new Promise(resolve => 
+
+                const croppedBlob = await new Promise(resolve => 
                     croppedCanvas.toBlob(resolve, "image/jpeg", 0.95)
                 );
 
-                // Send to backend for enhancement and PDF conversion
-                const formData = new FormData();
-                formData.append("image", blob, "cropped.jpg");
-                formData.append("format", "jpg");
-                formData.append("enhance", "true");
+                console.log("Cropped image size:", croppedBlob.size);
 
-                const jpgRes = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
-                if (!jpgRes.ok) throw new Error("Failed to process JPG");
-                
+                // Process JPG
+                const jpgFormData = new FormData();
+                jpgFormData.append("image", croppedBlob, "cropped.jpg");
+                jpgFormData.append("format", "jpg");
+                jpgFormData.append("enhance", "true");
+
+                console.log("Requesting JPG...");
+                const jpgRes = await fetch(`${BACKEND_URL}/scan`, { 
+                    method: "POST", 
+                    body: jpgFormData 
+                });
+
+                if (!jpgRes.ok) {
+                    const errText = await jpgRes.text();
+                    throw new Error(`JPG processing failed: ${jpgRes.status} - ${errText}`);
+                }
+
                 const jpgBlob = await jpgRes.blob();
+                console.log("JPG received:", jpgBlob.size);
                 const jpgUrl = URL.createObjectURL(jpgBlob);
 
-                // Get PDF version
-                formData.set("format", "pdf");
-                const pdfRes = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
-                if (!pdfRes.ok) throw new Error("Failed to process PDF");
-                
+                // Process PDF
+                const pdfFormData = new FormData();
+                pdfFormData.append("image", croppedBlob, "cropped.jpg");
+                pdfFormData.append("format", "pdf");
+                pdfFormData.append("enhance", "true");
+
+                console.log("Requesting PDF...");
+                const pdfRes = await fetch(`${BACKEND_URL}/scan`, { 
+                    method: "POST", 
+                    body: pdfFormData 
+                });
+
+                if (!pdfRes.ok) {
+                    const errText = await pdfRes.text();
+                    throw new Error(`PDF processing failed: ${pdfRes.status} - ${errText}`);
+                }
+
                 const pdfBlob = await pdfRes.blob();
+                console.log("PDF received:", pdfBlob.size);
                 const pdfUrl = URL.createObjectURL(pdfBlob);
 
-                // Update preview with enhanced image
-                preview.src = jpgUrl;
+                // Destroy cropper and show result
                 if (cropper) {
                     cropper.destroy();
                     cropper = null;
                 }
 
+                preview.src = jpgUrl;
+
                 // Setup downloads
                 downloadJpg.href = jpgUrl;
-                downloadJpg.download = "scanned.jpg";
                 downloadPdf.href = pdfUrl;
-                downloadPdf.download = "scanned.pdf";
 
                 shareBtn.onclick = async () => {
-                    if (navigator.share) {
+                    if (navigator.share && navigator.canShare) {
                         try {
                             await navigator.share({ 
                                 files: [new File([pdfBlob], "scanned.pdf", { type: "application/pdf" })] 
                             });
                         } catch (err) {
-                            console.log("Share cancelled:", err);
+                            if (err.name !== 'AbortError') {
+                                showError("Share failed: " + err.message);
+                            }
                         }
                     } else {
                         showError("Share not supported on this device.");
@@ -392,12 +529,12 @@
 
                 resultButtons.style.display = "flex";
                 cropBtn.style.display = "none";
+                loading.style.display = "none";
+                showStatus("Document processed successfully!");
 
             } catch (err) {
                 console.error("Processing error:", err);
-                showError("Failed to process image: " + err.message);
-            } finally {
-                loading.style.display = "none";
+                showError("Processing failed: " + err.message);
                 cropBtn.disabled = false;
             }
         };
@@ -411,16 +548,30 @@
                 cropper = null;
             }
 
-            capturedImageData = null;
+            currentImageBlob = null;
             preview.style.display = "none";
             resultButtons.style.display = "none";
+            hideMessages();
 
             retakeBtn.style.display = "none";
+            debugBtn.style.display = "none";
             cropBtn.style.display = "none";
             openCameraBtn.style.display = "inline-block";
             uploadBtn.style.display = "inline-block";
             fileInput.value = "";
         };
+
+        // Test backend connection on load
+        window.addEventListener('load', async () => {
+            try {
+                const res = await fetch(`${BACKEND_URL}/`);
+                const data = await res.json();
+                console.log("Backend status:", data);
+            } catch (err) {
+                console.error("Backend not reachable:", err);
+                showError("Backend server is not running. Please start app.py first.");
+            }
+        });
     </script>
 
 </body>

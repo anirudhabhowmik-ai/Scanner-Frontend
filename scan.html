@@ -83,6 +83,19 @@
         .result-buttons button {
             background: #f59e0b;
         }
+
+        .loading {
+            display: none;
+            margin-top: 15px;
+            color: #2563eb;
+            font-weight: 500;
+        }
+
+        .error {
+            color: #dc2626;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 
@@ -93,9 +106,15 @@
 
     <div class="actions">
         <button id="openCameraBtn">Open Camera</button>
+        <button id="uploadBtn">Upload Image</button>
+        <input type="file" id="fileInput" accept="image/*" style="display:none;">
         <button id="captureBtn" style="display:none;">Capture</button>
+        <button id="cropBtn" class="secondary" style="display:none;">Apply Crop & Process</button>
         <button id="retakeBtn" class="secondary" style="display:none;">Retake</button>
     </div>
+
+    <div class="loading" id="loading">Processing...</div>
+    <div class="error" id="error"></div>
 
     <video id="video" autoplay playsinline style="display:none;"></video>
     <canvas id="canvas" style="display:none;"></canvas>
@@ -112,144 +131,295 @@
     <script>
         let stream = null;
         let cropper = null;
+        let capturedImageData = null;
 
         const video = document.getElementById("video");
         const canvas = document.getElementById("canvas");
         const preview = document.getElementById("preview");
 
         const openCameraBtn = document.getElementById("openCameraBtn");
+        const uploadBtn = document.getElementById("uploadBtn");
+        const fileInput = document.getElementById("fileInput");
         const captureBtn = document.getElementById("captureBtn");
+        const cropBtn = document.getElementById("cropBtn");
         const retakeBtn = document.getElementById("retakeBtn");
 
+        const loading = document.getElementById("loading");
+        const errorDiv = document.getElementById("error");
         const resultButtons = document.getElementById("resultButtons");
         const downloadJpg = document.getElementById("downloadJpg");
         const downloadPdf = document.getElementById("downloadPdf");
         const shareBtn = document.getElementById("shareBtn");
 
-        const BACKEND_SCAN_URL = "https://scanner-backend-production-fa11.up.railway.app/scan";
+        const BACKEND_SCAN_URL = "http://127.0.0.1:5000/scan";
+        const BACKEND_DETECT_URL = "http://127.0.0.1:5000/detect-corners";
+
+        function showError(msg) {
+            errorDiv.textContent = msg;
+            errorDiv.style.display = "block";
+            setTimeout(() => errorDiv.style.display = "none", 5000);
+        }
 
         /* =========================
            OPEN CAMERA
         ========================= */
         openCameraBtn.onclick = async () => {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } } 
+                });
                 video.srcObject = stream;
                 video.style.display = "block";
 
                 openCameraBtn.style.display = "none";
+                uploadBtn.style.display = "none";
                 captureBtn.style.display = "inline-block";
                 retakeBtn.style.display = "none";
+                cropBtn.style.display = "none";
 
                 preview.style.display = "none";
                 resultButtons.style.display = "none";
 
-                if (cropper) cropper.destroy();
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
             } catch (err) {
-                alert("Camera permission denied or not available.");
+                showError("Camera permission denied or not available.");
             }
+        };
+
+        /* =========================
+           UPLOAD IMAGE
+        ========================= */
+        uploadBtn.onclick = () => fileInput.click();
+        
+        fileInput.onchange = (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setupCropper(event.target.result);
+            };
+            reader.readAsDataURL(file);
         };
 
         /* =========================
            CAPTURE IMAGE
         ========================= */
         captureBtn.onclick = () => {
-            // Draw image to canvas
+            // Draw image to canvas at full resolution
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
             canvas.getContext("2d").drawImage(video, 0, 0);
 
-            // Show preview
-            preview.src = canvas.toDataURL("image/jpeg", 0.95);
-            preview.style.display = "block";
+            const imageData = canvas.toDataURL("image/jpeg", 0.95);
 
             // Stop camera
-            if (stream) stream.getTracks().forEach(t => t.stop());
+            if (stream) {
+                stream.getTracks().forEach(t => t.stop());
+                stream = null;
+            }
             video.style.display = "none";
 
             captureBtn.style.display = "none";
-            retakeBtn.style.display = "inline-block";
 
-            // Wait until preview image loads before creating cropper
-            preview.onload = () => {
-                cropper = new Cropper(preview, {
-                    viewMode: 1,
-                    autoCropArea: 0.9,
-                    movable: true,
-                    zoomable: true,
-                    scalable: false,
-                    background: false,
-                    ready() {
-                        // Only call backend processing here
-                        processScan();
-                    }
-                });
-            };
+            setupCropper(imageData);
         };
 
-
         /* =========================
-           SEND CROPPED IMAGE TO BACKEND
+           SETUP CROPPER WITH AUTO-DETECT
         ========================= */
-        async function processScan() {
-            if (!cropper) return;
+        async function setupCropper(imageDataUrl) {
+            capturedImageData = imageDataUrl;
+            
+            preview.src = imageDataUrl;
+            preview.style.display = "block";
 
-            const croppedCanvas = cropper.getCroppedCanvas({ imageSmoothingQuality: "high" });
-            croppedCanvas.toBlob(async (blob) => {
-                const formData = new FormData();
-                formData.append("image", blob, "scanned.jpg");
+            retakeBtn.style.display = "inline-block";
+            cropBtn.style.display = "inline-block";
 
-                // JPG download (preview)
-                const jpgUrl = URL.createObjectURL(blob);
-                downloadJpg.href = jpgUrl;
-                downloadJpg.download = "scanned.jpg";
+            // Wait for image to load
+            preview.onload = async () => {
+                if (cropper) cropper.destroy();
 
+                // Try to auto-detect corners
                 try {
-                    formData.append("format", "pdf"); // backend enhancement + PDF
-                    const res = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
-                    if (!res.ok) throw new Error("Backend processing failed");
+                    loading.style.display = "block";
+                    
+                    const blob = await (await fetch(imageDataUrl)).blob();
+                    const formData = new FormData();
+                    formData.append("image", blob, "image.jpg");
 
-                    const processedBlob = await res.blob();
-                    const pdfUrl = URL.createObjectURL(processedBlob);
-
-                    // Keep JPG preview in <img>
-                    preview.src = jpgUrl;
-                    preview.style.display = "block";
-
-                    // PDF download
-                    downloadPdf.href = pdfUrl;
-                    downloadPdf.download = "scanned.pdf";
-
-                    shareBtn.onclick = () => {
-                        if (navigator.share) {
-                            navigator.share({ files: [new File([processedBlob], "scanned.pdf", { type: processedBlob.type })] })
-                                .catch(console.log);
-                        } else {
-                            alert("Share not supported on this device.");
-                        }
-                    };
-
-                    resultButtons.style.display = "flex";
-
+                    const res = await fetch(BACKEND_DETECT_URL, { method: "POST", body: formData });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        
+                        // Initialize cropper with detected corners
+                        cropper = new Cropper(preview, {
+                            viewMode: 1,
+                            autoCropArea: 1,
+                            movable: true,
+                            zoomable: true,
+                            scalable: true,
+                            rotatable: true,
+                            background: false,
+                            ready() {
+                                if (data.corners && data.corners.length === 4) {
+                                    // Set crop box to detected corners
+                                    const imgData = cropper.getImageData();
+                                    const corners = data.corners;
+                                    
+                                    const xs = corners.map(c => c[0]);
+                                    const ys = corners.map(c => c[1]);
+                                    const minX = Math.min(...xs);
+                                    const minY = Math.min(...ys);
+                                    const maxX = Math.max(...xs);
+                                    const maxY = Math.max(...ys);
+                                    
+                                    // Convert image coordinates to cropper coordinates
+                                    const scaleX = imgData.naturalWidth / imgData.width;
+                                    const scaleY = imgData.naturalHeight / imgData.height;
+                                    
+                                    cropper.setCropBoxData({
+                                        left: minX / scaleX + imgData.left,
+                                        top: minY / scaleY + imgData.top,
+                                        width: (maxX - minX) / scaleX,
+                                        height: (maxY - minY) / scaleY
+                                    });
+                                }
+                            }
+                        });
+                    } else {
+                        // Fallback: create cropper without auto-detect
+                        createDefaultCropper();
+                    }
+                    
+                    loading.style.display = "none";
                 } catch (err) {
-                    alert(err.message);
+                    console.error("Auto-detect failed:", err);
+                    createDefaultCropper();
+                    loading.style.display = "none";
                 }
-            }, "image/jpeg", 0.95);
+            };
         }
 
+        function createDefaultCropper() {
+            cropper = new Cropper(preview, {
+                viewMode: 1,
+                autoCropArea: 0.9,
+                movable: true,
+                zoomable: true,
+                scalable: true,
+                rotatable: true,
+                background: false
+            });
+        }
+
+        /* =========================
+           PROCESS CROPPED IMAGE
+        ========================= */
+        cropBtn.onclick = async () => {
+            if (!cropper) {
+                showError("Please capture or upload an image first.");
+                return;
+            }
+
+            loading.style.display = "block";
+            cropBtn.disabled = true;
+
+            try {
+                // Get cropped canvas
+                const croppedCanvas = cropper.getCroppedCanvas({ 
+                    imageSmoothingQuality: "high",
+                    maxWidth: 2400,
+                    maxHeight: 2400
+                });
+                
+                // Convert to blob
+                const blob = await new Promise(resolve => 
+                    croppedCanvas.toBlob(resolve, "image/jpeg", 0.95)
+                );
+
+                // Send to backend for enhancement and PDF conversion
+                const formData = new FormData();
+                formData.append("image", blob, "cropped.jpg");
+                formData.append("format", "jpg");
+                formData.append("enhance", "true");
+
+                const jpgRes = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
+                if (!jpgRes.ok) throw new Error("Failed to process JPG");
+                
+                const jpgBlob = await jpgRes.blob();
+                const jpgUrl = URL.createObjectURL(jpgBlob);
+
+                // Get PDF version
+                formData.set("format", "pdf");
+                const pdfRes = await fetch(BACKEND_SCAN_URL, { method: "POST", body: formData });
+                if (!pdfRes.ok) throw new Error("Failed to process PDF");
+                
+                const pdfBlob = await pdfRes.blob();
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+
+                // Update preview with enhanced image
+                preview.src = jpgUrl;
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+
+                // Setup downloads
+                downloadJpg.href = jpgUrl;
+                downloadJpg.download = "scanned.jpg";
+                downloadPdf.href = pdfUrl;
+                downloadPdf.download = "scanned.pdf";
+
+                shareBtn.onclick = async () => {
+                    if (navigator.share) {
+                        try {
+                            await navigator.share({ 
+                                files: [new File([pdfBlob], "scanned.pdf", { type: "application/pdf" })] 
+                            });
+                        } catch (err) {
+                            console.log("Share cancelled:", err);
+                        }
+                    } else {
+                        showError("Share not supported on this device.");
+                    }
+                };
+
+                resultButtons.style.display = "flex";
+                cropBtn.style.display = "none";
+
+            } catch (err) {
+                console.error("Processing error:", err);
+                showError("Failed to process image: " + err.message);
+            } finally {
+                loading.style.display = "none";
+                cropBtn.disabled = false;
+            }
+        };
 
         /* =========================
            RETAKE
         ========================= */
         retakeBtn.onclick = () => {
-            if (cropper) cropper.destroy();
-            cropper = null;
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
 
+            capturedImageData = null;
             preview.style.display = "none";
             resultButtons.style.display = "none";
 
             retakeBtn.style.display = "none";
+            cropBtn.style.display = "none";
             openCameraBtn.style.display = "inline-block";
+            uploadBtn.style.display = "inline-block";
+            fileInput.value = "";
         };
     </script>
 

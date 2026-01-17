@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Scan Document - PDFMaster</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Scan documents online like CamScanner. Auto detect edges, crop manually, enhance quality and export PDF or JPG.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Cropper -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"/>
+
+  <style>
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: #f9fafb;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    video, img {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .actions {
+      margin-top: 15px;
+    }
+
+    button {
+      padding: 12px 18px;
+      margin: 6px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+    }
+
+    button.secondary {
+      background: #6b7280;
+    }
+
+    button.danger {
+      background: #dc2626;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+
+<h1>Scan Document</h1>
+<p>Scan like CamScanner – auto detect, crop & enhance</p>
+
+<!-- Buttons -->
+<div class="actions">
+  <button id="openCameraBtn">Open Camera</button>
+  <button id="captureBtn" style="display:none;">Capture</button>
+  <button id="retakeBtn" class="secondary" style="display:none;">Retake</button>
+</div>
+
+<!-- Camera -->
+<video id="video" autoplay playsinline style="display:none;"></video>
+
+<!-- Canvas (hidden) -->
+<canvas id="canvas" style="display:none;"></canvas>
+
+<!-- Preview -->
+<img id="preview" style="display:none;" />
+
+<!-- Process -->
+<div class="actions">
+  <button id="processBtn" style="display:none;">Auto Detect & Enhance</button>
+</div>
+
+<!-- Cropper -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+<script>
+let stream = null;
+let cropper = null;
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+const preview = document.getElementById("preview");
+
+const openCameraBtn = document.getElementById("openCameraBtn");
+const captureBtn = document.getElementById("captureBtn");
+const retakeBtn = document.getElementById("retakeBtn");
+const processBtn = document.getElementById("processBtn");
+
+/* =========================
+   OPEN CAMERA
+========================= */
+openCameraBtn.onclick = async () => {
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" }
+    });
+
+    video.srcObject = stream;
+    video.style.display = "block";
+
+    openCameraBtn.style.display = "none";
+    captureBtn.style.display = "inline-block";
+    retakeBtn.style.display = "none";
+    processBtn.style.display = "none";
+    preview.style.display = "none";
+
+    if (cropper) {
+      cropper.destroy();
+      cropper = null;
+    }
+
+  } catch (err) {
+    alert("Camera permission denied or not available.");
+  }
+};
+
+/* =========================
+   CAPTURE IMAGE
+========================= */
+captureBtn.onclick = () => {
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext("2d").drawImage(video, 0, 0);
+
+  preview.src = canvas.toDataURL("image/jpeg", 0.95);
+  preview.style.display = "block";
+
+  // Stop camera
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+  }
+
+  video.style.display = "none";
+  captureBtn.style.display = "none";
+  retakeBtn.style.display = "inline-block";
+  processBtn.style.display = "inline-block";
+
+  // Init cropper
+  cropper = new Cropper(preview, {
+    viewMode: 1,
+    autoCropArea: 0.9,
+    movable: true,
+    zoomable: true,
+    scalable: false,
+    background: false
+  });
+};
+
+/* =========================
+   RETAKE
+========================= */
+retakeBtn.onclick = () => {
+  if (cropper) {
+    cropper.destroy();
+    cropper = null;
+  }
+
+  preview.style.display = "none";
+  processBtn.style.display = "none";
+  retakeBtn.style.display = "none";
+
+  openCameraBtn.style.display = "inline-block";
+};
+
+/* =========================
+   SEND TO PYTHON BACKEND
+========================= */
+processBtn.onclick = async () => {
+  processBtn.disabled = true;
+  processBtn.innerText = "Processing...";
+
+  cropper.getCroppedCanvas({
+    imageSmoothingQuality: "high"
+  }).toBlob(async (blob) => {
+
+    const formData = new FormData();
+    formData.append("image", blob);
+
+    try {
+      const res = await fetch("http://localhost:5000/scan", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!res.ok) throw new Error("Processing failed");
+
+      const processedBlob = await res.blob();
+      preview.src = URL.createObjectURL(processedBlob);
+
+      cropper.destroy();
+      cropper = null;
+
+    } catch (err) {
+      alert("Backend processing failed");
+    }
+
+    processBtn.disabled = false;
+    processBtn.innerText = "Auto Detect & Enhance";
+  }, "image/jpeg", 0.95);
+};
+</script>
+
+</body>
+</html>

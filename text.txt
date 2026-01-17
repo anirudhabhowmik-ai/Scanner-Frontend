@@ -1,6 +1,0 @@
-Scope
--------
-
-1. Global Scope
-2. Functional Scope
-3. Block Scope

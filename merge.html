@@ -83,7 +83,7 @@
                     </button>
                 </div>
 
-                <p class="note" id="noteText">Supported formats: PDF. Select file one by one or press ctrl to select multiple files at a time.</p>
+                <p class="note" id="noteText">Supported formats: PDF. Select one file at a time, or use Ctrl (desktop only) to select multiple files.</p>
             </div>
 
             <!-- Show Preview -->
@@ -149,7 +149,8 @@
         const nopdf = document.getElementById("nopdf");
         nopdf.style.display = "none";
         const resetBtn = document.getElementById('resetBtn');
-
+        const BACKEND_MERGE_URL = "https://scanner-backend-production-fa11.up.railway.app/merge-pdf";
+        const MAX_FRONTEND_SIZE = 20 * 1024 * 1024; // 20MB
 
         let files = []; // store selected files
 
@@ -197,8 +198,6 @@
         });
 
         // Merge PDFs
-        const BACKEND_MERGE_URL = "https://scanner-backend-production-fa11.up.railway.app/merge-pdf";
-        const MAX_FRONTEND_SIZE = 1 * 1024 * 1024; // 20MB
 
         mergeBtn.addEventListener('click', async () => {
             if (files.length < 2) {

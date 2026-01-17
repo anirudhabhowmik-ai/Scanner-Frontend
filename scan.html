@@ -118,7 +118,7 @@
       img {
         display: block;
         max-width: 100%;
-        max-height: 60vh;
+        max-height: 70vh;
         width: auto;
         height: auto;
         margin: 0 auto;
@@ -462,8 +462,7 @@
 
     <script>
       // Configuration
-      const BACKEND_URL =
-        "https://scanner-backend-production-fa11.up.railway.app";
+      const BACKEND_URL = "http://127.0.0.1:5000";
 
       // State
       let stream = null;
@@ -764,6 +763,7 @@
           }
 
           const jpgBlob = await jpgRes.blob();
+          console.log("JPG blob received:", jpgBlob.size, "bytes");
 
           // Process PDF
           const pdfFormData = new FormData();
@@ -835,53 +835,164 @@
         resetUI();
       };
 
-      // Download helper with multiple fallback methods
+      // Download helper with iOS Safari support
       function setupDownload(linkElement, blob, filename, mimeType) {
         console.log(`Setting up download for ${filename}:`, blob.size, "bytes");
 
-        // Method 1: Standard download link (works on most browsers)
-        const blobUrl = URL.createObjectURL(blob);
-        linkElement.href = blobUrl;
-        linkElement.download = filename;
+        // Detect iOS
+        const isIOS =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isSafari = /^((?!chrome|android).)*safari/i.test(
+          navigator.userAgent,
+        );
 
-        // Method 2: Force download on click (fallback)
-        linkElement.onclick = (e) => {
-          e.preventDefault();
+        if (isIOS || isSafari) {
+          // iOS/Safari specific handling
+          linkElement.onclick = (e) => {
+            e.preventDefault();
 
-          try {
-            // Try creating a temporary link and clicking it
-            const tempLink = document.createElement("a");
-            tempLink.href = blobUrl;
-            tempLink.download = filename;
-            tempLink.style.display = "none";
-
-            document.body.appendChild(tempLink);
-            tempLink.click();
-            document.body.removeChild(tempLink);
-
-            console.log(`✓ Download triggered for ${filename}`);
-            showSuccess(`Downloading ${filename}...`);
-
-            // Clean up blob URL after a delay
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-          } catch (err) {
-            console.error("Download failed:", err);
-
-            // Method 3: Fallback - try opening in new tab
             try {
+              // Convert blob to data URL for iOS
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                const dataUrl = reader.result;
+
+                // For iOS, we need to open in new window with data URL
+                const newWindow = window.open("", "_blank");
+                if (newWindow) {
+                  if (mimeType === "application/pdf") {
+                    // For PDFs, embed in iframe
+                    newWindow.document.write(`
+                                        <!DOCTYPE html>
+                                        <html>
+                                        <head>
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                            <title>${filename}</title>
+                                            <style>
+                                                body { margin: 0; padding: 0; }
+                                                iframe { width: 100vw; height: 100vh; border: none; }
+                                                .download-btn {
+                                                    position: fixed;
+                                                    top: 10px;
+                                                    right: 10px;
+                                                    background: #2563eb;
+                                                    color: white;
+                                                    padding: 12px 20px;
+                                                    border-radius: 8px;
+                                                    text-decoration: none;
+                                                    font-family: system-ui;
+                                                    font-weight: 600;
+                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                                                    z-index: 9999;
+                                                }
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <a href="${dataUrl}" download="${filename}" class="download-btn">📥 Save PDF</a>
+                                            <iframe src="${dataUrl}#toolbar=0"></iframe>
+                                        </body>
+                                        </html>
+                                    `);
+                  } else {
+                    // For JPGs, show image with download link
+                    newWindow.document.write(`
+                                        <!DOCTYPE html>
+                                        <html>
+                                        <head>
+                                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                            <title>${filename}</title>
+                                            <style>
+                                                body {
+                                                    margin: 0;
+                                                    padding: 20px;
+                                                    background: #000;
+                                                    display: flex;
+                                                    flex-direction: column;
+                                                    align-items: center;
+                                                    justify-content: center;
+                                                    min-height: 100vh;
+                                                }
+                                                img {
+                                                    max-width: 100%;
+                                                    height: auto;
+                                                    border-radius: 8px;
+                                                }
+                                                .download-btn {
+                                                    position: fixed;
+                                                    top: 10px;
+                                                    right: 10px;
+                                                    background: #2563eb;
+                                                    color: white;
+                                                    padding: 12px 20px;
+                                                    border-radius: 8px;
+                                                    text-decoration: none;
+                                                    font-family: system-ui;
+                                                    font-weight: 600;
+                                                    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+                                                }
+                                                .instructions {
+                                                    color: white;
+                                                    text-align: center;
+                                                    margin-top: 20px;
+                                                    font-family: system-ui;
+                                                    padding: 0 20px;
+                                                }
+                                            </style>
+                                        </head>
+                                        <body>
+                                            <a href="${dataUrl}" download="${filename}" class="download-btn">📥 Save Image</a>
+                                            <img src="${dataUrl}" alt="${filename}">
+                                            <p class="instructions">Long-press image and select "Save Image" or use button above</p>
+                                        </body>
+                                        </html>
+                                    `);
+                  }
+                  newWindow.document.close();
+                  showSuccess(
+                    `Opening ${filename}. Use the save button or long-press to download.`,
+                  );
+                } else {
+                  showError("Please allow popups to download files on iOS.");
+                }
+              };
+              reader.readAsDataURL(blob);
+            } catch (err) {
+              console.error("iOS download error:", err);
+              showError("Download failed. Please try again.");
+            }
+          };
+        } else {
+          // Standard download for Android/Desktop
+          const blobUrl = URL.createObjectURL(blob);
+          linkElement.href = blobUrl;
+          linkElement.download = filename;
+
+          linkElement.onclick = (e) => {
+            e.preventDefault();
+
+            try {
+              const tempLink = document.createElement("a");
+              tempLink.href = blobUrl;
+              tempLink.download = filename;
+              tempLink.style.display = "none";
+
+              document.body.appendChild(tempLink);
+              tempLink.click();
+              document.body.removeChild(tempLink);
+
+              console.log(`✓ Download triggered for ${filename}`);
+              showSuccess(`Downloading ${filename}...`);
+
+              setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+            } catch (err) {
+              console.error("Download failed:", err);
               const newWindow = window.open(blobUrl, "_blank");
               if (!newWindow) {
                 showError("Please allow popups to download files.");
-              } else {
-                showSuccess(
-                  `Opening ${filename} in new tab. Right-click to save.`,
-                );
               }
-            } catch (err2) {
-              showError("Download failed. Please try again.");
             }
-          }
-        };
+          };
+        }
       }
 
       // Check backend on load

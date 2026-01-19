@@ -36,10 +36,15 @@
                     <li><a href="scan.html">Scan Document</a></li>
                     <li><a href="split.html">Split PDF</a></li>
                     <li><a href="merge.html">Merge PDFs</a></li>
-                    <li><a href="compress.html" class="active">Compress PDF</a></li>
+                    <li><a href="image-to-pdf.html">Image → PDF</a></li>
+                    <li><a href="compress.html">Compress PDF</a></li>
+                    <li><a href="ocr_pdf.html">OCR PDF</a></li>
+                    <li><a href="#about">About</a></li>
                 </ul>
                 <div class="hamburger">
-                    <span></span><span></span><span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
             </nav>
         </div>
@@ -88,13 +93,40 @@
         </div>
     </section>
 
-    <!-- ================= FOOTER ================= -->
+    <!-- Why Use PDFMaster -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Why Use PDFMaster</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>No Installation Required</h3>
+                    <p>Use PDFMaster online, no downloads needed.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Fast & Secure Processing</h3>
+                    <p>Files are processed instantly and securely.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Free to Use</h3>
+                    <p>All core features are completely free.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Works on Any Device</h3>
+                    <p>Access PDFMaster from PC, tablet, or mobile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
     <footer>
         <div class="container">
             <p>&copy; 2026 PDFMaster. All rights reserved.</p>
+            <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
         </div>
     </footer>
 
+    <script src="./js/app.js"></script>
     <!-- ================= SCRIPT ================= -->
     <script>
         const BACKEND_COMPRESS_URL = "https://scanner-backend-production-fa11.up.railway.app/compress-pdf/";

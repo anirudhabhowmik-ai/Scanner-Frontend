@@ -1,939 +1,1121 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Document Scanner - PDFMaster</title>
 
-    <!-- SEO -->
-    <meta
-      name="description"
-      content="Professional document scanner with auto edge detection. Scan, crop, and export to PDF or JPG."
-    />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="theme-color" content="#2563eb" />
+<head>
+  <meta charset="UTF-8" />
+  <title>Document Scanner - PDFMaster</title>
+  <meta name="description"
+    content="Professional document scanner with auto edge detection and OCR. Scan, crop, extract text, and export to PDF or JPG." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-    <!-- Cropper CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
-    />
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #1f2937;
+    }
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+      color: white;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      opacity: 0.95;
+      font-weight: 400;
+    }
+
+    .content-card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .media-container {
+      width: 100%;
+      min-height: 400px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .media-container.empty {
+      min-height: 300px;
+    }
+
+    .placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b7280;
+    }
+
+    .placeholder-icon {
+      font-size: 4rem;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .placeholder-text {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    video,
+    img {
+      display: block;
+      max-width: 100%;
+      max-height: 70vh;
+      width: auto;
+      height: auto;
+      margin: 0 auto;
+    }
+
+    canvas {
+      display: none;
+    }
+
+    .btn-container {
+      padding: 24px;
+      background: white;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    button,
+    .btn {
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    button:hover:not(:disabled),
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    button:active:not(:disabled),
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    }
+
+    .btn-download {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    }
+
+    .btn-share {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+
+    .btn-ocr {
+      background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    }
+
+    .message-container {
+      width: 100%;
+      max-width: 900px;
+      padding: 0 20px;
+    }
+
+    .message {
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
       }
 
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-          "Ubuntu", sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: 100vh;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        color: #1f2937;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
+    .message-loading {
+      background: #dbeafe;
+      color: #1e40af;
+      border-left: 4px solid #2563eb;
+    }
+
+    .message-success {
+      background: #d1fae5;
+      color: #065f46;
+      border-left: 4px solid #10b981;
+    }
+
+    .message-error {
+      background: #fee2e2;
+      color: #991b1b;
+      border-left: 4px solid #dc2626;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(0, 0, 0, 0.1);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .result-actions {
+      display: none;
+      padding: 24px;
+      background: #f9fafb;
+      border-top: 2px solid #e5e7eb;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .result-actions.show {
+      display: flex;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .loading-overlay.show {
+      display: flex;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    .loading-text {
+      color: #1f2937;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* OCR Result Modal */
+    .ocr-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    .ocr-modal.show {
+      display: flex;
+    }
+
+    .ocr-content {
+      background: white;
+      border-radius: 16px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 80vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .ocr-header {
+      padding: 24px;
+      border-bottom: 2px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ocr-header h2 {
+      font-size: 1.5rem;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .ocr-close {
+      background: #ef4444;
+      color: white;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .ocr-close:hover {
+      background: #dc2626;
+      transform: scale(1.1);
+    }
+
+    .ocr-body {
+      padding: 24px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .ocr-text {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #1f2937;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 200px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .ocr-footer {
+      padding: 20px 24px;
+      border-top: 2px solid #e5e7eb;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    /* Improved Cropper Styles */
+    .cropper-point {
+      width: 12px !important;
+      height: 12px !important;
+      background-color: #2563eb !important;
+      border: 2px solid white !important;
+      opacity: 1 !important;
+    }
+
+    .cropper-point.point-se {
+      width: 16px !important;
+      height: 16px !important;
+    }
+
+    .cropper-line {
+      background-color: #2563eb !important;
+      opacity: 0.3 !important;
+    }
+
+    .cropper-view-box {
+      outline: 2px solid #2563eb !important;
+      outline-color: rgba(37, 99, 235, 0.75) !important;
+    }
+
+    .cropper-face {
+      background-color: rgba(37, 99, 235, 0.1) !important;
+    }
+
+    @media (max-width: 640px) {
       .container {
-        width: 100%;
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      /* Header */
-      header {
-        text-align: center;
-        margin-bottom: 30px;
-        color: white;
+        padding: 12px;
       }
 
       h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 8px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-size: 1.5rem;
       }
 
       .subtitle {
-        font-size: 1rem;
-        opacity: 0.95;
-        font-weight: 400;
-      }
-
-      /* Main Content Area */
-      .content-card {
-        background: white;
-        border-radius: 16px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        width: 100%;
-        overflow: hidden;
-        margin-bottom: 20px;
-      }
-
-      /* Media Container */
-      .media-container {
-        width: 100%;
-        min-height: 400px;
-        background: #f3f4f6;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .media-container.empty {
-        min-height: 300px;
-      }
-
-      .placeholder {
-        text-align: center;
-        padding: 60px 20px;
-        color: #6b7280;
-      }
-
-      .placeholder-icon {
-        font-size: 4rem;
-        margin-bottom: 16px;
-        opacity: 0.3;
-      }
-
-      .placeholder-text {
-        font-size: 1.1rem;
-        font-weight: 500;
-      }
-
-      video,
-      img {
-        display: block;
-        max-width: 100%;
-        max-height: 70vh;
-        width: auto;
-        height: auto;
-        margin: 0 auto;
-      }
-
-      canvas {
-        display: none;
-      }
-
-      /* Buttons Container */
-      .btn-container {
-        padding: 24px;
-        background: white;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-        justify-content: center;
-        align-items: center;
+        font-size: 0.9rem;
       }
 
       button,
       .btn {
-        padding: 14px 28px;
-        font-size: 1rem;
-        font-weight: 600;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        text-decoration: none;
-        color: white;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-      }
-
-      button:hover:not(:disabled),
-      .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      }
-
-      button:active:not(:disabled),
-      .btn:active {
-        transform: translateY(0);
-      }
-
-      button:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      }
-
-      .btn-success {
-        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      }
-
-      .btn-secondary {
-        background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-      }
-
-      .btn-download {
-        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      }
-
-      .btn-share {
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      }
-
-      /* Status Messages */
-      .message-container {
+        padding: 12px 20px;
+        font-size: 0.9rem;
         width: 100%;
-        max-width: 900px;
-        padding: 0 20px;
-      }
-
-      .message {
-        padding: 16px 20px;
-        border-radius: 10px;
-        margin-bottom: 16px;
-        display: none;
-        align-items: center;
-        gap: 12px;
-        font-weight: 500;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        animation: slideIn 0.3s ease;
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateY(-10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .message-loading {
-        background: #dbeafe;
-        color: #1e40af;
-        border-left: 4px solid #2563eb;
-      }
-
-      .message-success {
-        background: #d1fae5;
-        color: #065f46;
-        border-left: 4px solid #10b981;
-      }
-
-      .message-error {
-        background: #fee2e2;
-        color: #991b1b;
-        border-left: 4px solid #dc2626;
-      }
-
-      .spinner {
-        width: 20px;
-        height: 20px;
-        border: 3px solid rgba(0, 0, 0, 0.1);
-        border-top-color: currentColor;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-      }
-
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-
-      /* Result Buttons */
-      .result-actions {
-        display: none;
-        padding: 24px;
-        background: #f9fafb;
-        border-top: 2px solid #e5e7eb;
-        gap: 12px;
-        flex-wrap: wrap;
         justify-content: center;
       }
 
-      .result-actions.show {
-        display: flex;
+      .btn-container {
+        padding: 16px;
       }
 
-      /* Responsive */
-      @media (max-width: 640px) {
-        .container {
-          padding: 12px;
-        }
-
-        h1 {
-          font-size: 1.5rem;
-        }
-
-        .subtitle {
-          font-size: 0.9rem;
-        }
-
-        button,
-        .btn {
-          padding: 12px 20px;
-          font-size: 0.9rem;
-          width: 100%;
-          justify-content: center;
-        }
-
-        .btn-container {
-          padding: 16px;
-        }
-
-        .media-container {
-          min-height: 300px;
-        }
-
-        video,
-        img {
-          max-height: 50vh;
-        }
+      .media-container {
+        min-height: 300px;
       }
 
-      /* Loading overlay */
-      .loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
+      video,
+      img {
+        max-height: 50vh;
       }
 
-      .loading-overlay.show {
-        display: flex;
+      .cropper-point {
+        width: 18px !important;
+        height: 18px !important;
       }
 
-      .loading-content {
-        background: white;
-        padding: 40px;
-        border-radius: 16px;
-        text-align: center;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      .ocr-content {
+        max-height: 90vh;
       }
 
-      .loading-spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid #e5e7eb;
-        border-top-color: #2563eb;
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
-        margin: 0 auto 20px;
+      .ocr-header h2 {
+        font-size: 1.2rem;
       }
+    }
+  </style>
+</head>
 
-      .loading-text {
-        color: #1f2937;
-        font-size: 1.1rem;
-        font-weight: 600;
-      }
-    </style>
-  </head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📄 Document Scanner</h1>
+      <p class="subtitle">Smart edge detection, cropping & OCR</p>
+    </header>
 
-  <body>
-    <div class="container">
-      <!-- Header -->
-      <header>
-        <h1>📄 Document Scanner</h1>
-        <p class="subtitle">Scan documents with auto edge detection</p>
-      </header>
-
-      <!-- Messages -->
-      <div class="message-container">
-        <div class="message message-loading" id="loadingMsg">
-          <div class="spinner"></div>
-          <span id="loadingText">Processing...</span>
-        </div>
-        <div class="message message-success" id="successMsg">
-          <span>✓</span>
-          <span id="successText"></span>
-        </div>
-        <div class="message message-error" id="errorMsg">
-          <span>✕</span>
-          <span id="errorText"></span>
-        </div>
+    <div class="message-container">
+      <div class="message message-loading" id="loadingMsg">
+        <div class="spinner"></div>
+        <span id="loadingText">Processing...</span>
       </div>
-
-      <!-- Main Content Card -->
-      <div class="content-card">
-        <!-- Media Display Area -->
-        <div class="media-container" id="mediaContainer">
-          <div class="placeholder" id="placeholder">
-            <div class="placeholder-icon">📷</div>
-            <div class="placeholder-text">Ready to scan your document</div>
-          </div>
-          <video id="video" autoplay playsinline style="display: none"></video>
-          <canvas id="canvas"></canvas>
-          <img id="preview" style="display: none" alt="Document preview" />
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="btn-container" id="btnContainer">
-          <button class="btn-primary" id="openCameraBtn">
-            <span>📷</span>
-            <span>Open Camera</span>
-          </button>
-          <button class="btn-primary" id="uploadBtn">
-            <span>📁</span>
-            <span>Upload Image</span>
-          </button>
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/*"
-            style="display: none"
-          />
-
-          <button class="btn-success" id="captureBtn" style="display: none">
-            <span>📸</span>
-            <span>Capture Document</span>
-          </button>
-
-          <button class="btn-success" id="cropBtn" style="display: none">
-            <span>✂️</span>
-            <span>Process & Save</span>
-          </button>
-
-          <button class="btn-secondary" id="retakeBtn" style="display: none">
-            <span>🔄</span>
-            <span>Start Over</span>
-          </button>
-        </div>
-
-        <!-- Result Actions -->
-        <div class="result-actions" id="resultActions">
-          <a
-            class="btn btn-download"
-            id="downloadJpg"
-            href="#"
-            download="scanned.jpg"
-          >
-            <span>📥</span>
-            <span>Download JPG</span>
-          </a>
-          <a
-            class="btn btn-download"
-            id="downloadPdf"
-            href="#"
-            download="scanned.pdf"
-          >
-            <span>📥</span>
-            <span>Download PDF</span>
-          </a>
-          <button class="btn-share" id="shareBtn">
-            <span>📤</span>
-            <span>Share</span>
-          </button>
-        </div>
+      <div class="message message-success" id="successMsg">
+        <span>✓</span>
+        <span id="successText"></span>
+      </div>
+      <div class="message message-error" id="errorMsg">
+        <span>✕</span>
+        <span id="errorText"></span>
       </div>
     </div>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Processing your document...</div>
+    <div class="content-card">
+      <div class="media-container" id="mediaContainer">
+        <div class="placeholder" id="placeholder">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-text">Ready to scan your document</div>
+        </div>
+        <video id="video" autoplay playsinline style="display: none"></video>
+        <canvas id="canvas"></canvas>
+        <img id="preview" style="display: none" alt="Document preview" />
+      </div>
+
+      <div class="btn-container" id="btnContainer">
+        <button class="btn-primary" id="openCameraBtn">
+          <span>📷</span>
+          <span>Open Camera</span>
+        </button>
+        <button class="btn-primary" id="uploadBtn">
+          <span>📁</span>
+          <span>Upload Image</span>
+        </button>
+        <input type="file" id="fileInput" accept="image/*" style="display: none" />
+
+        <button class="btn-success" id="captureBtn" style="display: none">
+          <span>📸</span>
+          <span>Capture Document</span>
+        </button>
+
+        <button class="btn-success" id="cropBtn" style="display: none">
+          <span>✂️</span>
+          <span>Process & Save</span>
+        </button>
+
+        <button class="btn-secondary" id="retakeBtn" style="display: none">
+          <span>🔄</span>
+          <span>Start Over</span>
+        </button>
+      </div>
+
+      <div class="result-actions" id="resultActions">
+        <button class="btn-ocr" id="ocrBtn">
+          <span>📝</span>
+          <span>Extract Text (OCR)</span>
+        </button>
+        <a class="btn btn-download" id="downloadJpg" href="#" download="scanned.jpg">
+          <span>📥</span>
+          <span>Download JPG</span>
+        </a>
+        <a class="btn btn-download" id="downloadPdf" href="#" download="scanned.pdf">
+          <span>📥</span>
+          <span>Download PDF</span>
+        </a>
+        <button class="btn-share" id="shareBtn">
+          <span>📤</span>
+          <span>Share</span>
+        </button>
       </div>
     </div>
+  </div>
 
-    <!-- Cropper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Processing your document...</div>
+    </div>
+  </div>
 
-    <script>
-      // Configuration
-      const BACKEND_URL = "https://scanner-backend-production-fa11.up.railway.app";
+  <!-- OCR Modal -->
+  <div class="ocr-modal" id="ocrModal">
+    <div class="ocr-content">
+      <div class="ocr-header">
+        <h2>📝 Extracted Text</h2>
+        <button class="ocr-close" id="ocrCloseBtn">×</button>
+      </div>
+      <div class="ocr-body">
+        <div class="ocr-text" id="ocrText">Extracting text...</div>
+      </div>
+      <div class="ocr-footer">
+        <button class="btn-secondary" id="copyTextBtn">
+          <span>📋</span>
+          <span>Copy Text</span>
+        </button>
+        <button class="btn-download" id="downloadTextBtn">
+          <span>📥</span>
+          <span>Download TXT</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
-      // State
-      let stream = null;
-      let cropper = null;
-      let currentImageBlob = null;
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
-      // DOM Elements
-      const video = document.getElementById("video");
-      const canvas = document.getElementById("canvas");
-      const preview = document.getElementById("preview");
-      const placeholder = document.getElementById("placeholder");
-      const mediaContainer = document.getElementById("mediaContainer");
+  <script>
+    const BACKEND_URL = "https://scanner-backend-production-fa11.up.railway.app";
 
-      const openCameraBtn = document.getElementById("openCameraBtn");
-      const uploadBtn = document.getElementById("uploadBtn");
-      const fileInput = document.getElementById("fileInput");
-      const captureBtn = document.getElementById("captureBtn");
-      const cropBtn = document.getElementById("cropBtn");
-      const retakeBtn = document.getElementById("retakeBtn");
+    let stream = null;
+    let cropper = null;
+    let currentImageBlob = null;
+    let processedImageBlob = null;
+    let extractedText = "";
 
-      const loadingMsg = document.getElementById("loadingMsg");
-      const successMsg = document.getElementById("successMsg");
-      const errorMsg = document.getElementById("errorMsg");
-      const loadingOverlay = document.getElementById("loadingOverlay");
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const preview = document.getElementById("preview");
+    const placeholder = document.getElementById("placeholder");
+    const mediaContainer = document.getElementById("mediaContainer");
 
-      const resultActions = document.getElementById("resultActions");
-      const downloadJpg = document.getElementById("downloadJpg");
-      const downloadPdf = document.getElementById("downloadPdf");
-      const shareBtn = document.getElementById("shareBtn");
+    const openCameraBtn = document.getElementById("openCameraBtn");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const fileInput = document.getElementById("fileInput");
+    const captureBtn = document.getElementById("captureBtn");
+    const cropBtn = document.getElementById("cropBtn");
+    const retakeBtn = document.getElementById("retakeBtn");
 
-      // UI Helper Functions
-      function showLoading(text = "Processing...") {
+    const loadingMsg = document.getElementById("loadingMsg");
+    const successMsg = document.getElementById("successMsg");
+    const errorMsg = document.getElementById("errorMsg");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+
+    const resultActions = document.getElementById("resultActions");
+    const downloadJpg = document.getElementById("downloadJpg");
+    const downloadPdf = document.getElementById("downloadPdf");
+    const shareBtn = document.getElementById("shareBtn");
+    const ocrBtn = document.getElementById("ocrBtn");
+
+    const ocrModal = document.getElementById("ocrModal");
+    const ocrText = document.getElementById("ocrText");
+    const ocrCloseBtn = document.getElementById("ocrCloseBtn");
+    const copyTextBtn = document.getElementById("copyTextBtn");
+    const downloadTextBtn = document.getElementById("downloadTextBtn");
+
+    function showLoading(text = "Processing...") {
+      hideMessages();
+      document.getElementById("loadingText").textContent = text;
+      loadingMsg.style.display = "flex";
+    }
+
+    function showSuccess(text) {
+      hideMessages();
+      document.getElementById("successText").textContent = text;
+      successMsg.style.display = "flex";
+      setTimeout(() => (successMsg.style.display = "none"), 5000);
+    }
+
+    function showError(text) {
+      hideMessages();
+      document.getElementById("errorText").textContent = text;
+      errorMsg.style.display = "flex";
+      loadingOverlay.classList.remove("show");
+    }
+
+    function hideMessages() {
+      loadingMsg.style.display = "none";
+      successMsg.style.display = "none";
+      errorMsg.style.display = "none";
+    }
+
+    function resetUI() {
+      if (stream) {
+        stream.getTracks().forEach((t) => t.stop());
+        stream = null;
+      }
+
+      if (cropper) {
+        cropper.destroy();
+        cropper = null;
+      }
+
+      video.style.display = "none";
+      preview.style.display = "none";
+      placeholder.style.display = "block";
+      mediaContainer.classList.add("empty");
+
+      openCameraBtn.style.display = "inline-flex";
+      uploadBtn.style.display = "inline-flex";
+      captureBtn.style.display = "none";
+      cropBtn.style.display = "none";
+      retakeBtn.style.display = "none";
+      resultActions.classList.remove("show");
+
+      currentImageBlob = null;
+      processedImageBlob = null;
+      extractedText = "";
+      fileInput.value = "";
+      hideMessages();
+    }
+
+    openCameraBtn.onclick = async () => {
+      try {
         hideMessages();
-        document.getElementById("loadingText").textContent = text;
-        loadingMsg.style.display = "flex";
-      }
+        showLoading("Opening camera...");
 
-      function showSuccess(text) {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: "environment",
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          },
+        });
+
+        video.srcObject = stream;
+        video.style.display = "block";
+        placeholder.style.display = "none";
+        mediaContainer.classList.remove("empty");
+
+        openCameraBtn.style.display = "none";
+        uploadBtn.style.display = "none";
+        captureBtn.style.display = "inline-flex";
+
         hideMessages();
-        document.getElementById("successText").textContent = text;
-        successMsg.style.display = "flex";
-        setTimeout(() => (successMsg.style.display = "none"), 5000);
+      } catch (err) {
+        console.error("Camera error:", err);
+        showError("Camera access denied. Please allow camera permissions.");
+        resetUI();
       }
+    };
 
-      function showError(text) {
-        hideMessages();
-        document.getElementById("errorText").textContent = text;
-        errorMsg.style.display = "flex";
-        loadingOverlay.classList.remove("show");
+    uploadBtn.onclick = () => {
+      hideMessages();
+      fileInput.click();
+    };
+
+    fileInput.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      showLoading("Loading image...");
+
+      try {
+        currentImageBlob = file;
+        const imageUrl = URL.createObjectURL(file);
+        await setupCropper(imageUrl);
+      } catch (err) {
+        showError("Failed to load image: " + err.message);
       }
+    };
 
-      function hideMessages() {
-        loadingMsg.style.display = "none";
-        successMsg.style.display = "none";
-        errorMsg.style.display = "none";
-      }
+    captureBtn.onclick = async () => {
+      try {
+        showLoading("Capturing image...");
 
-      function resetUI() {
-        // Stop camera if running
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0);
+
         if (stream) {
           stream.getTracks().forEach((t) => t.stop());
           stream = null;
         }
+        video.style.display = "none";
 
-        // Destroy cropper
+        currentImageBlob = await new Promise((resolve) => {
+          canvas.toBlob(resolve, "image/jpeg", 0.95);
+        });
+
+        const imageUrl = URL.createObjectURL(currentImageBlob);
+        await setupCropper(imageUrl);
+
+        captureBtn.style.display = "none";
+      } catch (err) {
+        showError("Failed to capture: " + err.message);
+      }
+    };
+
+    async function setupCropper(imageUrl) {
+      preview.src = imageUrl;
+      preview.style.display = "block";
+      placeholder.style.display = "none";
+
+      openCameraBtn.style.display = "none";
+      uploadBtn.style.display = "none";
+      captureBtn.style.display = "none";
+      cropBtn.style.display = "inline-flex";
+      retakeBtn.style.display = "inline-flex";
+
+      await new Promise((resolve, reject) => {
+        preview.onload = resolve;
+        preview.onerror = reject;
+      });
+
+      if (cropper) cropper.destroy();
+
+      // FIXED: Use event listener in config instead of method call
+      cropper = new Cropper(preview, {
+        viewMode: 1,
+        dragMode: 'move',
+        autoCropArea: 0.9,
+        restore: false,
+        modal: true,
+        guides: true,
+        center: true,
+        highlight: true,
+        cropBoxMovable: true,
+        cropBoxResizable: true,
+        toggleDragModeOnDblclick: false,
+        minContainerWidth: 200,
+        minContainerHeight: 200,
+        minCropBoxWidth: 100,
+        minCropBoxHeight: 100,
+        responsive: true,
+        checkCrossOrigin: false,
+        background: false,
+        movable: true,
+        zoomable: true,
+        zoomOnTouch: true,
+        zoomOnWheel: true,
+        wheelZoomRatio: 0.1,
+        scalable: true,
+        rotatable: true,
+        ready: function () {
+          // Auto-detect after cropper is initialized
+          tryAutoDetect();
+        }
+      });
+    }
+
+    async function tryAutoDetect() {
+      try {
+        showLoading("Detecting document edges...");
+
+        const formData = new FormData();
+        formData.append("image", currentImageBlob, "image.jpg");
+
+        const res = await fetch(`${BACKEND_URL}/detect-corners`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!res.ok) {
+          console.error("Detection failed:", res.status);
+          showSuccess("Ready to crop. Drag corners to adjust the selection.");
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.detected && data.corners && data.corners.length === 4) {
+          const corners = data.corners;
+          const imageData = cropper.getImageData();
+
+          const xs = corners.map((c) => c[0]);
+          const ys = corners.map((c) => c[1]);
+          const minX = Math.min(...xs);
+          const minY = Math.min(...ys);
+          const maxX = Math.max(...xs);
+          const maxY = Math.max(...ys);
+
+          const scaleX = imageData.width / imageData.naturalWidth;
+          const scaleY = imageData.height / imageData.naturalHeight;
+
+          const cropBoxData = {
+            left: imageData.left + minX * scaleX,
+            top: imageData.top + minY * scaleY,
+            width: (maxX - minX) * scaleX,
+            height: (maxY - minY) * scaleY,
+          };
+
+          cropper.setCropBoxData(cropBoxData);
+
+          showSuccess("✓ Document detected! Drag corners to fine-tune the selection.");
+        } else {
+          showSuccess("Ready to crop. Drag corners to adjust the selection.");
+        }
+      } catch (err) {
+        console.error("Auto-detect error:", err);
+        showSuccess("Ready to crop. Drag corners to adjust the selection.");
+      }
+    }
+
+    cropBtn.onclick = async () => {
+      if (!cropper) {
+        showError("Please capture or upload an image first.");
+        return;
+      }
+
+      loadingOverlay.classList.add("show");
+      cropBtn.disabled = true;
+
+      try {
+        const croppedCanvas = cropper.getCroppedCanvas({
+          imageSmoothingQuality: "high",
+          maxWidth: 2400,
+          maxHeight: 2400,
+        });
+
+        const croppedBlob = await new Promise((resolve) =>
+          croppedCanvas.toBlob(resolve, "image/jpeg", 0.95),
+        );
+
+        // Process JPG
+        const jpgFormData = new FormData();
+        jpgFormData.append("image", croppedBlob, "cropped.jpg");
+        jpgFormData.append("format", "jpg");
+        jpgFormData.append("enhance", "true");
+
+        const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
+          method: "POST",
+          body: jpgFormData,
+        });
+
+        if (!jpgRes.ok) throw new Error(`JPG processing failed: ${jpgRes.status}`);
+
+        const jpgBlob = await jpgRes.blob();
+        processedImageBlob = jpgBlob; // Store for OCR
+
+        // Process PDF
+        const pdfFormData = new FormData();
+        pdfFormData.append("image", croppedBlob, "cropped.jpg");
+        pdfFormData.append("format", "pdf");
+        pdfFormData.append("enhance", "true");
+
+        const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
+          method: "POST",
+          body: pdfFormData,
+        });
+
+        if (!pdfRes.ok) throw new Error(`PDF processing failed: ${pdfRes.status}`);
+
+        const pdfBlob = await pdfRes.blob();
+
         if (cropper) {
           cropper.destroy();
           cropper = null;
         }
 
-        // Hide all media
-        video.style.display = "none";
-        preview.style.display = "none";
-        placeholder.style.display = "block";
-        mediaContainer.classList.add("empty");
+        const jpgUrl = URL.createObjectURL(jpgBlob);
+        preview.src = jpgUrl;
 
-        // Reset buttons
-        openCameraBtn.style.display = "inline-flex";
-        uploadBtn.style.display = "inline-flex";
-        captureBtn.style.display = "none";
-        cropBtn.style.display = "none";
-        retakeBtn.style.display = "none";
-        resultActions.classList.remove("show");
+        setupDownload(downloadJpg, jpgBlob, "scanned.jpg", "image/jpeg");
+        setupDownload(downloadPdf, pdfBlob, "scanned.pdf", "application/pdf");
 
-        // Clear state
-        currentImageBlob = null;
-        fileInput.value = "";
-        hideMessages();
-      }
-
-      // Open Camera
-      openCameraBtn.onclick = async () => {
-        try {
-          hideMessages();
-          showLoading("Opening camera...");
-
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode: "environment",
-              width: { ideal: 1920 },
-              height: { ideal: 1080 },
-            },
-          });
-
-          video.srcObject = stream;
-          video.style.display = "block";
-          placeholder.style.display = "none";
-          mediaContainer.classList.remove("empty");
-
-          openCameraBtn.style.display = "none";
-          uploadBtn.style.display = "none";
-          captureBtn.style.display = "inline-flex";
-
-          hideMessages();
-        } catch (err) {
-          console.error("Camera error:", err);
-          showError("Camera access denied. Please allow camera permissions.");
-          resetUI();
-        }
-      };
-
-      // Upload Image
-      uploadBtn.onclick = () => {
-        hideMessages();
-        fileInput.click();
-      };
-
-      fileInput.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        showLoading("Loading image...");
-
-        try {
-          currentImageBlob = file;
-          const imageUrl = URL.createObjectURL(file);
-          await setupCropper(imageUrl);
-        } catch (err) {
-          showError("Failed to load image: " + err.message);
-        }
-      };
-
-      // Capture Image
-      captureBtn.onclick = async () => {
-        try {
-          showLoading("Capturing image...");
-
-          // Draw to canvas
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(video, 0, 0);
-
-          // Stop camera
-          if (stream) {
-            stream.getTracks().forEach((t) => t.stop());
-            stream = null;
+        shareBtn.onclick = async () => {
+          if (navigator.share && navigator.canShare) {
+            try {
+              await navigator.share({
+                files: [new File([pdfBlob], "scanned.pdf", { type: "application/pdf" })],
+              });
+            } catch (err) {
+              if (err.name !== "AbortError") {
+                showError("Share failed: " + err.message);
+              }
+            }
+          } else {
+            showError("Share not supported on this device.");
           }
-          video.style.display = "none";
+        };
 
-          // Convert to blob
-          currentImageBlob = await new Promise((resolve) => {
-            canvas.toBlob(resolve, "image/jpeg", 0.95);
-          });
+        cropBtn.style.display = "none";
+        resultActions.classList.add("show");
+        loadingOverlay.classList.remove("show");
+        showSuccess("✓ Document processed successfully!");
+      } catch (err) {
+        console.error("Processing error:", err);
+        showError("Processing failed: " + err.message);
+        loadingOverlay.classList.remove("show");
+        cropBtn.disabled = false;
+      }
+    };
 
-          const imageUrl = URL.createObjectURL(currentImageBlob);
-          await setupCropper(imageUrl);
-
-          captureBtn.style.display = "none";
-        } catch (err) {
-          showError("Failed to capture: " + err.message);
-        }
-      };
-
-      // Setup Cropper
-      async function setupCropper(imageUrl) {
-        preview.src = imageUrl;
-        preview.style.display = "block";
-        placeholder.style.display = "none";
-
-        openCameraBtn.style.display = "none";
-        uploadBtn.style.display = "none";
-        captureBtn.style.display = "none";
-        cropBtn.style.display = "inline-flex";
-        retakeBtn.style.display = "inline-flex";
-
-        // Wait for image load
-        await new Promise((resolve, reject) => {
-          preview.onload = resolve;
-          preview.onerror = reject;
-        });
-
-        if (cropper) cropper.destroy();
-
-        // Create cropper
-        cropper = new Cropper(preview, {
-          viewMode: 1,
-          autoCropArea: 0.9,
-          movable: true,
-          zoomable: true,
-          scalable: true,
-          rotatable: true,
-          background: false,
-          responsive: true,
-          checkCrossOrigin: false,
-        });
-
-        // Try auto-detect
-        tryAutoDetect();
+    // OCR functionality
+    ocrBtn.onclick = async () => {
+      if (!processedImageBlob) {
+        showError("No processed image available for OCR.");
+        return;
       }
 
-      // Auto-detect document edges
-      async function tryAutoDetect() {
-        try {
-          showLoading("Detecting document edges...");
+      try {
+        loadingOverlay.classList.add("show");
+        ocrText.textContent = "Extracting text from document...";
 
-          const formData = new FormData();
-          formData.append("image", currentImageBlob, "image.jpg");
+        const formData = new FormData();
+        formData.append("image", processedImageBlob, "image.jpg");
 
-          const res = await fetch(`${BACKEND_URL}/detect-corners`, {
-            method: "POST",
-            body: formData,
-          });
+        const res = await fetch(`${BACKEND_URL}/ocr`, {
+          method: "POST",
+          body: formData,
+        });
 
-          if (!res.ok) throw new Error(`Detection failed: ${res.status}`);
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({ error: "OCR failed" }));
+          throw new Error(errorData.error || `OCR failed: ${res.status}`);
+        }
 
-          const data = await res.json();
+        const data = await res.json();
 
-          if (data.detected && data.corners && data.corners.length === 4) {
-            const corners = data.corners;
-            const imageData = cropper.getImageData();
+        extractedText = data.text || "";
 
-            // Calculate bounding box
-            const xs = corners.map((c) => c[0]);
-            const ys = corners.map((c) => c[1]);
-            const minX = Math.min(...xs);
-            const minY = Math.min(...ys);
-            const maxX = Math.max(...xs);
-            const maxY = Math.max(...ys);
+        if (!extractedText || extractedText.trim().length === 0) {
+          ocrText.textContent = "No text detected in the image.";
+        } else {
+          ocrText.textContent = extractedText;
+        }
 
-            // Scale to displayed image
-            const scaleX = imageData.width / imageData.naturalWidth;
-            const scaleY = imageData.height / imageData.naturalHeight;
+        loadingOverlay.classList.remove("show");
+        ocrModal.classList.add("show");
+        showSuccess("✓ Text extracted successfully!");
+      } catch (err) {
+        console.error("OCR error:", err);
+        loadingOverlay.classList.remove("show");
+        showError("OCR failed: " + err.message);
+      }
+    };
 
-            cropper.setCropBoxData({
-              left: imageData.left + minX * scaleX,
-              top: imageData.top + minY * scaleY,
-              width: (maxX - minX) * scaleX,
-              height: (maxY - minY) * scaleY,
+    // OCR Modal controls
+    ocrCloseBtn.onclick = () => {
+      ocrModal.classList.remove("show");
+    };
+
+    copyTextBtn.onclick = async () => {
+      try {
+        await navigator.clipboard.writeText(extractedText);
+        showSuccess("✓ Text copied to clipboard!");
+      } catch (err) {
+        showError("Failed to copy text.");
+      }
+    };
+
+    downloadTextBtn.onclick = () => {
+      const blob = new Blob([extractedText], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "extracted_text.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showSuccess("✓ Text file downloaded!");
+    };
+
+    // Close modal on outside click
+    ocrModal.onclick = (e) => {
+      if (e.target === ocrModal) {
+        ocrModal.classList.remove("show");
+      }
+    };
+
+    retakeBtn.onclick = () => {
+      resetUI();
+    };
+
+    function setupDownload(linkElement, blob, filename, mimeType) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+      if (isIOS || isSafari) {
+        linkElement.onclick = async (e) => {
+          e.preventDefault();
+
+          try {
+            showLoading("Preparing download...");
+
+            const reader = new FileReader();
+            const dataUrl = await new Promise((resolve, reject) => {
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
             });
 
-            showSuccess("Document edges detected! Adjust crop if needed.");
-          } else {
-            showSuccess("Ready to crop. Adjust the selection manually.");
-          }
-        } catch (err) {
-          console.error("Auto-detect error:", err);
-          showSuccess("Ready to crop. Adjust the selection manually.");
-        }
-      }
+            const tempLink = document.createElement("a");
+            tempLink.href = dataUrl;
+            tempLink.download = filename;
 
-      // Process and Save
-      cropBtn.onclick = async () => {
-        if (!cropper) {
-          showError("Please capture or upload an image first.");
-          return;
-        }
-
-        loadingOverlay.classList.add("show");
-        cropBtn.disabled = true;
-
-        try {
-          // Get cropped image
-          const croppedCanvas = cropper.getCroppedCanvas({
-            imageSmoothingQuality: "high",
-            maxWidth: 2400,
-            maxHeight: 2400,
-          });
-
-          const croppedBlob = await new Promise((resolve) =>
-            croppedCanvas.toBlob(resolve, "image/jpeg", 0.95),
-          );
-
-          // Process JPG
-          const jpgFormData = new FormData();
-          jpgFormData.append("image", croppedBlob, "cropped.jpg");
-          jpgFormData.append("format", "jpg");
-          jpgFormData.append("enhance", "true");
-
-          const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
-            method: "POST",
-            body: jpgFormData,
-          });
-
-          if (!jpgRes.ok) {
-            const errText = await jpgRes.text();
-            throw new Error(`JPG failed: ${jpgRes.status}`);
-          }
-
-          const jpgBlob = await jpgRes.blob();
-          console.log("JPG blob received:", jpgBlob.size, "bytes");
-
-          // Process PDF
-          const pdfFormData = new FormData();
-          pdfFormData.append("image", croppedBlob, "cropped.jpg");
-          pdfFormData.append("format", "pdf");
-          pdfFormData.append("enhance", "true");
-
-          const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
-            method: "POST",
-            body: pdfFormData,
-          });
-
-          if (!pdfRes.ok) {
-            const errText = await pdfRes.text();
-            throw new Error(`PDF failed: ${pdfRes.status}`);
-          }
-
-          const pdfBlob = await pdfRes.blob();
-          console.log("PDF blob received:", pdfBlob.size, "bytes");
-
-          // Update UI
-          if (cropper) {
-            cropper.destroy();
-            cropper = null;
-          }
-
-          // Show preview
-          const jpgUrl = URL.createObjectURL(jpgBlob);
-          preview.src = jpgUrl;
-
-          // Setup download handlers with fallback
-          setupDownload(downloadJpg, jpgBlob, "scanned.jpg", "image/jpeg");
-          setupDownload(downloadPdf, pdfBlob, "scanned.pdf", "application/pdf");
-
-          shareBtn.onclick = async () => {
-            if (navigator.share && navigator.canShare) {
-              try {
-                await navigator.share({
-                  files: [
-                    new File([pdfBlob], "scanned.pdf", {
-                      type: "application/pdf",
-                    }),
-                  ],
-                });
-              } catch (err) {
-                if (err.name !== "AbortError") {
-                  showError("Share failed: " + err.message);
-                }
-              }
+            if (mimeType === "application/pdf") {
+              window.location.href = dataUrl;
+              hideMessages();
+              setTimeout(() => {
+                showSuccess("PDF opened. Tap Share (↑) → Save to Files");
+              }, 500);
             } else {
-              showError("Share not supported on this device.");
-            }
-          };
-
-          cropBtn.style.display = "none";
-          resultActions.classList.add("show");
-          loadingOverlay.classList.remove("show");
-          showSuccess("Document processed successfully!");
-        } catch (err) {
-          console.error("Processing error:", err);
-          showError("Processing failed: " + err.message);
-          loadingOverlay.classList.remove("show");
-          cropBtn.disabled = false;
-        }
-      };
-
-      // Start Over
-      retakeBtn.onclick = () => {
-        resetUI();
-      };
-
-      // Download helper with iOS Safari support (no popups needed)
-      function setupDownload(linkElement, blob, filename, mimeType) {
-        console.log(`Setting up download for ${filename}:`, blob.size, "bytes");
-
-        // Detect iOS/Safari
-        const isIOS =
-          /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        const isSafari = /^((?!chrome|android).)*safari/i.test(
-          navigator.userAgent,
-        );
-
-        if (isIOS || isSafari) {
-          // iOS/Safari: Use data URL and navigate to it
-          linkElement.onclick = async (e) => {
-            e.preventDefault();
-
-            try {
-              showLoading("Preparing download...");
-
-              // Convert blob to data URL
-              const reader = new FileReader();
-              const dataUrl = await new Promise((resolve, reject) => {
-                reader.onloadend = () => resolve(reader.result);
-                reader.onerror = reject;
-                reader.readAsDataURL(blob);
-              });
-
-              // Create a link and trigger download
-              const tempLink = document.createElement("a");
-              tempLink.href = dataUrl;
-              tempLink.download = filename;
-
-              // For iOS, we need to navigate to the data URL
-              // This shows the file and iOS will offer "Share" -> "Save to Files"
-              if (mimeType === "application/pdf") {
-                // For PDF, navigate directly (iOS will open in PDF viewer)
-                window.location.href = dataUrl;
-                hideMessages();
-                setTimeout(() => {
-                  showSuccess("PDF opened. Tap Share (↑) → Save to Files");
-                }, 500);
-              } else {
-                // For images, try standard download first
-                document.body.appendChild(tempLink);
-                tempLink.click();
-                document.body.removeChild(tempLink);
-
-                hideMessages();
-                setTimeout(() => {
-                  showSuccess("Tap and hold image, then select 'Save Image'");
-                }, 500);
-              }
-            } catch (err) {
-              console.error("iOS download error:", err);
-              showError("Download failed. Please try again.");
-            }
-          };
-        } else {
-          // Standard download for Android/Desktop
-          const blobUrl = URL.createObjectURL(blob);
-          linkElement.href = blobUrl;
-          linkElement.download = filename;
-
-          linkElement.onclick = (e) => {
-            e.preventDefault();
-
-            try {
-              const tempLink = document.createElement("a");
-              tempLink.href = blobUrl;
-              tempLink.download = filename;
-              tempLink.style.display = "none";
-
               document.body.appendChild(tempLink);
               tempLink.click();
               document.body.removeChild(tempLink);
 
-              console.log(`✓ Download triggered for ${filename}`);
-              showSuccess(`Downloading ${filename}...`);
-
-              setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-            } catch (err) {
-              console.error("Download failed:", err);
-              showError("Download failed. Please try again.");
+              hideMessages();
+              setTimeout(() => {
+                showSuccess("Tap and hold image, then select 'Save Image'");
+              }, 500);
             }
-          };
-        }
-      }
+          } catch (err) {
+            console.error("iOS download error:", err);
+            showError("Download failed. Please try again.");
+          }
+        };
+      } else {
+        const blobUrl = URL.createObjectURL(blob);
+        linkElement.href = blobUrl;
+        linkElement.download = filename;
 
-      // Check backend on load
-      window.addEventListener("load", async () => {
-        try {
-          const res = await fetch(`${BACKEND_URL}/`);
-          const data = await res.json();
-          console.log("✓ Backend connected:", data);
-        } catch (err) {
-          console.error("✗ Backend not reachable:", err);
-          showError("Backend server not running. Please start app.py");
-        }
-      });
-    </script>
-  </body>
+        linkElement.onclick = (e) => {
+          e.preventDefault();
+
+          try {
+            const tempLink = document.createElement("a");
+            tempLink.href = blobUrl;
+            tempLink.download = filename;
+            tempLink.style.display = "none";
+
+            document.body.appendChild(tempLink);
+            tempLink.click();
+            document.body.removeChild(tempLink);
+
+            showSuccess(`Downloading ${filename}...`);
+
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+          } catch (err) {
+            console.error("Download failed:", err);
+            showError("Download failed. Please try again.");
+          }
+        };
+      }
+    }
+
+    window.addEventListener("load", async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/`);
+        const data = await res.json();
+        console.log("✓ Backend connected:", data);
+      } catch (err) {
+        console.error("✗ Backend not reachable:", err);
+        showError("Backend server not reachable. Please check connection.");
+      }
+    });
+  </script>
+</body>
+
 </html>

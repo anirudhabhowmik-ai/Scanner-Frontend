@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PDFMaster - Split PDF Online</title>
+
+    <!-- SEO Meta -->
+    <meta name="description"
+        content="Split PDF files online with PDFMaster. Extract pages or split PDFs securely. Free, fast, and works for large files.">
+    <meta name="keywords" content="split pdf, pdf splitter, extract pdf pages, free pdf tools">
+    <meta name="author" content="PDFMaster">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <div class="container header-container">
+            <div class="logo"><a href="index.html">PDFMaster</a></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="scan.html">Scan Document</a></li>
+                    <li><a href="split.html" class="active">Split PDF</a></li>
+                    <li><a href="merge.html">Merge PDFs</a></li>
+                    <li><a href="image-to-pdf.html">Image → PDF</a></li>
+                    <li><a href="compress.html">Compress PDF/Image</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= SPLIT TOOL ================= -->
+    <section class="merge-tool">
+        <div class="container">
+            <h1>Split PDF File</h1>
+            <p>Split a PDF into individual pages or selected ranges. Fast, secure, and free.</p>
+
+            <div class="upload-section">
+
+                <!-- Upload Section -->
+                <div id="uploadSection">
+                    <label for="pdfUpload" class="upload-label">
+                        <i class="fa fa-upload"></i> Choose PDF file
+                    </label>
+                    <input type="file" id="pdfUpload" accept=".pdf">
+                </div>
+
+                <!-- File List -->
+                <ul id="fileList" class="file-list" style="display:none;"></ul>
+
+                <!-- Split Options -->
+                <div id="splitOptions" style="margin-top:15px;">
+                    <label style="cursor:pointer;">
+                        <input type="radio" name="splitType" value="all" checked> Extract All Pages
+                    </label>
+                    <label style="margin-left:20px; cursor:pointer;">
+                        <input type="radio" name="splitType" value="range"> Page Range
+                    </label>
+                </div>
+
+                <!-- Page range -->
+                <input type="text" id="pageRange" placeholder="e.g., 1-3,5,7-9"
+                    style="margin-top:12px; width:100%; max-width:400px; padding:10px; border:1px solid #e5e7eb; border-radius:8px; display:none;" />
+
+                <!-- Split button -->
+                <button id="splitBtn" class="cta-button" style="margin-top:15px;">
+                    <i class="fa fa-spinner fa-spin" style="display:none;"></i>
+                    Split PDF
+                </button>
+
+                <!-- Error -->
+                <p id="errorMsg" class="note" style="display:none; color:#ef4444; margin-top:10px;"></p>
+
+                <!-- Note -->
+                <p id="noteText" class="note" style="margin-top:10px;">
+                    Supported format: PDF. Files larger than 20MB are processed on the server.
+                </p>
+
+                <!-- Result Section -->
+                <div id="resultBtns" style="display:none; margin-top:15px;">
+                    <div id="resultCard" class="result-card">
+                        <i class="fa fa-file-archive"></i>
+                    </div>
+                    <p class="file-name">
+                        split-pages.zip
+                    </p>
+
+                    <a id="downloadBtn" href="#" class="cta-button">
+                        <i class="fa fa-download"></i> Download
+                    </a>
+                    <button id="resetBtn" class="secondary-btn">
+                        <i class="fa fa-rotate-right"></i> Split Another PDF
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Use PDFMaster -->
+    <section class="benefits">
+        <div class="container">
+            <h2>Why Use PDFMaster</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>No Installation Required</h3>
+                    <p>Use PDFMaster online, no downloads needed.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Fast & Secure Processing</h3>
+                    <p>Files are processed instantly and securely.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Free to Use</h3>
+                    <p>All core features are completely free.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Works on Any Device</h3>
+                    <p>Access PDFMaster from PC, tablet, or mobile.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 PDFMaster. All rights reserved.</p>
+            <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+        </div>
+    </footer>
+
+    <!-- ================= LIBRARIES ================= -->
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+    <!-- Main JS (for hamburger menu) -->
+    <script src="./js/app.js"></script>
+
+    <!-- ================= SCRIPT ================= -->
+    <script>
+        /* ================= CONFIG ================= */
+        const BACKEND_SPLIT_URL = "https://scanner-backend-production-fa11.up.railway.app/split-pdf";
+        const MAX_FRONTEND_SIZE = 20 * 1024 * 1024; // 20MB
+
+        /* ================= ELEMENTS ================= */
+        const pdfInput = document.getElementById("pdfUpload");
+        const fileList = document.getElementById("fileList");
+        const splitBtn = document.getElementById("splitBtn");
+        const loader = splitBtn.querySelector(".fa-spinner");
+        const resultSection = document.getElementById("resultBtns");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const noteText = document.getElementById("noteText");
+        const errorMsg = document.getElementById("errorMsg");
+        const pageRangeInput = document.getElementById("pageRange");
+        const splitOptions = document.getElementById("splitOptions");
+        const splitTypeRadios = document.getElementsByName("splitType");
+        const uploadSection = document.getElementById("uploadSection");
+
+        let selectedFile = null;
+
+        /* ================= FILE SELECT ================= */
+        pdfInput.addEventListener("change", () => {
+            selectedFile = pdfInput.files[0];
+            errorMsg.style.display = "none";
+
+            if (selectedFile) {
+                renderFileList();
+            }
+
+            // Reset input
+            pdfInput.value = '';
+        });
+
+        /* ================= RENDER FILE LIST ================= */
+        function renderFileList() {
+            fileList.style.display = "block";
+            fileList.innerHTML = '';
+
+            const li = document.createElement('li');
+            li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${selectedFile.name}</span> <i class="fa fa-times delete-file"></i>`;
+            fileList.appendChild(li);
+        }
+
+        /* ================= DELETE FILE ================= */
+        fileList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-file')) {
+                selectedFile = null;
+                fileList.style.display = "none";
+                fileList.innerHTML = '';
+                pageRangeInput.style.display = "none";
+                errorMsg.style.display = "none";
+                document.querySelector('input[name="splitType"][value="all"]').checked = true;
+            }
+        });
+
+        /* ================= SPLIT TYPE TOGGLE ================= */
+        splitTypeRadios.forEach(option => {
+            option.addEventListener("change", () => {
+                if (option.value === "range" && option.checked) {
+                    pageRangeInput.style.display = "block";
+                } else if (option.value === "all" && option.checked) {
+                    pageRangeInput.style.display = "none";
+                }
+            });
+        });
+
+        /* ================= SPLIT CLICK ================= */
+        splitBtn.addEventListener("click", async () => {
+            if (!selectedFile) {
+                errorMsg.textContent = "Please select a PDF file.";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            errorMsg.style.display = "none";
+            loader.style.display = "inline-block";
+            splitBtn.disabled = true;
+
+            try {
+                let blob;
+                const splitType = document.querySelector('input[name="splitType"]:checked').value;
+                const range = splitType === "range" ? pageRangeInput.value.trim() : "";
+
+                if (selectedFile.size <= MAX_FRONTEND_SIZE) {
+                    blob = await splitFrontend(selectedFile, range);
+                } else {
+                    blob = await splitBackend(selectedFile, range);
+                }
+
+                const url = URL.createObjectURL(blob);
+
+                // Hide UI elements
+                fileList.style.display = "none";
+                uploadSection.style.display = "none";
+                splitOptions.style.display = "none";
+                pageRangeInput.style.display = "none";
+                noteText.style.display = "none";
+                splitBtn.style.display = "none";
+                loader.style.display = "none";
+
+                // Show result
+                resultSection.style.display = "block";
+                downloadBtn.href = url;
+                downloadBtn.download = "split-pages.zip";
+
+            } catch (err) {
+                errorMsg.textContent = "Error splitting PDF: " + err.message;
+                errorMsg.style.display = "block";
+                splitBtn.disabled = false;
+                loader.style.display = "none";
+            }
+        });
+
+        /* ================= FRONTEND SPLIT ================= */
+        async function splitFrontend(file, range) {
+            const zip = new JSZip();
+            const pdfBytes = await file.arrayBuffer();
+            const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+            const totalPages = pdfDoc.getPageCount();
+
+            const pages = parseRange(range, totalPages);
+
+            for (const i of pages) {
+                const newPdf = await PDFLib.PDFDocument.create();
+                const [page] = await newPdf.copyPages(pdfDoc, [i]);
+                newPdf.addPage(page);
+
+                const bytes = await newPdf.save();
+                zip.file(`page-${i + 1}.pdf`, bytes);
+            }
+
+            return await zip.generateAsync({ type: "blob" });
+        }
+
+        /* ================= BACKEND SPLIT ================= */
+        async function splitBackend(file, range) {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("range", range);
+
+            const response = await fetch(BACKEND_SPLIT_URL, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) throw new Error("Backend error");
+
+            return await response.blob();
+        }
+
+        /* ================= RANGE PARSER ================= */
+        function parseRange(range, total) {
+            if (!range) return [...Array(total).keys()];
+
+            const pages = new Set();
+            range.split(",").forEach(part => {
+                if (part.includes("-")) {
+                    let [s, e] = part.split("-").map(n => parseInt(n) - 1);
+                    for (let i = s; i <= e; i++) {
+                        if (i >= 0 && i < total) pages.add(i);
+                    }
+                } else {
+                    const p = parseInt(part) - 1;
+                    if (p >= 0 && p < total) pages.add(p);
+                }
+            });
+
+            return [...pages].sort((a, b) => a - b);
+        }
+
+        /* ================= RESET ================= */
+        resetBtn.addEventListener("click", () => {
+            // Reset file
+            pdfInput.value = "";
+            pageRangeInput.value = "";
+            selectedFile = null;
+
+            // Reset UI
+            fileList.innerHTML = '';
+            fileList.style.display = "none";
+            uploadSection.style.display = "block";
+            resultSection.style.display = "none";
+            noteText.style.display = "block";
+            splitBtn.style.display = "inline-flex";
+            splitBtn.disabled = false;
+            loader.style.display = "none";
+            errorMsg.style.display = "none";
+            splitOptions.style.display = "block";
+            pageRangeInput.style.display = "none";
+
+            // Reset radio
+            document.querySelector('input[name="splitType"][value="all"]').checked = true;
+
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    </script>
+
+</body>
+
+</html>

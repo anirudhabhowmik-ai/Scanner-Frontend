@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDFMaster - Compress PDF Online</title>
+
+    <!-- SEO Meta -->
+    <meta name="description"
+        content="Compress PDF files online with PDFMaster. Reduce PDF file size securely. Free, fast, and works for large files.">
+    <meta name="keywords" content="compress pdf, reduce pdf size, pdf optimization, free pdf tools">
+    <meta name="author" content="PDFMaster">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css">
+
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <div class="container header-container">
+            <div class="logo"><a href="index.html">PDFMaster</a></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="scan.html">Scan Document</a></li>
+                    <li><a href="split.html">Split PDF</a></li>
+                    <li><a href="merge.html">Merge PDFs</a></li>
+                    <li><a href="compress.html" class="active">Compress PDF</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= COMPRESS TOOL ================= -->
+    <section class="merge-tool">
+        <div class="container">
+            <h1>Compress PDF File</h1>
+            <p>Reduce PDF file size for faster upload and sharing.</p>
+
+            <div class="upload-section">
+                <!-- Upload -->
+                <label class="upload-label">
+                    <i class="fa fa-upload"></i> Choose PDF file
+                    <input type="file" id="pdfUpload" accept=".pdf" hidden>
+                </label>
+
+                <!-- File name -->
+                <p id="fileName" style="margin-top:10px; display:none;"></p>
+
+                <!-- Error -->
+                <p id="errorMsg" class="error-text" style="display:none;"></p>
+
+                <!-- Compress button -->
+                <button id="compressBtn" class="cta-button" style="margin-top:15px;">
+                    <i class="fa fa-spinner fa-spin" style="display:none;"></i>
+                    Compress PDF
+                </button>
+
+                <!-- Note -->
+                <p id="noteText" class="note" style="margin-top:10px;">
+                    Supported format: PDF. Files larger than 20MB are processed on the server.
+                </p>
+
+                <!-- Result -->
+                <div id="resultBtns" style="display:none; margin-top:20px;">
+                    <a id="downloadBtn" class="cta-button">
+                        <i class="fa fa-download"></i> Download Compressed PDF
+                    </a>
+                    <button id="resetBtn" class="secondary-btn">
+                        <i class="fa fa-rotate-right"></i> Compress Another PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 PDFMaster. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- ================= SCRIPT ================= -->
+    <script>
+        const BACKEND_COMPRESS_URL = "http://127.0.0.1:5000/compress-pdf";
+        const pdfInput = document.getElementById("pdfUpload");
+        const compressBtn = document.getElementById("compressBtn");
+        const loader = compressBtn.querySelector(".fa-spinner");
+        const resultSection = document.getElementById("resultBtns");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const noteText = document.getElementById("noteText");
+        const fileName = document.getElementById("fileName");
+        const errorMsg = document.getElementById("errorMsg");
+
+        let selectedFile = null;
+
+        // ================= FILE SELECT =================
+        pdfInput.addEventListener("change", () => {
+            selectedFile = pdfInput.files[0];
+            errorMsg.style.display = "none";
+
+            if (selectedFile) {
+                fileName.textContent = selectedFile.name;
+                fileName.style.display = "block";
+            }
+        });
+
+        // ================= COMPRESS CLICK =================
+        compressBtn.addEventListener("click", async () => {
+            if (!selectedFile) {
+                errorMsg.textContent = "Please select a PDF file";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            errorMsg.style.display = "none";
+            loader.style.display = "inline-block";
+            compressBtn.disabled = true;
+
+            try {
+                const formData = new FormData();
+                formData.append("file", selectedFile);
+
+                const response = await fetch(BACKEND_COMPRESS_URL, {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error("Compression failed");
+
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+
+                resultSection.style.display = "block";
+                noteText.style.display = "none";
+                compressBtn.style.display = "none";
+                downloadBtn.href = url;
+                downloadBtn.download = `compressed_${selectedFile.name}`;
+
+            } catch (err) {
+                errorMsg.textContent = "Error compressing PDF. Please try again.";
+                errorMsg.style.display = "block";
+            } finally {
+                loader.style.display = "none";
+                compressBtn.disabled = false;
+            }
+        });
+
+        // ================= RESET =================
+        resetBtn.addEventListener("click", () => {
+            pdfInput.value = "";
+            selectedFile = null;
+            fileName.style.display = "none";
+            resultSection.style.display = "none";
+            noteText.style.display = "block";
+            compressBtn.style.display = "inline-flex";
+            errorMsg.style.display = "none";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    </script>
+
+</body>
+
+</html>

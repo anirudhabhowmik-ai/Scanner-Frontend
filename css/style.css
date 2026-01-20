@@ -260,6 +260,14 @@ header .logo a {
         display: none;
     }
 
+    .dropdown:hover .dropdown-menu {
+        margin-top: 5px;
+    }
+
+    .nav-links li a.dropdown-toggle:hover {
+        color: #fff;
+    }
+
     /* Disable hover on mobile */
     /* .dropdown:hover .dropdown-menu {
         max-height: 0;

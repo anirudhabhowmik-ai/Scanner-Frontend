@@ -375,11 +375,42 @@ footer {
     text-align: center;
 }
 
-footer a {
+/* Simple Footer Links */
+.footer-simple {
+    text-align: center;
+}
+
+.footer-links-inline {
+    margin-bottom: 8px;
+}
+
+.footer-links-inline a {
     color: #fbbf24;
     text-decoration: none;
-    transition: 0.4s;
+    margin: 0 6px;
+    font-size: 15px;
+    transition: color 0.3s ease;
 }
+
+.footer-links-inline a:hover {
+    color: #f59e0b;
+}
+
+.footer-links-inline span {
+    color: #e5e7eb;
+}
+
+.footer-copy {
+    margin: 10px 0 0 0;
+    font-size: 14px;
+    color: #e5e7eb;
+}
+
+.footer-links-inline i {
+    margin-right: 5px;
+    font-size: 13px;
+}
+
 
 footer a:hover {
     color: #f59e0b;

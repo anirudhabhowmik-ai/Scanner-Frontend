@@ -24,14 +24,14 @@
 
     <!-- Favicon -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    
+
     <style>
         .file-list {
             list-style: none;
             padding: 0;
             margin: 20px 0;
         }
-        
+
         .file-list li {
             display: flex;
             align-items: center;
@@ -42,40 +42,40 @@
             margin-bottom: 10px;
             border: 1px solid #e5e7eb;
         }
-        
+
         .file-list .pdf-icon {
             color: #ef4444;
             margin-right: 10px;
             font-size: 18px;
         }
-        
+
         .file-list .delete-file {
             cursor: pointer;
             color: #ef4444;
             transition: color 0.2s;
         }
-        
+
         .file-list .delete-file:hover {
             color: #dc2626;
         }
-        
+
         .file-name {
             text-align: center;
             margin: 15px 0;
             font-weight: 500;
             color: #374151;
         }
-        
+
         .file-name a {
             color: #2563eb;
             text-decoration: none;
             cursor: pointer;
         }
-        
+
         .file-name a:hover {
             text-decoration: underline;
         }
-        
+
         .ocr-info {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -84,16 +84,16 @@
             margin: 15px 0;
             text-align: center;
         }
-        
+
         .ocr-info p {
             margin: 5px 0;
             color: #166534;
         }
-        
+
         .ocr-info strong {
             color: #15803d;
         }
-        
+
         .processing-status {
             background: #fef3c7;
             border: 1px solid #fde68a;
@@ -103,24 +103,24 @@
             text-align: center;
             display: none;
         }
-        
+
         .processing-status p {
             margin: 5px 0;
             color: #92400e;
         }
-        
+
         .language-select {
             margin: 15px 0;
             text-align: center;
         }
-        
+
         .language-select label {
             display: block;
             margin-bottom: 8px;
             font-weight: 500;
             color: #374151;
         }
-        
+
         .language-select select {
             padding: 10px 15px;
             border: 1px solid #d1d5db;
@@ -141,7 +141,7 @@
             <nav>
                 <ul class="nav-links">
                     <li><a href="scan.html"><i class="fa fa-camera"></i> Scan Document</a></li>
-                    
+
                     <!-- Organize PDF Dropdown -->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle">
@@ -155,7 +155,7 @@
                             <li><a href="delete-pages.html"><i class="fa fa-trash"></i> Delete Pages</a></li>
                         </ul>
                     </li>
-                    
+
                     <!-- Convert Dropdown -->
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle">
@@ -170,10 +170,9 @@
                             <li><a href="pdf-to-image.html"><i class="fa fa-file-image"></i> PDF to Image</a></li>
                         </ul>
                     </li>
-                    
+
                     <li><a href="compress.html"><i class="fa fa-compress"></i> Compress PDF</a></li>
                     <li><a href="ocr_pdf.html"><i class="fa fa-text"></i> OCR PDF</a></li>
-                    <li><a href="#about"><i class="fa fa-info-circle"></i> About</a></li>
                 </ul>
                 <div class="hamburger">
                     <span></span>
@@ -232,21 +231,21 @@
                     <i class="fa fa-spinner fa-spin" style="display:none;"></i>
                     <i class="fa fa-text-height"></i> Convert to Searchable PDF
                 </button>
-                
+
                 <p class="error-text" id="errorMsg" style="display:none;"></p>
 
                 <div id="resultBtns" style="display:none; margin-top: 15px;">
                     <div id="resultCard" class="result-card">
                         <i class="fa fa-file-pdf"></i>
                     </div>
-                    
+
                     <!-- OCR Info -->
                     <div id="ocrInfo" class="ocr-info">
                         <p><i class="fa fa-check-circle"></i> <strong>PDF Successfully Processed!</strong></p>
                         <p>Your PDF is now searchable and text-selectable.</p>
                         <p id="pagesProcessed">Pages processed: <strong>-</strong></p>
                     </div>
-                    
+
                     <p class="file-name">
                         <a href="#" id="fileNameLink">searchable.pdf</a>
                     </p>
@@ -301,9 +300,25 @@
 
     <!-- Footer -->
     <footer>
-        <div class="container">
-            <p>&copy; 2026 PDFMaster. All rights reserved.</p>
-            <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+        <div class="container footer-simple">
+
+            <!-- Top footer links -->
+            <div class="footer-links-inline">
+                <a href="index.html"><i class="fa fa-home"></i> Home</a>
+                <span>|</span>
+                <a href="about.html"><i class="fa fa-info-circle"></i> About</a>
+                <span>|</span>
+                <a href="contact.html"><i class="fa fa-envelope"></i> Contact</a>
+            </div>
+
+            <!-- Existing legal links (kept as requested) -->
+            <div class="footer-links-inline">
+                <a href="privacy.html">Privacy Policy</a>
+                <span>|</span>
+                <a href="terms.html">Terms of Service</a>
+            </div>
+
+            <p class="footer-copy">&copy; 2026 PDFMaster. All rights reserved.</p>
         </div>
     </footer>
 
@@ -338,7 +353,7 @@
                 languageSection.style.display = "none";
                 return;
             }
-            
+
             fileList.style.display = "block";
             languageSection.style.display = "block";
             fileList.innerHTML = `
@@ -356,7 +371,7 @@
         pdfInput.addEventListener('change', () => {
             selectedFile = pdfInput.files[0];
             errorMsg.style.display = "none";
-            
+
             if (selectedFile) {
                 renderFileList();
             }
@@ -385,7 +400,7 @@
             loaderIcon.style.display = "inline-block";
             ocrBtn.disabled = true;
             processingStatus.style.display = "block";
-            
+
             // Simulate progress updates
             const statusMessages = [
                 "Analyzing document structure...",
@@ -394,7 +409,7 @@
                 "Creating searchable PDF...",
                 "Finalizing document..."
             ];
-            
+
             let messageIndex = 0;
             const statusInterval = setInterval(() => {
                 if (messageIndex < statusMessages.length) {
@@ -422,10 +437,10 @@
 
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
-                
+
                 // Get page count from response headers if available
                 const pageCount = response.headers.get('X-Page-Count') || 'Unknown';
-                
+
                 // UI updates
                 fileList.style.display = "none";
                 languageSection.style.display = "none";
@@ -434,25 +449,25 @@
                 ocrBtn.style.display = "none";
                 processingStatus.style.display = "none";
                 resultBtns.style.display = "block";
-                
+
                 // Update info
                 pagesProcessed.innerHTML = `Pages processed: <strong>${pageCount}</strong>`;
-                
+
                 // Set download
                 downloadBtn.href = url;
                 downloadBtn.download = `searchable_${selectedFile.name}`;
-                
+
                 // Set file name
                 fileNameLink.textContent = `searchable_${selectedFile.name}`;
-                
+
                 // Preview handling
                 const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-                
+
                 if (!isSmallDevice) {
                     pdfFrame.src = url;
                     pdfPreview.style.display = 'block';
                 }
-                
+
                 fileNameLink.onclick = (e) => {
                     e.preventDefault();
                     isSmallDevice

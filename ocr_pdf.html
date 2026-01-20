@@ -206,6 +206,7 @@
                     </label>
                     <select id="languageSelect">
                         <option value="eng">English</option>
+                        <option value="beng">Bengali</option>
                         <option value="spa">Spanish</option>
                         <option value="fra">French</option>
                         <option value="deu">German</option>
@@ -389,6 +390,9 @@
         });
 
         // OCR Process
+        // Add this to your existing script section, replacing the OCR Process section
+
+        // OCR Process with improved error handling
         ocrBtn.addEventListener('click', async () => {
             if (!selectedFile) {
                 errorMsg.textContent = "Please select a PDF file";
@@ -423,6 +427,8 @@
                 formData.append("file", selectedFile);
                 formData.append("language", languageSelect.value);
 
+                console.log('Sending request to:', BACKEND_OCR_URL);
+
                 const response = await fetch(BACKEND_OCR_URL, {
                     method: "POST",
                     body: formData
@@ -430,11 +436,30 @@
 
                 clearInterval(statusInterval);
 
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+
+                // Check if response is JSON (error) or PDF (success)
+                const contentType = response.headers.get('content-type');
+
                 if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || "OCR processing failed");
+                    // Try to parse as JSON for error message
+                    let errorMessage = "OCR processing failed";
+
+                    if (contentType && contentType.includes('application/json')) {
+                        const errorData = await response.json();
+                        errorMessage = errorData.error || errorMessage;
+                    } else {
+                        // If not JSON, it might be HTML error page
+                        const errorText = await response.text();
+                        console.error('Server error response:', errorText);
+                        errorMessage = `Server error (${response.status}). Check server logs.`;
+                    }
+
+                    throw new Error(errorMessage);
                 }
 
+                // Success - response should be PDF
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
 
@@ -477,7 +502,18 @@
 
             } catch (err) {
                 clearInterval(statusInterval);
-                errorMsg.textContent = "Error processing PDF: " + err.message;
+                console.error('OCR Error:', err);
+
+                // User-friendly error messages
+                let userMessage = err.message;
+
+                if (err.message.includes('Failed to fetch')) {
+                    userMessage = "Cannot connect to server. Please check if the backend is running.";
+                } else if (err.message.includes('not valid JSON')) {
+                    userMessage = "Server returned an unexpected response. Please check server logs.";
+                }
+
+                errorMsg.textContent = "Error: " + userMessage;
                 errorMsg.style.display = "block";
                 ocrBtn.style.display = "inline-flex";
                 processingStatus.style.display = "none";

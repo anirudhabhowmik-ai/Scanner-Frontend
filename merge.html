@@ -33,13 +33,40 @@
             <div class="logo"><a href="index.html">PDFMaster</a></div>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="scan.html">Scan Document</a></li>
-                    <li><a href="split.html">Split PDF</a></li>
-                    <li><a href="merge.html">Merge PDFs</a></li>
-                    <li><a href="image-to-pdf.html">Image → PDF</a></li>
-                    <li><a href="compress.html">Compress PDF</a></li>
-                    <li><a href="ocr_pdf.html">OCR PDF</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li><a href="scan.html"><i class="fa fa-camera"></i> Scan Document</a></li>
+                    
+                    <!-- Organize PDF Dropdown -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-folder-open"></i> Organize PDF
+                            <i class="fa fa-chevron-down" style="font-size: 10px;"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="split.html"><i class="fa fa-scissors"></i> Split PDF</a></li>
+                            <li><a href="merge.html"><i class="fa fa-object-group"></i> Merge PDFs</a></li>
+                            <li><a href="rotate.html"><i class="fa fa-rotate"></i> Rotate PDF</a></li>
+                            <li><a href="delete-pages.html"><i class="fa fa-trash"></i> Delete Pages</a></li>
+                        </ul>
+                    </li>
+                    
+                    <!-- Convert Dropdown -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-exchange-alt"></i> Convert
+                            <i class="fa fa-chevron-down" style="font-size: 10px;"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="image-to-pdf.html"><i class="fa fa-image"></i> Image to PDF</a></li>
+                            <li><a href="excel-to-pdf.html"><i class="fa fa-file-excel"></i> Excel to PDF</a></li>
+                            <li><a href="word-to-pdf.html"><i class="fa fa-file-word"></i> Word to PDF</a></li>
+                            <li><a href="ppt-to-pdf.html"><i class="fa fa-file-powerpoint"></i> PPT to PDF</a></li>
+                            <li><a href="pdf-to-image.html"><i class="fa fa-file-image"></i> PDF to Image</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li><a href="compress.html"><i class="fa fa-compress"></i> Compress PDF</a></li>
+                    <li><a href="ocr_pdf.html"><i class="fa fa-text"></i> OCR PDF</a></li>
+                    <li><a href="#about"><i class="fa fa-info-circle"></i> About</a></li>
                 </ul>
                 <div class="hamburger">
                     <span></span>
@@ -150,6 +177,9 @@
         const nopdf = document.getElementById("nopdf");
         nopdf.style.display = "none";
         const resetBtn = document.getElementById('resetBtn');
+        const pdfPreview = document.getElementById('pdfPreview');
+        const pdfFrame = document.getElementById('pdfFrame');
+        const fileNameLink = document.getElementById('fileNameLink');
         const BACKEND_MERGE_URL = "https://scanner-backend-production-fa11.up.railway.app/merge-pdf";
         const MAX_FRONTEND_SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -199,7 +229,6 @@
         });
 
         // Merge PDFs
-
         mergeBtn.addEventListener('click', async () => {
             if (files.length < 2) {
                 nopdf.style.display = "block";
@@ -242,7 +271,7 @@
                     url = URL.createObjectURL(blob);
                 }
 
-                // UI updates (unchanged)
+                // UI updates
                 fileList.style.display = "none";
                 mergeBtn.style.display = 'none';
                 uploadSection.style.display = 'none';
@@ -275,7 +304,6 @@
             }
         });
 
-
         resetBtn.addEventListener('click', () => {
             files = [];
             fileList.innerHTML = '';
@@ -293,8 +321,6 @@
             mergeBtn.disabled = false;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
-
-
     </script>
 </body>
 

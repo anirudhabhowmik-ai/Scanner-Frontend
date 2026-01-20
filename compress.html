@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="./css/style.css">
 
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
+
 </head>
 
 <body>
@@ -33,13 +34,40 @@
             <div class="logo"><a href="index.html">PDFMaster</a></div>
             <nav>
                 <ul class="nav-links">
-                    <li><a href="scan.html">Scan Document</a></li>
-                    <li><a href="split.html">Split PDF</a></li>
-                    <li><a href="merge.html">Merge PDFs</a></li>
-                    <li><a href="image-to-pdf.html">Image → PDF</a></li>
-                    <li><a href="compress.html">Compress PDF</a></li>
-                    <li><a href="ocr_pdf.html">OCR PDF</a></li>
-                    <li><a href="#about">About</a></li>
+                    <li><a href="scan.html"><i class="fa fa-camera"></i> Scan Document</a></li>
+
+                    <!-- Organize PDF Dropdown -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-folder-open"></i> Organize PDF
+                            <i class="fa fa-chevron-down" style="font-size: 10px;"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="split.html"><i class="fa fa-scissors"></i> Split PDF</a></li>
+                            <li><a href="merge.html"><i class="fa fa-object-group"></i> Merge PDFs</a></li>
+                            <li><a href="rotate.html"><i class="fa fa-rotate"></i> Rotate PDF</a></li>
+                            <li><a href="delete-pages.html"><i class="fa fa-trash"></i> Delete Pages</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Convert Dropdown -->
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle">
+                            <i class="fa fa-exchange-alt"></i> Convert
+                            <i class="fa fa-chevron-down" style="font-size: 10px;"></i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="image-to-pdf.html"><i class="fa fa-image"></i> Image to PDF</a></li>
+                            <li><a href="excel-to-pdf.html"><i class="fa fa-file-excel"></i> Excel to PDF</a></li>
+                            <li><a href="word-to-pdf.html"><i class="fa fa-file-word"></i> Word to PDF</a></li>
+                            <li><a href="ppt-to-pdf.html"><i class="fa fa-file-powerpoint"></i> PPT to PDF</a></li>
+                            <li><a href="pdf-to-image.html"><i class="fa fa-file-image"></i> PDF to Image</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="compress.html"><i class="fa fa-compress"></i> Compress PDF</a></li>
+                    <li><a href="ocr_pdf.html"><i class="fa fa-text"></i> OCR PDF</a></li>
+                    <li><a href="#about"><i class="fa fa-info-circle"></i> About</a></li>
                 </ul>
                 <div class="hamburger">
                     <span></span>
@@ -58,19 +86,22 @@
 
             <div class="upload-section">
                 <!-- Upload -->
-                <label class="upload-label">
-                    <i class="fa fa-upload"></i> Choose PDF file
-                    <input type="file" id="pdfUpload" accept=".pdf" hidden>
-                </label>
+                <div id="uploadSection">
+                    <label class="upload-label">
+                        <i class="fa fa-upload"></i> Choose PDF file
+                        <input type="file" id="pdfUpload" accept=".pdf" hidden>
+                    </label>
+                </div>
 
-                <!-- File name -->
-                <p id="fileName" style="margin-top:10px; display:none;"></p>
+                <!-- File list with delete option -->
+                <ul id="fileList" class="file-list" style="display:none;"></ul>
 
                 <!-- Compress button -->
-                <button id="compressBtn" class="cta-button" style="margin-top:15px;">
+                <button id="compressBtn" class="cta-button">
                     <i class="fa fa-spinner fa-spin" style="display:none;"></i>
                     Compress PDF
                 </button>
+
                 <!-- Error -->
                 <p id="errorMsg" class="error-text" style="display:none;"></p>
 
@@ -81,6 +112,22 @@
 
                 <!-- Result -->
                 <div id="resultBtns" style="display:none; margin-top:20px;">
+                    <div id="resultCard" class="result-card">
+                        <i class="fa fa-file-pdf"></i>
+                    </div>
+
+                    <!-- Compression Info -->
+                    <div id="compressionInfo" class="compression-info" style="display:none;">
+                        <p><strong>Original Size:</strong> <span id="originalSize">-</span></p>
+                        <p><strong>Compressed Size:</strong> <span id="compressedSize">-</span></p>
+                        <p><strong>Size Reduced:</strong> <span id="reductionPercent" class="size-badge">-</span></p>
+                    </div>
+
+                    <!-- File Name -->
+                    <p class="file-name">
+                        <a href="#" id="fileNameLink">compressed.pdf</a>
+                    </p>
+
                     <a id="downloadBtn" class="cta-button">
                         <i class="fa fa-download"></i> Download Compressed PDF
                     </a>
@@ -88,6 +135,13 @@
                         <i class="fa fa-rotate-right"></i> Compress Another PDF
                     </button>
                 </div>
+            </div>
+
+            <!-- PDF Preview -->
+            <div id="pdfPreview" style="display:none; margin-top:30px;">
+                <h4>Preview Compressed PDF</h4>
+                <iframe id="pdfFrame" width="100%" height="600"
+                    style="border-radius:12px; border:1px solid #e5e7eb;"></iframe>
             </div>
         </div>
     </section>
@@ -136,10 +190,46 @@
         const downloadBtn = document.getElementById("downloadBtn");
         const resetBtn = document.getElementById("resetBtn");
         const noteText = document.getElementById("noteText");
-        const fileName = document.getElementById("fileName");
+        const fileList = document.getElementById("fileList");
         const errorMsg = document.getElementById("errorMsg");
+        const uploadSection = document.getElementById("uploadSection");
+        const compressionInfo = document.getElementById("compressionInfo");
+        const originalSizeEl = document.getElementById("originalSize");
+        const compressedSizeEl = document.getElementById("compressedSize");
+        const reductionPercentEl = document.getElementById("reductionPercent");
+        const fileNameLink = document.getElementById("fileNameLink");
+        const pdfPreview = document.getElementById("pdfPreview");
+        const pdfFrame = document.getElementById("pdfFrame");
 
         let selectedFile = null;
+
+        // Helper function to format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Render file list
+        function renderFileList() {
+            if (!selectedFile) {
+                fileList.style.display = "none";
+                return;
+            }
+
+            fileList.style.display = "block";
+            fileList.innerHTML = `
+                <li>
+                    <span>
+                        <i class="fa fa-file-pdf pdf-icon"></i>
+                        <span>${selectedFile.name}</span>
+                    </span>
+                    <i class="fa fa-times delete-file"></i>
+                </li>
+            `;
+        }
 
         // ================= FILE SELECT =================
         pdfInput.addEventListener("change", () => {
@@ -147,8 +237,17 @@
             errorMsg.style.display = "none";
 
             if (selectedFile) {
-                fileName.textContent = selectedFile.name;
-                fileName.style.display = "block";
+                renderFileList();
+            }
+        });
+
+        // ================= DELETE FILE =================
+        fileList.addEventListener("click", (e) => {
+            if (e.target.classList.contains("delete-file")) {
+                selectedFile = null;
+                pdfInput.value = "";
+                fileList.style.display = "none";
+                errorMsg.style.display = "none";
             }
         });
 
@@ -164,6 +263,8 @@
             loader.style.display = "inline-block";
             compressBtn.disabled = true;
 
+            const originalSize = selectedFile.size;
+
             try {
                 const formData = new FormData();
                 formData.append("file", selectedFile);
@@ -177,16 +278,50 @@
 
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
+                const compressedSize = blob.size;
 
-                resultSection.style.display = "block";
+                // Calculate reduction
+                const reduction = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+
+                // Update UI
+                fileList.style.display = "none";
+                uploadSection.style.display = "none";
                 noteText.style.display = "none";
                 compressBtn.style.display = "none";
+                resultSection.style.display = "block";
+
+                // Show compression stats
+                compressionInfo.style.display = "block";
+                originalSizeEl.textContent = formatFileSize(originalSize);
+                compressedSizeEl.textContent = formatFileSize(compressedSize);
+                reductionPercentEl.textContent = reduction > 0 ? `${reduction}% smaller` : 'Optimized';
+
+                // Set download
                 downloadBtn.href = url;
                 downloadBtn.download = `compressed_${selectedFile.name}`;
+
+                // Set file name
+                fileNameLink.textContent = `compressed_${selectedFile.name}`;
+
+                // Preview handling
+                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+
+                if (!isSmallDevice) {
+                    pdfFrame.src = url;
+                    pdfPreview.style.display = 'block';
+                }
+
+                fileNameLink.onclick = (e) => {
+                    e.preventDefault();
+                    isSmallDevice
+                        ? window.open(url, "_blank")
+                        : pdfPreview.scrollIntoView({ behavior: "smooth" });
+                };
 
             } catch (err) {
                 errorMsg.textContent = "Error compressing PDF. Please try again.";
                 errorMsg.style.display = "block";
+                compressBtn.style.display = "inline-flex";
             } finally {
                 loader.style.display = "none";
                 compressBtn.disabled = false;
@@ -197,11 +332,16 @@
         resetBtn.addEventListener("click", () => {
             pdfInput.value = "";
             selectedFile = null;
-            fileName.style.display = "none";
+            fileList.style.display = "none";
+            fileList.innerHTML = "";
             resultSection.style.display = "none";
+            uploadSection.style.display = "block";
             noteText.style.display = "block";
             compressBtn.style.display = "inline-flex";
             errorMsg.style.display = "none";
+            compressionInfo.style.display = "none";
+            pdfFrame.src = '';
+            pdfPreview.style.display = 'none';
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
     </script>

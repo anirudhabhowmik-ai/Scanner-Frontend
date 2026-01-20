@@ -255,7 +255,7 @@ header .logo a {
     }
 
     /* Disable hover on mobile */
-    .dropdown:hover .dropdown-menu {
+    /* .dropdown:hover .dropdown-menu {
         max-height: 0;
         opacity: 1;
         visibility: visible;
@@ -264,7 +264,7 @@ header .logo a {
 
     .dropdown.active:hover .dropdown-menu {
         max-height: 500px;
-    }
+    } */
 
     /* Rotate chevron on mobile when active */
     .dropdown.active .dropdown-toggle .fa-chevron-down {

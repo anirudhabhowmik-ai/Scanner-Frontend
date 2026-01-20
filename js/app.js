@@ -5,7 +5,7 @@ const header = document.querySelector('header');
 
 hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');
-    hamburger.classList.toggle('active'); // hamburger animation
+    hamburger.classList.toggle('active');
 });
 
 // Header shrink on scroll
@@ -68,15 +68,15 @@ const dropdowns = document.querySelectorAll('.dropdown');
 // });
 
 // Close dropdowns when clicking outside (mobile only)
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 900) {
-        if (!e.target.closest('.dropdown')) {
-            dropdowns.forEach(dropdown => {
-                dropdown.classList.remove('active');
-            });
-        }
-    }
-});
+// document.addEventListener('click', (e) => {
+//     if (window.innerWidth <= 900) {
+//         if (!e.target.closest('.dropdown')) {
+//             dropdowns.forEach(dropdown => {
+//                 dropdown.classList.remove('active');
+//             });
+//         }
+//     }
+// });
 
 // Close mobile menu when clicking on a dropdown item
 document.addEventListener('click', (e) => {

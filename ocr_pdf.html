@@ -121,14 +121,183 @@
             color: #374151;
         }
 
-        .language-select select {
-            padding: 10px 15px;
-            border: 1px solid #d1d5db;
+        /* Multi-select styles */
+        .multiselect-container {
+            position: relative;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .multiselect-display {
+            padding: 12px 15px;
+            border: 2px solid #d1d5db;
             border-radius: 8px;
-            font-size: 14px;
             background: white;
             cursor: pointer;
-            min-width: 200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 46px;
+            transition: all 0.2s;
+        }
+
+        .multiselect-display:hover {
+            border-color: #2563eb;
+        }
+
+        .multiselect-display.active {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .selected-languages {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            flex: 1;
+            align-items: center;
+        }
+
+        .language-tag {
+            background: #2563eb;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .language-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .language-tag .remove:hover {
+            color: #fecaca;
+        }
+
+        .multiselect-placeholder {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .multiselect-arrow {
+            color: #6b7280;
+            transition: transform 0.2s;
+        }
+
+        .multiselect-display.active .multiselect-arrow {
+            transform: rotate(180deg);
+        }
+
+        .multiselect-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid #2563eb;
+            border-radius: 8px;
+            max-height: 320px;
+            overflow: hidden;
+            z-index: 1000;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .multiselect-dropdown.active {
+            display: block;
+        }
+
+        .multiselect-search {
+            padding: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .multiselect-search input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .multiselect-search input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .multiselect-options {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+
+        .multiselect-option {
+            padding: 12px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.15s;
+            user-select: none;
+        }
+
+        .multiselect-option:hover {
+            background: #f3f4f6;
+        }
+
+        .multiselect-option.selected {
+            background: #eff6ff;
+        }
+
+        .multiselect-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .multiselect-option label {
+            cursor: pointer;
+            flex: 1;
+            margin: 0;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        /* Scrollbar styling */
+        .multiselect-options::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .multiselect-options::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        .multiselect-options::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .multiselect-options::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .result-card {
+            display: none;
+        }
+
+        @media (max-width: 385px) {
+            .upload-section button.cta-button {
+                padding: 12px 10px;
+                font-size: 13px;
+            }
         }
     </style>
 </head>
@@ -199,27 +368,25 @@
 
                 <ul id="fileList" class="file-list" style="display:none;"></ul>
 
-                <!-- Language Selection -->
+                <!-- Multi-Select Language Selection -->
                 <div id="languageSection" class="language-select" style="display:none;">
-                    <label for="languageSelect">
-                        <i class="fa fa-language"></i> Select Document Language
+                    <label>
+                        <i class="fa fa-language"></i> Select Document Languages
                     </label>
-                    <select id="languageSelect">
-                        <option value="eng">English</option>
-                        <option value="beng">Bengali</option>
-                        <option value="spa">Spanish</option>
-                        <option value="fra">French</option>
-                        <option value="deu">German</option>
-                        <option value="ita">Italian</option>
-                        <option value="por">Portuguese</option>
-                        <option value="rus">Russian</option>
-                        <option value="jpn">Japanese</option>
-                        <option value="kor">Korean</option>
-                        <option value="chi_sim">Chinese (Simplified)</option>
-                        <option value="chi_tra">Chinese (Traditional)</option>
-                        <option value="ara">Arabic</option>
-                        <option value="hin">Hindi</option>
-                    </select>
+                    <div class="multiselect-container">
+                        <div class="multiselect-display" id="multiselectDisplay">
+                            <div class="selected-languages" id="selectedLanguages">
+                                <span class="multiselect-placeholder">Click to select languages...</span>
+                            </div>
+                            <i class="fa fa-chevron-down multiselect-arrow"></i>
+                        </div>
+                        <div class="multiselect-dropdown" id="multiselectDropdown">
+                            <div class="multiselect-search">
+                                <input type="text" id="languageSearch" placeholder="Search languages...">
+                            </div>
+                            <div class="multiselect-options" id="languageOptions"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Processing Status -->
@@ -326,55 +493,166 @@
     <script src="./js/app.js"></script>
     <script>
         const BACKEND_OCR_URL = "https://scanner-backend-production-fa11.up.railway.app/ocr-pdf";
-        const pdfInput = document.getElementById('pdfUpload');
-        const fileList = document.getElementById('fileList');
-        const ocrBtn = document.getElementById('ocrBtn');
-        const resultBtns = document.getElementById('resultBtns');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const loaderIcon = ocrBtn.querySelector('.fa-spinner');
-        const uploadSection = document.getElementById('uploadSection');
-        const noteText = document.getElementById('noteText');
-        const errorMsg = document.getElementById('errorMsg');
-        const resetBtn = document.getElementById('resetBtn');
-        const pdfPreview = document.getElementById('pdfPreview');
-        const pdfFrame = document.getElementById('pdfFrame');
-        const fileNameLink = document.getElementById('fileNameLink');
-        const languageSection = document.getElementById('languageSection');
-        const languageSelect = document.getElementById('languageSelect');
-        const processingStatus = document.getElementById('processingStatus');
-        const statusText = document.getElementById('statusText');
-        const pagesProcessed = document.getElementById('pagesProcessed');
 
+        const LANGUAGES = [
+            { code: 'eng', name: 'English' },
+            { code: 'beng', name: 'Bengali' },
+            { code: 'spa', name: 'Spanish' },
+            { code: 'fra', name: 'French' },
+            { code: 'deu', name: 'German' },
+            { code: 'ita', name: 'Italian' },
+            { code: 'por', name: 'Portuguese' },
+            { code: 'rus', name: 'Russian' },
+            { code: 'jpn', name: 'Japanese' },
+            { code: 'kor', name: 'Korean' },
+            { code: 'chi_sim', name: 'Chinese (Simplified)' },
+            { code: 'chi_tra', name: 'Chinese (Traditional)' },
+            { code: 'ara', name: 'Arabic' },
+            { code: 'hin', name: 'Hindi' }
+        ];
+
+        let selectedLanguages = ['eng']; // Default to English
         let selectedFile = null;
 
-        // Render file list
-        function renderFileList() {
-            if (!selectedFile) {
-                fileList.style.display = "none";
-                languageSection.style.display = "none";
+        // Initialize multiselect
+        function initMultiselect() {
+            const optionsContainer = document.getElementById('languageOptions');
+
+            LANGUAGES.forEach(lang => {
+                const option = document.createElement('div');
+                option.className = 'multiselect-option';
+                option.dataset.code = lang.code;
+
+                const isSelected = selectedLanguages.includes(lang.code);
+                if (isSelected) option.classList.add('selected');
+
+                option.innerHTML = `
+                    <input type="checkbox" ${isSelected ? 'checked' : ''}>
+                    <span>${lang.name}</span>
+                `;
+
+                option.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleLanguage(lang.code);
+                });
+
+                optionsContainer.appendChild(option);
+            });
+
+            updateDisplay();
+        }
+
+        // Toggle language selection
+        function toggleLanguage(code) {
+            const index = selectedLanguages.indexOf(code);
+
+            if (index === -1) {
+                selectedLanguages.push(code);
+            } else {
+                // Prevent deselecting all languages
+                if (selectedLanguages.length > 1) {
+                    selectedLanguages.splice(index, 1);
+                }
+            }
+
+            updateDisplay();
+            updateOptions();
+        }
+
+        // Update display
+        function updateDisplay() {
+            const container = document.getElementById('selectedLanguages');
+            container.innerHTML = '';
+
+            if (selectedLanguages.length === 0) {
+                container.innerHTML = '<span class="multiselect-placeholder">Click to select languages...</span>';
                 return;
             }
 
-            fileList.style.display = "block";
-            languageSection.style.display = "block";
-            fileList.innerHTML = `
-                <li>
-                    <span>
-                        <i class="fa fa-file-pdf pdf-icon"></i>
-                        <span>${selectedFile.name}</span>
-                    </span>
-                    <i class="fa fa-times delete-file"></i>
-                </li>
-            `;
+            selectedLanguages.forEach(code => {
+                const lang = LANGUAGES.find(l => l.code === code);
+                if (lang) {
+                    const tag = document.createElement('span');
+                    tag.className = 'language-tag';
+                    tag.innerHTML = `
+                        ${lang.name}
+                        <span class="remove" data-code="${code}">×</span>
+                    `;
+
+                    tag.querySelector('.remove').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (selectedLanguages.length > 1) {
+                            toggleLanguage(code);
+                        }
+                    });
+
+                    container.appendChild(tag);
+                }
+            });
         }
 
-        // File selection
+        // Update checkbox states
+        function updateOptions() {
+            const options = document.querySelectorAll('.multiselect-option');
+            options.forEach(option => {
+                const code = option.dataset.code;
+                const checkbox = option.querySelector('input[type="checkbox"]');
+                const isSelected = selectedLanguages.includes(code);
+
+                checkbox.checked = isSelected;
+                option.classList.toggle('selected', isSelected);
+            });
+        }
+
+        // Toggle dropdown
+        const multiselectDisplay = document.getElementById('multiselectDisplay');
+        const multiselectDropdown = document.getElementById('multiselectDropdown');
+
+        multiselectDisplay.addEventListener('click', (e) => {
+            e.stopPropagation();
+            multiselectDropdown.classList.toggle('active');
+            multiselectDisplay.classList.toggle('active');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.multiselect-container')) {
+                multiselectDropdown.classList.remove('active');
+                multiselectDisplay.classList.remove('active');
+            }
+        });
+
+        // Search functionality
+        const languageSearch = document.getElementById('languageSearch');
+        languageSearch.addEventListener('input', (e) => {
+            const search = e.target.value.toLowerCase();
+            const options = document.querySelectorAll('.multiselect-option');
+
+            options.forEach(option => {
+                const text = option.textContent.toLowerCase();
+                option.style.display = text.includes(search) ? 'flex' : 'none';
+            });
+        });
+
+        // File handling
+        const pdfInput = document.getElementById('pdfUpload');
+        const fileList = document.getElementById('fileList');
+        const languageSection = document.getElementById('languageSection');
+
         pdfInput.addEventListener('change', () => {
             selectedFile = pdfInput.files[0];
-            errorMsg.style.display = "none";
-
             if (selectedFile) {
-                renderFileList();
+                fileList.style.display = 'block';
+                fileList.innerHTML = `
+                    <li>
+                        <span>
+                            <i class="fa fa-file-pdf pdf-icon"></i>
+                            <span>${selectedFile.name}</span>
+                        </span>
+                        <i class="fa fa-times delete-file"></i>
+                    </li>
+                `;
+                languageSection.style.display = 'block';
             }
         });
 
@@ -385,162 +663,69 @@
                 pdfInput.value = '';
                 fileList.style.display = 'none';
                 languageSection.style.display = 'none';
-                errorMsg.style.display = 'none';
             }
         });
 
         // OCR Process
-        // Add this to your existing script section, replacing the OCR Process section
-
-        // OCR Process with improved error handling
-        ocrBtn.addEventListener('click', async () => {
+        document.getElementById('ocrBtn').addEventListener('click', async () => {
             if (!selectedFile) {
-                errorMsg.textContent = "Please select a PDF file";
-                errorMsg.style.display = "block";
+                document.getElementById('errorMsg').textContent = "Please select a PDF file";
+                document.getElementById('errorMsg').style.display = "block";
                 return;
             }
 
-            errorMsg.style.display = "none";
-            loaderIcon.style.display = "inline-block";
-            ocrBtn.disabled = true;
-            processingStatus.style.display = "block";
+            if (selectedLanguages.length === 0) {
+                document.getElementById('errorMsg').textContent = "Please select at least one language";
+                document.getElementById('errorMsg').style.display = "block";
+                return;
+            }
 
-            // Simulate progress updates
-            const statusMessages = [
-                "Analyzing document structure...",
-                "Extracting images from PDF...",
-                "Running OCR on pages...",
-                "Creating searchable PDF...",
-                "Finalizing document..."
-            ];
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+            formData.append("languages", selectedLanguages.join(','));
 
-            let messageIndex = 0;
-            const statusInterval = setInterval(() => {
-                if (messageIndex < statusMessages.length) {
-                    statusText.textContent = statusMessages[messageIndex];
-                    messageIndex++;
-                }
-            }, 2000);
+            document.getElementById('processingStatus').style.display = 'block';
+            document.getElementById('ocrBtn').disabled = true;
 
             try {
-                const formData = new FormData();
-                formData.append("file", selectedFile);
-                formData.append("language", languageSelect.value);
-
-                console.log('Sending request to:', BACKEND_OCR_URL);
-
                 const response = await fetch(BACKEND_OCR_URL, {
                     method: "POST",
                     body: formData
                 });
 
-                clearInterval(statusInterval);
-
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-
-                // Check if response is JSON (error) or PDF (success)
-                const contentType = response.headers.get('content-type');
-
                 if (!response.ok) {
-                    // Try to parse as JSON for error message
-                    let errorMessage = "OCR processing failed";
-
-                    if (contentType && contentType.includes('application/json')) {
-                        const errorData = await response.json();
-                        errorMessage = errorData.error || errorMessage;
-                    } else {
-                        // If not JSON, it might be HTML error page
-                        const errorText = await response.text();
-                        console.error('Server error response:', errorText);
-                        errorMessage = `Server error (${response.status}). Check server logs.`;
-                    }
-
-                    throw new Error(errorMessage);
+                    const error = await response.json();
+                    throw new Error(error.error || 'OCR failed');
                 }
 
-                // Success - response should be PDF
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
 
-                // Get page count from response headers if available
-                const pageCount = response.headers.get('X-Page-Count') || 'Unknown';
+                document.getElementById('downloadBtn').href = url;
+                document.getElementById('downloadBtn').download = `searchable_${selectedFile.name}`;
 
-                // UI updates
-                fileList.style.display = "none";
-                languageSection.style.display = "none";
-                uploadSection.style.display = "none";
-                noteText.style.display = "none";
-                ocrBtn.style.display = "none";
-                processingStatus.style.display = "none";
-                resultBtns.style.display = "block";
-
-                // Update info
-                pagesProcessed.innerHTML = `Pages processed: <strong>${pageCount}</strong>`;
-
-                // Set download
-                downloadBtn.href = url;
-                downloadBtn.download = `searchable_${selectedFile.name}`;
-
-                // Set file name
-                fileNameLink.textContent = `searchable_${selectedFile.name}`;
-
-                // Preview handling
-                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-
-                if (!isSmallDevice) {
-                    pdfFrame.src = url;
-                    pdfPreview.style.display = 'block';
-                }
-
-                fileNameLink.onclick = (e) => {
-                    e.preventDefault();
-                    isSmallDevice
-                        ? window.open(url, "_blank")
-                        : pdfPreview.scrollIntoView({ behavior: "smooth" });
-                };
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('languageSection').style.display = 'none';
+                document.getElementById('ocrBtn').style.display = 'none';
+                document.getElementById('resultBtns').style.display = 'block';
+                document.getElementById('processingStatus').style.display = 'none';
 
             } catch (err) {
-                clearInterval(statusInterval);
-                console.error('OCR Error:', err);
-
-                // User-friendly error messages
-                let userMessage = err.message;
-
-                if (err.message.includes('Failed to fetch')) {
-                    userMessage = "Cannot connect to server. Please check if the backend is running.";
-                } else if (err.message.includes('not valid JSON')) {
-                    userMessage = "Server returned an unexpected response. Please check server logs.";
-                }
-
-                errorMsg.textContent = "Error: " + userMessage;
-                errorMsg.style.display = "block";
-                ocrBtn.style.display = "inline-flex";
-                processingStatus.style.display = "none";
+                document.getElementById('errorMsg').textContent = err.message;
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('processingStatus').style.display = 'none';
             } finally {
-                loaderIcon.style.display = "none";
-                ocrBtn.disabled = false;
+                document.getElementById('ocrBtn').disabled = false;
             }
         });
 
         // Reset
-        resetBtn.addEventListener('click', () => {
-            pdfInput.value = '';
-            selectedFile = null;
-            fileList.style.display = 'none';
-            fileList.innerHTML = '';
-            languageSection.style.display = 'none';
-            resultBtns.style.display = 'none';
-            uploadSection.style.display = 'block';
-            noteText.style.display = 'block';
-            ocrBtn.style.display = 'inline-flex';
-            errorMsg.style.display = 'none';
-            processingStatus.style.display = 'none';
-            pdfFrame.src = '';
-            pdfPreview.style.display = 'none';
-            languageSelect.value = 'eng';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            location.reload();
         });
+
+        // Initialize on load
+        initMultiselect();
     </script>
 </body>
 

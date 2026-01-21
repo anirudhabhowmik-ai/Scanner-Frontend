@@ -1,27 +1,3 @@
 {
-  "rewrites": [
-    { "source": "/", "destination": "/index.html" },
-    { "source": "/scan", "destination": "/scan.html" },
-    { "source": "/ocr_pdf", "destination": "/ocr_pdf.html" },
-    { "source": "/merge", "destination": "/merge.html" },
-    { "source": "/split", "destination": "/split.html" },
-    { "source": "/delete", "destination": "/delete.html" },
-    { "source": "/extract", "destination": "/extract.html" },
-    { "source": "/organize", "destination": "/organize.html" },
-    { "source": "/rotate", "destination": "/rotate.html" },
-    { "source": "/page-number", "destination": "/page-number.html" },
-    { "source": "/watermark", "destination": "/watermark.html" },
-    { "source": "/crop", "destination": "/crop.html" },
-    { "source": "/edit", "destination": "/edit.html" },
-    { "source": "/image-to-pdf", "destination": "/image-to-pdf.html" },
-    { "source": "/excel-to-pdf", "destination": "/excel-to-pdf.html" },
-    { "source": "/word-to-pdf", "destination": "/word-to-pdf.html" },
-    { "source": "/ppt-to-pdf", "destination": "/ppt-to-pdf.html" },
-    { "source": "/pdf-to-image", "destination": "/pdf-to-image.html" },
-    { "source": "/compress", "destination": "/compress.html" },
-    { "source": "/about", "destination": "/about.html" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms", "destination": "/terms.html" }
-  ]
+  "cleanUrls": true
 }

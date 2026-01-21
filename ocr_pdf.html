@@ -523,16 +523,37 @@
             document.getElementById('ocrBtn').disabled = true;
 
             try {
+                // Step 1: Send file → get task_id
                 const response = await fetch(BACKEND_OCR_URL, { method: "POST", body: formData });
                 if (!response.ok) {
                     const error = await response.json();
                     throw new Error(error.error || 'OCR failed');
                 }
+                const { task_id } = await response.json();
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
+                // Step 2: Poll for status
+                let status = "";
+                let downloadUrl = "";
+                while (true) {
+                    const statusRes = await fetch(`${BACKEND_OCR_URL}/status/${task_id}`);
+                    if (!statusRes.ok) throw new Error("Failed to get OCR status");
+                    const statusData = await statusRes.json();
+                    status = statusData.status;
 
-                document.getElementById('downloadBtn').href = url;
+                    document.getElementById('statusText').textContent = statusData.message || "Processing...";
+
+                    if (status === "done") {
+                        downloadUrl = `${BACKEND_OCR_URL}/download/${task_id}`;
+                        break;
+                    } else if (status === "error") {
+                        throw new Error(statusData.error || "OCR failed");
+                    }
+
+                    await new Promise(r => setTimeout(r, 2000)); // 2 sec delay between polls
+                }
+
+                // Step 3: Update frontend for download & preview
+                document.getElementById('downloadBtn').href = downloadUrl;
                 document.getElementById('downloadBtn').download = `searchable_${selectedFile.name}`;
 
                 document.getElementById('uploadSection').style.display = 'none';
@@ -545,13 +566,13 @@
                 // Preview PDF
                 if (window.matchMedia("(max-width: 768px)").matches) pdfPreview.style.display = 'none';
                 else {
-                    pdfFrame.src = url;
+                    pdfFrame.src = downloadUrl;
                     pdfPreview.style.display = 'block';
                 }
 
                 fileNameLink.onclick = (e) => {
                     e.preventDefault();
-                    window.matchMedia("(max-width: 768px)").matches ? window.open(url, "_blank") : pdfPreview.scrollIntoView({ behavior: "smooth" });
+                    window.matchMedia("(max-width: 768px)").matches ? window.open(downloadUrl, "_blank") : pdfPreview.scrollIntoView({ behavior: "smooth" });
                 };
 
             } catch (err) {

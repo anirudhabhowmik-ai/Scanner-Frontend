@@ -246,6 +246,18 @@
             }
         });
 
+        fileList.addEventListener("click", (e) => {
+            if (e.target.classList.contains("delete-file")) {
+                // Reset everything
+                selectedFile = null;
+                pdfInput.value = "";
+                pageInput.value = "";
+                fileList.style.display = "none";
+                pageInput.style.display = "none";
+                clearError();
+            }
+        });
+
         resetBtn.addEventListener("click", () => {
             clearError();
             selectedFile = null;

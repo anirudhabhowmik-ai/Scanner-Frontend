@@ -1,4 +1,4 @@
-const BACKEND_BASE_URL = "https://scanner-backend-production-fa11.up.railway.app";
+const BACKEND_BASE_URL = "https://scanner-backend-production-fa11.up.railway.app/";
 // Header & Mobile Menu
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');

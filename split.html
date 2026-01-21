@@ -204,7 +204,8 @@
 
 
                 <!-- Page range -->
-                <input type="text" id="pageRange" class="page-range" placeholder="e.g., 1-3,5,7-9" style="display: none;"/>
+                <input type="text" id="pageRange" class="page-range" placeholder="e.g., 1-3,5,7-9"
+                    style="display: none;" />
 
                 <!-- Split button -->
                 <button id="splitBtn" class="cta-button" style="margin-top:15px;">
@@ -315,10 +316,12 @@
         const errorMsg = document.getElementById("errorMsg");
         const pageRangeInput = document.getElementById("pageRange");
         const splitOptions = document.getElementById("splitOptions");
+        splitOptions.style.display = "none";
         const splitTypeRadios = document.getElementsByName("splitType");
         const uploadSection = document.getElementById("uploadSection");
 
         let selectedFile = null;
+
 
         /* ================= FILE SELECT ================= */
         pdfInput.addEventListener("change", () => {
@@ -326,6 +329,7 @@
             errorMsg.style.display = "none";
 
             if (selectedFile) {
+                splitOptions.style.display = "flex";
                 renderFileList();
             }
 
@@ -348,6 +352,7 @@
             if (e.target.classList.contains('delete-file')) {
                 selectedFile = null;
                 fileList.style.display = "none";
+                splitOptions.style.display = "none";
                 fileList.innerHTML = '';
                 pageRangeInput.style.display = "none";
                 errorMsg.style.display = "none";
@@ -375,13 +380,22 @@
             }
 
             errorMsg.style.display = "none";
-            loader.style.display = "inline-block";
-            splitBtn.disabled = true;
 
             try {
                 let blob;
                 const splitType = document.querySelector('input[name="splitType"]:checked').value;
                 const range = splitType === "range" ? pageRangeInput.value.trim() : "";
+
+                if (splitType === "range" && range === "") {
+                    showError("Please enter a valid page range (e.g. 1-3,5,7-9).");
+                    return;
+                }
+
+                loader.style.display = "inline-block";
+                splitBtn.disabled = true;
+
+                clearError();
+
 
                 if (selectedFile.size <= MAX_FRONTEND_SIZE) {
                     blob = await splitFrontend(selectedFile, range);
@@ -412,6 +426,23 @@
                 loader.style.display = "none";
             }
         });
+
+        pageRangeInput.addEventListener("input", () => {
+            if (pageRangeInput.value.trim() !== "") {
+                clearError();
+            }
+        });
+
+        function showError(message) {
+            errorMsg.textContent = message;
+            errorMsg.style.display = "block";
+        }
+
+        function clearError() {
+            errorMsg.textContent = "";
+            errorMsg.style.display = "none";
+        }
+
 
         /* ================= FRONTEND SPLIT ================= */
         async function splitFrontend(file, range) {
@@ -487,7 +518,7 @@
             splitBtn.disabled = false;
             loader.style.display = "none";
             errorMsg.style.display = "none";
-            splitOptions.style.display = "flex";
+            splitOptions.style.display = "none";
             pageRangeInput.style.display = "none";
 
             // Reset radio

@@ -53,6 +53,25 @@
     }
     </script>
 
+    <style>
+        /* Loader inside button */
+        .btn-loading {
+            pointer-events: none;
+        }
+
+        .btn-loading .btn-text {
+            display: none;
+        }
+
+        .btn-loading .btn-spinner {
+            display: inline-block;
+        }
+
+        .btn-spinner {
+            display: none;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -143,8 +162,15 @@
                     style="display:none; margin-top:15px;" />
 
                 <button id="deleteBtn" class="cta-button" style="margin-top:15px;">
-                    <i class="fa fa-trash"></i> Delete Pages
+                    <span class="btn-spinner">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </span>
+                    <span class="btn-text">
+                        <i class="fa fa-trash"></i>
+                    </span>
+                    Delete Pages
                 </button>
+
 
                 <p id="errorMsg" class="error-text" style="display:none;"></p>
 
@@ -290,6 +316,7 @@
             }
 
             deleteBtn.disabled = true;
+            deleteBtn.classList.add("btn-loading");
 
             const formData = new FormData();
             formData.append("file", selectedFile);
@@ -323,8 +350,11 @@
             } catch (err) {
                 errorMsg.textContent = err.message;
                 errorMsg.style.display = "block";
+                deleteBtn.classList.remove("btn-loading");
+                deleteBtn.disabled = false;
             } finally {
                 deleteBtn.disabled = false;
+                deleteBtn.classList.remove("btn-loading");
             }
         });
 
@@ -337,6 +367,7 @@
             resultBtns.style.display = "none";
             pdfPreview.style.display = "none";
             deleteBtn.style.display = "inline-flex";
+            deleteBtn.classList.remove("btn-loading");
             window.scrollTo({ top: 0, behavior: "smooth" });
         });
     </script>

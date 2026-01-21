@@ -646,3 +646,12 @@ footer a:hover {
     font-weight: 500;
     margin-left: 8px;
 }
+
+.page-range {
+    margin-top: 12px;
+    width: 100%;
+    max-width: 400px;
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+}

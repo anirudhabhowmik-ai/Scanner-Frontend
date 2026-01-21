@@ -256,14 +256,6 @@
             errorMsg.style.display = "none";
         }
 
-        function showLoader() {
-            loaderOverlay.style.display = "flex";
-        }
-
-        function hideLoader() {
-            loaderOverlay.style.display = "none";
-        }
-
         pageInput.addEventListener("input", clearError);
 
         pdfInput.addEventListener("change", () => {
@@ -297,7 +289,6 @@
                 return;
             }
 
-            showLoader();
             deleteBtn.disabled = true;
 
             const formData = new FormData();
@@ -333,7 +324,6 @@
                 errorMsg.textContent = err.message;
                 errorMsg.style.display = "block";
             } finally {
-                hideLoader();
                 deleteBtn.disabled = false;
             }
         });

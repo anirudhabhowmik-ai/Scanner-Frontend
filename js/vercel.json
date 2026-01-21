@@ -1,32 +1,27 @@
 {
-  "routes": [
-    { "src": "^/$", "dest": "/index.html" },
-
-    { "src": "^/scan$", "dest": "/scan.html" },
-    { "src": "^/ocr_pdf$", "dest": "/ocr_pdf.html" },
-
-    { "src": "^/merge$", "dest": "/merge.html" },
-    { "src": "^/split$", "dest": "/split.html" },
-    { "src": "^/delete$", "dest": "/delete.html" },
-    { "src": "^/extract$", "dest": "/extract.html" },
-    { "src": "^/organize$", "dest": "/organize.html" },
-    { "src": "^/rotate$", "dest": "/rotate.html" },
-    { "src": "^/page-number$", "dest": "/page-number.html" },
-    { "src": "^/watermark$", "dest": "/watermark.html" },
-    { "src": "^/crop$", "dest": "/crop.html" },
-    { "src": "^/edit$", "dest": "/edit.html" },
-
-    { "src": "^/image-to-pdf$", "dest": "/image-to-pdf.html" },
-    { "src": "^/excel-to-pdf$", "dest": "/excel-to-pdf.html" },
-    { "src": "^/word-to-pdf$", "dest": "/word-to-pdf.html" },
-    { "src": "^/ppt-to-pdf$", "dest": "/ppt-to-pdf.html" },
-    { "src": "^/pdf-to-image$", "dest": "/pdf-to-image.html" },
-
-    { "src": "^/compress$", "dest": "/compress.html" },
-
-    { "src": "^/about$", "dest": "/about.html" },
-    { "src": "^/contact$", "dest": "/contact.html" },
-    { "src": "^/privacy$", "dest": "/privacy.html" },
-    { "src": "^/terms$", "dest": "/terms.html" }
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/scan", "destination": "/scan.html" },
+    { "source": "/ocr_pdf", "destination": "/ocr_pdf.html" },
+    { "source": "/merge", "destination": "/merge.html" },
+    { "source": "/split", "destination": "/split.html" },
+    { "source": "/delete", "destination": "/delete.html" },
+    { "source": "/extract", "destination": "/extract.html" },
+    { "source": "/organize", "destination": "/organize.html" },
+    { "source": "/rotate", "destination": "/rotate.html" },
+    { "source": "/page-number", "destination": "/page-number.html" },
+    { "source": "/watermark", "destination": "/watermark.html" },
+    { "source": "/crop", "destination": "/crop.html" },
+    { "source": "/edit", "destination": "/edit.html" },
+    { "source": "/image-to-pdf", "destination": "/image-to-pdf.html" },
+    { "source": "/excel-to-pdf", "destination": "/excel-to-pdf.html" },
+    { "source": "/word-to-pdf", "destination": "/word-to-pdf.html" },
+    { "source": "/ppt-to-pdf", "destination": "/ppt-to-pdf.html" },
+    { "source": "/pdf-to-image", "destination": "/pdf-to-image.html" },
+    { "source": "/compress", "destination": "/compress.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" }
   ]
 }

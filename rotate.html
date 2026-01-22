@@ -17,10 +17,10 @@
     <link rel="icon" href="./favicon.ico">
 
     <style>
-        /* SAME GRID AS ORGANIZE */
+        /* RESPONSIVE GRID */
         .pages-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
             margin-top: 30px;
             padding: 20px;
@@ -31,6 +31,38 @@
             position: relative;
         }
 
+        /* Tablet and desktop - 4 columns max */
+        @media (min-width: 1024px) {
+            .pages-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* Small tablets - 3 columns */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .pages-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Large phones - 2 columns */
+        @media (min-width: 480px) and (max-width: 767px) {
+            .pages-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                padding: 15px;
+            }
+        }
+
+        /* Small phones - 1 column */
+        @media (max-width: 479px) {
+            .pages-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 15px;
+            }
+        }
+
         .pages-grid:empty::after {
             content: "Upload a PDF to see pages here";
             position: absolute;
@@ -39,6 +71,8 @@
             align-items: center;
             justify-content: center;
             color: #9ca3af;
+            text-align: center;
+            padding: 20px;
         }
 
         .page-card {
@@ -59,6 +93,7 @@
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
+            z-index: 1;
         }
 
         .page-canvas-wrapper {
@@ -68,6 +103,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
 
         canvas {
@@ -89,6 +125,7 @@
             border-radius: 8px;
             padding: 8px;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
 
         .page-actions .delete:hover {

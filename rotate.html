@@ -22,7 +22,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 20px;
-            margin-top: 30px;
+            margin: 30px auto;
             padding: 20px;
             background: white;
             border-radius: 12px;
@@ -236,6 +236,8 @@
         const pdfPreview = document.getElementById("pdfPreview");
         const fileList = document.getElementById("fileList");
         const uploadSection = document.getElementById("uploadSection");
+        const fileNameLink = document.getElementById("fileNameLink");
+        const shareBtn = document.getElementById("shareBtn");
 
         let files = [];
 
@@ -389,14 +391,26 @@
 
                 downloadBtn.href = url;
                 downloadBtn.download = "rotated.pdf";
+                shareBtn.href = url;
 
                 resultBtns.style.display = "block";
-                pdfFrame.src = url;
-                pdfPreview.style.display = "block";
                 uploadSection.style.display = "none";
                 rotateBtn.style.display = "none";
                 fileList.style.display = "none";
                 pagesGrid.style.display = "none";
+
+                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+                if (!isSmallDevice) {
+                    pdfFrame.src = url;
+                    pdfPreview.style.display = 'block';
+                }
+
+                fileNameLink.onclick = (e) => {
+                    e.preventDefault();
+                    isSmallDevice
+                        ? window.open(url, "_blank")
+                        : pdfPreview.scrollIntoView({ behavior: "smooth" });
+                };
 
             } catch (e) {
                 showError(e.message);

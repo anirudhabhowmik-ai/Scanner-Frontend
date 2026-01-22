@@ -333,7 +333,7 @@
 
                 <button id="addNumbersBtn" class="cta-button" style="margin-top:15px;">
                     <span class="btn-spinner"><i class="fa fa-spinner fa-spin"></i></span>
-                    <span class="btn-text"><i class="fa fa-list-ol"></i> Add Page Numbers</span>
+                    <span class="btn-text"><i class="fa fa-list-ol"></i></span> Add Page Numbers
                 </button>
 
                 <p id="errorMsg" class="error-text" style="display:none;"></p>
@@ -349,6 +349,7 @@
                         <a id="downloadBtn" class="cta-button">
                             <i class="fa fa-download"></i> Download PDF
                         </a>
+                        <a id="shareBtn" class="cta-button"><i class="fa fa-share-alt"></i> Share</a>
                         <button id="resetBtn" class="secondary-btn">
                             <i class="fa fa-rotate-right"></i> Add Another PDF
                         </button>
@@ -390,6 +391,8 @@
         const pdfFrame = document.getElementById("pdfFrame");
         const uploadSection = document.getElementById("uploadSection");
         const pagesGrid = document.getElementById("pagesGrid");
+        const fileNameLink = document.getElementById("fileNameLink");
+        const shareBtn = document.getElementById("shareBtn");
 
         const optionsContainer = document.getElementById("optionsContainer");
         const position = document.getElementById("position");
@@ -485,7 +488,7 @@
                 // Render ALL pages (removed the maxPages limit)
                 for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
-                    const viewport = page.getViewport({ scale: 0.5 });
+                    const viewport = page.getViewport({ scale: 1 });
 
                     const canvas = document.createElement("canvas");
                     canvas.width = viewport.width;
@@ -645,15 +648,28 @@
 
                 downloadBtn.href = url;
                 downloadBtn.download = "page_numbered.pdf";
-                pdfFrame.src = url;
+                shareBtn.href = url;
 
                 resultBtns.style.display = "block";
-                pdfPreview.style.display = "block";
                 uploadSection.style.display = "none";
                 addNumbersBtn.style.display = "none";
                 fileList.style.display = "none";
                 pagesGrid.style.display = "none";
                 optionsContainer.style.display = "none";
+
+                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+
+                if (!isSmallDevice) {
+                    pdfFrame.src = url;
+                    pdfPreview.style.display = 'block';
+                }
+
+                fileNameLink.onclick = (e) => {
+                    e.preventDefault();
+                    isSmallDevice
+                        ? window.open(url, "_blank")
+                        : pdfPreview.scrollIntoView({ behavior: "smooth" });
+                };
 
             } catch (err) {
                 showError(err.message);

@@ -411,7 +411,7 @@
         /* ================= RENDER PAGE ================= */
         async function renderPage(pdf, pageNum, globalIndex, fileIndex) {
             const page = await pdf.getPage(pageNum);
-            const viewport = page.getViewport({ scale: 1.0 });
+            const viewport = page.getViewport({ scale: 1 });
 
             const canvas = document.createElement("canvas");
             const context = canvas.getContext("2d");

@@ -482,9 +482,8 @@
                 const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
                 totalPages += pdf.numPages;
 
-                const maxPages = Math.min(pdf.numPages, 6);
-
-                for (let i = 1; i <= maxPages; i++) {
+                // Render ALL pages (removed the maxPages limit)
+                for (let i = 1; i <= pdf.numPages; i++) {
                     const page = await pdf.getPage(i);
                     const viewport = page.getViewport({ scale: 0.5 });
 
@@ -502,9 +501,9 @@
                     card.dataset.pageNum = pageNo;
 
                     card.innerHTML = `
-                        <div class="page-number">Page ${pageNo}</div>
-                        <div class="page-canvas-wrapper"></div>
-                    `;
+                <div class="page-number">Page ${pageNo}</div>
+                <div class="page-canvas-wrapper"></div>
+            `;
 
                     const wrapper = card.querySelector(".page-canvas-wrapper");
                     wrapper.appendChild(canvas);
@@ -518,17 +517,6 @@
                     wrapper.appendChild(preview);
                     pagesGrid.appendChild(card);
                     pageNo++;
-                }
-
-                if (pdf.numPages > 6) {
-                    const moreCard = document.createElement("div");
-                    moreCard.className = "page-card";
-                    moreCard.style.display = "flex";
-                    moreCard.style.alignItems = "center";
-                    moreCard.style.justifyContent = "center";
-                    moreCard.style.color = "#6b7280";
-                    moreCard.innerHTML = `<div style="text-align:center;"><i class="fa fa-ellipsis-h" style="font-size:24px;"></i><br><small>+${pdf.numPages - 6} more pages</small></div>`;
-                    pagesGrid.appendChild(moreCard);
                 }
             }
         }

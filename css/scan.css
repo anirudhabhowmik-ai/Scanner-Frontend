@@ -77,6 +77,7 @@ img {
     height: auto;
     margin: 0 auto;
     max-width: 100%;
+    object-fit: cover;
 }
 
 video{
@@ -426,11 +427,6 @@ button:disabled {
     .media-container {
         min-height: 300px;
     }
-
-    /* video,
-    img {
-        max-height: 50vh;
-    } */
 
     .cropper-point {
         width: 18px !important;

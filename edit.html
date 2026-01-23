@@ -1359,12 +1359,22 @@
                 if (!isDrawing || pathPoints.length < 2) return;
                 isDrawing = false;
 
-                // Convert points to SVG path
-                let d = `M ${pathPoints[0].x} ${pathPoints[0].y}`;
+                // 1️⃣ Calculate bounding box
+                const xs = pathPoints.map(p => p.x);
+                const ys = pathPoints.map(p => p.y);
+
+                const minX = Math.min(...xs);
+                const minY = Math.min(...ys);
+                const maxX = Math.max(...xs);
+                const maxY = Math.max(...ys);
+
+                // 2️⃣ Build normalized SVG path
+                let d = `M ${pathPoints[0].x - minX} ${pathPoints[0].y - minY}`;
                 for (let i = 1; i < pathPoints.length; i++) {
-                    d += ` L ${pathPoints[i].x} ${pathPoints[i].y}`;
+                    d += ` L ${pathPoints[i].x - minX} ${pathPoints[i].y - minY}`;
                 }
 
+                // 3️⃣ Create annotation
                 const annotation = new DrawingAnnotation(
                     page,
                     d,
@@ -1372,18 +1382,19 @@
                     parseInt(penWidth.value)
                 );
 
-                annotation.x = 0;
-                annotation.y = 0;
-                annotation.width = page.viewport.width;
-                annotation.height = page.viewport.height;
+                annotation.x = minX;
+                annotation.y = minY;
+                annotation.width = maxX - minX;
+                annotation.height = maxY - minY;
 
                 const element = annotation.createElement();
                 page.annotationLayer.appendChild(element);
                 page.addAnnotation(annotation);
 
-                // Clear temp canvas
+                // 4️⃣ Clear temp canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
+
         }
 
 

@@ -40,6 +40,7 @@
 .media-container {
     width: 100%;
     min-height: 400px;
+    max-width: 100%;
     background: #f3f4f6;
     display: flex;
     align-items: center;
@@ -47,6 +48,10 @@
     position: relative;
     overflow: hidden;
 }
+
+/* .media-container {
+  height: 70vh;
+} */
 
 .media-container.empty {
     min-height: 300px;
@@ -69,7 +74,7 @@
     font-weight: 500;
 }
 
-video,
+/* video,
 img {
     display: block;
     max-width: 100%;
@@ -77,9 +82,20 @@ img {
     width: auto;
     height: auto;
     margin: 0 auto;
+} */
+
+.media-container video,
+.media-container canvas,
+.media-container img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
 }
 
-canvas {
+.media-container canvas {
     display: none;
 }
 
@@ -419,11 +435,6 @@ button:disabled {
 
     .media-container {
         min-height: 300px;
-    }
-
-    video,
-    img {
-        max-height: 50vh;
     }
 
     .cropper-point {

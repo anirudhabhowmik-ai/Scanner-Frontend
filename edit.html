@@ -443,6 +443,29 @@
                 min-width: 90vw;
             }
         }
+
+        .upload-loader {
+            margin-top: 15px;
+            text-align: center;
+            color: #4f46e5;
+            font-weight: 500;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            margin: 0 auto 8px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -461,6 +484,11 @@
                         <i class="fa fa-upload"></i> Choose PDF file
                     </label>
                     <input type="file" id="pdfUpload" accept=".pdf">
+                </div>
+
+                <div id="uploadLoader" class="upload-loader" style="display:none;">
+                    <div class="spinner"></div>
+                    <p>Uploading & rendering PDF…</p>
                 </div>
 
                 <p id="errorMsg" class="error-text" style="display:none;"></p>
@@ -896,7 +924,11 @@
             uploadedFile = file;
             currentFileName.textContent = file.name;
 
+            document.getElementById('uploadLoader').style.display = 'block';
+
             await loadPDF(file);
+
+            document.getElementById('uploadLoader').style.display = 'none';
         });
 
         async function loadPDF(file) {

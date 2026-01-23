@@ -282,13 +282,13 @@
             word-wrap: break-word;
         }
 
-        .text-annotation:hover
-         {
+        .text-annotation:hover {
             border-color: #4f46e5;
         }
 
-        .text-annotation.selected{
+        .text-annotation.selected {
             background: transparent;
+            border-color: #4f46e5;
         }
 
         .image-annotation {
@@ -930,23 +930,56 @@
             }
 
             createElement() {
-                const div = super.createElement();
-                div.classList.add('text-annotation');
-                div.contentEditable = true;
-                div.textContent = this.text;
-                this.applyStyles();
+                // Base annotation box (same as image/shape)
+                const wrapper = super.createElement();
+                wrapper.classList.add('text-annotation');
 
-                div.addEventListener('input', (e) => {
-                    this.text = div.textContent;
-                });
+                // 🔹 Inner editable content
+                const content = document.createElement('div');
+                content.className = 'text-content';
+                content.textContent = this.text;
+                content.contentEditable = false;
 
-                div.addEventListener('dblclick', (e) => {
+                content.style.width = '100%';
+                content.style.height = '100%';
+                content.style.outline = 'none';
+                content.style.cursor = 'text';
+
+                // Prevent inner div from stealing selection
+                content.addEventListener('mousedown', (e) => {
                     e.stopPropagation();
-                    div.focus();
                 });
 
-                return div;
+                // Enable edit on double click
+                content.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    content.contentEditable = true;
+                    content.focus();
+
+                    const range = document.createRange();
+                    range.selectNodeContents(content);
+                    range.collapse(false);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                });
+
+                // Save text
+                content.addEventListener('input', () => {
+                    this.text = content.textContent;
+                });
+
+                content.addEventListener('blur', () => {
+                    content.contentEditable = false;
+                    this.text = content.textContent;
+                });
+
+                wrapper.appendChild(content);
+
+                this.applyStyles();
+                return wrapper;
             }
+
 
             applyStyles() {
                 this.element.style.fontSize = this.fontSize + 'px';

@@ -1128,6 +1128,47 @@
             }
         }
 
+
+        class DrawingAnnotation extends Annotation {
+            constructor(page, pathData, color, width) {
+                super('drawing', page);
+                this.pathData = pathData;
+                this.color = color;
+                this.strokeWidth = width;
+            }
+
+            createElement() {
+                const div = super.createElement();
+                div.classList.add('shape-annotation');
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', this.pathData);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', this.color);
+                path.setAttribute('stroke-width', this.strokeWidth);
+                path.setAttribute('stroke-linecap', 'round');
+                path.setAttribute('stroke-linejoin', 'round');
+
+                svg.appendChild(path);
+                div.appendChild(svg);
+
+                return div;
+            }
+
+            clone() {
+                return new DrawingAnnotation(
+                    this.page,
+                    this.pathData,
+                    this.color,
+                    this.strokeWidth
+                );
+            }
+        }
+
         // Event Listeners
         pdfUpload.addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -1274,44 +1315,77 @@
         function setupDrawing(page) {
             const canvas = page.drawingCanvas;
             const ctx = canvas.getContext('2d');
+
             let isDrawing = false;
-            let lastX = 0;
-            let lastY = 0;
+            let pathPoints = [];
 
             canvas.addEventListener('mousedown', (e) => {
                 if (currentTool !== 'draw') return;
                 isDrawing = true;
+                pathPoints = [];
+
                 const rect = canvas.getBoundingClientRect();
-                lastX = e.clientX - rect.left;
-                lastY = e.clientY - rect.top;
+                pathPoints.push({
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                });
             });
 
             canvas.addEventListener('mousemove', (e) => {
                 if (!isDrawing || currentTool !== 'draw') return;
+
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
 
-                ctx.strokeStyle = document.getElementById('penColor').value;
-                ctx.lineWidth = parseInt(document.getElementById('penWidth').value);
+                const last = pathPoints[pathPoints.length - 1];
+
+                ctx.strokeStyle = penColor.value;
+                ctx.lineWidth = parseInt(penWidth.value);
                 ctx.lineCap = 'round';
+
                 ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
+                ctx.moveTo(last.x, last.y);
                 ctx.lineTo(x, y);
                 ctx.stroke();
 
-                lastX = x;
-                lastY = y;
+                pathPoints.push({ x, y });
             });
 
-            canvas.addEventListener('mouseup', () => {
-                isDrawing = false;
-            });
+            canvas.addEventListener('mouseup', () => finishStroke());
+            canvas.addEventListener('mouseleave', () => finishStroke());
 
-            canvas.addEventListener('mouseleave', () => {
+            function finishStroke() {
+                if (!isDrawing || pathPoints.length < 2) return;
                 isDrawing = false;
-            });
+
+                // Convert points to SVG path
+                let d = `M ${pathPoints[0].x} ${pathPoints[0].y}`;
+                for (let i = 1; i < pathPoints.length; i++) {
+                    d += ` L ${pathPoints[i].x} ${pathPoints[i].y}`;
+                }
+
+                const annotation = new DrawingAnnotation(
+                    page,
+                    d,
+                    penColor.value,
+                    parseInt(penWidth.value)
+                );
+
+                annotation.x = 0;
+                annotation.y = 0;
+                annotation.width = page.viewport.width;
+                annotation.height = page.viewport.height;
+
+                const element = annotation.createElement();
+                page.annotationLayer.appendChild(element);
+                page.addAnnotation(annotation);
+
+                // Clear temp canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
         }
+
 
         // Tool handlers
         addTextBtn.addEventListener('click', (e) => {

@@ -427,10 +427,10 @@ button:disabled {
         min-height: 300px;
     }
 
-    video,
+    /* video,
     img {
         max-height: 50vh;
-    }
+    } */
 
     .cropper-point {
         width: 18px !important;

@@ -176,8 +176,11 @@
             border-radius: 12px;
             padding: 15px;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-            max-height: calc(100vh - 200px);
+        }
+
+        .thumbnails-scroll {
             overflow-y: auto;
+            max-height: calc(100vh - 245px);
         }
 
         .page-thumbnails h4 {
@@ -508,7 +511,7 @@
                 order: 1;
             }
 
-            .page-thumbnails {
+            .thumbnails-scroll {
                 max-height: 200px;
                 overflow-x: auto;
                 overflow-y: hidden;
@@ -517,7 +520,7 @@
 
             .thumbnail-item {
                 display: inline-block;
-                width: 120px;
+                max-width: 100px;
                 margin-right: 12px;
                 vertical-align: top;
                 white-space: normal;
@@ -712,8 +715,11 @@
                 <div class="editor-layout">
                     <div class="sidebar">
                         <div class="page-thumbnails">
-                            <h4><i class="fa fa-images"></i> Pages</h4>
-                            <div id="thumbnailContainer"></div>
+                            <h4 class="pages-title">
+                                <i class="fa fa-images"></i> Pages
+                            </h4>
+
+                            <div class="thumbnails-scroll" id="thumbnailContainer"></div>
                         </div>
                     </div>
 
@@ -943,17 +949,31 @@
                 content.style.width = '100%';
                 content.style.height = '100%';
                 content.style.outline = 'none';
-                content.style.cursor = 'text';
 
                 // Prevent inner div from stealing selection
                 content.addEventListener('mousedown', (e) => {
-                    e.stopPropagation();
+                    // Select annotation when clicking text
+                    selectAnnotation(this);
+
+                    // Allow drag when not editing
+                    if (!content.isContentEditable) {
+                        isDragging = true;
+                        const rect = this.page.annotationLayer.getBoundingClientRect();
+                        dragStartX = e.clientX - rect.left - this.x;
+                        dragStartY = e.clientY - rect.top - this.y;
+
+                        e.preventDefault();
+                    }
                 });
+
 
                 // Enable edit on double click
                 content.addEventListener('dblclick', (e) => {
                     e.stopPropagation();
                     content.contentEditable = true;
+                    if (content.isContentEditable) {
+                        content.style.cursor = 'text';
+                    }
                     content.focus();
 
                     const range = document.createRange();
@@ -972,6 +992,7 @@
                 content.addEventListener('blur', () => {
                     content.contentEditable = false;
                     this.text = content.textContent;
+                    content.style.cursor = 'move';
                 });
 
                 wrapper.appendChild(content);
@@ -1154,7 +1175,7 @@
                 const scaleY = maxHeight / actualViewport.height;
 
                 // Choose the smaller scale so BOTH fit
-                scale = Math.max(0.2, Math.min(scaleX, scaleY, 1));
+                scale = Math.max(0.2, Math.min(scaleX, scaleY, 2));
 
 
 

@@ -79,6 +79,12 @@ img {
     margin: 0 auto;
 }
 
+video{
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
 canvas {
     display: none;
 }

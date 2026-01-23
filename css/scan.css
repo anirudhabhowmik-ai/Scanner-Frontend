@@ -47,11 +47,8 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    height: 70vh;
 }
-
-/* .media-container {
-  height: 70vh;
-} */
 
 .media-container.empty {
     min-height: 300px;

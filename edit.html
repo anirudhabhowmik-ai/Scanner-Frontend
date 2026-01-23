@@ -811,6 +811,12 @@
                 this.y = 0;
                 this.width = 100;
                 this.height = 50;
+                this.rotation = 0;
+            }
+
+            applyTransform() {
+                this.element.style.transform =
+                    `rotate(${this.rotation}deg)`;
             }
 
             createElement() {
@@ -818,6 +824,7 @@
                 div.className = 'annotation-item';
                 div.style.left = this.x + 'px';
                 div.style.top = this.y + 'px';
+                div.style.transformOrigin = 'center center';
                 div.style.width = this.width + 'px';
                 div.style.height = this.height + 'px';
 
@@ -834,6 +841,17 @@
                     this.copy();
                 };
                 controls.appendChild(copyBtn);
+
+                const rotateBtn = document.createElement('button');
+                rotateBtn.className = 'control-btn rotate-btn';
+                rotateBtn.innerHTML = '<i class="fa fa-rotate-right"></i>';
+                rotateBtn.title = 'Rotate';
+                rotateBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.rotate(15); // rotate by 15°
+                };
+                controls.appendChild(rotateBtn);
+
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'control-btn delete-btn';
@@ -858,6 +876,11 @@
                 this.element = div;
                 this.attachEvents();
                 return div;
+            }
+
+            rotate(deg) {
+                this.rotation = (this.rotation + deg) % 360;
+                this.applyTransform();
             }
 
             attachEvents() {

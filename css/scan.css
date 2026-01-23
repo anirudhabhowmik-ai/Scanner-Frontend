@@ -421,7 +421,6 @@ button:disabled {
         min-height: 300px;
     }
 
-    video,
     img {
         max-height: 50vh;
     }

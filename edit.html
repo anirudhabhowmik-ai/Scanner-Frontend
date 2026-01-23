@@ -102,7 +102,7 @@
         .properties-dropdown {
             display: none;
             position: fixed;
-            bottom: 20px;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
             background: white;
@@ -112,6 +112,7 @@
             z-index: 1000;
             width: max-content;
             max-width: 95vw;
+            cursor: auto;
         }
 
         .tool-btn.active .properties-dropdown {
@@ -229,8 +230,8 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             padding: 20px;
             position: relative;
-            overflow: auto;
-            max-height: calc(100vh - 200px);
+            height: calc(100vh - 220px);
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -238,11 +239,12 @@
 
         .pdf-page-wrapper {
             position: relative;
-            margin: 0 auto 30px;
+            margin: 0 auto;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             background: white;
             display: none;
             max-width: 100%;
+            max-height: 100%;
         }
 
         .pdf-page-wrapper.active {
@@ -305,6 +307,7 @@
 
         .shape-annotation {
             border: 2px solid transparent;
+            pointer-events: all;
         }
 
         .shape-annotation:hover,
@@ -1011,7 +1014,9 @@
                 const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
                 svg.style.width = '100%';
                 svg.style.height = '100%';
-                svg.style.pointerEvents = 'none';
+                svg.style.pointerEvents = 'auto';
+                svg.style.userSelect = 'none';
+
 
                 this.svg = svg;
                 this.updateShape();
@@ -1073,14 +1078,23 @@
             if (!file) return;
 
             currentFileName.textContent = file.name;
-            document.getElementById('uploadLoader').style.display = 'block';
+            const loader = document.getElementById('uploadLoader');
+            loader.style.display = 'block';
 
-            await loadPDF(file);
-
-            document.getElementById('uploadLoader').style.display = 'none';
+            try {
+                await loadPDF(file);
+                loader.style.display = 'none';
+            } catch (err) {
+                console.error('PDF load error:', err);
+                alert('Failed to load PDF. Please try another file.');
+            } finally {
+                loader.style.display = 'none';
+            }
         });
 
         async function loadPDF(file) {
+            editorContainer.style.display = 'block';
+            uploadSection.style.display = 'none';
             const arrayBuffer = await file.arrayBuffer();
             pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
@@ -1092,8 +1106,23 @@
                 const page = await pdfDoc.getPage(i);
                 const actualViewport = page.getViewport({ scale: 1 });
 
-                const containerWidth = Math.min(MAX_WIDTH, window.innerWidth - 100);
-                scale = actualViewport.width > containerWidth ? containerWidth / actualViewport.width : 1;
+                const containerRect = canvasContainer.getBoundingClientRect();
+                const containerWidth = containerRect.width || MAX_WIDTH;
+                const containerHeight = containerRect.height || window.innerHeight - 300;
+
+
+                const maxWidth = containerWidth - 40;
+                const maxHeight = containerHeight - 40;
+
+
+                const scaleX = maxWidth / actualViewport.width;
+                const scaleY = maxHeight / actualViewport.height;
+
+                // Choose the smaller scale so BOTH fit
+                scale = Math.max(0.2, Math.min(scaleX, scaleY, 1));
+
+
+
                 const viewport = page.getViewport({ scale: scale });
 
                 // Main canvas
@@ -1229,10 +1258,15 @@
         }
 
         // Tool handlers
-        addTextBtn.addEventListener('click', () => {
+        addTextBtn.addEventListener('click', (e) => {
             setTool('text');
-            addAnnotationToCurrentPage('text');
+
+            // Only create text if click was on the button itself
+            if (e.target.closest('.tool-btn') === addTextBtn) {
+                addAnnotationToCurrentPage('text');
+            }
         });
+
 
         addImageBtn.addEventListener('click', () => {
             imageUpload.click();
@@ -1255,10 +1289,14 @@
             setTool('draw');
         });
 
-        addShapeBtn.addEventListener('click', () => {
+        addShapeBtn.addEventListener('click', (e) => {
             setTool('shape');
-            addAnnotationToCurrentPage('shape');
+
+            if (e.target.closest('.tool-btn') === addShapeBtn) {
+                addAnnotationToCurrentPage('shape');
+            }
         });
+
 
         function setTool(tool, data = null) {
             currentTool = tool;
@@ -1521,6 +1559,12 @@
                     selectedAnnotation = null;
                 }
             }
+        });
+
+        document.querySelectorAll('.properties-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
         });
     </script>
 

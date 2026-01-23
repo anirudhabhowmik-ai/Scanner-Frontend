@@ -10,10 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css">
 
+    <!-- Favicon -->
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
     <style>
         .editor-container {
             display: none;
@@ -61,6 +62,7 @@
             font-weight: 500;
             color: #1e3a8a;
             position: relative;
+            white-space: nowrap;
         }
 
         .tool-btn:hover {
@@ -78,10 +80,29 @@
             font-size: 16px;
         }
 
+        .cta-button {
+            background: #fbbf24;
+            color: #1e3a8a;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid #1e3a8a;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background: #f59e0b;
+        }
+
         .properties-dropdown {
             display: none;
             position: fixed;
-            bottom: 0;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: white;
@@ -108,13 +129,13 @@
         .property-item {
             display: flex;
             flex-direction: column;
-            align-items: start;
+            align-items: flex-start;
             gap: 8px;
         }
 
         .property-item .color-select {
             display: flex;
-            gap: 2px;
+            gap: 5px;
         }
 
         .property-item label {
@@ -247,6 +268,7 @@
             position: absolute;
             pointer-events: all;
             cursor: move;
+            user-select: none;
         }
 
         .text-annotation {
@@ -255,6 +277,8 @@
             min-width: 100px;
             min-height: 30px;
             background: rgba(255, 255, 255, 0.9);
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
 
         .text-annotation:hover,
@@ -276,30 +300,59 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            pointer-events: none;
         }
 
         .shape-annotation {
-            border: 2px solid #4f46e5;
+            border: 2px solid transparent;
         }
 
-        .delete-btn {
+        .shape-annotation:hover,
+        .shape-annotation.selected {
+            border-color: #4f46e5;
+        }
+
+        .annotation-controls {
             position: absolute;
-            top: -10px;
-            right: -10px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
+            top: -35px;
+            right: 0;
             display: none;
-            font-size: 12px;
+            gap: 5px;
+            background: white;
+            padding: 5px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
         }
 
-        .annotation-item.selected .delete-btn,
-        .annotation-item:hover .delete-btn {
-            display: block;
+        .annotation-item.selected .annotation-controls,
+        .annotation-item:hover .annotation-controls {
+            display: flex;
+        }
+
+        .control-btn {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            color: #374151;
+        }
+
+        .control-btn:hover {
+            background: #e5e7eb;
+        }
+
+        .control-btn.delete-btn {
+            color: #ef4444;
+        }
+
+        .control-btn.delete-btn:hover {
+            background: #fee2e2;
         }
 
         .resize-handle {
@@ -307,12 +360,13 @@
             width: 10px;
             height: 10px;
             background: #4f46e5;
-            border: 1px solid white;
+            border: 2px solid white;
+            border-radius: 50%;
             display: none;
+            z-index: 10;
         }
 
-        .annotation-item.selected .resize-handle,
-        .annotation-item:hover .resize-handle {
+        .annotation-item.selected .resize-handle {
             display: block;
         }
 
@@ -352,6 +406,7 @@
             display: none;
             width: 100%;
             height: 100%;
+            pointer-events: none;
         }
 
         .drawing-canvas.active {
@@ -427,29 +482,11 @@
             }
         }
 
-        .result-card {
+        .note {
             text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .result-card i {
-            font-size: 72px;
-            color: #10b981;
-        }
-
-        .file-name {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .file-name a {
-            color: white;
-            font-weight: 600;
-            font-size: 1.2rem;
-        }
-
-        #resultBtns {
-            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+            font-size: 14px;
         }
 
         @media (max-width: 1024px) {
@@ -478,12 +515,14 @@
                 width: 120px;
                 margin-right: 12px;
                 vertical-align: top;
+                white-space: normal;
             }
         }
 
         @media (max-width: 768px) {
             .toolbar {
                 gap: 8px;
+                padding: 12px;
             }
 
             .tool-btn {
@@ -491,8 +530,33 @@
                 font-size: 13px;
             }
 
-            h1 {
-                font-size: 2rem;
+            .tool-btn span {
+                display: none;
+            }
+
+            .properties-dropdown {
+                width: 90vw;
+                max-width: none;
+            }
+
+            .property-row {
+                gap: 10px;
+            }
+
+            .sidebar {
+                order: 1;
+            }
+
+            .main-editor {
+                order: 2;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            .property-item input[type="number"],
+            .property-item select {
+                min-width: 60px;
             }
         }
     </style>
@@ -507,20 +571,16 @@
             <h1>Edit PDF</h1>
             <p>Add text, images, shapes, and annotations to your PDF.</p>
 
-            <div class="upload-section">
-                <div id="uploadSection">
-                    <label for="pdfUpload" class="upload-label">
-                        <i class="fa fa-upload"></i> Choose PDF file
-                    </label>
-                    <input type="file" id="pdfUpload" accept=".pdf">
-                </div>
+            <div class="upload-section" id="uploadSection">
+                <label for="pdfUpload" class="upload-label">
+                    <i class="fa fa-upload"></i> Choose PDF file
+                </label>
+                <input type="file" id="pdfUpload" accept=".pdf" class="hidden">
 
                 <div id="uploadLoader" class="upload-loader" style="display:none;">
                     <div class="spinner"></div>
-                    <p>Uploading & rendering PDF…</p>
+                    <p>Loading PDF…</p>
                 </div>
-
-                <p id="errorMsg" class="error-text" style="display:none;"></p>
             </div>
 
             <div id="editorContainer" class="editor-container">
@@ -530,13 +590,13 @@
                         <span class="file-name-text" id="currentFileName">document.pdf</span>
                     </div>
                     <button class="delete-file-btn" id="deleteFileBtn">
-                        <i class="fa fa-times delete-file"></i>
+                        <i class="fa fa-times"></i>
                     </button>
                 </div>
 
                 <div class="toolbar">
                     <button class="tool-btn" id="addTextBtn">
-                        <i class="fa fa-font"></i> Add Text
+                        <i class="fa fa-font"></i> <span>Add Text</span>
                         <div class="properties-dropdown" id="textProperties">
                             <div class="property-row">
                                 <div class="property-item">
@@ -562,14 +622,14 @@
                                     </div>
                                 </div>
                                 <div class="property-item">
-                                    <label>Font Weight:</label>
+                                    <label>Weight:</label>
                                     <select id="fontWeight">
                                         <option value="normal">Normal</option>
                                         <option value="bold">Bold</option>
                                     </select>
                                 </div>
                                 <div class="property-item">
-                                    <label>Font Style:</label>
+                                    <label>Style:</label>
                                     <select id="fontStyle">
                                         <option value="normal">Regular</option>
                                         <option value="italic">Italic</option>
@@ -580,11 +640,11 @@
                     </button>
 
                     <button class="tool-btn" id="addImageBtn">
-                        <i class="fa fa-image"></i> Add Image
+                        <i class="fa fa-image"></i> <span>Add Image</span>
                     </button>
 
                     <button class="tool-btn" id="drawBtn">
-                        <i class="fa fa-pencil"></i> Draw
+                        <i class="fa fa-pencil"></i> <span>Draw</span>
                         <div class="properties-dropdown" id="drawProperties">
                             <div class="property-row">
                                 <div class="property-item">
@@ -603,7 +663,7 @@
                     </button>
 
                     <button class="tool-btn" id="addShapeBtn">
-                        <i class="fa fa-shapes"></i> Add Shape
+                        <i class="fa fa-shapes"></i> <span>Add Shape</span>
                         <div class="properties-dropdown" id="shapeProperties">
                             <div class="property-row">
                                 <div class="property-item">
@@ -637,13 +697,10 @@
                     </button>
 
                     <button class="tool-btn" id="undoBtn">
-                        <i class="fa fa-undo"></i> Undo
+                        <i class="fa fa-undo"></i> <span>Undo</span>
                     </button>
                     <button class="tool-btn" id="clearAllBtn">
-                        <i class="fa fa-eraser"></i> Clear All
-                    </button>
-                    <button class="cta-button" id="saveEditBtn">
-                        <i class="fa fa-save"></i> Save PDF
+                        <i class="fa fa-eraser"></i> <span>Clear All</span>
                     </button>
                 </div>
 
@@ -663,22 +720,7 @@
                 <input type="file" id="imageUpload" accept="image/*" class="hidden">
             </div>
 
-            <div id="resultBtns" style="display:none; margin-top:30px;">
-                <div class="result-card">
-                    <i class="fa fa-file-pdf"></i>
-                </div>
-                <p class="file-name">
-                    <a href="#" id="fileNameLink">edited.pdf</a>
-                </p>
-                <a id="downloadBtn" href="#" class="cta-button">
-                    <i class="fa fa-download"></i> Download PDF
-                </a>
-                <button id="resetBtn" class="secondary-btn">
-                    <i class="fa fa-rotate-right"></i> Edit Another PDF
-                </button>
-            </div>
-
-            <p id="noteText" class="note">
+            <p class="note">
                 Supported format: PDF. All editing is done in your browser.
             </p>
         </div>
@@ -692,23 +734,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
-    <script>
-        const { jsPDF } = window.jspdf;
 
         // DOM Elements
         const pdfUpload = document.getElementById('pdfUpload');
-        const errorMsg = document.getElementById('errorMsg');
         const editorContainer = document.getElementById('editorContainer');
         const canvasContainer = document.getElementById('canvasContainer');
         const thumbnailContainer = document.getElementById('thumbnailContainer');
         const uploadSection = document.getElementById('uploadSection');
-        const resultBtns = document.getElementById('resultBtns');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        const fileInfo = document.getElementById('fileInfo');
         const currentFileName = document.getElementById('currentFileName');
         const deleteFileBtn = document.getElementById('deleteFileBtn');
 
@@ -719,7 +751,6 @@
         const addShapeBtn = document.getElementById('addShapeBtn');
         const undoBtn = document.getElementById('undoBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
-        const saveEditBtn = document.getElementById('saveEditBtn');
         const imageUpload = document.getElementById('imageUpload');
 
         // State
@@ -733,16 +764,14 @@
         let dragStartX = 0;
         let dragStartY = 0;
         let resizeHandle = null;
-        let uploadedFile = null;
         let scale = 1;
-        const MAX_WIDTH = 800; // Maximum width for PDF display
+        const MAX_WIDTH = 800;
 
         class PDFPage {
-            constructor(pageNum, canvas, viewport, actualViewport) {
+            constructor(pageNum, canvas, viewport) {
                 this.pageNum = pageNum;
                 this.canvas = canvas;
                 this.viewport = viewport;
-                this.actualViewport = actualViewport;
                 this.annotations = [];
                 this.drawingCanvas = null;
                 this.wrapper = null;
@@ -781,12 +810,33 @@
                 div.style.width = this.width + 'px';
                 div.style.height = this.height + 'px';
 
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'delete-btn';
-                deleteBtn.innerHTML = '<i class="fa fa-times"></i>';
-                deleteBtn.onclick = () => this.delete();
-                div.appendChild(deleteBtn);
+                // Controls
+                const controls = document.createElement('div');
+                controls.className = 'annotation-controls';
 
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'control-btn copy-btn';
+                copyBtn.innerHTML = '<i class="fa fa-copy"></i>';
+                copyBtn.title = 'Copy';
+                copyBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.copy();
+                };
+                controls.appendChild(copyBtn);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'control-btn delete-btn';
+                deleteBtn.innerHTML = '<i class="fa fa-times"></i>';
+                deleteBtn.title = 'Delete';
+                deleteBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    this.delete();
+                };
+                controls.appendChild(deleteBtn);
+
+                div.appendChild(controls);
+
+                // Resize handles
                 ['nw', 'ne', 'sw', 'se'].forEach(pos => {
                     const handle = document.createElement('div');
                     handle.className = `resize-handle ${pos}`;
@@ -804,13 +854,24 @@
                     if (e.target.classList.contains('resize-handle')) {
                         isResizing = true;
                         resizeHandle = e.target.dataset.handle;
-                    } else if (!e.target.classList.contains('delete-btn')) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    } else if (!e.target.closest('.annotation-controls')) {
                         isDragging = true;
+                        const rect = this.page.annotationLayer.getBoundingClientRect();
+                        dragStartX = e.clientX - rect.left - this.x;
+                        dragStartY = e.clientY - rect.top - this.y;
+                        e.stopPropagation();
+                        e.preventDefault();
                     }
                     selectAnnotation(this);
-                    dragStartX = e.clientX - this.x;
-                    dragStartY = e.clientY - this.y;
-                    e.stopPropagation();
+                });
+
+                // Prevent text selection during drag
+                this.element.addEventListener('selectstart', (e) => {
+                    if (isDragging || isResizing) {
+                        e.preventDefault();
+                    }
                 });
             }
 
@@ -831,7 +892,24 @@
             delete() {
                 this.element.remove();
                 this.page.removeAnnotation(this);
-                selectedAnnotation = null;
+                if (selectedAnnotation === this) {
+                    selectedAnnotation = null;
+                }
+            }
+
+            copy() {
+                const newAnnotation = this.clone();
+                newAnnotation.x += 20;
+                newAnnotation.y += 20;
+                const element = newAnnotation.createElement();
+                this.page.annotationLayer.appendChild(element);
+                this.page.addAnnotation(newAnnotation);
+                selectAnnotation(newAnnotation);
+            }
+
+            clone() {
+                // Override in subclasses
+                return null;
             }
         }
 
@@ -853,8 +931,13 @@
                 div.textContent = this.text;
                 this.applyStyles();
 
-                div.addEventListener('input', () => {
+                div.addEventListener('input', (e) => {
                     this.text = div.textContent;
+                });
+
+                div.addEventListener('dblclick', (e) => {
+                    e.stopPropagation();
+                    div.focus();
                 });
 
                 return div;
@@ -872,6 +955,19 @@
                 this[prop] = value;
                 this.applyStyles();
             }
+
+            clone() {
+                const newAnnotation = new TextAnnotation(this.page);
+                newAnnotation.text = this.text;
+                newAnnotation.fontSize = this.fontSize;
+                newAnnotation.fontFamily = this.fontFamily;
+                newAnnotation.color = this.color;
+                newAnnotation.fontWeight = this.fontWeight;
+                newAnnotation.fontStyle = this.fontStyle;
+                newAnnotation.width = this.width;
+                newAnnotation.height = this.height;
+                return newAnnotation;
+            }
         }
 
         class ImageAnnotation extends Annotation {
@@ -887,8 +983,16 @@
                 div.classList.add('image-annotation');
                 const img = document.createElement('img');
                 img.src = this.imageSrc;
+                img.draggable = false;
                 div.appendChild(img);
                 return div;
+            }
+
+            clone() {
+                const newAnnotation = new ImageAnnotation(this.page, this.imageSrc);
+                newAnnotation.width = this.width;
+                newAnnotation.height = this.height;
+                return newAnnotation;
             }
         }
 
@@ -951,6 +1055,16 @@
                 this[prop] = value;
                 this.updateShape();
             }
+
+            clone() {
+                const newAnnotation = new ShapeAnnotation(this.page, this.shapeType);
+                newAnnotation.fillColor = this.fillColor;
+                newAnnotation.borderColor = this.borderColor;
+                newAnnotation.borderWidth = this.borderWidth;
+                newAnnotation.width = this.width;
+                newAnnotation.height = this.height;
+                return newAnnotation;
+            }
         }
 
         // Event Listeners
@@ -958,9 +1072,7 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            uploadedFile = file;
             currentFileName.textContent = file.name;
-
             document.getElementById('uploadLoader').style.display = 'block';
 
             await loadPDF(file);
@@ -980,7 +1092,6 @@
                 const page = await pdfDoc.getPage(i);
                 const actualViewport = page.getViewport({ scale: 1 });
 
-                // Calculate scale to fit width
                 const containerWidth = Math.min(MAX_WIDTH, window.innerWidth - 100);
                 scale = actualViewport.width > containerWidth ? containerWidth / actualViewport.width : 1;
                 const viewport = page.getViewport({ scale: scale });
@@ -1036,7 +1147,7 @@
                 thumbItem.addEventListener('click', () => switchToPage(i - 1));
                 thumbnailContainer.appendChild(thumbItem);
 
-                const pdfPage = new PDFPage(i, canvas, viewport, actualViewport);
+                const pdfPage = new PDFPage(i, canvas, viewport);
                 pdfPage.wrapper = wrapper;
                 pdfPage.annotationLayer = annotationLayer;
                 pdfPage.drawingCanvas = drawingCanvas;
@@ -1117,10 +1228,9 @@
             });
         }
 
-        // Tool handlers - MODIFIED TO AUTO-ADD TO CURRENT PAGE
+        // Tool handlers
         addTextBtn.addEventListener('click', () => {
             setTool('text');
-            // Auto-add text to center of current page
             addAnnotationToCurrentPage('text');
         });
 
@@ -1135,10 +1245,10 @@
             const reader = new FileReader();
             reader.onload = (event) => {
                 setTool('image', event.target.result);
-                // Auto-add image to center of current page
                 addAnnotationToCurrentPage('image', event.target.result);
             };
             reader.readAsDataURL(file);
+            imageUpload.value = '';
         });
 
         drawBtn.addEventListener('click', () => {
@@ -1147,7 +1257,6 @@
 
         addShapeBtn.addEventListener('click', () => {
             setTool('shape');
-            // Auto-add shape to center of current page
             addAnnotationToCurrentPage('shape');
         });
 
@@ -1168,7 +1277,6 @@
             });
         }
 
-        // NEW FUNCTION: Add annotation to current page automatically
         function addAnnotationToCurrentPage(type, data = null) {
             const page = pages[currentPageIndex];
             let annotation;
@@ -1191,7 +1299,6 @@
             }
 
             if (annotation) {
-                // Place in center of page
                 const centerX = (page.viewport.width / 2) - (annotation.width / 2);
                 const centerY = (page.viewport.height / 2) - (annotation.height / 2);
 
@@ -1333,8 +1440,8 @@
         document.addEventListener('mousemove', (e) => {
             if (isDragging && selectedAnnotation) {
                 const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-                const x = e.clientX - rect.left - dragStartX + selectedAnnotation.x;
-                const y = e.clientY - rect.top - dragStartY + selectedAnnotation.y;
+                const x = e.clientX - rect.left - dragStartX;
+                const y = e.clientY - rect.top - dragStartY;
                 selectedAnnotation.updatePosition(
                     Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
                     Math.max(0, Math.min(y, rect.height - selectedAnnotation.height))
@@ -1390,10 +1497,9 @@
 
         // Clear all
         clearAllBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to clear all annotations on this page?')) {
+            if (confirm('Clear all annotations on this page?')) {
                 const currentPage = pages[currentPageIndex];
-                currentPage.annotations.forEach(ann => ann.element.remove());
-                currentPage.annotations = [];
+                [...currentPage.annotations].forEach(ann => ann.delete());
                 const ctx = currentPage.drawingCanvas.getContext('2d');
                 ctx.clearRect(0, 0, currentPage.drawingCanvas.width, currentPage.drawingCanvas.height);
                 selectedAnnotation = null;
@@ -1402,19 +1508,19 @@
 
         // Delete file button
         deleteFileBtn.addEventListener('click', () => {
-            if (confirm('Are you sure you want to delete this PDF and start over?')) {
+            if (confirm('Remove this PDF and start over?')) {
                 location.reload();
             }
         });
 
-        // Save PDF
-        saveEditBtn.addEventListener('click', async () => {
-            alert('Save functionality requires backend integration. Download PDF with annotations using a PDF library like pdf-lib.');
-        });
-
-        // Reset
-        resetBtn.addEventListener('click', () => {
-            location.reload();
+        // Click outside to deselect
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.annotation-item') && !e.target.closest('.tool-btn')) {
+                if (selectedAnnotation) {
+                    selectedAnnotation.element.classList.remove('selected');
+                    selectedAnnotation = null;
+                }
+            }
         });
     </script>
 

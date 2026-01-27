@@ -16,7 +16,7 @@
 
     <!-- Favicon -->
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    
+
 </head>
 
 <body>
@@ -201,6 +201,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+        // Add this entire script section to replace the existing <script> tag in your HTML
+
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // DOM Elements
@@ -211,6 +213,7 @@
         const uploadSection = document.getElementById('uploadSection');
         const currentFileName = document.getElementById('currentFileName');
         const deleteFileBtn = document.getElementById('deleteFileBtn');
+        const editPdfBtn = document.getElementById('editPdf');
 
         // Tool buttons
         const addTextBtn = document.getElementById('addTextBtn');
@@ -219,10 +222,13 @@
         const addShapeBtn = document.getElementById('addShapeBtn');
         const undoBtn = document.getElementById('undoBtn');
         const clearAllBtn = document.getElementById('clearAllBtn');
+        const saveBtn = document.getElementById('saveBtn');
         const imageUpload = document.getElementById('imageUpload');
+        const API_BASE_URL = 'http://127.0.0.1:8080';
 
         // State
         let pdfDoc = null;
+        let pdfFile = null;
         let currentTool = null;
         let pages = [];
         let currentPageIndex = 0;
@@ -233,6 +239,8 @@
         let dragStartY = 0;
         let resizeHandle = null;
         let scale = 1;
+        let isEditMode = false;
+        let ocrTextBlocks = [];
         const MAX_WIDTH = 800;
 
         class PDFPage {
@@ -241,9 +249,12 @@
                 this.canvas = canvas;
                 this.viewport = viewport;
                 this.annotations = [];
+                this.ocrTextBlocks = [];
+                this.deletedRegions = [];
                 this.drawingCanvas = null;
                 this.wrapper = null;
                 this.annotationLayer = null;
+                this.ocrLayer = null;
                 this.scale = 1;
             }
 
@@ -256,6 +267,10 @@
                 if (index > -1) {
                     this.annotations.splice(index, 1);
                 }
+            }
+
+            addDeletedRegion(region) {
+                this.deletedRegions.push(region);
             }
         }
 
@@ -272,8 +287,7 @@
             }
 
             applyTransform() {
-                this.element.style.transform =
-                    `rotate(${this.rotation}deg)`;
+                this.element.style.transform = `rotate(${this.rotation}deg)`;
             }
 
             createElement() {
@@ -285,7 +299,6 @@
                 div.style.width = this.width + 'px';
                 div.style.height = this.height + 'px';
 
-                // Controls
                 const controls = document.createElement('div');
                 controls.className = 'annotation-controls';
 
@@ -305,10 +318,9 @@
                 rotateBtn.title = 'Rotate';
                 rotateBtn.onclick = (e) => {
                     e.stopPropagation();
-                    this.rotate(15); // rotate by 15°
+                    this.rotate(15);
                 };
                 controls.appendChild(rotateBtn);
-
 
                 const deleteBtn = document.createElement('button');
                 deleteBtn.className = 'control-btn delete-btn';
@@ -322,7 +334,6 @@
 
                 div.appendChild(controls);
 
-                // Resize handles
                 ['nw', 'ne', 'sw', 'se'].forEach(pos => {
                     const handle = document.createElement('div');
                     handle.className = `resize-handle ${pos}`;
@@ -358,7 +369,6 @@
                     selectAnnotation(this);
                 });
 
-                // Prevent text selection during drag
                 this.element.addEventListener('selectstart', (e) => {
                     if (isDragging || isResizing) {
                         e.preventDefault();
@@ -399,13 +409,12 @@
             }
 
             clone() {
-                // Override in subclasses
                 return null;
             }
         }
 
         class TextAnnotation extends Annotation {
-            constructor(page) {
+            constructor(page, isOCR = false) {
                 super('text', page);
                 this.text = 'Double click to edit';
                 this.fontSize = 16;
@@ -413,47 +422,41 @@
                 this.color = '#000000';
                 this.fontWeight = 'normal';
                 this.fontStyle = 'normal';
+                this.isOCR = isOCR;
+                this.originalData = null;
             }
 
             createElement() {
-                // Base annotation box (same as image/shape)
                 const wrapper = super.createElement();
                 wrapper.classList.add('text-annotation');
+                if (this.isOCR) {
+                    wrapper.classList.add('ocr-text-block');
+                }
 
-                // 🔹 Inner editable content
                 const content = document.createElement('div');
                 content.className = 'text-content';
                 content.textContent = this.text;
                 content.contentEditable = false;
-
                 content.style.width = '100%';
                 content.style.height = '100%';
                 content.style.outline = 'none';
 
-                // Prevent inner div from stealing selection
                 content.addEventListener('mousedown', (e) => {
-                    // Select annotation when clicking text
                     selectAnnotation(this);
-
-                    // Allow drag when not editing
                     if (!content.isContentEditable) {
                         isDragging = true;
                         const rect = this.page.annotationLayer.getBoundingClientRect();
                         dragStartX = e.clientX - rect.left - this.x;
                         dragStartY = e.clientY - rect.top - this.y;
-
                         e.preventDefault();
                     }
                 });
 
-
-                // Enable edit on double click
                 content.addEventListener('dblclick', (e) => {
                     e.stopPropagation();
                     content.contentEditable = true;
-                    if (content.isContentEditable) {
-                        content.style.cursor = 'text';
-                    }
+                    content.style.cursor = 'text';
+                    wrapper.classList.add('editing');
                     content.focus();
 
                     const range = document.createRange();
@@ -464,7 +467,6 @@
                     sel.addRange(range);
                 });
 
-                // Save text
                 content.addEventListener('input', () => {
                     this.text = content.textContent;
                 });
@@ -473,14 +475,23 @@
                     content.contentEditable = false;
                     this.text = content.textContent;
                     content.style.cursor = 'move';
+                    wrapper.classList.remove('editing');
+
+                    // If this was an OCR block, mark original region for deletion
+                    if (this.isOCR && this.originalData) {
+                        this.page.addDeletedRegion({
+                            x: this.originalData.x,
+                            y: this.originalData.y,
+                            width: this.originalData.width,
+                            height: this.originalData.height
+                        });
+                    }
                 });
 
                 wrapper.appendChild(content);
-
                 this.applyStyles();
                 return wrapper;
             }
-
 
             applyStyles() {
                 this.element.style.fontSize = this.fontSize + 'px';
@@ -496,7 +507,7 @@
             }
 
             clone() {
-                const newAnnotation = new TextAnnotation(this.page);
+                const newAnnotation = new TextAnnotation(this.page, false);
                 newAnnotation.text = this.text;
                 newAnnotation.fontSize = this.fontSize;
                 newAnnotation.fontFamily = this.fontFamily;
@@ -553,7 +564,6 @@
                 svg.style.pointerEvents = 'auto';
                 svg.style.userSelect = 'none';
 
-
                 this.svg = svg;
                 this.updateShape();
                 div.appendChild(svg);
@@ -608,7 +618,6 @@
             }
         }
 
-
         class DrawingAnnotation extends Annotation {
             constructor(page, pathData, color, width) {
                 super('drawing', page);
@@ -654,6 +663,7 @@
             const file = e.target.files[0];
             if (!file) return;
 
+            pdfFile = file;
             currentFileName.textContent = file.name;
             const loader = document.getElementById('uploadLoader');
             loader.style.display = 'block';
@@ -687,22 +697,16 @@
                 const containerWidth = containerRect.width || MAX_WIDTH;
                 const containerHeight = containerRect.height || window.innerHeight - 300;
 
-
                 const maxWidth = containerWidth - 40;
                 const maxHeight = containerHeight - 40;
-
 
                 const scaleX = maxWidth / actualViewport.width;
                 const scaleY = maxHeight / actualViewport.height;
 
-                // Choose the smaller scale so BOTH fit
                 scale = Math.max(0.2, Math.min(scaleX, scaleY, 2));
-
-
 
                 const viewport = page.getViewport({ scale: scale });
 
-                // Main canvas
                 const wrapper = document.createElement('div');
                 wrapper.className = 'pdf-page-wrapper';
                 wrapper.style.width = viewport.width + 'px';
@@ -721,12 +725,22 @@
                 annotationLayer.style.width = viewport.width + 'px';
                 annotationLayer.style.height = viewport.height + 'px';
 
+                const ocrLayer = document.createElement('div');
+                ocrLayer.className = 'ocr-layer';
+                ocrLayer.style.width = viewport.width + 'px';
+                ocrLayer.style.height = viewport.height + 'px';
+                ocrLayer.style.position = 'absolute';
+                ocrLayer.style.top = '0';
+                ocrLayer.style.left = '0';
+                ocrLayer.style.pointerEvents = 'none';
+
                 const drawingCanvas = document.createElement('canvas');
                 drawingCanvas.className = 'drawing-canvas';
                 drawingCanvas.width = viewport.width;
                 drawingCanvas.height = viewport.height;
 
                 wrapper.appendChild(canvas);
+                wrapper.appendChild(ocrLayer);
                 wrapper.appendChild(annotationLayer);
                 wrapper.appendChild(drawingCanvas);
                 canvasContainer.appendChild(wrapper);
@@ -756,6 +770,7 @@
                 const pdfPage = new PDFPage(i, canvas, viewport);
                 pdfPage.wrapper = wrapper;
                 pdfPage.annotationLayer = annotationLayer;
+                pdfPage.ocrLayer = ocrLayer;
                 pdfPage.drawingCanvas = drawingCanvas;
                 pdfPage.scale = scale;
                 pages.push(pdfPage);
@@ -766,6 +781,193 @@
             editorContainer.style.display = 'block';
             uploadSection.style.display = 'none';
         }
+
+        // Edit PDF Button - Extract text using OCR
+        editPdfBtn.addEventListener('click', async () => {
+            if (!pdfFile) {
+                alert('Please upload a PDF first');
+                return;
+            }
+
+            editPdfBtn.disabled = true;
+            editPdfBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Extracting Text...</span>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', pdfFile);
+
+                const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayOCRText(data.pages);
+                    isEditMode = true;
+                    editPdfBtn.innerHTML = '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
+                    editPdfBtn.classList.add('active');
+                } else {
+                    alert('Error extracting text: ' + (data.error || 'Unknown error'));
+                    editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+                    editPdfBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to extract text from PDF. Make sure Flask server is running on port 5000.');
+                editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+                editPdfBtn.disabled = false;
+            }
+        });
+
+        function displayOCRText(pagesData) {
+            pagesData.forEach((pageData, index) => {
+                const page = pages[index];
+                if (!page) return;
+
+                page.ocrLayer.style.pointerEvents = 'auto';
+
+                pageData.textBlocks.forEach(block => {
+                    const annotation = new TextAnnotation(page, true);
+                    annotation.text = block.text;
+                    annotation.x = block.x;
+                    annotation.y = block.y;
+                    annotation.width = Math.max(block.width, 30);
+                    annotation.height = Math.max(block.height, 15);
+                    annotation.fontSize = Math.round(block.fontSize);
+                    annotation.fontFamily = block.fontFamily || 'Arial';
+                    annotation.color = block.color || '#000000';
+
+                    // Store original position for deletion
+                    annotation.originalData = {
+                        x: block.x,
+                        y: block.y,
+                        width: block.width,
+                        height: block.height
+                    };
+
+                    const element = annotation.createElement();
+                    page.ocrLayer.appendChild(element);
+                    page.ocrTextBlocks.push(annotation);
+                });
+            });
+        }
+
+        // Save PDF with changes
+        saveBtn.addEventListener('click', async () => {
+            if (!pdfFile) {
+                alert('No PDF loaded');
+                return;
+            }
+
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Saving...</span>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', pdfFile);
+
+                const annotationsData = pages.map(page => {
+                    const pageAnnotations = [];
+
+                    // Add regular annotations
+                    page.annotations.forEach(ann => {
+                        const annData = {
+                            type: ann.type,
+                            x: ann.x,
+                            y: ann.y,
+                            width: ann.width,
+                            height: ann.height
+                        };
+
+                        if (ann.type === 'text') {
+                            annData.text = ann.text;
+                            annData.fontSize = ann.fontSize;
+                            annData.fontFamily = ann.fontFamily;
+                            annData.color = ann.color;
+                            annData.fontWeight = ann.fontWeight;
+                            annData.fontStyle = ann.fontStyle;
+                        } else if (ann.type === 'image') {
+                            annData.imageData = ann.imageSrc;
+                        } else if (ann.type === 'shape') {
+                            annData.shapeType = ann.shapeType;
+                            annData.fillColor = ann.fillColor;
+                            annData.borderColor = ann.borderColor;
+                            annData.borderWidth = ann.borderWidth;
+                        }
+
+                        pageAnnotations.push(annData);
+                    });
+
+                    // Add edited OCR text blocks as new annotations
+                    page.ocrTextBlocks.forEach(ann => {
+                        pageAnnotations.push({
+                            type: 'text',
+                            text: ann.text,
+                            x: ann.x,
+                            y: ann.y,
+                            fontSize: ann.fontSize,
+                            fontFamily: ann.fontFamily,
+                            color: ann.color,
+                            fontWeight: ann.fontWeight,
+                            fontStyle: ann.fontStyle
+                        });
+                    });
+
+                    // Get drawing canvas data if exists
+                    let drawingData = null;
+                    const ctx = page.drawingCanvas.getContext('2d');
+                    const imageData = ctx.getImageData(0, 0, page.drawingCanvas.width, page.drawingCanvas.height);
+                    const hasDrawing = imageData.data.some(channel => channel !== 0);
+
+                    if (hasDrawing) {
+                        drawingData = page.drawingCanvas.toDataURL('image/png');
+                    }
+
+                    return {
+                        pageNum: page.pageNum,
+                        annotations: pageAnnotations,
+                        deletedRegions: page.deletedRegions,
+                        drawing: drawingData
+                    };
+                });
+
+                formData.append('annotations', JSON.stringify(annotationsData));
+
+                const response = await fetch(`${API_BASE_URL}/edit-pdf`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'edited_' + currentFileName.textContent;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+
+                    alert('PDF saved successfully!');
+                } else {
+                    const error = await response.json();
+                    alert('Error saving PDF: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to save PDF. Make sure Flask server is running on port 5000.');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
+            }
+        });
 
         function switchToPage(index) {
             currentPageIndex = index;
@@ -839,7 +1041,6 @@
                 if (!isDrawing || pathPoints.length < 2) return;
                 isDrawing = false;
 
-                // 1️⃣ Calculate bounding box
                 const xs = pathPoints.map(p => p.x);
                 const ys = pathPoints.map(p => p.y);
 
@@ -848,13 +1049,11 @@
                 const maxX = Math.max(...xs);
                 const maxY = Math.max(...ys);
 
-                // 2️⃣ Build normalized SVG path
                 let d = `M ${pathPoints[0].x - minX} ${pathPoints[0].y - minY}`;
                 for (let i = 1; i < pathPoints.length; i++) {
                     d += ` L ${pathPoints[i].x - minX} ${pathPoints[i].y - minY}`;
                 }
 
-                // 3️⃣ Create annotation
                 const annotation = new DrawingAnnotation(
                     page,
                     d,
@@ -871,23 +1070,17 @@
                 page.annotationLayer.appendChild(element);
                 page.addAnnotation(annotation);
 
-                // 4️⃣ Clear temp canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
             }
-
         }
-
 
         // Tool handlers
         addTextBtn.addEventListener('click', (e) => {
             setTool('text');
-
-            // Only create text if click was on the button itself
             if (e.target.closest('.tool-btn') === addTextBtn) {
                 addAnnotationToCurrentPage('text');
             }
         });
-
 
         addImageBtn.addEventListener('click', () => {
             imageUpload.click();
@@ -912,12 +1105,10 @@
 
         addShapeBtn.addEventListener('click', (e) => {
             setTool('shape');
-
             if (e.target.closest('.tool-btn') === addShapeBtn) {
                 addAnnotationToCurrentPage('shape');
             }
         });
-
 
         function setTool(tool, data = null) {
             currentTool = tool;
@@ -941,7 +1132,7 @@
             let annotation;
 
             if (type === 'text') {
-                annotation = new TextAnnotation(page);
+                annotation = new TextAnnotation(page, false);
                 annotation.fontSize = parseInt(document.getElementById('fontSize').value);
                 annotation.fontFamily = document.getElementById('fontFamily').value;
                 annotation.color = document.getElementById('textColor').value;
@@ -1174,7 +1365,7 @@
 
         // Click outside to deselect
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.annotation-item') && !e.target.closest('.tool-btn')) {
+            if (!e.target.closest('.annotation-item') && !e.target.closest('.tool-btn') && !e.target.closest('.ocr-text-block')) {
                 if (selectedAnnotation) {
                     selectedAnnotation.element.classList.remove('selected');
                     selectedAnnotation = null;

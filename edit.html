@@ -448,6 +448,7 @@
                 this.fontStyle = 'normal';
                 this.isOCR = isOCR;
                 this.originalData = null;
+                this.deletionMarked = false; // ADD THIS LINE
             }
 
             createElement() {
@@ -501,17 +502,17 @@
                     content.style.cursor = 'move';
                     wrapper.classList.remove('editing');
 
-                    // If this was an OCR block, mark original region for deletion
-                    if (this.isOCR && this.originalData) {
+                    // CRITICAL FIX: Mark original text for deletion when ANY change is made
+                    if (this.isOCR && this.originalData && !this.deletionMarked) {
                         this.page.addDeletedRegion({
                             x: this.originalData.x,
                             y: this.originalData.y,
                             width: this.originalData.width,
                             height: this.originalData.height
                         });
+                        this.deletionMarked = true; // Prevent duplicate deletion marks
                     }
                 });
-
                 wrapper.appendChild(content);
                 this.applyStyles();
                 return wrapper;
@@ -523,6 +524,21 @@
                 this.element.style.color = this.color;
                 this.element.style.fontWeight = this.fontWeight;
                 this.element.style.fontStyle = this.fontStyle;
+            }
+
+            // Override updatePosition to mark deletion
+            updatePosition(x, y) {
+                super.updatePosition(x, y);
+
+                if (this.isOCR && this.originalData && !this.deletionMarked) {
+                    this.page.addDeletedRegion({
+                        x: this.originalData.x,
+                        y: this.originalData.y,
+                        width: this.originalData.width,
+                        height: this.originalData.height
+                    });
+                    this.deletionMarked = true;
+                }
             }
 
             updateProperty(prop, value) {
@@ -542,6 +558,23 @@
                 newAnnotation.height = this.height;
                 return newAnnotation;
             }
+
+            // Add after clone() method in TextAnnotation class
+            updatePosition(x, y) {
+                // Call parent method
+                super.updatePosition(x, y);
+
+                // Mark original for deletion when moved
+                if (this.isOCR && this.originalData && !this.deletionMarked) {
+                    this.page.addDeletedRegion({
+                        x: this.originalData.x,
+                        y: this.originalData.y,
+                        width: this.originalData.width,
+                        height: this.originalData.height
+                    });
+                    this.deletionMarked = true;
+                }
+            }
         }
 
         class ImageAnnotation extends Annotation {
@@ -550,6 +583,9 @@
                 this.imageSrc = imageSrc;
                 this.width = 150;
                 this.height = 150;
+                this.isOriginal = false;
+                this.originalImageData = null;
+                this.deletionMarked = false;
             }
 
             createElement() {
@@ -569,18 +605,45 @@
                 return newAnnotation;
             }
 
-            // Add this inside the ImageAnnotation class, after the clone() method
+            // CRITICAL FIX: Override updatePosition to mark original for deletion
+            updatePosition(x, y) {
+                super.updatePosition(x, y);
+
+                // Mark original image for deletion when moved
+                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
+                    if (!this.page.deletedImages) {
+                        this.page.deletedImages = [];
+                    }
+                    this.page.deletedImages.push(this.originalImageData);
+                    this.deletionMarked = true;
+                }
+            }
+
+            // CRITICAL FIX: Override updateSize to mark original for deletion
+            updateSize(width, height) {
+                super.updateSize(width, height);
+
+                // Mark original image for deletion when resized
+                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
+                    if (!this.page.deletedImages) {
+                        this.page.deletedImages = [];
+                    }
+                    this.page.deletedImages.push(this.originalImageData);
+                    this.deletionMarked = true;
+                }
+            }
 
             delete() {
                 this.element.remove();
                 this.page.removeAnnotation(this);
 
                 // If this was an original PDF image, mark it for deletion
-                if (this.isOriginal && this.originalImageData) {
+                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
                     if (!this.page.deletedImages) {
                         this.page.deletedImages = [];
                     }
                     this.page.deletedImages.push(this.originalImageData);
+                    this.deletionMarked = true;
                 }
 
                 if (selectedAnnotation === this) {
@@ -872,7 +935,6 @@
             }
         });
 
-
         function displayOCRText(pagesData) {
             pagesData.forEach((pageData, index) => {
                 const page = pages[index];
@@ -893,6 +955,7 @@
                     annotation.fontSize = Math.round(block.fontSize);
                     annotation.fontFamily = block.fontFamily || 'Arial';
                     annotation.color = block.color || '#000000';
+                    annotation.deletionMarked = false; // ADD THIS
 
                     // Store original position for deletion
                     annotation.originalData = {
@@ -957,7 +1020,10 @@
 
                     const element = annotation.createElement();
                     page.ocrLayer.appendChild(element);
-                    page.ocrTextBlocks.push(annotation);
+
+                    // CRITICAL FIX: Add to annotations array (not ocrTextBlocks)
+                    // so it can be tracked for changes
+                    page.addAnnotation(annotation);
                 }
             } catch (error) {
                 console.error('Error loading image:', error);
@@ -981,9 +1047,10 @@
                 const annotationsData = pages.map(page => {
                     const pageAnnotations = [];
 
-                    // Add regular annotations (excluding original OCR items)
+                    // Add ALL annotations (both new and edited originals)
                     page.annotations.forEach(ann => {
-                        if (ann.isOCR || ann.isOriginal) return; // Skip original items
+                        // CRITICAL: Don't skip annotations - process ALL
+                        // Deleted originals are tracked separately via deletedRegions/deletedImages
 
                         const annData = {
                             type: ann.type,
@@ -1002,6 +1069,9 @@
                             annData.fontStyle = ann.fontStyle;
                         } else if (ann.type === 'image') {
                             annData.imageData = ann.imageSrc;
+                            // CRITICAL: Use current dimensions
+                            annData.width = ann.width;
+                            annData.height = ann.height;
                         } else if (ann.type === 'shape') {
                             annData.shapeType = ann.shapeType;
                             annData.fillColor = ann.fillColor;
@@ -1012,7 +1082,7 @@
                         pageAnnotations.push(annData);
                     });
 
-                    // Add edited OCR text blocks as new annotations
+                    // Add edited OCR text blocks (from ocrLayer)
                     page.ocrTextBlocks.forEach(ann => {
                         if (ann.type !== 'text') return;
 

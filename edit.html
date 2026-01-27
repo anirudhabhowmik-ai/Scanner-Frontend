@@ -199,6 +199,8 @@
     <!-- JS -->
     <script src="./js/app.js"></script>
 
+    <script src="./js/customModal.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
         // Add this entire script section to replace the existing <script> tag in your HTML
@@ -251,6 +253,7 @@
                 this.annotations = [];
                 this.ocrTextBlocks = [];
                 this.deletedRegions = [];
+                this.deletedImages = [];
                 this.drawingCanvas = null;
                 this.wrapper = null;
                 this.annotationLayer = null;
@@ -352,6 +355,7 @@
             }
 
             attachEvents() {
+                // EXISTING MOUSE EVENTS
                 this.element.addEventListener('mousedown', (e) => {
                     if (e.target.classList.contains('resize-handle')) {
                         isResizing = true;
@@ -368,6 +372,26 @@
                     }
                     selectAnnotation(this);
                 });
+
+                // NEW: ADD TOUCH EVENTS FOR MOBILE
+                this.element.addEventListener('touchstart', (e) => {
+                    const touch = e.touches[0];
+
+                    if (e.target.classList.contains('resize-handle')) {
+                        isResizing = true;
+                        resizeHandle = e.target.dataset.handle;
+                        e.stopPropagation();
+                        e.preventDefault();
+                    } else if (!e.target.closest('.annotation-controls')) {
+                        isDragging = true;
+                        const rect = this.page.annotationLayer.getBoundingClientRect();
+                        dragStartX = touch.clientX - rect.left - this.x;
+                        dragStartY = touch.clientY - rect.top - this.y;
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                    selectAnnotation(this);
+                }, { passive: false });
 
                 this.element.addEventListener('selectstart', (e) => {
                     if (isDragging || isResizing) {
@@ -543,6 +567,25 @@
                 newAnnotation.width = this.width;
                 newAnnotation.height = this.height;
                 return newAnnotation;
+            }
+
+            // Add this inside the ImageAnnotation class, after the clone() method
+
+            delete() {
+                this.element.remove();
+                this.page.removeAnnotation(this);
+
+                // If this was an original PDF image, mark it for deletion
+                if (this.isOriginal && this.originalImageData) {
+                    if (!this.page.deletedImages) {
+                        this.page.deletedImages = [];
+                    }
+                    this.page.deletedImages.push(this.originalImageData);
+                }
+
+                if (selectedAnnotation === this) {
+                    selectedAnnotation = null;
+                }
             }
         }
 
@@ -785,7 +828,7 @@
         // Edit PDF Button - Extract text using OCR
         editPdfBtn.addEventListener('click', async () => {
             if (!pdfFile) {
-                alert('Please upload a PDF first');
+                await CustomModal.alert('Please upload a PDF first', 'Notice');
                 return;
             }
 
@@ -808,28 +851,36 @@
                 const data = await response.json();
 
                 if (data.success) {
+                    // Display OCR text
                     displayOCRText(data.pages);
+                    // Display images
+                    displayOCRImages(data.pages);
+
                     isEditMode = true;
                     editPdfBtn.innerHTML = '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
                     editPdfBtn.classList.add('active');
                 } else {
-                    alert('Error extracting text: ' + (data.error || 'Unknown error'));
+                    await CustomModal.error('Error extracting text: ' + (data.error || 'Unknown error'), 'Extraction Failed');
                     editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
                     editPdfBtn.disabled = false;
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to extract text from PDF. Make sure Flask server is running on port 5000.');
+                await CustomModal.error('Failed to extract text from PDF. Make sure Flask server is running on port 8080.', 'Connection Error');
                 editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
                 editPdfBtn.disabled = false;
             }
         });
+
 
         function displayOCRText(pagesData) {
             pagesData.forEach((pageData, index) => {
                 const page = pages[index];
                 if (!page) return;
 
+                // Clear existing OCR blocks
+                page.ocrTextBlocks = [];
+                page.ocrLayer.innerHTML = '';
                 page.ocrLayer.style.pointerEvents = 'auto';
 
                 pageData.textBlocks.forEach(block => {
@@ -858,6 +909,61 @@
             });
         }
 
+        // Add after the displayOCRText function
+
+        function displayOCRImages(pagesData) {
+            pagesData.forEach((pageData, index) => {
+                const page = pages[index];
+                if (!page) return;
+
+                pageData.images.forEach(img => {
+                    createEditableImage(page, img, pageData.pdfId);
+                });
+            });
+        }
+
+        async function createEditableImage(page, imgInfo, pdfId) {
+            const annotation = new ImageAnnotation(page, '');
+            annotation.x = imgInfo.x;
+            annotation.y = imgInfo.y;
+            annotation.width = imgInfo.width;
+            annotation.height = imgInfo.height;
+            annotation.xref = imgInfo.xref;
+            annotation.isOriginal = true;
+
+            // Fetch actual image
+            try {
+                const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        xref: imgInfo.xref,
+                        pageNum: imgInfo.pageNum,
+                        pdfId: pdfId
+                    })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const imageUrl = URL.createObjectURL(blob);
+                    annotation.imageSrc = imageUrl;
+                    annotation.originalImageData = {
+                        xref: imgInfo.xref,
+                        x: imgInfo.x,
+                        y: imgInfo.y,
+                        width: imgInfo.width,
+                        height: imgInfo.height
+                    };
+
+                    const element = annotation.createElement();
+                    page.ocrLayer.appendChild(element);
+                    page.ocrTextBlocks.push(annotation);
+                }
+            } catch (error) {
+                console.error('Error loading image:', error);
+            }
+        }
+
         // Save PDF with changes
         saveBtn.addEventListener('click', async () => {
             if (!pdfFile) {
@@ -875,8 +981,10 @@
                 const annotationsData = pages.map(page => {
                     const pageAnnotations = [];
 
-                    // Add regular annotations
+                    // Add regular annotations (excluding original OCR items)
                     page.annotations.forEach(ann => {
+                        if (ann.isOCR || ann.isOriginal) return; // Skip original items
+
                         const annData = {
                             type: ann.type,
                             x: ann.x,
@@ -906,11 +1014,15 @@
 
                     // Add edited OCR text blocks as new annotations
                     page.ocrTextBlocks.forEach(ann => {
+                        if (ann.type !== 'text') return;
+
                         pageAnnotations.push({
                             type: 'text',
                             text: ann.text,
                             x: ann.x,
                             y: ann.y,
+                            width: ann.width,
+                            height: ann.height,
                             fontSize: ann.fontSize,
                             fontFamily: ann.fontFamily,
                             color: ann.color,
@@ -932,7 +1044,8 @@
                     return {
                         pageNum: page.pageNum,
                         annotations: pageAnnotations,
-                        deletedRegions: page.deletedRegions,
+                        deletedRegions: page.deletedRegions || [],
+                        deletedImages: page.deletedImages || [],  // ADD THIS LINE
                         drawing: drawingData
                     };
                 });
@@ -1001,6 +1114,7 @@
             let isDrawing = false;
             let pathPoints = [];
 
+            // Mouse events
             canvas.addEventListener('mousedown', (e) => {
                 if (currentTool !== 'draw') return;
                 isDrawing = true;
@@ -1025,6 +1139,7 @@
                 ctx.strokeStyle = penColor.value;
                 ctx.lineWidth = parseInt(penWidth.value);
                 ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
 
                 ctx.beginPath();
                 ctx.moveTo(last.x, last.y);
@@ -1037,8 +1152,56 @@
             canvas.addEventListener('mouseup', () => finishStroke());
             canvas.addEventListener('mouseleave', () => finishStroke());
 
+            // Touch events for mobile
+            canvas.addEventListener('touchstart', (e) => {
+                if (currentTool !== 'draw') return;
+                e.preventDefault();
+
+                isDrawing = true;
+                pathPoints = [];
+
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                pathPoints.push({
+                    x: touch.clientX - rect.left,
+                    y: touch.clientY - rect.top
+                });
+            }, { passive: false });
+
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing || currentTool !== 'draw') return;
+                e.preventDefault();
+
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+
+                const last = pathPoints[pathPoints.length - 1];
+
+                ctx.strokeStyle = penColor.value;
+                ctx.lineWidth = parseInt(penWidth.value);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                ctx.beginPath();
+                ctx.moveTo(last.x, last.y);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                pathPoints.push({ x, y });
+            }, { passive: false });
+
+            canvas.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                finishStroke();
+            }, { passive: false });
+
             function finishStroke() {
-                if (!isDrawing || pathPoints.length < 2) return;
+                if (!isDrawing || pathPoints.length < 2) {
+                    isDrawing = false;
+                    return;
+                }
                 isDrawing = false;
 
                 const xs = pathPoints.map(p => p.x);
@@ -1287,6 +1450,7 @@
         });
 
         // Mouse events for dragging and resizing
+        // EXISTING MOUSE EVENTS
         document.addEventListener('mousemove', (e) => {
             if (isDragging && selectedAnnotation) {
                 const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
@@ -1336,6 +1500,61 @@
             resizeHandle = null;
         });
 
+        // NEW: ADD TOUCH EVENTS
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging && !isResizing) return;
+
+            e.preventDefault(); // Prevent scrolling while dragging
+            const touch = e.touches[0];
+
+            if (isDragging && selectedAnnotation) {
+                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+                const x = touch.clientX - rect.left - dragStartX;
+                const y = touch.clientY - rect.top - dragStartY;
+                selectedAnnotation.updatePosition(
+                    Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
+                    Math.max(0, Math.min(y, rect.height - selectedAnnotation.height))
+                );
+            } else if (isResizing && selectedAnnotation) {
+                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+                const touchX = touch.clientX - rect.left;
+                const touchY = touch.clientY - rect.top;
+
+                let newWidth = selectedAnnotation.width;
+                let newHeight = selectedAnnotation.height;
+                let newX = selectedAnnotation.x;
+                let newY = selectedAnnotation.y;
+
+                if (resizeHandle.includes('e')) {
+                    newWidth = touchX - selectedAnnotation.x;
+                }
+                if (resizeHandle.includes('w')) {
+                    newWidth = selectedAnnotation.width + (selectedAnnotation.x - touchX);
+                    newX = touchX;
+                }
+                if (resizeHandle.includes('s')) {
+                    newHeight = touchY - selectedAnnotation.y;
+                }
+                if (resizeHandle.includes('n')) {
+                    newHeight = selectedAnnotation.height + (selectedAnnotation.y - touchY);
+                    newY = touchY;
+                }
+
+                if (newWidth > 20 && newHeight > 20) {
+                    selectedAnnotation.updateSize(newWidth, newHeight);
+                    if (newX !== selectedAnnotation.x || newY !== selectedAnnotation.y) {
+                        selectedAnnotation.updatePosition(newX, newY);
+                    }
+                }
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchend', () => {
+            isDragging = false;
+            isResizing = false;
+            resizeHandle = null;
+        });
+
         // Undo functionality
         undoBtn.addEventListener('click', () => {
             const currentPage = pages[currentPageIndex];
@@ -1346,8 +1565,9 @@
         });
 
         // Clear all
-        clearAllBtn.addEventListener('click', () => {
-            if (confirm('Clear all annotations on this page?')) {
+        clearAllBtn.addEventListener('click', async () => {
+            const confirmed = await CustomModal.confirm('Clear all annotations on this page?', 'Confirm Action');
+            if (confirmed) {
                 const currentPage = pages[currentPageIndex];
                 [...currentPage.annotations].forEach(ann => ann.delete());
                 const ctx = currentPage.drawingCanvas.getContext('2d');
@@ -1357,8 +1577,13 @@
         });
 
         // Delete file button
-        deleteFileBtn.addEventListener('click', () => {
-            if (confirm('Remove this PDF and start over?')) {
+        deleteFileBtn.addEventListener('click', async () => {
+            const confirmed = await CustomModal.confirm(
+                'Remove this PDF and start over? All your changes will be lost.',
+                'Confirm Deletion',
+                'danger'
+            );
+            if (confirmed) {
                 location.reload();
             }
         });

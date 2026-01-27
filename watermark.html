@@ -24,20 +24,17 @@
             background: white;
             border-radius: 12px;
             border: 2px dashed #e5e7eb;
-            margin-bottom: 200px;
         }
 
         @media(max-width:1024px) {
             .pages-grid {
                 grid-template-columns: repeat(2, 1fr);
-                margin-bottom: 240px;
             }
         }
 
         @media(max-width:600px) {
             .pages-grid {
                 grid-template-columns: 1fr;
-                margin-bottom: 280px;
             }
         }
 
@@ -502,10 +499,6 @@
             .text-style-buttons .option-group {
                 min-width: 75px;
             }
-
-            .pages-grid {
-                margin-bottom: 270px;
-            }
         }
 
         @media(max-width:600px) {
@@ -554,10 +547,6 @@
 
             .options-grid {
                 gap: 5px;
-            }
-
-            .pages-grid {
-                margin-bottom: 280px;
             }
         }
 
@@ -951,6 +940,17 @@
             updatePreview();
         }
 
+        function getPreviewFont(pdfFont) {
+            const map = {
+                "Helvetica": "Arial, sans-serif",
+                "Helvetica-Bold": "Arial Black, Arial, sans-serif",
+                "Courier": "Courier New, monospace",
+                "Times-Roman": "Times New Roman, serif"
+            };
+            return map[pdfFont] || "Arial, sans-serif";
+        }
+
+
         /* ===== PREVIEW ===== */
         function updatePreview() {
             clearError()
@@ -1016,6 +1016,7 @@
                     wm.style.fontWeight = fontWeight;
                     wm.style.fontStyle = fontStyle;
                     wm.style.textDecoration = textDecoration;
+                    wm.style.fontFamily = getPreviewFont(fontFamily.value);
                 }
 
                 makeDraggable(wm, card);

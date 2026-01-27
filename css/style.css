@@ -32,7 +32,7 @@ header {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 10000;
     background: #1e3a8a;
     transition: all 0.3s ease;
     padding: 20px 0;

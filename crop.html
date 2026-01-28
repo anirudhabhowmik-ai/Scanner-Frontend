@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crop PDF Pages | PDFMaster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        .crop-box {
+            position: absolute;
+            border: 2px dashed #4f46e5;
+            background: rgba(79, 70, 229, 0.15);
+            cursor: move;
+            touch-action: none;
+        }
+
+        .crop-handle {
+            width: 14px;
+            height: 14px;
+            background: #4f46e5;
+            position: absolute;
+            right: -7px;
+            bottom: -7px;
+            border-radius: 3px;
+            cursor: nwse-resize;
+            touch-action: none;
+        }
+
+        .page-canvas-wrapper {
+            position: relative;
+            touch-action: none;
+            display: inline-block;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .pages-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .page-card {
+            position: relative;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .page-card canvas {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .page-number {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        .pdf-source-tag {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(79, 70, 229, 0.9);
+            color: #fff;
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            z-index: 10;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .page-apply-btn {
+            position: absolute;
+            top: 35px;
+            right: 10px;
+            background: #4f46e5;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: none;
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .page-apply-btn.show {
+            display: block;
+        }
+
+        .page-apply-btn:hover {
+            background: #4338ca;
+        }
+
+        .file-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .file-list li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            margin: 8px 0;
+            background: #f3f4f6;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .file-list .pdf-icon {
+            color: #4f46e5;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .file-list .delete-file {
+            cursor: pointer;
+            color: #ef4444;
+            font-size: 18px;
+            transition: color 0.2s;
+        }
+
+        .file-list .delete-file:hover {
+            color: #dc2626;
+        }
+
+        .error-text {
+            color: #ef4444;
+            margin-top: 10px;
+            padding: 10px;
+            background: #fee2e2;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .preview-section {
+            margin-top: 30px;
+        }
+
+        .preview-section h4 {
+            margin-bottom: 15px;
+            color: #1f2937;
+        }
+
+        #cropArea {
+            display: none;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #cropArea.show {
+            display: block;
+        }
+
+        .crop-instruction {
+            margin: 15px 0;
+            padding: 12px;
+            background: #eff6ff;
+            border-left: 4px solid #4f46e5;
+            border-radius: 6px;
+            text-align: left;
+        }
+
+        .crop-instruction strong {
+            color: #4f46e5;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e5e7eb;
+            border-top-color: #4f46e5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .pdf-summary {
+            margin: 15px 0;
+            padding: 12px;
+            background: #f0fdf4;
+            border-left: 4px solid #10b981;
+            border-radius: 6px;
+        }
+
+        .pdf-summary strong {
+            color: #065f46;
+        }
+    </style>
+</head>
+
+<body>
+    <section id="header-placeholder"></section>
+
+    <section class="merge-tool">
+        <div class="container">
+            <h1>Crop & Merge PDF Pages</h1>
+            <p>Upload multiple PDFs, set crop areas for each page, and merge them into a single cropped PDF.</p>
+
+            <div class="upload-section">
+                <div id="uploadSection">
+                    <label for="pdfUpload" class="upload-label"><i class="fa fa-upload"></i> Choose PDF files</label>
+                    <input type="file" id="pdfUpload" accept=".pdf" multiple>
+                </div>
+
+                <ul id="fileList" class="file-list" style="display:none;"></ul>
+
+                <div id="pdfSummary" class="pdf-summary" style="display:none;">
+                    <strong><i class="fas fa-info-circle"></i> Summary:</strong>
+                    <div id="summaryText"></div>
+                </div>
+
+                <div id="cropArea">
+                    <div class="crop-instruction">
+                        <strong><i class="fas fa-info-circle"></i> How to crop:</strong>
+                        <ul style="margin: 8px 0 0 20px;">
+                            <li>Drag the blue box to position the crop area on each page</li>
+                            <li>Use the handle at the bottom-right corner to resize</li>
+                            <li>Click "Apply to all pages" to use the same crop for all pages</li>
+                            <li>All PDFs will be merged into one after cropping</li>
+                        </ul>
+                    </div>
+                    <div id="pagesGrid" class="pages-grid"></div>
+                </div>
+
+                <button id="cropBtn" class="cta-button">
+                    <i class="fa fa-spinner fa-spin" style="display:none;" id="loaderIcon"></i>
+                    <span><i class="fas fa-crop"></i> Crop & Merge PDFs</span>
+                </button>
+
+                <p class="error-text" id="errorMsg"></p>
+
+                <p class="note" id="noteText">Supported format: PDF. You can upload multiple PDFs to crop and merge them.</p>
+
+                <div id="resultBtns" style="display:none; margin-top:30px;">
+                    <div class="result-card"><i class="fa fa-file-pdf"></i></div>
+                    <p class="file-name"><a href="#" id="fileNameLink" download="cropped_merged.pdf">cropped_merged.pdf</a></p>
+                    <div class="result-btns-container">
+                        <a id="downloadBtn" class="cta-button"><i class="fa fa-download"></i> Download PDF</a>
+                        <a id="shareBtn" class="cta-button"><i class="fa fa-share-alt"></i> Share</a>
+                        <button id="resetBtn" class="secondary-btn"><i class="fa fa-rotate-right"></i> Crop Another PDF</button>
+                    </div>
+                </div>
+
+                <div id="pdfPreview" class="preview-section" style="display:none;">
+                    <h4>Preview Cropped & Merged PDF</h4>
+                    <div id="previewGrid" class="pages-grid"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <h3 id="loadingTitle">Loading PDFs...</h3>
+            <p id="loadingText">Please wait while we load your documents</p>
+        </div>
+    </div>
+
+    <section id="footer-placeholder"></section>
+
+    <script src="./js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <script>
+        const BACKEND_URL = `${BACKEND_BASE_URL}/crop-pdf`;
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        const pdfUpload = document.getElementById("pdfUpload");
+        const fileList = document.getElementById("fileList");
+        const cropArea = document.getElementById("cropArea");
+        const pagesGrid = document.getElementById("pagesGrid");
+        const cropBtn = document.getElementById("cropBtn");
+        const errorMsg = document.getElementById("errorMsg");
+        const loaderIcon = document.getElementById("loaderIcon");
+        const uploadSection = document.getElementById("uploadSection");
+        const noteText = document.getElementById("noteText");
+        const resultBtns = document.getElementById("resultBtns");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const shareBtn = document.getElementById("shareBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const fileNameLink = document.getElementById("fileNameLink");
+        const pdfPreview = document.getElementById("pdfPreview");
+        const previewGrid = document.getElementById("previewGrid");
+        const loadingOverlay = document.getElementById("loadingOverlay");
+        const loadingTitle = document.getElementById("loadingTitle");
+        const loadingText = document.getElementById("loadingText");
+        const pdfSummary = document.getElementById("pdfSummary");
+        const summaryText = document.getElementById("summaryText");
+
+        let files = [];
+        let allPages = []; // Store all pages from all PDFs with metadata
+
+        function showError(msg) {
+            errorMsg.textContent = msg;
+            errorMsg.style.display = "block";
+            setTimeout(() => {
+                errorMsg.style.display = "none";
+            }, 5000);
+        }
+
+        function showLoading(title, text) {
+            loadingTitle.textContent = title;
+            loadingText.textContent = text;
+            loadingOverlay.classList.add("show");
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.remove("show");
+        }
+
+        function renderFileList() {
+            if (files.length === 0) {
+                fileList.style.display = "none";
+                fileList.innerHTML = "";
+                pdfSummary.style.display = "none";
+                return;
+            }
+
+            fileList.style.display = "block";
+            fileList.innerHTML = "";
+
+            files.forEach((file, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <div style="display: flex; align-items: center;">
+                        <i class="fa fa-file-pdf pdf-icon"></i>
+                        <span>${file.name}</span>
+                    </div>
+                    <i class="fa fa-times delete-file" data-index="${index}"></i>
+                `;
+                fileList.appendChild(li);
+            });
+        }
+
+        function updateSummary() {
+            if (files.length === 0) {
+                pdfSummary.style.display = "none";
+                return;
+            }
+
+            const totalPages = allPages.length;
+            pdfSummary.style.display = "block";
+            summaryText.innerHTML = `${files.length} PDF(s) uploaded • ${totalPages} total pages • Will be merged into 1 PDF after cropping`;
+        }
+
+        fileList.addEventListener("click", async (e) => {
+            if (e.target.classList.contains("delete-file")) {
+                const index = parseInt(e.target.dataset.index);
+                const fileName = files[index].name;
+                
+                // Remove file from array
+                files.splice(index, 1);
+                
+                // Remove all pages from this file
+                allPages = allPages.filter(page => page.fileName !== fileName);
+                
+                renderFileList();
+                updateSummary();
+                
+                // Reload all pages
+                if (files.length > 0) {
+                    await loadAllPagesFromAllPDFs();
+                } else {
+                    pagesGrid.innerHTML = "";
+                    cropArea.classList.remove("show");
+                }
+            }
+        });
+
+        pdfUpload.addEventListener("change", async () => {
+            const newFiles = Array.from(pdfUpload.files);
+            
+            // Add new files (avoid duplicates)
+            newFiles.forEach(file => {
+                if (!files.some(f => f.name === file.name && f.size === file.size)) {
+                    files.push(file);
+                }
+            });
+
+            renderFileList();
+
+            // Load all pages from all PDFs
+            await loadAllPagesFromAllPDFs();
+
+            // Clear error when PDF is uploaded
+            errorMsg.style.display = "none";
+
+            // Reset input
+            pdfUpload.value = "";
+        });
+
+        async function loadAllPagesFromAllPDFs() {
+            if (files.length === 0) return;
+
+            showLoading("Loading PDFs...", `Loading ${files.length} PDF file(s)`);
+
+            try {
+                allPages = [];
+                pagesGrid.innerHTML = "";
+
+                let globalPageIndex = 0;
+
+                for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+                    const file = files[fileIndex];
+                    
+                    loadingText.textContent = `Loading ${file.name} (${fileIndex + 1}/${files.length})`;
+
+                    const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
+
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const viewport = page.getViewport({ scale: 1 });
+                        const canvas = document.createElement("canvas");
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+                        
+                        await page.render({
+                            canvasContext: canvas.getContext("2d"),
+                            viewport: viewport
+                        }).promise;
+
+                        allPages.push({
+                            fileName: file.name,
+                            fileIndex: fileIndex,
+                            pageNum: pageNum,
+                            globalIndex: globalPageIndex,
+                            canvas: canvas,
+                            width: viewport.width,
+                            height: viewport.height
+                        });
+
+                        globalPageIndex++;
+                    }
+                }
+
+                // Now render all pages in the grid
+                renderAllPages();
+                updateSummary();
+                cropArea.classList.add("show");
+
+            } catch (err) {
+                showError("Failed to load PDFs: " + err.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function renderAllPages() {
+            pagesGrid.innerHTML = "";
+
+            allPages.forEach((pageData, index) => {
+                const card = document.createElement("div");
+                card.className = "page-card";
+                card.dataset.globalIndex = pageData.globalIndex;
+                card.dataset.fileIndex = pageData.fileIndex;
+                card.dataset.pageNum = pageData.pageNum;
+                card.dataset.fileName = pageData.fileName;
+                
+                card.innerHTML = `
+                    <div class="page-number">Page ${pageData.globalIndex + 1}</div>
+                    <div class="pdf-source-tag" title="${pageData.fileName}">${pageData.fileName}</div>
+                `;
+                
+                const wrapper = document.createElement("div");
+                wrapper.className = "page-canvas-wrapper";
+                
+                // Create a new canvas and copy the image data
+                const displayCanvas = document.createElement("canvas");
+                displayCanvas.width = pageData.canvas.width;
+                displayCanvas.height = pageData.canvas.height;
+                const ctx = displayCanvas.getContext("2d");
+                ctx.drawImage(pageData.canvas, 0, 0);
+                wrapper.appendChild(displayCanvas);
+
+                const cropBox = document.createElement("div");
+                cropBox.className = "crop-box";
+                cropBox.style.width = "60%";
+                cropBox.style.height = "60%";
+                cropBox.style.left = "20%";
+                cropBox.style.top = "20%";
+
+                const handle = document.createElement("div");
+                handle.className = "crop-handle";
+                cropBox.appendChild(handle);
+                wrapper.appendChild(cropBox);
+
+                card.appendChild(wrapper);
+
+                // Add "Apply to all pages" button
+                const applyBtn = document.createElement("button");
+                applyBtn.className = "page-apply-btn";
+                applyBtn.textContent = "Apply to all pages";
+                applyBtn.onclick = () => applyToAllPages(card);
+                card.appendChild(applyBtn);
+
+                pagesGrid.appendChild(card);
+
+                makeDraggable(cropBox, wrapper, card);
+                makeResizable(cropBox, handle, wrapper, card);
+            });
+        }
+
+        function showApplyButton(card) {
+            const btn = card.querySelector(".page-apply-btn");
+            if (btn) btn.classList.add("show");
+        }
+
+        function applyToAllPages(sourceCard) {
+            const srcBox = sourceCard.querySelector(".crop-box");
+            const srcWrapper = sourceCard.querySelector(".page-canvas-wrapper");
+
+            const left = srcBox.offsetLeft / srcWrapper.clientWidth;
+            const top = srcBox.offsetTop / srcWrapper.clientHeight;
+            const width = srcBox.offsetWidth / srcWrapper.clientWidth;
+            const height = srcBox.offsetHeight / srcWrapper.clientHeight;
+
+            document.querySelectorAll(".page-card").forEach(card => {
+                if (card === sourceCard) return;
+                const wrapper = card.querySelector(".page-canvas-wrapper");
+                const box = card.querySelector(".crop-box");
+                box.style.left = left * wrapper.clientWidth + "px";
+                box.style.top = top * wrapper.clientHeight + "px";
+                box.style.width = width * wrapper.clientWidth + "px";
+                box.style.height = height * wrapper.clientHeight + "px";
+
+                // Hide all other apply buttons
+                const btn = card.querySelector(".page-apply-btn");
+                if (btn) btn.classList.remove("show");
+            });
+
+            sourceCard.querySelector(".page-apply-btn").classList.remove("show");
+        }
+
+        function makeDraggable(box, wrapper, card) {
+            box.addEventListener("pointerdown", (e) => {
+                if (e.target.classList.contains("crop-handle")) return;
+                e.preventDefault();
+                box.setPointerCapture(e.pointerId);
+                
+                const startX = e.clientX;
+                const startY = e.clientY;
+                const startLeft = box.offsetLeft;
+                const startTop = box.offsetTop;
+
+                function move(ev) {
+                    let x = startLeft + (ev.clientX - startX);
+                    let y = startTop + (ev.clientY - startY);
+                    
+                    x = Math.max(0, Math.min(x, wrapper.offsetWidth - box.offsetWidth));
+                    y = Math.max(0, Math.min(y, wrapper.offsetHeight - box.offsetHeight));
+                    
+                    box.style.left = x + "px";
+                    box.style.top = y + "px";
+                    showApplyButton(card);
+                }
+
+                function up(ev) {
+                    box.releasePointerCapture(ev.pointerId);
+                    box.removeEventListener("pointermove", move);
+                    box.removeEventListener("pointerup", up);
+                }
+
+                box.addEventListener("pointermove", move);
+                box.addEventListener("pointerup", up);
+            });
+        }
+
+        function makeResizable(box, handle, wrapper, card) {
+            handle.addEventListener("pointerdown", (e) => {
+                e.preventDefault();
+                handle.setPointerCapture(e.pointerId);
+                
+                const startWidth = box.offsetWidth;
+                const startHeight = box.offsetHeight;
+                const startX = e.clientX;
+                const startY = e.clientY;
+
+                function move(ev) {
+                    let w = startWidth + (ev.clientX - startX);
+                    let h = startHeight + (ev.clientY - startY);
+                    
+                    w = Math.min(w, wrapper.offsetWidth - box.offsetLeft);
+                    h = Math.min(h, wrapper.offsetHeight - box.offsetTop);
+                    
+                    box.style.width = Math.max(40, w) + "px";
+                    box.style.height = Math.max(40, h) + "px";
+                    showApplyButton(card);
+                }
+
+                function up(ev) {
+                    handle.releasePointerCapture(ev.pointerId);
+                    handle.removeEventListener("pointermove", move);
+                    handle.removeEventListener("pointerup", up);
+                }
+
+                handle.addEventListener("pointermove", move);
+                handle.addEventListener("pointerup", up);
+            });
+        }
+
+        cropBtn.addEventListener("click", async () => {
+            errorMsg.style.display = "none";
+
+            if (files.length === 0) {
+                showError("Please select at least one PDF file to crop.");
+                return;
+            }
+
+            loaderIcon.style.display = "inline-block";
+            cropBtn.disabled = true;
+
+            try {
+                // Group crop data by file
+                const filesCropData = {};
+
+                document.querySelectorAll(".page-card").forEach(card => {
+                    const box = card.querySelector(".crop-box");
+                    const wrapper = card.querySelector(".page-canvas-wrapper");
+                    const canvas = card.querySelector("canvas");
+                    const fileIndex = parseInt(card.dataset.fileIndex);
+                    const pageNum = parseInt(card.dataset.pageNum);
+                    const fileName = card.dataset.fileName;
+
+                    const scaleX = canvas.width / wrapper.clientWidth;
+                    const scaleY = canvas.height / wrapper.clientHeight;
+
+                    if (!filesCropData[fileIndex]) {
+                        filesCropData[fileIndex] = {
+                            file: files[fileIndex],
+                            fileName: fileName,
+                            boxes: []
+                        };
+                    }
+
+                    filesCropData[fileIndex].boxes.push({
+                        page: pageNum,
+                        x: box.offsetLeft * scaleX,
+                        y: box.offsetTop * scaleY,
+                        width: box.offsetWidth * scaleX,
+                        height: box.offsetHeight * scaleY
+                    });
+                });
+
+                // Send all files to backend for cropping and merging
+                const fd = new FormData();
+                
+                // Add all files
+                Object.values(filesCropData).forEach((data, index) => {
+                    fd.append(`files`, data.file);
+                });
+
+                // Add crop data for all files
+                const allCropData = Object.values(filesCropData).map(data => ({
+                    fileName: data.fileName,
+                    boxes: data.boxes,
+                    mode: "individual"
+                }));
+
+                fd.append("cropData", JSON.stringify(allCropData));
+
+                const res = await fetch(BACKEND_URL, {
+                    method: "POST",
+                    body: fd
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.error || "Server error");
+                }
+
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+
+                // Update download links
+                downloadBtn.href = url;
+                shareBtn.href = url;
+                fileNameLink.href = url;
+                downloadBtn.setAttribute("download", "cropped_merged.pdf");
+                fileNameLink.setAttribute("download", "cropped_merged.pdf");
+                fileNameLink.textContent = "cropped_merged.pdf";
+
+                // Show preview
+                await showPreview(blob);
+
+                // UI updates
+                fileList.style.display = "none";
+                uploadSection.style.display = "none";
+                cropArea.classList.remove("show");
+                noteText.style.display = "none";
+                cropBtn.style.display = "none";
+                resultBtns.style.display = "block";
+                pdfSummary.style.display = "none";
+
+                const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+                if (!isSmallDevice) {
+                    pdfPreview.style.display = "block";
+                }
+
+                fileNameLink.onclick = (e) => {
+                    e.preventDefault();
+                    isSmallDevice
+                        ? window.open(url, "_blank")
+                        : pdfPreview.scrollIntoView({ behavior: "smooth" });
+                };
+
+            } catch (err) {
+                showError("Failed to crop PDFs: " + err.message);
+            } finally {
+                loaderIcon.style.display = "none";
+                cropBtn.disabled = false;
+            }
+        });
+
+        async function showPreview(blob) {
+            previewGrid.innerHTML = "";
+
+            try {
+                showLoading("Generating Preview...", "Loading all pages for preview");
+                
+                const pdf = await pdfjsLib.getDocument(URL.createObjectURL(blob)).promise;
+                
+                // Load ALL pages
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    loadingText.textContent = `Loading preview page ${i} of ${pdf.numPages}`;
+                    
+                    const page = await pdf.getPage(i);
+                    const viewport = page.getViewport({ scale: 1 });
+                    const canvas = document.createElement("canvas");
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    
+                    await page.render({
+                        canvasContext: canvas.getContext("2d"),
+                        viewport: viewport
+                    }).promise;
+
+                    const card = document.createElement("div");
+                    card.className = "page-card";
+                    card.innerHTML = `<div class="page-number">Page ${i}</div>`;
+                    card.appendChild(canvas);
+                    previewGrid.appendChild(card);
+                }
+                
+                hideLoading();
+            } catch (err) {
+                hideLoading();
+                showError("Failed to generate preview: " + err.message);
+            }
+        }
+
+        resetBtn.addEventListener("click", () => {
+            files = [];
+            allPages = [];
+            fileList.innerHTML = "";
+            fileList.style.display = "none";
+            pagesGrid.innerHTML = "";
+            previewGrid.innerHTML = "";
+
+            uploadSection.style.display = "block";
+            cropBtn.style.display = "inline-flex";
+            cropArea.classList.remove("show");
+            noteText.style.display = "block";
+            resultBtns.style.display = "none";
+            pdfPreview.style.display = "none";
+            errorMsg.style.display = "none";
+            pdfSummary.style.display = "none";
+
+            cropBtn.disabled = false;
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+    </script>
+</body>
+
+</html>

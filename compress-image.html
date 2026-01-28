@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compress Image Online Free | PDFMaster</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <section id="header-placeholder"></section>
+
+    <section class="merge-tool">
+        <div class="container">
+            <h1>Compress Image</h1>
+            <p>Reduce image file size without visible quality loss.</p>
+
+            <div class="upload-section">
+                <div id="uploadSection">
+                    <label class="upload-label">
+                        <i class="fa fa-upload"></i> Choose Image
+                        <input type="file" id="imageUpload" accept="image/*" hidden>
+                    </label>
+                </div>
+
+                <ul id="fileList" class="file-list" style="display:none;"></ul>
+
+                <button id="compressBtn" class="cta-button">
+                    <i class="fa fa-spinner fa-spin" style="display:none;"></i>
+                    Compress Image
+                </button>
+
+                <p id="errorMsg" class="error-text" style="display:none;"></p>
+
+                <div id="resultBtns" style="display:none; margin-top:20px;">
+                    <div id="resultCard" class="result-card">
+                        <i class="fa fa-image"></i>
+                    </div>
+
+                    <p class="file-name">
+                        <a href="#" id="fileNameLink">compressed.jpg</a>
+                    </p>
+
+                    <div id="compressionInfo" class="result-info" style="display:none;">
+                        <p><strong>Original Size:</strong> <span id="originalSize">-</span></p>
+                        <p><strong>Compressed Size:</strong> <span id="compressedSize">-</span></p>
+                        <p><strong>Size Reduced:</strong> <span id="reductionPercent" class="size-badge">-</span></p>
+                    </div>
+
+                    <a id="downloadBtn" class="cta-button">
+                        <i class="fa fa-download"></i> Download Compressed Image
+                    </a>
+
+                    <button id="resetBtn" class="secondary-btn">
+                        <i class="fa fa-rotate-right"></i> Compress Another Image
+                    </button>
+                </div>
+            </div>
+
+            <div id="imagePreview" style="display:none; margin-top:30px;">
+                <h4>Preview Compressed Image</h4>
+                <img id="imageFrame" style="max-width:100%; border-radius:12px; border:1px solid #e5e7eb;">
+            </div>
+        </div>
+    </section>
+
+    <section id="footer-placeholder"></section>
+
+    <script src="./js/app.js"></script>
+    <script>
+        const BACKEND_COMPRESS_URL = `${BACKEND_BASE_URL}/compress-image/`;
+
+        const imageInput = document.getElementById("imageUpload");
+        const compressBtn = document.getElementById("compressBtn");
+        const loader = compressBtn.querySelector(".fa-spinner");
+        const resultSection = document.getElementById("resultBtns");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const resetBtn = document.getElementById("resetBtn");
+        const fileList = document.getElementById("fileList");
+        const errorMsg = document.getElementById("errorMsg");
+
+        const compressionInfo = document.getElementById("compressionInfo");
+        const originalSizeEl = document.getElementById("originalSize");
+        const compressedSizeEl = document.getElementById("compressedSize");
+        const reductionPercentEl = document.getElementById("reductionPercent");
+        const fileNameLink = document.getElementById("fileNameLink");
+        const imageFrame = document.getElementById("imageFrame");
+        const imagePreview = document.getElementById("imagePreview");
+
+        let selectedFile = null;
+
+        function formatFileSize(bytes) {
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        imageInput.addEventListener("change", () => {
+            selectedFile = imageInput.files[0];
+            fileList.style.display = "block";
+            fileList.innerHTML = `<li><i class="fa fa-image"></i> ${selectedFile.name}</li>`;
+        });
+
+        compressBtn.addEventListener("click", async () => {
+            if (!selectedFile) return;
+
+            loader.style.display = "inline-block";
+            compressBtn.disabled = true;
+
+            const originalSize = selectedFile.size;
+            const formData = new FormData();
+            formData.append("file", selectedFile);
+
+            const response = await fetch(BACKEND_COMPRESS_URL, { method: "POST", body: formData });
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+
+            const compressedSize = blob.size;
+            const reduction = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+
+            resultSection.style.display = "block";
+            compressionInfo.style.display = "block";
+            originalSizeEl.textContent = formatFileSize(originalSize);
+            compressedSizeEl.textContent = formatFileSize(compressedSize);
+            reductionPercentEl.textContent = `${reduction}% smaller`;
+
+            downloadBtn.href = url;
+            downloadBtn.download = `compressed_${selectedFile.name}`;
+            fileNameLink.textContent = `compressed_${selectedFile.name}`;
+
+            imageFrame.src = url;
+            imagePreview.style.display = "block";
+
+            loader.style.display = "none";
+            compressBtn.disabled = false;
+        });
+
+        resetBtn.onclick = () => location.reload();
+    </script>
+</body>
+
+</html>

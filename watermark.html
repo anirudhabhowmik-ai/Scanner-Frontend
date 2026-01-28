@@ -435,6 +435,14 @@
             background: #4338ca;
         }
 
+        .watermark-preview {
+            touch-action: none;
+        }
+
+        .resize-handle {
+            touch-action: none;
+        }
+
         /* Responsive breakpoints */
         @media(max-width:1400px) {
             .options-grid {
@@ -1028,23 +1036,23 @@
 
         /* ===== DRAG BOUNDARY FIX ===== */
         function makeDraggable(el, card) {
-            el.onmousedown = e => {
+            el.addEventListener("pointerdown", e => {
                 if (e.target.classList.contains("resize-handle")) return;
 
                 e.preventDefault();
-                const parent = card;
-                const rect = parent.getBoundingClientRect();
+                el.setPointerCapture(e.pointerId);
+
+                const rect = card.getBoundingClientRect();
                 const elRect = el.getBoundingClientRect();
                 const offX = e.clientX - elRect.left;
                 const offY = e.clientY - elRect.top;
 
-                document.onmousemove = ev => {
+                function move(ev) {
                     let x = ev.clientX - rect.left - offX;
                     let y = ev.clientY - rect.top - offY;
 
-                    // Ensure watermark stays within bounds
-                    const maxX = parent.offsetWidth - el.offsetWidth;
-                    const maxY = parent.offsetHeight - el.offsetHeight;
+                    const maxX = card.offsetWidth - el.offsetWidth;
+                    const maxY = card.offsetHeight - el.offsetHeight;
 
                     x = Math.max(0, Math.min(x, maxX));
                     y = Math.max(0, Math.min(y, maxY));
@@ -1053,57 +1061,55 @@
                     el.style.top = y + "px";
                     el.style.transform = `rotate(${rotation.value}deg)`;
 
-                    // Show apply button for this specific page
                     showApplyButton(card);
-                };
+                }
 
-                document.onmouseup = () => {
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
-            };
+                function up(ev) {
+                    el.releasePointerCapture(ev.pointerId);
+                    el.removeEventListener("pointermove", move);
+                    el.removeEventListener("pointerup", up);
+                }
+
+                el.addEventListener("pointermove", move);
+                el.addEventListener("pointerup", up);
+            });
         }
+
 
         /* ===== RESIZE IMAGES ===== */
         function makeResizable(el, img, handle, position, card) {
-            handle.onmousedown = e => {
+            handle.addEventListener("pointerdown", e => {
                 e.preventDefault();
                 e.stopPropagation();
 
+                handle.setPointerCapture(e.pointerId);
+
                 const startWidth = img.offsetWidth;
-                const startHeight = img.offsetHeight;
                 const startX = e.clientX;
-                const startY = e.clientY;
-                const aspectRatio = startHeight / startWidth;
+                const aspectRatio = img.offsetHeight / startWidth;
 
-                document.onmousemove = ev => {
+                function move(ev) {
                     let diffX = ev.clientX - startX;
-                    let diffY = ev.clientY - startY;
-
-                    // Determine resize direction based on handle position
-                    let diff;
-                    if (position === 'br' || position === 'tr') {
-                        diff = diffX;
-                    } else {
-                        diff = -diffX;
-                    }
+                    let diff = (position === 'br' || position === 'tr') ? diffX : -diffX;
 
                     const newWidth = Math.max(50, Math.min(400, startWidth + diff));
-                    const newHeight = newWidth * aspectRatio;
-
                     img.style.width = newWidth + "px";
-                    img.style.height = newHeight + "px";
+                    img.style.height = newWidth * aspectRatio + "px";
 
-                    // Show apply button for this specific page
                     showApplyButton(card);
-                };
+                }
 
-                document.onmouseup = () => {
-                    document.onmousemove = null;
-                    document.onmouseup = null;
-                };
-            };
+                function up(ev) {
+                    handle.releasePointerCapture(ev.pointerId);
+                    handle.removeEventListener("pointermove", move);
+                    handle.removeEventListener("pointerup", up);
+                }
+
+                handle.addEventListener("pointermove", move);
+                handle.addEventListener("pointerup", up);
+            });
         }
+
 
         /* ===== SHOW APPLY BUTTON FOR SPECIFIC PAGE ===== */
         function showApplyButton(card) {

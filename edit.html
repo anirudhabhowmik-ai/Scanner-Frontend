@@ -1199,7 +1199,6 @@
             const ctx = canvas.getContext('2d');
 
             let isDrawing = false;
-            let pathPoints = [];
             let lastX = 0;
             let lastY = 0;
 
@@ -1222,69 +1221,71 @@
                 };
             }
 
-
             // Mouse events
             canvas.addEventListener('mousedown', (e) => {
                 if (currentTool !== 'draw') return;
+                e.preventDefault();
 
                 isDrawing = true;
-                pathPoints = [];
 
                 const coords = getCoords(e, canvas);
                 lastX = coords.x;
                 lastY = coords.y;
-
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-
-                pathPoints.push(coords);
-            });
-
-            canvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing || currentTool !== 'draw') return;
-
-                const coords = getCoords(e, canvas);
 
                 ctx.strokeStyle = penColor.value;
                 ctx.lineWidth = parseInt(penWidth.value);
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+            });
 
-                ctx.beginPath();                 // ⭐ start tiny segment
-                ctx.moveTo(lastX, lastY);        // from previous point
-                ctx.lineTo(coords.x, coords.y);  // to new point
-                ctx.stroke();                    // draw once
-                ctx.closePath();
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing || currentTool !== 'draw') return;
+                e.preventDefault();
+
+                const coords = getCoords(e, canvas);
+
+                ctx.lineTo(coords.x, coords.y);
+                ctx.stroke();
 
                 lastX = coords.x;
                 lastY = coords.y;
-                pathPoints.push(coords);
 
                 page.hasDrawing = true;
             });
 
-
-            canvas.addEventListener('mouseup', () => finishStroke());
-            canvas.addEventListener('mouseleave', () => {
-                if (isDrawing) finishStroke();
+            canvas.addEventListener('mouseup', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
+                isDrawing = false;
+                ctx.closePath();
             });
 
-            // FIX: IMPROVED Touch events for mobile
+            canvas.addEventListener('mouseleave', () => {
+                if (isDrawing) {
+                    isDrawing = false;
+                    ctx.closePath();
+                }
+            });
+
+            // Touch events for mobile
             canvas.addEventListener('touchstart', (e) => {
                 if (currentTool !== 'draw') return;
                 e.preventDefault();
 
                 isDrawing = true;
-                pathPoints = [];
 
                 const coords = getCoords(e, canvas);
                 lastX = coords.x;
                 lastY = coords.y;
 
+                ctx.strokeStyle = penColor.value;
+                ctx.lineWidth = parseInt(penWidth.value);
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.beginPath();
                 ctx.moveTo(lastX, lastY);
-
-                pathPoints.push(coords);
             }, { passive: false });
 
             canvas.addEventListener('touchmove', (e) => {
@@ -1293,70 +1294,21 @@
 
                 const coords = getCoords(e, canvas);
 
-                ctx.strokeStyle = penColor.value;
-                ctx.lineWidth = parseInt(penWidth.value);
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                ctx.beginPath();                 // ⭐ SAME FIX
-                ctx.moveTo(lastX, lastY);
                 ctx.lineTo(coords.x, coords.y);
                 ctx.stroke();
-                ctx.closePath();
 
                 lastX = coords.x;
                 lastY = coords.y;
-                pathPoints.push(coords);
 
                 page.hasDrawing = true;
             }, { passive: false });
 
-
             canvas.addEventListener('touchend', (e) => {
                 if (!isDrawing) return;
                 e.preventDefault();
-                finishStroke();
-            }, { passive: false });
-
-            function finishStroke() {
-                if (!isDrawing || pathPoints.length < 2) {
-                    isDrawing = false;
-                    return;
-                }
                 isDrawing = false;
-
-                const xs = pathPoints.map(p => p.x);
-                const ys = pathPoints.map(p => p.y);
-
-                const minX = Math.min(...xs);
-                const minY = Math.min(...ys);
-                const maxX = Math.max(...xs);
-                const maxY = Math.max(...ys);
-
-                let d = `M ${pathPoints[0].x - minX} ${pathPoints[0].y - minY}`;
-                for (let i = 1; i < pathPoints.length; i++) {
-                    d += ` L ${pathPoints[i].x - minX} ${pathPoints[i].y - minY}`;
-                }
-
-                const annotation = new DrawingAnnotation(
-                    page,
-                    d,
-                    penColor.value,
-                    parseInt(penWidth.value)
-                );
-
-                annotation.x = minX;
-                annotation.y = minY;
-                annotation.width = maxX - minX;
-                annotation.height = maxY - minY;
-
-                const element = annotation.createElement();
-                page.annotationLayer.appendChild(element);
-                page.addAnnotation(annotation);
-
-                // FIX: Don't clear the canvas - keep the drawing visible
-                // The drawing stays on drawingCanvas and is captured in save
-            }
+                ctx.closePath();
+            }, { passive: false });
         }
 
         // Tool handlers

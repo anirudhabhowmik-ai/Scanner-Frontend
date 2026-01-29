@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>HTML to PDF Online Free | PDFMaster</title>
+    <meta name="description" content="Convert HTML files to PDF online quickly and securely.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+
+    <style>
+        .btn-loading { pointer-events:none; }
+        .btn-loading .btn-text { display:none; }
+        .btn-loading .btn-spinner { display:inline-block; }
+        .btn-spinner { display:none; }
+        #htmlUpload { display:none; }
+        .note-box {
+            background:#f0f9ff;
+            border-left:4px solid #3b82f6;
+            padding:12px 16px;
+            margin-top:15px;
+            font-size:14px;
+            border-radius:4px;
+        }
+    </style>
+</head>
+
+<body>
+<section id="header-placeholder"></section>
+
+<section class="merge-tool">
+    <div class="container">
+        <h1>HTML to PDF</h1>
+        <p>Convert your HTML file to a PDF with styles, colors and layout preserved.</p>
+
+        <div class="upload-section">
+            <div id="uploadSection">
+                <label for="htmlUpload" class="upload-label">
+                    <i class="fa fa-upload"></i> Choose HTML File
+                </label>
+                <input type="file" id="htmlUpload" accept=".html,.htm">
+            </div>
+
+            <ul id="fileList" class="file-list" style="display:none;"></ul>
+
+            <button id="convertBtn" class="cta-button" style="margin-top:15px;">
+                <span class="btn-spinner"><i class="fa fa-spinner fa-spin"></i></span>
+                <span class="btn-text"><i class="fa fa-file-pdf"></i></span> Convert to PDF
+            </button>
+
+            <p id="errorMsg" class="error-text" style="display:none;"></p>
+
+            <div class="note-box" id="noteBox">
+                💡 Upload an HTML file. CSS styles, colors, tables and layout will be preserved.
+            </div>
+
+            <div id="resultBtns" style="display:none; margin-top:15px;">
+                <div class="result-card"><i class="fa fa-file-pdf"></i></div>
+                <p class="file-name"><a href="#" id="fileNameLink">converted.pdf</a></p>
+                <a id="downloadBtn" href="#" class="cta-button" download="converted.pdf">
+                    <i class="fa fa-download"></i> Download PDF
+                </a>
+                <a id="shareBtn" href="#" class="cta-button"><i class="fa fa-share-alt"></i> Share</a>
+                <button id="resetBtn" class="secondary-btn">
+                    <i class="fa fa-rotate-right"></i> Convert Another
+                </button>
+            </div>
+        </div>
+
+        <div id="pdfPreview" style="display:none; margin-top:30px;">
+            <h4>Preview PDF</h4>
+            <iframe id="pdfFrame" width="100%" height="600"
+                style="border-radius:12px; border:1px solid #e5e7eb;"></iframe>
+        </div>
+    </div>
+</section>
+
+<section id="footer-placeholder"></section>
+<script src="./js/app.js"></script>
+
+<script>
+const BACKEND_URL = `${BACKEND_BASE_URL}/html-to-pdf`;
+
+const htmlInput = document.getElementById("htmlUpload");
+const fileList = document.getElementById("fileList");
+const convertBtn = document.getElementById("convertBtn");
+const errorMsg = document.getElementById("errorMsg");
+const resultBtns = document.getElementById("resultBtns");
+const downloadBtn = document.getElementById("downloadBtn");
+const shareBtn = document.getElementById("shareBtn");
+const resetBtn = document.getElementById("resetBtn");
+const fileNameLink = document.getElementById("fileNameLink");
+const uploadSection = document.getElementById("uploadSection");
+const pdfPreview = document.getElementById("pdfPreview");
+const pdfFrame = document.getElementById("pdfFrame");
+const noteBox = document.getElementById("noteBox");
+
+let selectedFile = null;
+
+htmlInput.addEventListener("change", () => {
+    errorMsg.style.display = "none";
+    selectedFile = htmlInput.files[0];
+
+    if (!selectedFile) return;
+
+    fileList.style.display = "block";
+    fileList.innerHTML = `
+        <li>
+            <i class="fa fa-code" style="margin-right:10px;"></i>
+            <span>${selectedFile.name}</span>
+            <i class="fa fa-times delete-file"></i>
+        </li>`;
+});
+
+fileList.addEventListener("click", e => {
+    if (e.target.classList.contains("delete-file")) {
+        selectedFile = null;
+        fileList.style.display = "none";
+        fileList.innerHTML = "";
+        htmlInput.value = "";
+    }
+});
+
+convertBtn.addEventListener("click", async () => {
+    if (!selectedFile) {
+        errorMsg.textContent = "Please upload an HTML file";
+        errorMsg.style.display = "block";
+        return;
+    }
+
+    convertBtn.classList.add("btn-loading");
+    const formData = new FormData();
+    formData.append("files", selectedFile);
+
+    try {
+        const res = await fetch(BACKEND_URL, { method: "POST", body: formData });
+        if (!res.ok) throw new Error("Conversion failed");
+
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+
+        downloadBtn.href = url;
+        shareBtn.href = url;
+        fileNameLink.href = url;
+
+        resultBtns.style.display = "block";
+        uploadSection.style.display = "none";
+        convertBtn.style.display = "none";
+        fileList.style.display = "none";
+        noteBox.style.display = "none";
+
+        pdfFrame.src = url;
+        pdfPreview.style.display = "block";
+
+    } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = "block";
+    } finally {
+        convertBtn.classList.remove("btn-loading");
+    }
+});
+
+resetBtn.addEventListener("click", () => {
+    selectedFile = null;
+    fileList.innerHTML = "";
+    fileList.style.display = "none";
+    uploadSection.style.display = "block";
+    resultBtns.style.display = "none";
+    convertBtn.style.display = "inline-flex";
+    pdfPreview.style.display = "none";
+    noteBox.style.display = "block";
+    pdfFrame.src = "";
+});
+</script>
+</body>
+</html>

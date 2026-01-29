@@ -21,6 +21,8 @@
             <p>Reduce image file size without visible quality loss.</p>
 
             <div class="upload-section">
+
+                <!-- Upload -->
                 <div id="uploadSection">
                     <label class="upload-label">
                         <i class="fa fa-upload"></i> Choose Image
@@ -28,15 +30,25 @@
                     </label>
                 </div>
 
+                <!-- File List -->
                 <ul id="fileList" class="file-list" style="display:none;"></ul>
 
+                <!-- Compress Button -->
                 <button id="compressBtn" class="cta-button">
-                    <i class="fa fa-spinner fa-spin" style="display:none;"></i>
+                    <i class="fa fa-compress btn-icon"></i>
+                    <i class="fa fa-spinner fa-spin loader-icon" style="display:none;"></i>
                     Compress Image
                 </button>
 
+                <!-- Error -->
                 <p id="errorMsg" class="error-text" style="display:none;"></p>
 
+                <!-- Note -->
+                <p id="noteText" class="note" style="margin-top:10px;">
+                    Supported formats: JPG, PNG, WEBP. Large images are processed on the server.
+                </p>
+
+                <!-- Result -->
                 <div id="resultBtns" style="display:none; margin-top:20px;">
                     <div id="resultCard" class="result-card">
                         <i class="fa fa-image"></i>
@@ -52,8 +64,13 @@
                         <p><strong>Size Reduced:</strong> <span id="reductionPercent" class="size-badge">-</span></p>
                     </div>
 
+                    <!-- Buttons -->
                     <a id="downloadBtn" class="cta-button">
                         <i class="fa fa-download"></i> Download Compressed Image
+                    </a>
+
+                    <a id="shareBtn" class="cta-button" style="display:none;">
+                        <i class="fa fa-share-alt"></i> Share
                     </a>
 
                     <button id="resetBtn" class="secondary-btn">
@@ -62,6 +79,7 @@
                 </div>
             </div>
 
+            <!-- Preview -->
             <div id="imagePreview" style="display:none; margin-top:30px;">
                 <h4>Preview Compressed Image</h4>
                 <img id="imageFrame" style="max-width:100%; border-radius:12px; border:1px solid #e5e7eb;">
@@ -72,17 +90,22 @@
     <section id="footer-placeholder"></section>
 
     <script src="./js/app.js"></script>
+
     <script>
         const BACKEND_COMPRESS_URL = `${BACKEND_BASE_URL}/compress-image/`;
 
         const imageInput = document.getElementById("imageUpload");
         const compressBtn = document.getElementById("compressBtn");
-        const loader = compressBtn.querySelector(".fa-spinner");
+        const loader = compressBtn.querySelector(".loader-icon");
+        const btnIcon = compressBtn.querySelector(".btn-icon");
         const resultSection = document.getElementById("resultBtns");
         const downloadBtn = document.getElementById("downloadBtn");
         const resetBtn = document.getElementById("resetBtn");
+        const shareBtn = document.getElementById("shareBtn");
         const fileList = document.getElementById("fileList");
         const errorMsg = document.getElementById("errorMsg");
+        const noteText = document.getElementById("noteText");
+        const uploadSection = document.getElementById("uploadSection");
 
         const compressionInfo = document.getElementById("compressionInfo");
         const originalSizeEl = document.getElementById("originalSize");
@@ -101,47 +124,119 @@
             return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
         }
 
+        // File select
         imageInput.addEventListener("change", () => {
             selectedFile = imageInput.files[0];
-            fileList.style.display = "block";
-            fileList.innerHTML = `<li><i class="fa fa-image"></i> ${selectedFile.name}</li>`;
+            errorMsg.style.display = "none";
+
+            if (selectedFile) {
+                fileList.style.display = "block";
+                fileList.innerHTML = `
+            <li>
+                <span><i class="fa fa-image" style="margin-right: 5px;"></i> ${selectedFile.name}</span>
+                <i class="fa fa-times delete-file"></i>
+            </li>`;
+            }
         });
 
-        compressBtn.addEventListener("click", async () => {
-            if (!selectedFile) return;
+        // Delete file
+        fileList.addEventListener("click", (e) => {
+            if (e.target.classList.contains("delete-file")) {
+                selectedFile = null;
+                imageInput.value = "";
+                fileList.style.display = "none";
+            }
+        });
 
-            loader.style.display = "inline-block";
+        // Compress click
+        compressBtn.addEventListener("click", async () => {
+            if (!selectedFile) {
+                errorMsg.textContent = "Please select an image first";
+                errorMsg.style.display = "block";
+                return;
+            }
+
+            btnIcon.style.display = "none";       
+            loader.style.display = "inline-block"; 
             compressBtn.disabled = true;
 
             const originalSize = selectedFile.size;
             const formData = new FormData();
             formData.append("file", selectedFile);
 
-            const response = await fetch(BACKEND_COMPRESS_URL, { method: "POST", body: formData });
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
+            try {
+                const response = await fetch(BACKEND_COMPRESS_URL, { method: "POST", body: formData });
+                if (!response.ok) throw new Error();
 
-            const compressedSize = blob.size;
-            const reduction = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const compressedSize = blob.size;
+                const reduction = ((originalSize - compressedSize) / originalSize * 100).toFixed(1);
 
-            resultSection.style.display = "block";
-            compressionInfo.style.display = "block";
-            originalSizeEl.textContent = formatFileSize(originalSize);
-            compressedSizeEl.textContent = formatFileSize(compressedSize);
-            reductionPercentEl.textContent = `${reduction}% smaller`;
+                uploadSection.style.display = "none";
+                fileList.style.display = "none";
+                noteText.style.display = "none";
+                compressBtn.style.display = "none";
+                resultSection.style.display = "block";
 
-            downloadBtn.href = url;
-            downloadBtn.download = `compressed_${selectedFile.name}`;
-            fileNameLink.textContent = `compressed_${selectedFile.name}`;
+                compressionInfo.style.display = "block";
+                originalSizeEl.textContent = formatFileSize(originalSize);
+                compressedSizeEl.textContent = formatFileSize(compressedSize);
+                reductionPercentEl.textContent = `${reduction}% smaller`;
 
-            imageFrame.src = url;
-            imagePreview.style.display = "block";
+                downloadBtn.href = url;
+                downloadBtn.download = `compressed_${selectedFile.name}`;
+                fileNameLink.textContent = `compressed_${selectedFile.name}`;
+                imageFrame.src = url;
+                imagePreview.style.display = "block";
 
-            loader.style.display = "none";
-            compressBtn.disabled = false;
+                // Show Share button if supported
+                if (navigator.canShare) {
+                    shareBtn.style.display = "inline-flex";
+                    shareBtn.onclick = async () => {
+                        try {
+                            const file = new File([await fetch(url).then(r => r.blob())], `compressed_${selectedFile.name}`, { type: selectedFile.type });
+                            await navigator.share({
+                                title: `Compressed Image - ${selectedFile.name}`,
+                                files: [file]
+                            });
+                        } catch (err) {
+                            alert("Sharing failed: " + err);
+                        }
+                    };
+                } else {
+                    shareBtn.style.display = "none";
+                }
+
+            } catch {
+                errorMsg.textContent = "Compression failed. Try again.";
+                errorMsg.style.display = "block";
+            } finally {
+                loader.style.display = "none";        
+                btnIcon.style.display = "inline-block"; 
+                compressBtn.disabled = false;
+            }
         });
 
-        resetBtn.onclick = () => location.reload();
+        // Reset
+        resetBtn.addEventListener("click", () => {
+            imageInput.value = "";
+            selectedFile = null;
+            fileList.style.display = "none";
+            resultSection.style.display = "none";
+            uploadSection.style.display = "block";
+            noteText.style.display = "block";
+            compressBtn.style.display = "inline-flex";
+            errorMsg.style.display = "none";
+            compressionInfo.style.display = "none";
+            imageFrame.src = "";
+            imagePreview.style.display = "none";
+            loader.style.display = "none";         
+            btnIcon.style.display = "inline-block"; 
+            compressBtn.disabled = false;
+            shareBtn.style.display = "none";
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
     </script>
 </body>
 

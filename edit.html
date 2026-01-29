@@ -1250,8 +1250,11 @@
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
-                ctx.lineTo(coords.x, coords.y);
-                ctx.stroke();
+                ctx.beginPath();                 // ⭐ start tiny segment
+                ctx.moveTo(lastX, lastY);        // from previous point
+                ctx.lineTo(coords.x, coords.y);  // to new point
+                ctx.stroke();                    // draw once
+                ctx.closePath();
 
                 lastX = coords.x;
                 lastY = coords.y;
@@ -1259,6 +1262,7 @@
 
                 page.hasDrawing = true;
             });
+
 
             canvas.addEventListener('mouseup', () => finishStroke());
             canvas.addEventListener('mouseleave', () => {
@@ -1294,8 +1298,11 @@
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
-                ctx.lineTo(coords.x, coords.y);  // ✅ DO NOT BEGIN PATH AGAIN
+                ctx.beginPath();                 // ⭐ SAME FIX
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(coords.x, coords.y);
                 ctx.stroke();
+                ctx.closePath();
 
                 lastX = coords.x;
                 lastY = coords.y;
@@ -1303,6 +1310,7 @@
 
                 page.hasDrawing = true;
             }, { passive: false });
+
 
             canvas.addEventListener('touchend', (e) => {
                 if (!isDrawing) return;

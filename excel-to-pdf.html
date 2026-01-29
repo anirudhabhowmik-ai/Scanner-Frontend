@@ -118,6 +118,7 @@
             if (selectedFiles.length === 0) { fileList.style.display = "none"; return; }
             fileList.style.display = "block";
             fileList.innerHTML = "";
+            errorMsg.style.display = "none"
             selectedFiles.forEach((file, index) => {
                 fileList.innerHTML += `<li>
             <i class="fa fa-file-excel" style="margin-right:10px;"></i>
@@ -164,6 +165,7 @@
                 const url = URL.createObjectURL(blob);
 
                 downloadBtn.href = url;
+                downloadBtn.download = "converted.pdf";
                 shareBtn.href = url;
                 fileNameLink.href = url;
 

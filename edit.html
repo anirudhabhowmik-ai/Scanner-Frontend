@@ -203,8 +203,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-        // Add this entire script section to replace the existing <script> tag in your HTML
-
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         // DOM Elements
@@ -261,6 +259,7 @@
                 this.annotationLayer = null;
                 this.ocrLayer = null;
                 this.scale = 1;
+                this.hasDrawing = false;
             }
 
             addAnnotation(annotation) {
@@ -276,6 +275,10 @@
 
             addDeletedRegion(region) {
                 this.deletedRegions.push(region);
+            }
+
+            addDeletedImage(imageData) {
+                this.deletedImages.push(imageData);
             }
         }
 
@@ -358,7 +361,7 @@
             }
 
             attachEvents() {
-                // EXISTING MOUSE EVENTS
+                // MOUSE EVENTS
                 this.element.addEventListener('mousedown', (e) => {
                     if (e.target.classList.contains('resize-handle')) {
                         isResizing = true;
@@ -376,7 +379,7 @@
                     selectAnnotation(this);
                 });
 
-                // NEW: ADD TOUCH EVENTS FOR MOBILE
+                // TOUCH EVENTS
                 this.element.addEventListener('touchstart', (e) => {
                     const touch = e.touches[0];
 
@@ -453,7 +456,8 @@
                 this.fontStyle = 'normal';
                 this.isOCR = isOCR;
                 this.originalData = null;
-                this.deletionMarked = false; // ADD THIS LINE
+                this.deletionMarked = false;
+                this.isDeleted = false; // Track if annotation is deleted
             }
 
             createElement() {
@@ -470,6 +474,9 @@
                 content.style.width = '100%';
                 content.style.height = '100%';
                 content.style.outline = 'none';
+                content.style.whiteSpace = 'pre-wrap'; // FIX: Preserve line breaks
+                content.style.wordWrap = 'break-word';
+                content.style.overflowWrap = 'break-word';
 
                 content.addEventListener('mousedown', (e) => {
                     selectAnnotation(this);
@@ -507,7 +514,7 @@
                     content.style.cursor = 'move';
                     wrapper.classList.remove('editing');
 
-                    // CRITICAL FIX: Mark original text for deletion when ANY change is made
+                    // Mark original for deletion on ANY edit
                     if (this.isOCR && this.originalData && !this.deletionMarked) {
                         this.page.addDeletedRegion({
                             x: this.originalData.x,
@@ -515,7 +522,7 @@
                             width: this.originalData.width,
                             height: this.originalData.height
                         });
-                        this.deletionMarked = true; // Prevent duplicate deletion marks
+                        this.deletionMarked = true;
                     }
                 });
                 wrapper.appendChild(content);
@@ -549,12 +556,9 @@
                 return newAnnotation;
             }
 
-            // Add after clone() method in TextAnnotation class
             updatePosition(x, y) {
-                // Call parent method
                 super.updatePosition(x, y);
 
-                // Mark original for deletion when moved
                 if (this.isOCR && this.originalData && !this.deletionMarked) {
                     this.page.addDeletedRegion({
                         x: this.originalData.x,
@@ -563,6 +567,42 @@
                         height: this.originalData.height
                     });
                     this.deletionMarked = true;
+                }
+            }
+
+            updateSize(width, height) {
+                super.updateSize(width, height);
+
+                if (this.isOCR && this.originalData && !this.deletionMarked) {
+                    this.page.addDeletedRegion({
+                        x: this.originalData.x,
+                        y: this.originalData.y,
+                        width: this.originalData.width,
+                        height: this.originalData.height
+                    });
+                    this.deletionMarked = true;
+                }
+            }
+
+            // Override delete to mark as deleted
+            delete() {
+                this.element.remove();
+                this.page.removeAnnotation(this);
+                this.isDeleted = true;
+
+                // If OCR text being deleted, mark original for deletion
+                if (this.isOCR && this.originalData && !this.deletionMarked) {
+                    this.page.addDeletedRegion({
+                        x: this.originalData.x,
+                        y: this.originalData.y,
+                        width: this.originalData.width,
+                        height: this.originalData.height
+                    });
+                    this.deletionMarked = true;
+                }
+
+                if (selectedAnnotation === this) {
+                    selectedAnnotation = null;
                 }
             }
         }
@@ -576,6 +616,7 @@
                 this.isOriginal = false;
                 this.originalImageData = null;
                 this.deletionMarked = false;
+                this.isDeleted = false;
             }
 
             createElement() {
@@ -595,44 +636,34 @@
                 return newAnnotation;
             }
 
-            // CRITICAL FIX: Override updatePosition to mark original for deletion
             updatePosition(x, y) {
                 super.updatePosition(x, y);
 
-                // Mark original image for deletion when moved
                 if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
+                    this.page.addDeletedImage(this.originalImageData);
                     this.deletionMarked = true;
+                    this.isOriginal = false;
                 }
             }
 
-            // CRITICAL FIX: Override updateSize to mark original for deletion
             updateSize(width, height) {
                 super.updateSize(width, height);
 
-                // Mark original image for deletion when resized
                 if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
+                    this.page.addDeletedImage(this.originalImageData);
                     this.deletionMarked = true;
+                    this.isOriginal = false;
                 }
             }
 
             delete() {
                 this.element.remove();
                 this.page.removeAnnotation(this);
+                this.isDeleted = true;
 
-                // If this was an original PDF image, mark it for deletion
+                // If original PDF image being deleted, mark it for deletion
                 if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
+                    this.page.addDeletedImage(this.originalImageData);
                     this.deletionMarked = true;
                 }
 
@@ -885,6 +916,11 @@
                 return;
             }
 
+            if (isEditMode) {
+                await CustomModal.alert('Edit mode is already active', 'Notice');
+                return;
+            }
+
             editPdfBtn.disabled = true;
             editPdfBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Extracting Text...</span>';
 
@@ -904,9 +940,16 @@
                 const data = await response.json();
 
                 if (data.success) {
-                    // Display OCR text
+                    // Clear existing OCR data first
+                    pages.forEach(page => {
+                        page.ocrTextBlocks = [];
+                        page.ocrLayer.innerHTML = '';
+                        page.deletedRegions = [];
+                        page.deletedImages = [];
+                    });
+
+                    // Display OCR text and images
                     displayOCRText(data.pages);
-                    // Display images
                     displayOCRImages(data.pages);
 
                     isEditMode = true;
@@ -930,9 +973,6 @@
                 const page = pages[index];
                 if (!page) return;
 
-                // Clear existing OCR blocks
-                page.ocrTextBlocks = [];
-                page.ocrLayer.innerHTML = '';
                 page.ocrLayer.style.pointerEvents = 'auto';
 
                 pageData.textBlocks.forEach(block => {
@@ -945,7 +985,7 @@
                     annotation.fontSize = Math.round(block.fontSize);
                     annotation.fontFamily = block.fontFamily || 'Arial';
                     annotation.color = block.color || '#000000';
-                    annotation.deletionMarked = false; // ADD THIS
+                    annotation.deletionMarked = false;
 
                     // Store original position for deletion
                     annotation.originalData = {
@@ -961,8 +1001,6 @@
                 });
             });
         }
-
-        // Add after the displayOCRText function
 
         function displayOCRImages(pagesData) {
             pagesData.forEach((pageData, index) => {
@@ -984,7 +1022,6 @@
             annotation.xref = imgInfo.xref;
             annotation.isOriginal = true;
 
-            // Fetch actual image
             try {
                 const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
                     method: 'POST',
@@ -1010,10 +1047,7 @@
 
                     const element = annotation.createElement();
                     page.ocrLayer.appendChild(element);
-
-                    // CRITICAL FIX: Add to annotations array (not ocrTextBlocks)
-                    // so it can be tracked for changes
-                    page.addAnnotation(annotation);
+                    page.ocrTextBlocks.push(annotation);
                 }
             } catch (error) {
                 console.error('Error loading image:', error);
@@ -1037,10 +1071,39 @@
                 const annotationsData = pages.map(page => {
                     const pageAnnotations = [];
 
-                    // Add ALL annotations (both new and edited originals)
+                    // Add regular annotations from annotationLayer
                     page.annotations.forEach(ann => {
-                        // CRITICAL: Don't skip annotations - process ALL
-                        // Deleted originals are tracked separately via deletedRegions/deletedImages
+                        const annData = {
+                            type: ann.type,
+                            x: ann.x,
+                            y: ann.y,
+                            width: ann.width,
+                            height: ann.height
+                        };
+
+                        if (ann.type === 'text') {
+                            annData.text = ann.text;
+                            annData.fontSize = ann.fontSize;
+                            annData.fontFamily = ann.fontFamily;
+                            annData.color = ann.color;
+                            annData.fontWeight = ann.fontWeight;
+                            annData.fontStyle = ann.fontStyle;
+                        } else if (ann.type === 'image') {
+                            annData.imageData = ann.imageSrc;
+                        } else if (ann.type === 'shape') {
+                            annData.shapeType = ann.shapeType;
+                            annData.fillColor = ann.fillColor;
+                            annData.borderColor = ann.borderColor;
+                            annData.borderWidth = ann.borderWidth;
+                        }
+
+                        pageAnnotations.push(annData);
+                    });
+
+                    // Add OCR text blocks and images that haven't been deleted
+                    page.ocrTextBlocks.forEach(ann => {
+                        // Skip if deleted or element not in DOM
+                        if (ann.isDeleted || !ann.element || !ann.element.parentNode) return;
 
                         const annData = {
                             type: ann.type,
@@ -1059,53 +1122,28 @@
                             annData.fontStyle = ann.fontStyle;
                         } else if (ann.type === 'image') {
                             annData.imageData = ann.imageSrc;
-                            // CRITICAL: Use current dimensions
-                            annData.width = ann.width;
-                            annData.height = ann.height;
-                        } else if (ann.type === 'shape') {
-                            annData.shapeType = ann.shapeType;
-                            annData.fillColor = ann.fillColor;
-                            annData.borderColor = ann.borderColor;
-                            annData.borderWidth = ann.borderWidth;
                         }
 
                         pageAnnotations.push(annData);
                     });
 
-                    // Add edited OCR text blocks (from ocrLayer)
-                    page.ocrTextBlocks.forEach(ann => {
-                        if (ann.type !== 'text') return;
-
-                        pageAnnotations.push({
-                            type: 'text',
-                            text: ann.text,
-                            x: ann.x,
-                            y: ann.y,
-                            width: ann.width,
-                            height: ann.height,
-                            fontSize: ann.fontSize,
-                            fontFamily: ann.fontFamily,
-                            color: ann.color,
-                            fontWeight: ann.fontWeight,
-                            fontStyle: ann.fontStyle
-                        });
-                    });
-
-                    // Get drawing canvas data if exists
+                    // Check for drawing data
                     let drawingData = null;
-                    const ctx = page.drawingCanvas.getContext('2d');
-                    const imageData = ctx.getImageData(0, 0, page.drawingCanvas.width, page.drawingCanvas.height);
-                    const hasDrawing = imageData.data.some(channel => channel !== 0);
+                    if (page.hasDrawing) {
+                        const ctx = page.drawingCanvas.getContext('2d');
+                        const imageData = ctx.getImageData(0, 0, page.drawingCanvas.width, page.drawingCanvas.height);
+                        const hasDrawing = imageData.data.some(channel => channel !== 0);
 
-                    if (hasDrawing) {
-                        drawingData = page.drawingCanvas.toDataURL('image/png');
+                        if (hasDrawing) {
+                            drawingData = page.drawingCanvas.toDataURL('image/png');
+                        }
                     }
 
                     return {
                         pageNum: page.pageNum,
                         annotations: pageAnnotations,
                         deletedRegions: page.deletedRegions || [],
-                        deletedImages: page.deletedImages || [],  // ADD THIS LINE
+                        deletedImages: page.deletedImages || [],
                         drawing: drawingData
                     };
                 });
@@ -1135,7 +1173,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to save PDF. Make sure Flask server is running on port 5000.');
+                alert('Failed to save PDF. Make sure Flask server is running on port 8080.');
             } finally {
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
@@ -1172,129 +1210,96 @@
             const ctx = canvas.getContext('2d');
 
             let isDrawing = false;
-            let pathPoints = [];
+            let lastX = 0;
+            let lastY = 0;
 
-            // Mouse events
-            canvas.addEventListener('mousedown', (e) => {
-                if (currentTool !== 'draw') return;
+            function startDrawing(x, y) {
+                if (currentTool !== 'draw') return false;
                 isDrawing = true;
-                pathPoints = [];
+                lastX = x;
+                lastY = y;
 
-                const rect = canvas.getBoundingClientRect();
-                pathPoints.push({
-                    x: e.clientX - rect.left,
-                    y: e.clientY - rect.top
-                });
-            });
+                // Start a new path
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                return true;
+            }
 
-            canvas.addEventListener('mousemove', (e) => {
+            function draw(x, y) {
                 if (!isDrawing || currentTool !== 'draw') return;
-
-                const rect = canvas.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const last = pathPoints[pathPoints.length - 1];
 
                 ctx.strokeStyle = penColor.value;
                 ctx.lineWidth = parseInt(penWidth.value);
                 ctx.lineCap = 'round';
                 ctx.lineJoin = 'round';
 
-                ctx.beginPath();
-                ctx.moveTo(last.x, last.y);
+                // Draw line from last position to current
                 ctx.lineTo(x, y);
                 ctx.stroke();
 
-                pathPoints.push({ x, y });
+                // FIX: Don't start new path, continue existing one
+                lastX = x;
+                lastY = y;
+                page.hasDrawing = true;
+            }
+
+            function stopDrawing() {
+                if (!isDrawing) return;
+                isDrawing = false;
+                ctx.closePath(); // FIX: Close the path properly
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                startDrawing(x, y);
             });
 
-            canvas.addEventListener('mouseup', () => finishStroke());
-            canvas.addEventListener('mouseleave', () => finishStroke());
+            canvas.addEventListener('mousemove', (e) => {
+                if (!isDrawing) return;
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                draw(x, y);
+            });
 
-            // Touch events for mobile
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            // Touch events
             canvas.addEventListener('touchstart', (e) => {
                 if (currentTool !== 'draw') return;
-                e.preventDefault();
-
-                isDrawing = true;
-                pathPoints = [];
-
-                const touch = e.touches[0];
-                const rect = canvas.getBoundingClientRect();
-                pathPoints.push({
-                    x: touch.clientX - rect.left,
-                    y: touch.clientY - rect.top
-                });
-            }, { passive: false });
-
-            canvas.addEventListener('touchmove', (e) => {
-                if (!isDrawing || currentTool !== 'draw') return;
                 e.preventDefault();
 
                 const touch = e.touches[0];
                 const rect = canvas.getBoundingClientRect();
                 const x = touch.clientX - rect.left;
                 const y = touch.clientY - rect.top;
+                startDrawing(x, y);
+            }, { passive: false });
 
-                const last = pathPoints[pathPoints.length - 1];
+            canvas.addEventListener('touchmove', (e) => {
+                if (!isDrawing) return;
+                e.preventDefault();
 
-                ctx.strokeStyle = penColor.value;
-                ctx.lineWidth = parseInt(penWidth.value);
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-
-                ctx.beginPath();
-                ctx.moveTo(last.x, last.y);
-                ctx.lineTo(x, y);
-                ctx.stroke();
-
-                pathPoints.push({ x, y });
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                const x = touch.clientX - rect.left;
+                const y = touch.clientY - rect.top;
+                draw(x, y);
             }, { passive: false });
 
             canvas.addEventListener('touchend', (e) => {
                 e.preventDefault();
-                finishStroke();
+                stopDrawing();
             }, { passive: false });
 
-            function finishStroke() {
-                if (!isDrawing || pathPoints.length < 2) {
-                    isDrawing = false;
-                    return;
-                }
-                isDrawing = false;
-
-                const xs = pathPoints.map(p => p.x);
-                const ys = pathPoints.map(p => p.y);
-
-                const minX = Math.min(...xs);
-                const minY = Math.min(...ys);
-                const maxX = Math.max(...xs);
-                const maxY = Math.max(...ys);
-
-                let d = `M ${pathPoints[0].x - minX} ${pathPoints[0].y - minY}`;
-                for (let i = 1; i < pathPoints.length; i++) {
-                    d += ` L ${pathPoints[i].x - minX} ${pathPoints[i].y - minY}`;
-                }
-
-                const annotation = new DrawingAnnotation(
-                    page,
-                    d,
-                    penColor.value,
-                    parseInt(penWidth.value)
-                );
-
-                annotation.x = minX;
-                annotation.y = minY;
-                annotation.width = maxX - minX;
-                annotation.height = maxY - minY;
-
-                const element = annotation.createElement();
-                page.annotationLayer.appendChild(element);
-                page.addAnnotation(annotation);
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
+            canvas.addEventListener('touchcancel', (e) => {
+                e.preventDefault();
+                stopDrawing();
+            }, { passive: false });
         }
 
         // Tool handlers
@@ -1509,8 +1514,7 @@
             }
         });
 
-        // Mouse events for dragging and resizing
-        // EXISTING MOUSE EVENTS
+        // Mouse and Touch events for dragging and resizing
         document.addEventListener('mousemove', (e) => {
             if (isDragging && selectedAnnotation) {
                 const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
@@ -1560,11 +1564,10 @@
             resizeHandle = null;
         });
 
-        // NEW: ADD TOUCH EVENTS
         document.addEventListener('touchmove', (e) => {
             if (!isDragging && !isResizing) return;
 
-            e.preventDefault(); // Prevent scrolling while dragging
+            e.preventDefault();
             const touch = e.touches[0];
 
             if (isDragging && selectedAnnotation) {
@@ -1632,6 +1635,7 @@
                 [...currentPage.annotations].forEach(ann => ann.delete());
                 const ctx = currentPage.drawingCanvas.getContext('2d');
                 ctx.clearRect(0, 0, currentPage.drawingCanvas.width, currentPage.drawingCanvas.height);
+                currentPage.hasDrawing = false;
                 selectedAnnotation = null;
             }
         });

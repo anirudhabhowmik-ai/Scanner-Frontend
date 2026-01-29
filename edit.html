@@ -226,6 +226,8 @@
         const clearAllBtn = document.getElementById('clearAllBtn');
         const saveBtn = document.getElementById('saveBtn');
         const imageUpload = document.getElementById('imageUpload');
+        const penColor = document.getElementById('penColor');
+        const penWidth = document.getElementById('penWidth');
         const API_BASE_URL = 'http://127.0.0.1:8080';
 
         // State
@@ -346,6 +348,7 @@
 
                 this.element = div;
                 this.attachEvents();
+                this.applyTransform();
                 return div;
             }
 
@@ -424,9 +427,11 @@
 
             copy() {
                 const newAnnotation = this.clone();
+                newAnnotation.rotation = this.rotation;
                 newAnnotation.x += 20;
                 newAnnotation.y += 20;
                 const element = newAnnotation.createElement();
+                newAnnotation.applyTransform();
                 this.page.annotationLayer.appendChild(element);
                 this.page.addAnnotation(newAnnotation);
                 selectAnnotation(newAnnotation);
@@ -524,21 +529,6 @@
                 this.element.style.color = this.color;
                 this.element.style.fontWeight = this.fontWeight;
                 this.element.style.fontStyle = this.fontStyle;
-            }
-
-            // Override updatePosition to mark deletion
-            updatePosition(x, y) {
-                super.updatePosition(x, y);
-
-                if (this.isOCR && this.originalData && !this.deletionMarked) {
-                    this.page.addDeletedRegion({
-                        x: this.originalData.x,
-                        y: this.originalData.y,
-                        width: this.originalData.width,
-                        height: this.originalData.height
-                    });
-                    this.deletionMarked = true;
-                }
             }
 
             updateProperty(prop, value) {
@@ -1508,14 +1498,14 @@
         });
 
         // Pen properties
-        document.getElementById('penColor').addEventListener('input', (e) => {
+        penColor.addEventListener('input', (e) => {
             document.getElementById('penColorHex').value = e.target.value;
         });
 
         document.getElementById('penColorHex').addEventListener('input', (e) => {
             const color = e.target.value;
             if (/^#[0-9A-F]{6}$/i.test(color)) {
-                document.getElementById('penColor').value = color;
+                penColor.value = color;
             }
         });
 
@@ -1623,7 +1613,7 @@
             isDragging = false;
             isResizing = false;
             resizeHandle = null;
-        });
+        }, { passive: false });
 
         // Undo functionality
         undoBtn.addEventListener('click', () => {

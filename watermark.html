@@ -1051,8 +1051,13 @@
                     let x = ev.clientX - rect.left - offX;
                     let y = ev.clientY - rect.top - offY;
 
+                    // Get the canvas element to check actual boundaries
+                    const canvas = card.querySelector("canvas");
+                    const canvasHeight = canvas ? canvas.offsetHeight : card.offsetHeight;
+
+                    // Account for padding/margins
                     const maxX = card.offsetWidth - el.offsetWidth;
-                    const maxY = card.offsetHeight - el.offsetHeight;
+                    const maxY = canvasHeight - el.offsetHeight - 10; // 10px margin from bottom
 
                     x = Math.max(0, Math.min(x, maxX));
                     y = Math.max(0, Math.min(y, maxY));
@@ -1078,7 +1083,6 @@
                 el.addEventListener("pointerup", up);
             });
         }
-
 
         /* ===== RESIZE IMAGES ===== */
         function makeResizable(el, img, handle, position, card) {
@@ -1230,10 +1234,15 @@
                     // Get the computed position
                     const wmRect = wm.getBoundingClientRect();
                     const cardRect = card.getBoundingClientRect();
+                    const canvasRect = canvas.getBoundingClientRect();
 
-                    // Calculate position relative to the card (canvas)
-                    let leftPx = wmRect.left - cardRect.left + (wm.offsetWidth / 2);
-                    let topPx = wmRect.top - cardRect.top + (wm.offsetHeight / 2);
+                    // Calculate position relative to the canvas (not the card)
+                    let leftPx = wmRect.left - canvasRect.left + (wm.offsetWidth / 2);
+                    let topPx = wmRect.top - canvasRect.top + (wm.offsetHeight / 2);
+
+                    // Ensure positions are within bounds
+                    leftPx = Math.max(0, Math.min(leftPx, canvasWidth));
+                    topPx = Math.max(0, Math.min(topPx, canvasHeight));
 
                     // Convert to percentage for better scaling
                     const leftPercent = (leftPx / canvasWidth) * 100;
@@ -1347,6 +1356,7 @@
             }
         };
 
+
         /* ===== RESET BUTTON ===== */
         resetBtn.onclick = () => {
             clearError();
@@ -1381,6 +1391,16 @@
             italicBtn.classList.remove("active");
             underlineBtn.classList.remove("active");
 
+            // IMPORTANT: Clear the image input properly
+            wmImage.value = "";
+            // For some browsers, you need to recreate the input to fully clear it
+            const newImageInput = wmImage.cloneNode(true);
+            wmImage.parentNode.replaceChild(newImageInput, wmImage);
+            // Re-assign the reference
+            window.wmImage = newImageInput;
+            // Re-attach the event listener
+            newImageInput.addEventListener("change", updatePreview);
+
             // Reset to text mode
             document.querySelector("input[name='wmType'][value='text']").checked = true;
             document.getElementById("textControls").style.display = "block";
@@ -1391,6 +1411,7 @@
             pdfPreview.style.display = 'none';
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
+
     </script>
 
 </body>

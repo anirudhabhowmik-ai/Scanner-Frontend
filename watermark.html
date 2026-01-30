@@ -1005,104 +1005,118 @@
         }
 
         /* ===== PREVIEW WITH PROPER DIMENSION CALCULATION ===== */
+        /* ===== PREVIEW WITH PROPER DIMENSION CALCULATION ===== */
         function updatePreview() {
-            clearError();
-            const type = document.querySelector("input[name='wmType']:checked").value;
+    clearError();
+    const type = document.querySelector("input[name='wmType']:checked").value;
 
-            document.querySelectorAll(".page-card").forEach(card => {
-                const old = card.querySelector(".watermark-preview");
-                if (old) old.remove();
+    document.querySelectorAll(".page-card").forEach(card => {
+        // Remove existing watermark
+        const old = card.querySelector(".watermark-preview");
+        if (old) old.remove();
 
-                // Don't add watermark to out-of-range pages
-                if (card.classList.contains("out-of-range")) {
-                    return;
-                }
+        if (card.classList.contains("out-of-range")) return;
 
-                const canvas = card.querySelector("canvas");
-                const wm = document.createElement("div");
-                wm.className = "watermark-preview";
-                wm.style.opacity = opacity.value;
-                wm.style.fontSize = fontSize.value + "px";
+        const canvas = card.querySelector("canvas");
+        const wm = document.createElement("div");
+        wm.className = "watermark-preview";
+        wm.style.opacity = opacity.value;
+        wm.style.fontSize = fontSize.value + "px";
 
-                const rotationTransform = `rotate(${rotation.value}deg)`;
+        const rotationValue = parseFloat(rotation.value) || 0;
 
-                // First, add content to watermark so we can measure it
-                if (type === "image") {
-                    if (!wmImage.files[0]) return;
-                    wm.classList.add("has-image");
-                    const img = document.createElement("img");
-                    img.src = URL.createObjectURL(wmImage.files[0]);
-                    img.style.width = "150px";
-                    img.style.height = "auto";
-                    wm.appendChild(img);
-                } else {
-                    wm.innerText = wmText.value;
-                    wm.style.color = textColor.value;
-                    wm.style.fontWeight = watermarkData.bold ? "bold" : "normal";
-                    wm.style.fontStyle = watermarkData.italic ? "italic" : "normal";
-                    wm.style.textDecoration = watermarkData.underline ? "underline" : "none";
-                    wm.style.fontFamily = getPreviewFont(fontFamily.value);
-                }
+        // Add content
+        if (type === "image") {
+            if (!wmImage.files[0]) return;
+            wm.classList.add("has-image");
+            const img = document.createElement("img");
+            img.src = URL.createObjectURL(wmImage.files[0]);
+            img.style.width = "150px";
+            img.style.height = "auto";
+            wm.appendChild(img);
+        } else {
+            wm.innerText = wmText.value;
+            wm.style.color = textColor.value;
+            wm.style.fontWeight = watermarkData.bold ? "bold" : "normal";
+            wm.style.fontStyle = watermarkData.italic ? "italic" : "normal";
+            wm.style.textDecoration = watermarkData.underline ? "underline" : "none";
+            wm.style.fontFamily = getPreviewFont(fontFamily.value);
+        }
 
-                // Temporarily add to DOM to measure (off-screen)
-                wm.style.position = "absolute";
-                wm.style.left = "-9999px";
-                wm.style.transform = rotationTransform + " translate(-50%, -50%)";
-                card.appendChild(wm);
+        // Temporarily add off-screen to measure
+        wm.style.position = "absolute";
+        wm.style.left = "-9999px";
+        wm.style.top = "-9999px";
+        wm.style.transform = `rotate(${rotationValue}deg)`;
+        card.appendChild(wm);
 
-                // Calculate position based on dropdown
-                // Position watermark using FIXED CORNERS
-                const canvasRect = canvas.getBoundingClientRect();
-                const cardRect = card.getBoundingClientRect();
+        // Measure rotated dimensions
+        const dims = getWatermarkDimensions(wm);
 
-                const canvasOffsetLeft = canvasRect.left - cardRect.left;
-                const canvasOffsetTop = canvasRect.top - cardRect.top;
+        const padding = 10;
 
-                const padding = 10; // distance from edges
+        // Compute positions relative to canvas
+        const canvasOffsetLeft = canvas.offsetLeft;
+        const canvasOffsetTop = canvas.offsetTop;
 
-                wm.style.transform = `rotate(${rotation.value}deg)`; // no translate here
+        let left, top;
 
-                switch (position.value) {
-                    case "top-left":
-                        wm.style.left = canvasOffsetLeft + padding + "px";
-                        wm.style.top = canvasOffsetTop + padding + "px";
-                        break;
+        // Check if user dragged
+        if (wm.dataset.actualLeft && wm.dataset.actualTop) {
+            left = parseFloat(wm.dataset.actualLeft);
+            top = parseFloat(wm.dataset.actualTop);
+        } else {
+            switch (position.value) {
+                case "top-left":
+                    left = canvasOffsetLeft + padding;
+                    top = canvasOffsetTop + padding;
+                    // wm.style.transform = `rotate(${rotationValue}deg)`;
+                    break;
 
-                    case "top-right":
-                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth - wm.offsetWidth - padding + "px";
-                        wm.style.top = canvasOffsetTop + padding + "px";
-                        break;
+                case "top-right":
+                    left = canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
+                    top = canvasOffsetTop + padding;
+                    // wm.style.transform = `rotate(${rotationValue}deg)`;
+                    break;
 
-                    case "bottom-left":
-                        wm.style.left = canvasOffsetLeft + padding + "px";
-                        wm.style.top = canvasOffsetTop + canvas.offsetHeight - wm.offsetHeight - padding + "px";
-                        break;
+                case "bottom-left":
+                    left = canvasOffsetLeft + padding;
+                    top = canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
+                    // wm.style.transform = `rotate(${rotationValue}deg)`;
+                    break;
 
-                    case "bottom-right":
-                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth - wm.offsetWidth - padding + "px";
-                        wm.style.top = canvasOffsetTop + canvas.offsetHeight - wm.offsetHeight - padding + "px";
-                        break;
+                case "bottom-right":
+                    left = canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
+                    top = canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
+                    // wm.style.transform = `rotate(${rotationValue}deg)`;
+                    break;
 
-                    default: // center
-                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth / 2 + "px";
-                        wm.style.top = canvasOffsetTop + canvas.offsetHeight / 2 + "px";
-                        wm.style.transform = `translate(-50%, -50%) rotate(${rotation.value}deg)`;
-                }
+                default: // center
+                    left = canvasOffsetLeft + canvas.offsetWidth / 2;
+                    top = canvasOffsetTop + canvas.offsetHeight / 2;
+                    wm.style.transform = `translate(-50%, -50%) rotate(${rotationValue}deg)`;
+            }
+        }
 
-                // Add resize handles for images
-                if (type === "image") {
-                    const handles = ['tl', 'tr', 'bl', 'br'];
-                    handles.forEach(pos => {
-                        const handle = document.createElement("div");
-                        handle.className = `resize-handle resize-handle-${pos}`;
-                        wm.appendChild(handle);
-                        makeResizable(wm, wm.querySelector("img"), handle, pos, card);
-                    });
-                }
+        wm.style.left = left + "px";
+        wm.style.top = top + "px";
 
-                makeDraggable(wm, card);
+        // Add resize handles for images
+        if (type === "image") {
+            const handles = ['tl', 'tr', 'bl', 'br'];
+            handles.forEach(pos => {
+                const handle = document.createElement("div");
+                handle.className = `resize-handle resize-handle-${pos}`;
+                wm.appendChild(handle);
+                makeResizable(wm, wm.querySelector("img"), handle, pos, card);
             });
         }
+
+        makeDraggable(wm, card);
+    });
+}
+
+
 
         /* ===== IMPROVED DRAG WITH BETTER VERTICAL MOVEMENT ===== */
         function makeDraggable(el, card) {

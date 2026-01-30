@@ -60,6 +60,7 @@
         .page-card canvas {
             width: 100%;
             border-radius: 8px;
+            position: relative;
         }
 
         .page-number-badge {
@@ -789,6 +790,19 @@
         pdfjsLib.GlobalWorkerOptions.workerSrc =
             "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
+        /* ===== DEBOUNCE HELPER ===== */
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         /* ===== COLOR SYNC ===== */
         textColor.oninput = () => {
             textColorHex.value = textColor.value.toUpperCase();
@@ -960,10 +974,9 @@
             return map[pdfFont] || "Arial, sans-serif";
         }
 
-
         /* ===== PREVIEW ===== */
         function updatePreview() {
-            clearError()
+            clearError();
             const type = document.querySelector("input[name='wmType']:checked").value;
 
             document.querySelectorAll(".page-card").forEach(card => {
@@ -975,11 +988,13 @@
                     return;
                 }
 
+                const canvas = card.querySelector("canvas");
                 const wm = document.createElement("div");
                 wm.className = "watermark-preview";
                 wm.style.opacity = opacity.value;
                 wm.style.fontSize = fontSize.value + "px";
-                wm.style.transform = `rotate(${rotation.value}deg)`;
+
+                const rotationTransform = `rotate(${rotation.value}deg)`;
 
                 const posMap = {
                     center: ["50%", "50%"],
@@ -990,9 +1005,14 @@
                 };
 
                 const [left, top] = posMap[position.value];
-                wm.style.left = left;
-                wm.style.top = top;
-                wm.style.transform += " translate(-50%,-50%)";
+
+                // Calculate pixel position from percentage
+                const leftPx = (parseFloat(left) / 100) * canvas.offsetWidth;
+                const topPx = (parseFloat(top) / 100) * canvas.offsetHeight;
+
+                wm.style.left = leftPx + "px";
+                wm.style.top = topPx + "px";
+                wm.style.transform = `${rotationTransform} translate(-50%, -50%)`;
 
                 if (type === "image") {
                     if (!wmImage.files[0]) return;
@@ -1019,13 +1039,9 @@
                     wm.style.color = textColor.value;
 
                     // Apply text styles
-                    let fontWeight = watermarkData.bold ? "bold" : "normal";
-                    let fontStyle = watermarkData.italic ? "italic" : "normal";
-                    let textDecoration = watermarkData.underline ? "underline" : "none";
-
-                    wm.style.fontWeight = fontWeight;
-                    wm.style.fontStyle = fontStyle;
-                    wm.style.textDecoration = textDecoration;
+                    wm.style.fontWeight = watermarkData.bold ? "bold" : "normal";
+                    wm.style.fontStyle = watermarkData.italic ? "italic" : "normal";
+                    wm.style.textDecoration = watermarkData.underline ? "underline" : "none";
                     wm.style.fontFamily = getPreviewFont(fontFamily.value);
                 }
 
@@ -1034,7 +1050,7 @@
             });
         }
 
-        /* ===== DRAG BOUNDARY FIX ===== */
+        /* ===== DRAG - FIXED TO WORK WITHIN CANVAS BOUNDARIES ===== */
         function makeDraggable(el, card) {
             el.addEventListener("pointerdown", e => {
                 if (e.target.classList.contains("resize-handle")) return;
@@ -1042,31 +1058,30 @@
                 e.preventDefault();
                 el.setPointerCapture(e.pointerId);
 
-                const rect = card.getBoundingClientRect();
+                const canvas = card.querySelector("canvas");
+                const canvasRect = canvas.getBoundingClientRect();
                 const elRect = el.getBoundingClientRect();
                 const offX = e.clientX - elRect.left;
                 const offY = e.clientY - elRect.top;
 
                 function move(ev) {
-                    let x = ev.clientX - rect.left - offX;
-                    let y = ev.clientY - rect.top - offY;
+                    // Calculate position relative to canvas
+                    let x = ev.clientX - canvasRect.left - offX;
+                    let y = ev.clientY - canvasRect.top - offY;
 
-                    // Get the canvas element to check actual boundaries
-                    const canvas = card.querySelector("canvas");
-                    const canvasHeight = canvas ? canvas.offsetHeight : card.offsetHeight;
+                    // Constrain to canvas boundaries
+                    const padding = 10;
+                    const maxX = canvas.offsetWidth - el.offsetWidth - padding;
+                    const maxY = canvas.offsetHeight - el.offsetHeight - padding;
 
-                    // Account for padding/margins
-                    const maxX = card.offsetWidth - el.offsetWidth;
-                    const maxY = canvasHeight - el.offsetHeight - 10; // 10px margin from bottom
-
-                    x = Math.max(0, Math.min(x, maxX));
-                    y = Math.max(0, Math.min(y, maxY));
+                    x = Math.max(padding, Math.min(x, maxX));
+                    y = Math.max(padding, Math.min(y, maxY));
 
                     el.style.left = x + "px";
                     el.style.top = y + "px";
                     el.style.transform = `rotate(${rotation.value}deg)`;
 
-                    // Store the actual pixel position as data attributes for later retrieval
+                    // Store the actual pixel position
                     el.dataset.actualLeft = x;
                     el.dataset.actualTop = y;
 
@@ -1117,7 +1132,6 @@
                 handle.addEventListener("pointerup", up);
             });
         }
-
 
         /* ===== SHOW APPLY BUTTON FOR SPECIFIC PAGE ===== */
         function showApplyButton(card) {
@@ -1189,19 +1203,27 @@
             showSuccess("✓ Applied to all pages in range!");
         }
 
-        /* ===== EVENT LISTENERS ===== */
-        [wmText, fontSize, opacity, position, rotation, fontFamily].forEach(el =>
-            el.addEventListener("input", updatePreview)
-        );
+        /* ===== EVENT LISTENERS WITH DEBOUNCING ===== */
+        // Create debounced version of updatePreview
+        const debouncedUpdatePreview = debounce(updatePreview, 150);
 
-        // Page range updates with live preview
-        pageStart.addEventListener("input", updatePageRangeDisplay);
-        pageEnd.addEventListener("input", updatePageRangeDisplay);
+        // Use debounced version for numeric inputs
+        fontSize.addEventListener("input", debouncedUpdatePreview);
+        opacity.addEventListener("input", debouncedUpdatePreview);
+        rotation.addEventListener("input", debouncedUpdatePreview);
+
+        // Keep immediate updates for these
+        wmText.addEventListener("input", updatePreview);
+        position.addEventListener("change", updatePreview);
+        fontFamily.addEventListener("change", updatePreview);
+
+        // Page range updates with debouncing
+        pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 150));
+        pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 150));
 
         wmImage.addEventListener("change", updatePreview);
 
         /* ===== WATERMARK BUTTON ===== */
-        /* WATERMARK BUTTON - FIXED VERSION */
         watermarkBtn.onclick = async () => {
             clearError();
 
@@ -1356,7 +1378,6 @@
             }
         };
 
-
         /* ===== RESET BUTTON ===== */
         resetBtn.onclick = () => {
             clearError();
@@ -1391,15 +1412,8 @@
             italicBtn.classList.remove("active");
             underlineBtn.classList.remove("active");
 
-            // IMPORTANT: Clear the image input properly
+            // Clear the image input
             wmImage.value = "";
-            // For some browsers, you need to recreate the input to fully clear it
-            const newImageInput = wmImage.cloneNode(true);
-            wmImage.parentNode.replaceChild(newImageInput, wmImage);
-            // Re-assign the reference
-            window.wmImage = newImageInput;
-            // Re-attach the event listener
-            newImageInput.addEventListener("change", updatePreview);
 
             // Reset to text mode
             document.querySelector("input[name='wmType'][value='text']").checked = true;

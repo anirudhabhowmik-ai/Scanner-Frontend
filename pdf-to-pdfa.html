@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PDF/A OCR Converter | PDFMaster</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+
+    <style>
+        /* ---------- SEARCHABLE MULTISELECT ---------- */
+        .multi-select {
+            position: relative;
+            width: 100%;
+            margin-top: 6px;
+        }
+
+        .select-box {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 8px;
+            background: #fff;
+            cursor: pointer;
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            background: #2563eb;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        .dropdown input {
+            width: 95%;
+            margin: 6px;
+            padding: 6px;
+        }
+
+        .option {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        .option:hover {
+            background: #f3f4f6;
+        }
+
+        .option.selected {
+            background: #e0e7ff;
+        }
+
+        /* ------------------------------------------- */
+
+        .btn-loading {
+            pointer-events: none
+        }
+
+        .btn-loading .btn-text {
+            display: none
+        }
+
+        .btn-spinner {
+            display: none
+        }
+
+        .btn-loading .btn-spinner {
+            display: inline-block
+        }
+
+        .file-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+            margin-bottom: 5px
+        }
+
+        .delete-file {
+            color: red;
+            cursor: pointer
+        }
+    </style>
+</head>
+
+<body>
+    <section class="merge-tool">
+        <div class="container">
+            <h1>PDF/A OCR Converter</h1>
+
+            <label class="upload-label">
+                <i class="fa fa-upload"></i> Choose PDF Files
+                <input type="file" id="pdfUpload" accept=".pdf" multiple hidden>
+            </label>
+
+            <ul id="fileList" class="file-list" style="display:none;"></ul>
+
+            <!-- SEARCHABLE DROPDOWN -->
+            <label style="font-weight:600;">OCR Languages</label>
+            <div class="multi-select">
+                <div class="select-box" id="selectBox">English</div>
+                <div class="dropdown" id="dropdown">
+                    <input type="text" id="searchLang" placeholder="Search language...">
+                    <div id="options"></div>
+                </div>
+            </div>
+
+            <button id="convertBtn" class="cta-button" style="margin-top:15px;">
+                <span class="btn-spinner"><i class="fa fa-spinner fa-spin"></i></span>
+                <span class="btn-text"><i class="fa fa-file-pdf"></i></span>
+                Convert to Searchable PDF/A
+            </button>
+
+            <p id="errorMsg" style="color:red;display:none;"></p>
+
+            <div id="pdfPreview" style="display:none;margin-top:20px;">
+                <iframe id="pdfFrame" width="100%" height="600"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const BACKEND_URL = `${BACKEND_BASE_URL}/pdfa-ocr`;
+
+        /* ---------- FILE HANDLING ---------- */
+        const pdfInput = document.getElementById("pdfUpload");
+        const fileList = document.getElementById("fileList");
+        let selectedFiles = [];
+
+        pdfInput.addEventListener("change", () => {
+            Array.from(pdfInput.files).forEach(f => {
+                if (!selectedFiles.some(x => x.name === f.name && x.size === f.size)) selectedFiles.push(f);
+            });
+            renderFileList();
+        });
+
+        function renderFileList() {
+            if (!selectedFiles.length) { fileList.style.display = "none"; return; }
+            fileList.style.display = "block";
+            fileList.innerHTML = "";
+            selectedFiles.forEach((f, i) => {
+                fileList.innerHTML += `<li>${f.name} <i class="fa fa-times delete-file" data-i="${i}"></i></li>`;
+            });
+        }
+
+        fileList.addEventListener("click", e => {
+            if (e.target.classList.contains("delete-file")) {
+                selectedFiles.splice(e.target.dataset.i, 1);
+                renderFileList();
+            }
+        });
+
+        /* ---------- SEARCHABLE MULTISELECT ---------- */
+        const languages = [
+            ["eng", "English"], ["hin", "Hindi"], ["ben", "Bengali"], ["spa", "Spanish"],
+            ["fra", "French"], ["deu", "German"], ["ita", "Italian"], ["por", "Portuguese"],
+            ["rus", "Russian"], ["jpn", "Japanese"], ["kor", "Korean"],
+            ["chi_sim", "Chinese Simplified"], ["chi_tra", "Chinese Traditional"], ["ara", "Arabic"]
+        ];
+
+        let selectedLangs = ["eng"];
+        const selectBox = document.getElementById("selectBox");
+        const dropdown = document.getElementById("dropdown");
+        const optionsDiv = document.getElementById("options");
+        const searchInput = document.getElementById("searchLang");
+
+        function renderOptions(filter = "") {
+            optionsDiv.innerHTML = "";
+            languages.filter(l => l[1].toLowerCase().includes(filter.toLowerCase()))
+                .forEach(l => {
+                    const div = document.createElement("div");
+                    div.className = "option" + (selectedLangs.includes(l[0]) ? " selected" : "");
+                    div.textContent = l[1];
+                    div.onclick = () => toggleLang(l);
+                    optionsDiv.appendChild(div);
+                });
+        }
+
+        function toggleLang(l) {
+            if (selectedLangs.includes(l[0]))
+                selectedLangs = selectedLangs.filter(x => x !== l[0]);
+            else selectedLangs.push(l[0]);
+            updateTags(); renderOptions(searchInput.value);
+        }
+
+        function updateTags() {
+            selectBox.innerHTML = "";
+            selectedLangs.forEach(code => {
+                const name = languages.find(l => l[0] === code)[1];
+                const tag = document.createElement("span");
+                tag.className = "tag";
+                tag.textContent = name;
+                selectBox.appendChild(tag);
+            });
+        }
+
+        selectBox.onclick = () => dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        searchInput.oninput = e => renderOptions(e.target.value);
+        renderOptions(); updateTags();
+
+        /* ---------- OCR REQUEST ---------- */
+        document.getElementById("convertBtn").onclick = async () => {
+            if (!selectedFiles.length) { errorMsg.textContent = "Upload PDF first"; errorMsg.style.display = "block"; return; }
+            const btn = document.getElementById("convertBtn");
+            btn.classList.add("btn-loading");
+
+            const formData = new FormData();
+            selectedFiles.forEach(f => formData.append("files", f));
+            formData.append("lang", selectedLangs.join("+"));
+
+            try {
+                const res = await fetch(BACKEND_URL, { method: "POST", body: formData });
+                if (!res.ok) throw new Error("OCR failed");
+                const blob = await res.blob();
+                const url = URL.createObjectURL(blob);
+                document.getElementById("pdfFrame").src = url;
+                document.getElementById("pdfPreview").style.display = "block";
+            } catch (e) {
+                errorMsg.textContent = e.message;
+                errorMsg.style.display = "block";
+            } finally {
+                btn.classList.remove("btn-loading");
+            }
+        };
+    </script>
+</body>
+
+</html>

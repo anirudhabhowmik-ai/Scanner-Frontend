@@ -1060,7 +1060,7 @@
                     el.style.left = x + "px";
                     el.style.top = y + "px";
                     el.style.transform = `rotate(${rotation.value}deg)`;
-                    
+
                     // Store the actual pixel position as data attributes for later retrieval
                     el.dataset.actualLeft = x;
                     el.dataset.actualTop = y;
@@ -1151,7 +1151,7 @@
                     wm.style.left = refLeft;
                     wm.style.top = refTop;
                     wm.style.transform = refTransform;
-                    
+
                     // Also copy the data attributes
                     if (sourceWm.dataset.actualLeft) {
                         wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
@@ -1197,6 +1197,7 @@
         wmImage.addEventListener("change", updatePreview);
 
         /* ===== WATERMARK BUTTON ===== */
+        /* WATERMARK BUTTON - FIXED VERSION */
         watermarkBtn.onclick = async () => {
             clearError();
 
@@ -1222,22 +1223,50 @@
             document.querySelectorAll(".page-card").forEach(card => {
                 const wm = card.querySelector(".watermark-preview");
                 if (wm) {
-                    // Use actual positions from data attributes if available (dragged), otherwise use style
+                    const canvas = card.querySelector("canvas");
+                    const canvasWidth = canvas.offsetWidth;
+                    const canvasHeight = canvas.offsetHeight;
+
+                    // Get the computed position
+                    const wmRect = wm.getBoundingClientRect();
+                    const cardRect = card.getBoundingClientRect();
+
+                    // Calculate position relative to the card (canvas)
+                    let leftPx = wmRect.left - cardRect.left + (wm.offsetWidth / 2);
+                    let topPx = wmRect.top - cardRect.top + (wm.offsetHeight / 2);
+
+                    // Convert to percentage for better scaling
+                    const leftPercent = (leftPx / canvasWidth) * 100;
+                    const topPercent = (topPx / canvasHeight) * 100;
+
                     const pageData = {
                         pageNum: parseInt(card.dataset.pageNum),
-                        left: wm.dataset.actualLeft ? wm.dataset.actualLeft + "px" : wm.style.left,
-                        top: wm.dataset.actualTop ? wm.dataset.actualTop + "px" : wm.style.top,
+                        left: leftPercent + "%",
+                        top: topPercent + "%",
                         rotation: rotation.value
                     };
 
                     if (type === "image") {
                         const img = wm.querySelector("img");
                         if (img) {
-                            pageData.width = img.offsetWidth;
+                            // Calculate actual image width relative to canvas
+                            const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
+                            pageData.widthPercent = imgWidthPercent;
+                            pageData.width = img.offsetWidth; // Keep pixel width too
                         }
                     }
 
                     pages.push(pageData);
+
+                    // Debug log
+                    console.log(`Page ${pageData.pageNum}:`, {
+                        left: pageData.left,
+                        top: pageData.top,
+                        canvasWidth,
+                        canvasHeight,
+                        leftPx,
+                        topPx
+                    });
                 }
             });
 
@@ -1266,7 +1295,6 @@
             watermarkBtn.classList.add("btn-loading");
             watermarkBtn.querySelector('.btn-spinner').style.display = 'inline-block';
             watermarkBtn.querySelector('.btn-text').style.display = 'none';
-
 
             try {
                 const res = await fetch(BACKEND_URL, {

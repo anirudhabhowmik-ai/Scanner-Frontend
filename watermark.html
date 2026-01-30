@@ -1060,6 +1060,10 @@
                     el.style.left = x + "px";
                     el.style.top = y + "px";
                     el.style.transform = `rotate(${rotation.value}deg)`;
+                    
+                    // Store the actual pixel position as data attributes for later retrieval
+                    el.dataset.actualLeft = x;
+                    el.dataset.actualTop = y;
 
                     showApplyButton(card);
                 }
@@ -1124,8 +1128,9 @@
             const sourceWm = sourceCard.querySelector(".watermark-preview");
             if (!sourceWm) return;
 
-            const refLeft = sourceWm.style.left;
-            const refTop = sourceWm.style.top;
+            // Get actual positions from data attributes (if dragged) or from style
+            const refLeft = sourceWm.dataset.actualLeft ? sourceWm.dataset.actualLeft + "px" : sourceWm.style.left;
+            const refTop = sourceWm.dataset.actualTop ? sourceWm.dataset.actualTop + "px" : sourceWm.style.top;
             const refTransform = sourceWm.style.transform;
 
             let refWidth = null;
@@ -1146,6 +1151,14 @@
                     wm.style.left = refLeft;
                     wm.style.top = refTop;
                     wm.style.transform = refTransform;
+                    
+                    // Also copy the data attributes
+                    if (sourceWm.dataset.actualLeft) {
+                        wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
+                    }
+                    if (sourceWm.dataset.actualTop) {
+                        wm.dataset.actualTop = sourceWm.dataset.actualTop;
+                    }
 
                     if (refWidth) {
                         const img = wm.querySelector("img");
@@ -1209,10 +1222,11 @@
             document.querySelectorAll(".page-card").forEach(card => {
                 const wm = card.querySelector(".watermark-preview");
                 if (wm) {
+                    // Use actual positions from data attributes if available (dragged), otherwise use style
                     const pageData = {
                         pageNum: parseInt(card.dataset.pageNum),
-                        left: wm.style.left,
-                        top: wm.style.top,
+                        left: wm.dataset.actualLeft ? wm.dataset.actualLeft + "px" : wm.style.left,
+                        top: wm.dataset.actualTop ? wm.dataset.actualTop + "px" : wm.style.top,
                         rotation: rotation.value
                     };
 
@@ -1251,6 +1265,8 @@
             watermarkBtn.disabled = true;
             watermarkBtn.classList.add("btn-loading");
             watermarkBtn.querySelector('.btn-spinner').style.display = 'inline-block';
+            watermarkBtn.querySelector('.btn-text').style.display = 'none';
+
 
             try {
                 const res = await fetch(BACKEND_URL, {
@@ -1299,6 +1315,7 @@
                 watermarkBtn.disabled = false;
                 watermarkBtn.classList.remove("btn-loading");
                 watermarkBtn.querySelector('.btn-spinner').style.display = 'none';
+                watermarkBtn.querySelector('.btn-text').style.display = 'inline-block';
             }
         };
 

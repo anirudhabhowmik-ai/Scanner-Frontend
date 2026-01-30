@@ -1006,7 +1006,7 @@
 
                 const [left, top] = posMap[position.value];
 
-                // Calculate pixel position from percentage
+                // Calculate pixel position from percentage relative to canvas
                 const leftPx = (parseFloat(left) / 100) * canvas.offsetWidth;
                 const topPx = (parseFloat(top) / 100) * canvas.offsetHeight;
 
@@ -1050,7 +1050,7 @@
             });
         }
 
-        /* ===== DRAG - FIXED TO WORK WITHIN CANVAS BOUNDARIES ===== */
+        /* ===== DRAG - FIXED FOR BOTTOM BOUNDARY ===== */
         function makeDraggable(el, card) {
             el.addEventListener("pointerdown", e => {
                 if (e.target.classList.contains("resize-handle")) return;
@@ -1059,27 +1059,41 @@
                 el.setPointerCapture(e.pointerId);
 
                 const canvas = card.querySelector("canvas");
-                const canvasRect = canvas.getBoundingClientRect();
-                const elRect = el.getBoundingClientRect();
-                const offX = e.clientX - elRect.left;
-                const offY = e.clientY - elRect.top;
+                const startX = e.clientX;
+                const startY = e.clientY;
+
+                // Get initial position
+                const startLeft = parseFloat(el.style.left) || 0;
+                const startTop = parseFloat(el.style.top) || 0;
 
                 function move(ev) {
-                    // Calculate position relative to canvas
-                    let x = ev.clientX - canvasRect.left - offX;
-                    let y = ev.clientY - canvasRect.top - offY;
+                    // Calculate delta from start position
+                    const deltaX = ev.clientX - startX;
+                    const deltaY = ev.clientY - startY;
 
-                    // Constrain to canvas boundaries
-                    const padding = 10;
-                    const maxX = canvas.offsetWidth - el.offsetWidth - padding;
-                    const maxY = canvas.offsetHeight - el.offsetHeight - padding;
+                    // New position
+                    let x = startLeft + deltaX;
+                    let y = startTop + deltaY;
 
-                    x = Math.max(padding, Math.min(x, maxX));
-                    y = Math.max(padding, Math.min(y, maxY));
+                    // Get element dimensions (accounting for rotation and transform)
+                    const elRect = el.getBoundingClientRect();
+                    const elWidth = elRect.width;
+                    const elHeight = elRect.height;
+
+                    // Canvas boundaries - allow element center to go anywhere within canvas
+                    const minX = 0;
+                    const maxX = canvas.offsetWidth;
+                    const minY = 0;
+                    const maxY = canvas.offsetHeight;
+
+                    // Since we're using translate(-50%, -50%), the position is at center
+                    // Just ensure the center stays within canvas
+                    x = Math.max(minX, Math.min(x, maxX));
+                    y = Math.max(minY, Math.min(y, maxY));
 
                     el.style.left = x + "px";
                     el.style.top = y + "px";
-                    el.style.transform = `rotate(${rotation.value}deg)`;
+                    el.style.transform = `rotate(${rotation.value}deg) translate(-50%, -50%)`;
 
                     // Store the actual pixel position
                     el.dataset.actualLeft = x;
@@ -1205,7 +1219,7 @@
 
         /* ===== EVENT LISTENERS WITH DEBOUNCING ===== */
         // Create debounced version of updatePreview
-        const debouncedUpdatePreview = debounce(updatePreview, 150);
+        const debouncedUpdatePreview = debounce(updatePreview, 100);
 
         // Use debounced version for numeric inputs
         fontSize.addEventListener("input", debouncedUpdatePreview);
@@ -1218,12 +1232,12 @@
         fontFamily.addEventListener("change", updatePreview);
 
         // Page range updates with debouncing
-        pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 150));
-        pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 150));
+        pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 100));
+        pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 100));
 
         wmImage.addEventListener("change", updatePreview);
 
-        /* ===== WATERMARK BUTTON ===== */
+        /* ===== WATERMARK BUTTON - OPTIMIZED POSITION COLLECTION ===== */
         watermarkBtn.onclick = async () => {
             clearError();
 
@@ -1244,61 +1258,43 @@
                 return;
             }
 
-            // Collect watermark positions from all pages
+            // Collect watermark positions from all pages - OPTIMIZED
             const pages = [];
-            document.querySelectorAll(".page-card").forEach(card => {
+            const cards = document.querySelectorAll(".page-card");
+
+            cards.forEach(card => {
                 const wm = card.querySelector(".watermark-preview");
-                if (wm) {
-                    const canvas = card.querySelector("canvas");
-                    const canvasWidth = canvas.offsetWidth;
-                    const canvasHeight = canvas.offsetHeight;
+                if (!wm) return;
 
-                    // Get the computed position
-                    const wmRect = wm.getBoundingClientRect();
-                    const cardRect = card.getBoundingClientRect();
-                    const canvasRect = canvas.getBoundingClientRect();
+                const canvas = card.querySelector("canvas");
+                const canvasWidth = canvas.offsetWidth;
+                const canvasHeight = canvas.offsetHeight;
 
-                    // Calculate position relative to the canvas (not the card)
-                    let leftPx = wmRect.left - canvasRect.left + (wm.offsetWidth / 2);
-                    let topPx = wmRect.top - canvasRect.top + (wm.offsetHeight / 2);
+                // Get position from stored data or current style
+                const leftPx = parseFloat(wm.dataset.actualLeft || wm.style.left);
+                const topPx = parseFloat(wm.dataset.actualTop || wm.style.top);
 
-                    // Ensure positions are within bounds
-                    leftPx = Math.max(0, Math.min(leftPx, canvasWidth));
-                    topPx = Math.max(0, Math.min(topPx, canvasHeight));
+                // Convert to percentage for better scaling
+                const leftPercent = (leftPx / canvasWidth) * 100;
+                const topPercent = (topPx / canvasHeight) * 100;
 
-                    // Convert to percentage for better scaling
-                    const leftPercent = (leftPx / canvasWidth) * 100;
-                    const topPercent = (topPx / canvasHeight) * 100;
+                const pageData = {
+                    pageNum: parseInt(card.dataset.pageNum),
+                    left: leftPercent + "%",
+                    top: topPercent + "%",
+                    rotation: rotation.value
+                };
 
-                    const pageData = {
-                        pageNum: parseInt(card.dataset.pageNum),
-                        left: leftPercent + "%",
-                        top: topPercent + "%",
-                        rotation: rotation.value
-                    };
-
-                    if (type === "image") {
-                        const img = wm.querySelector("img");
-                        if (img) {
-                            // Calculate actual image width relative to canvas
-                            const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
-                            pageData.widthPercent = imgWidthPercent;
-                            pageData.width = img.offsetWidth; // Keep pixel width too
-                        }
+                if (type === "image") {
+                    const img = wm.querySelector("img");
+                    if (img) {
+                        const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
+                        pageData.widthPercent = imgWidthPercent;
+                        pageData.width = img.offsetWidth;
                     }
-
-                    pages.push(pageData);
-
-                    // Debug log
-                    console.log(`Page ${pageData.pageNum}:`, {
-                        left: pageData.left,
-                        top: pageData.top,
-                        canvasWidth,
-                        canvasHeight,
-                        leftPx,
-                        topPx
-                    });
                 }
+
+                pages.push(pageData);
             });
 
             const formData = new FormData();

@@ -1055,13 +1055,12 @@
                     const canvas = card.querySelector("canvas");
                     const canvasHeight = canvas ? canvas.offsetHeight : card.offsetHeight;
 
-                    // More permissive boundaries - allow dragging to actual edges
-                    const padding = 5; // Small padding to keep it visible
-                    const maxX = card.offsetWidth - padding;
-                    const maxY = canvasHeight - padding;
+                    // Account for padding/margins
+                    const maxX = card.offsetWidth - el.offsetWidth;
+                    const maxY = canvasHeight - el.offsetHeight - 10; // 10px margin from bottom
 
-                    x = Math.max(-el.offsetWidth + padding, Math.min(x, maxX));
-                    y = Math.max(-el.offsetHeight + padding, Math.min(y, maxY));
+                    x = Math.max(0, Math.min(x, maxX));
+                    y = Math.max(0, Math.min(y, maxY));
 
                     el.style.left = x + "px";
                     el.style.top = y + "px";
@@ -1084,7 +1083,6 @@
                 el.addEventListener("pointerup", up);
             });
         }
-
 
         /* ===== RESIZE IMAGES ===== */
         function makeResizable(el, img, handle, position, card) {
@@ -1360,7 +1358,6 @@
 
 
         /* ===== RESET BUTTON ===== */
-        /* ===== RESET BUTTON ===== */
         resetBtn.onclick = () => {
             clearError();
             successMsg.classList.remove("show");
@@ -1394,8 +1391,15 @@
             italicBtn.classList.remove("active");
             underlineBtn.classList.remove("active");
 
-            // Clear the image input
+            // IMPORTANT: Clear the image input properly
             wmImage.value = "";
+            // For some browsers, you need to recreate the input to fully clear it
+            const newImageInput = wmImage.cloneNode(true);
+            wmImage.parentNode.replaceChild(newImageInput, wmImage);
+            // Re-assign the reference
+            window.wmImage = newImageInput;
+            // Re-attach the event listener
+            newImageInput.addEventListener("change", updatePreview);
 
             // Reset to text mode
             document.querySelector("input[name='wmType'][value='text']").checked = true;
@@ -1407,7 +1411,6 @@
             pdfPreview.style.display = 'none';
             window.scrollTo({ top: 0, behavior: "smooth" });
         };
-
 
     </script>
 

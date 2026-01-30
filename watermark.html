@@ -83,6 +83,7 @@
             user-select: none;
             white-space: nowrap;
             z-index: 10;
+            line-height: 0;
         }
 
         .watermark-preview img {
@@ -672,7 +673,7 @@
                         </div>
 
                         <div class="option-group">
-                            <label>Default Position</label>
+                            <label>Position</label>
                             <select id="position">
                                 <option value="center">Center</option>
                                 <option value="top-left">Top Left</option>
@@ -974,7 +975,36 @@
             return map[pdfFont] || "Arial, sans-serif";
         }
 
-        /* ===== PREVIEW ===== */
+        /* ===== HELPER: GET WATERMARK DIMENSIONS (accounting for rotation) ===== */
+        function getWatermarkDimensions(el) {
+            // Temporarily measure the element without rotation to get base dimensions
+            const currentTransform = el.style.transform;
+            el.style.transform = 'translate(-50%, -50%)'; // Remove rotation temporarily
+
+            const rect = el.getBoundingClientRect();
+            const baseWidth = rect.width;
+            const baseHeight = rect.height;
+
+            // Restore original transform
+            el.style.transform = currentTransform;
+
+            // Calculate rotated bounding box dimensions
+            const rotationRad = (parseFloat(rotation.value) || 0) * Math.PI / 180;
+            const cos = Math.abs(Math.cos(rotationRad));
+            const sin = Math.abs(Math.sin(rotationRad));
+
+            const rotatedWidth = baseWidth * cos + baseHeight * sin;
+            const rotatedHeight = baseWidth * sin + baseHeight * cos;
+
+            return {
+                width: rotatedWidth,
+                height: rotatedHeight,
+                baseWidth: baseWidth,
+                baseHeight: baseHeight
+            };
+        }
+
+        /* ===== PREVIEW WITH PROPER DIMENSION CALCULATION ===== */
         function updatePreview() {
             clearError();
             const type = document.querySelector("input[name='wmType']:checked").value;
@@ -996,114 +1026,157 @@
 
                 const rotationTransform = `rotate(${rotation.value}deg)`;
 
-                const posMap = {
-                    center: ["50%", "50%"],
-                    "top-left": ["15%", "15%"],
-                    "top-right": ["85%", "15%"],
-                    "bottom-left": ["15%", "85%"],
-                    "bottom-right": ["85%", "85%"]
-                };
-
-                const [left, top] = posMap[position.value];
-
-                // Calculate pixel position from percentage
-                const leftPx = (parseFloat(left) / 100) * canvas.offsetWidth;
-                const topPx = (parseFloat(top) / 100) * canvas.offsetHeight;
-
-                wm.style.left = leftPx + "px";
-                wm.style.top = topPx + "px";
-                wm.style.transform = `${rotationTransform} translate(-50%, -50%)`;
-
+                // First, add content to watermark so we can measure it
                 if (type === "image") {
                     if (!wmImage.files[0]) return;
-
                     wm.classList.add("has-image");
-
                     const img = document.createElement("img");
                     img.src = URL.createObjectURL(wmImage.files[0]);
                     img.style.width = "150px";
                     img.style.height = "auto";
                     wm.appendChild(img);
-
-                    // Add four corner resize handles
-                    const handles = ['tl', 'tr', 'bl', 'br'];
-                    handles.forEach(pos => {
-                        const handle = document.createElement("div");
-                        handle.className = `resize-handle resize-handle-${pos}`;
-                        wm.appendChild(handle);
-                        makeResizable(wm, img, handle, pos, card);
-                    });
-
                 } else {
                     wm.innerText = wmText.value;
                     wm.style.color = textColor.value;
-
-                    // Apply text styles
                     wm.style.fontWeight = watermarkData.bold ? "bold" : "normal";
                     wm.style.fontStyle = watermarkData.italic ? "italic" : "normal";
                     wm.style.textDecoration = watermarkData.underline ? "underline" : "none";
                     wm.style.fontFamily = getPreviewFont(fontFamily.value);
                 }
 
-                makeDraggable(wm, card);
+                // Temporarily add to DOM to measure (off-screen)
+                wm.style.position = "absolute";
+                wm.style.left = "-9999px";
+                wm.style.transform = rotationTransform + " translate(-50%, -50%)";
                 card.appendChild(wm);
+
+                // Calculate position based on dropdown
+                // Position watermark using FIXED CORNERS
+                const canvasRect = canvas.getBoundingClientRect();
+                const cardRect = card.getBoundingClientRect();
+
+                const canvasOffsetLeft = canvasRect.left - cardRect.left;
+                const canvasOffsetTop = canvasRect.top - cardRect.top;
+
+                const padding = 10; // distance from edges
+
+                wm.style.transform = `rotate(${rotation.value}deg)`; // no translate here
+
+                switch (position.value) {
+                    case "top-left":
+                        wm.style.left = canvasOffsetLeft + padding + "px";
+                        wm.style.top = canvasOffsetTop + padding + "px";
+                        break;
+
+                    case "top-right":
+                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth - wm.offsetWidth - padding + "px";
+                        wm.style.top = canvasOffsetTop + padding + "px";
+                        break;
+
+                    case "bottom-left":
+                        wm.style.left = canvasOffsetLeft + padding + "px";
+                        wm.style.top = canvasOffsetTop + canvas.offsetHeight - wm.offsetHeight - padding + "px";
+                        break;
+
+                    case "bottom-right":
+                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth - wm.offsetWidth - padding + "px";
+                        wm.style.top = canvasOffsetTop + canvas.offsetHeight - wm.offsetHeight - padding + "px";
+                        break;
+
+                    default: // center
+                        wm.style.left = canvasOffsetLeft + canvas.offsetWidth / 2 + "px";
+                        wm.style.top = canvasOffsetTop + canvas.offsetHeight / 2 + "px";
+                        wm.style.transform = `translate(-50%, -50%) rotate(${rotation.value}deg)`;
+                }
+
+                // Add resize handles for images
+                if (type === "image") {
+                    const handles = ['tl', 'tr', 'bl', 'br'];
+                    handles.forEach(pos => {
+                        const handle = document.createElement("div");
+                        handle.className = `resize-handle resize-handle-${pos}`;
+                        wm.appendChild(handle);
+                        makeResizable(wm, wm.querySelector("img"), handle, pos, card);
+                    });
+                }
+
+                makeDraggable(wm, card);
             });
         }
 
-        /* ===== DRAG - FIXED TO WORK WITHIN CANVAS BOUNDARIES ===== */
+        /* ===== IMPROVED DRAG WITH BETTER VERTICAL MOVEMENT ===== */
         function makeDraggable(el, card) {
-    el.addEventListener("pointerdown", e => {
-        if (e.target.classList.contains("resize-handle")) return;
+            el.addEventListener("pointerdown", e => {
+                if (e.target.classList.contains("resize-handle")) return;
 
-        e.preventDefault();
-        el.setPointerCapture(e.pointerId);
+                e.preventDefault();
+                el.setPointerCapture(e.pointerId);
 
-        const canvas = card.querySelector("canvas");
-        const canvasRect = canvas.getBoundingClientRect();
-        const elRect = el.getBoundingClientRect();
+                const canvas = card.querySelector("canvas");
 
-        // Get offset of pointer inside the watermark
-        const offX = e.clientX - elRect.left;
-        const offY = e.clientY - elRect.top;
+                // Get canvas position relative to card
+                const canvasRect = canvas.getBoundingClientRect();
+                const cardRect = card.getBoundingClientRect();
+                const canvasOffsetLeft = canvasRect.left - cardRect.left;
+                const canvasOffsetTop = canvasRect.top - cardRect.top;
 
-        function move(ev) {
-            // Calculate position relative to canvas
-            let x = ev.clientX - canvasRect.left - offX;
-            let y = ev.clientY - canvasRect.top - offY;
+                // Get initial position when drag starts
+                const startLeft = parseFloat(el.style.left) || 0;
+                const startTop = parseFloat(el.style.top) || 0;
+                const startX = e.clientX;
+                const startY = e.clientY;
 
-            // Constrain to canvas boundaries (allow touching edges)
-            const maxX = canvas.offsetWidth - el.offsetWidth;
-            const maxY = canvas.offsetHeight - el.offsetHeight;
+                function move(ev) {
+                    // Calculate how much the mouse has moved
+                    const deltaX = ev.clientX - startX;
+                    const deltaY = ev.clientY - startY;
 
-            x = Math.max(0, Math.min(x, maxX));
-            y = Math.max(0, Math.min(y, maxY));
+                    // Calculate new position in card coordinates (this is the CENTER due to translate(-50%, -50%))
+                    let centerX = startLeft + deltaX;
+                    let centerY = startTop + deltaY;
 
-            el.style.left = x + "px";
-            el.style.top = y + "px";
+                    // Convert center to canvas-relative coordinates
+                    let canvasRelativeCenterX = centerX - canvasOffsetLeft;
+                    let canvasRelativeCenterY = centerY - canvasOffsetTop;
 
-            // Apply rotation while keeping center
-            el.style.transform = `rotate(${rotation.value}deg) translate(-50%, -50%)`;
+                    el.style.left = centerX + "px";
+                    el.style.top = centerY + "px";
+                    if (position.value === "center") {
+                        el.style.transform = `translate(-50%, -50%) rotate(${rotation.value}deg)`;
+                    } else {
+                        el.style.transform = `rotate(${rotation.value}deg)`;
+                    }
 
-            // Store actual position for "Apply to All"
-            el.dataset.actualLeft = x;
-            el.dataset.actualTop = y;
+                    // Store the CENTER position in card coordinates
+                    el.dataset.actualLeft = centerX;
+                    el.dataset.actualTop = centerY;
 
-            showApplyButton(card);
+                    // Also store canvas-relative position for easier saving
+                    el.dataset.canvasLeft = canvasRelativeCenterX;
+                    el.dataset.canvasTop = canvasRelativeCenterY;
+
+                    // Store watermark dimensions for backend
+                    const dims = getWatermarkDimensions(el);
+                    el.dataset.wmWidth = dims.width;
+                    el.dataset.wmHeight = dims.height;
+                    el.dataset.wmBaseWidth = dims.baseWidth;
+                    el.dataset.wmBaseHeight = dims.baseHeight;
+
+                    showApplyButton(card);
+                }
+
+                function up(ev) {
+                    el.releasePointerCapture(ev.pointerId);
+                    el.removeEventListener("pointermove", move);
+                    el.removeEventListener("pointerup", up);
+                }
+
+                el.addEventListener("pointermove", move);
+                el.addEventListener("pointerup", up);
+            });
         }
 
-        function up(ev) {
-            el.releasePointerCapture(ev.pointerId);
-            el.removeEventListener("pointermove", move);
-            el.removeEventListener("pointerup", up);
-        }
-
-        el.addEventListener("pointermove", move);
-        el.addEventListener("pointerup", up);
-    });
-}
-
-
-        /* ===== RESIZE IMAGES ===== */
+        /* ===== RESIZE IMAGES WITH DIMENSION TRACKING ===== */
         function makeResizable(el, img, handle, position, card) {
             handle.addEventListener("pointerdown", e => {
                 e.preventDefault();
@@ -1122,6 +1195,13 @@
                     const newWidth = Math.max(50, Math.min(400, startWidth + diff));
                     img.style.width = newWidth + "px";
                     img.style.height = newWidth * aspectRatio + "px";
+
+                    // Update stored dimensions
+                    const dims = getWatermarkDimensions(el);
+                    el.dataset.wmWidth = dims.width;
+                    el.dataset.wmHeight = dims.height;
+                    el.dataset.wmBaseWidth = dims.baseWidth;
+                    el.dataset.wmBaseHeight = dims.baseHeight;
 
                     showApplyButton(card);
                 }
@@ -1174,13 +1254,15 @@
                     wm.style.top = refTop;
                     wm.style.transform = refTransform;
 
-                    // Also copy the data attributes
-                    if (sourceWm.dataset.actualLeft) {
-                        wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
-                    }
-                    if (sourceWm.dataset.actualTop) {
-                        wm.dataset.actualTop = sourceWm.dataset.actualTop;
-                    }
+                    // Copy all data attributes
+                    if (sourceWm.dataset.actualLeft) wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
+                    if (sourceWm.dataset.actualTop) wm.dataset.actualTop = sourceWm.dataset.actualTop;
+                    if (sourceWm.dataset.canvasLeft) wm.dataset.canvasLeft = sourceWm.dataset.canvasLeft;
+                    if (sourceWm.dataset.canvasTop) wm.dataset.canvasTop = sourceWm.dataset.canvasTop;
+                    if (sourceWm.dataset.wmWidth) wm.dataset.wmWidth = sourceWm.dataset.wmWidth;
+                    if (sourceWm.dataset.wmHeight) wm.dataset.wmHeight = sourceWm.dataset.wmHeight;
+                    if (sourceWm.dataset.wmBaseWidth) wm.dataset.wmBaseWidth = sourceWm.dataset.wmBaseWidth;
+                    if (sourceWm.dataset.wmBaseHeight) wm.dataset.wmBaseHeight = sourceWm.dataset.wmBaseHeight;
 
                     if (refWidth) {
                         const img = wm.querySelector("img");
@@ -1209,7 +1291,7 @@
 
         /* ===== EVENT LISTENERS WITH DEBOUNCING ===== */
         // Create debounced version of updatePreview
-        const debouncedUpdatePreview = debounce(updatePreview, 150);
+        const debouncedUpdatePreview = debounce(updatePreview, 100);
 
         // Use debounced version for numeric inputs
         fontSize.addEventListener("input", debouncedUpdatePreview);
@@ -1222,12 +1304,12 @@
         fontFamily.addEventListener("change", updatePreview);
 
         // Page range updates with debouncing
-        pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 150));
-        pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 150));
+        pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 100));
+        pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 100));
 
         wmImage.addEventListener("change", updatePreview);
 
-        /* ===== WATERMARK BUTTON ===== */
+        /* ===== WATERMARK BUTTON - WITH DIMENSION DATA ===== */
         watermarkBtn.onclick = async () => {
             clearError();
 
@@ -1248,61 +1330,63 @@
                 return;
             }
 
-            // Collect watermark positions from all pages
+            // Collect watermark positions from all pages WITH DIMENSIONS
             const pages = [];
             document.querySelectorAll(".page-card").forEach(card => {
                 const wm = card.querySelector(".watermark-preview");
-                if (wm) {
-                    const canvas = card.querySelector("canvas");
-                    const canvasWidth = canvas.offsetWidth;
-                    const canvasHeight = canvas.offsetHeight;
+                if (!wm) return;
 
-                    // Get the computed position
-                    const wmRect = wm.getBoundingClientRect();
-                    const cardRect = card.getBoundingClientRect();
+                const canvas = card.querySelector("canvas");
+                const canvasWidth = canvas.offsetWidth;
+                const canvasHeight = canvas.offsetHeight;
+
+                // Get canvas-relative CENTER position
+                let canvasRelativeX, canvasRelativeY;
+
+                if (wm.dataset.canvasLeft && wm.dataset.canvasTop) {
+                    // Use stored canvas-relative position if available (from dragging)
+                    canvasRelativeX = parseFloat(wm.dataset.canvasLeft);
+                    canvasRelativeY = parseFloat(wm.dataset.canvasTop);
+                } else {
+                    // Calculate from current position
                     const canvasRect = canvas.getBoundingClientRect();
+                    const cardRect = card.getBoundingClientRect();
+                    const canvasOffsetLeft = canvasRect.left - cardRect.left;
+                    const canvasOffsetTop = canvasRect.top - cardRect.top;
 
-                    // Calculate position relative to the canvas (not the card)
-                    let leftPx = wmRect.left - canvasRect.left + (wm.offsetWidth / 2);
-                    let topPx = wmRect.top - canvasRect.top + (wm.offsetHeight / 2);
+                    const cardRelativeLeft = parseFloat(wm.style.left);
+                    const cardRelativeTop = parseFloat(wm.style.top);
 
-                    // Ensure positions are within bounds
-                    leftPx = Math.max(0, Math.min(leftPx, canvasWidth));
-                    topPx = Math.max(0, Math.min(topPx, canvasHeight));
-
-                    // Convert to percentage for better scaling
-                    const leftPercent = (leftPx / canvasWidth) * 100;
-                    const topPercent = (topPx / canvasHeight) * 100;
-
-                    const pageData = {
-                        pageNum: parseInt(card.dataset.pageNum),
-                        left: leftPercent + "%",
-                        top: topPercent + "%",
-                        rotation: rotation.value
-                    };
-
-                    if (type === "image") {
-                        const img = wm.querySelector("img");
-                        if (img) {
-                            // Calculate actual image width relative to canvas
-                            const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
-                            pageData.widthPercent = imgWidthPercent;
-                            pageData.width = img.offsetWidth; // Keep pixel width too
-                        }
-                    }
-
-                    pages.push(pageData);
-
-                    // Debug log
-                    console.log(`Page ${pageData.pageNum}:`, {
-                        left: pageData.left,
-                        top: pageData.top,
-                        canvasWidth,
-                        canvasHeight,
-                        leftPx,
-                        topPx
-                    });
+                    canvasRelativeX = cardRelativeLeft - canvasOffsetLeft;
+                    canvasRelativeY = cardRelativeTop - canvasOffsetTop;
                 }
+
+                // Convert to percentage (center position)
+                const leftPercent = (canvasRelativeX / canvasWidth) * 100;
+                const topPercent = (canvasRelativeY / canvasHeight) * 100;
+
+                const pageData = {
+                    pageNum: parseInt(card.dataset.pageNum),
+                    left: leftPercent + "%",
+                    top: topPercent + "%",
+                    rotation: rotation.value,
+                    // Add dimensions for backend calculations
+                    wmWidth: wm.dataset.wmWidth || null,
+                    wmHeight: wm.dataset.wmHeight || null,
+                    wmBaseWidth: wm.dataset.wmBaseWidth || null,
+                    wmBaseHeight: wm.dataset.wmBaseHeight || null
+                };
+
+                if (type === "image") {
+                    const img = wm.querySelector("img");
+                    if (img) {
+                        const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
+                        pageData.widthPercent = imgWidthPercent;
+                        pageData.width = img.offsetWidth;
+                    }
+                }
+
+                pages.push(pageData);
             });
 
             const formData = new FormData();

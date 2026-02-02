@@ -304,6 +304,16 @@
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
+      function applyTransform(el, isCenter) {
+        const rot = parseFloat(rotation.value) || 0;
+
+        if (isCenter) {
+          el.style.transform = `translate(-50%, -50%) rotate(${rot}deg)`;
+        } else {
+          el.style.transform = `rotate(${rot}deg)`;
+        }
+      }
+
       /* ===== DEBOUNCE HELPER ===== */
       function debounce(func, wait) {
         let timeout;
@@ -599,7 +609,7 @@
           wm.style.position = "absolute";
           wm.style.left = "-9999px";
           wm.style.top = "-9999px";
-          wm.style.transform = `rotate(${rotationValue}deg)`;
+          applyTransform(wm, false);
           card.appendChild(wm);
 
           const dims = getWatermarkDimensions(wm);
@@ -614,7 +624,7 @@
             // RESTORE the dragged position
             left = parseFloat(storedLeft);
             top = parseFloat(storedTop);
-            wm.style.transform = storedTransform;
+            applyTransform(wm, position.value === "center");
             wm.dataset.actualLeft = storedLeft;
             wm.dataset.actualTop = storedTop;
             if (storedCanvasLeft) wm.dataset.canvasLeft = storedCanvasLeft;
@@ -625,21 +635,21 @@
               case "top-left":
                 left = canvasOffsetLeft + padding;
                 top = canvasOffsetTop + padding;
-                wm.style.transform = `rotate(${rotationValue}deg)`;
+                applyTransform(wm, false);
                 break;
 
               case "top-right":
                 left =
                   canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
                 top = canvasOffsetTop + padding;
-                wm.style.transform = `rotate(${rotationValue}deg)`;
+                applyTransform(wm, false);
                 break;
 
               case "bottom-left":
                 left = canvasOffsetLeft + padding;
                 top =
                   canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
-                wm.style.transform = `rotate(${rotationValue}deg)`;
+                applyTransform(wm, false);
                 break;
 
               case "bottom-right":
@@ -647,13 +657,13 @@
                   canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
                 top =
                   canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
-                wm.style.transform = `rotate(${rotationValue}deg)`;
+                applyTransform(wm, false);
                 break;
 
               default: // center
                 left = canvasOffsetLeft + canvas.offsetWidth / 2;
                 top = canvasOffsetTop + canvas.offsetHeight / 2;
-                wm.style.transform = `translate(-50%, -50%) rotate(${rotationValue}deg)`;
+                applyTransform(wm, true);
             }
           }
 
@@ -707,11 +717,7 @@
             el.style.left = centerX + "px";
             el.style.top = centerY + "px";
 
-            if (position.value === "center") {
-              el.style.transform = `translate(-50%, -50%) rotate(${rotation.value}deg)`;
-            } else {
-              el.style.transform = `rotate(${rotation.value}deg)`;
-            }
+            applyTransform(el, position.value === "center");
 
             el.dataset.actualLeft = centerX;
             el.dataset.actualTop = centerY;
@@ -954,7 +960,7 @@
             pageNum: parseInt(card.dataset.pageNum),
             left: leftPercent + "%",
             top: topPercent + "%",
-            rotation: rotation.value,
+            rotation: -parseFloat(rotation.value),
           };
 
           if (type === "image") {

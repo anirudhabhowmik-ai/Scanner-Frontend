@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDFMaster - Protect PDF Online</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
+
+    <style>
+      .input-group {
+        position: relative;
+      }
+      .input-group i {
+        position: absolute;
+        top: 43%;
+        transform: translateY(-50%);
+      }
+      .password-container {
+        position: relative;
+        display: none;
+      }
+      .password-container input {
+        padding-right: 40px;
+      }
+      .password-container input::placeholder {
+        font-size: 14px;
+        letter-spacing: 0.2px;
+      }
+      .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #555;
+      }
+      .share-btn:hover {
+        background-color: #2563eb;
+      }
+      .password-input {
+        padding: 12px 15px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      #passwordCriteria {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        font-size: 14px;
+        background: #fff;
+        border: 2px solid #5d41fe;
+        text-align: left;
+        border-radius: 10px;
+        opacity: 0;
+        height: 0;
+        transition: 0.4s ease;
+        display: none;
+      }
+      #passwordCriteria.active {
+        padding: 10px;
+        margin-top: 5px;
+        opacity: 1;
+        height: auto;
+        display: block;
+      }
+      #passwordCriteria li {
+        margin-bottom: 3px;
+        color: #d9534f;
+      }
+      #passwordCriteria li i.fa-check {
+        color: #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="header-placeholder"></section>
+
+    <!-- ================= PROTECT PDF TOOL ================= -->
+    <section class="merge-tool">
+      <div class="container">
+        <h1>Protect PDF with Password</h1>
+        <p>Secure your PDF by adding a password before sharing.</p>
+
+        <div class="upload-section">
+          <!-- Upload -->
+          <div id="uploadSection">
+            <label class="upload-label">
+              <i class="fa fa-upload"></i> Choose PDF file
+              <input type="file" id="pdfUpload" accept=".pdf" hidden />
+            </label>
+          </div>
+
+          <!-- File list -->
+          <ul id="fileList" class="file-list" style="display: none"></ul>
+
+          <!-- Password fields -->
+          <div
+            class="password-container"
+            id="passwordContainer"
+            style="margin-bottom: 0"
+          >
+            <div class="input-group">
+              <input
+                type="password"
+                id="pdfPassword"
+                class="password-input"
+                placeholder="Enter password"
+              />
+              <i
+                class="fa fa-eye toggle-password"
+                data-target="pdfPassword"
+              ></i>
+            </div>
+            <ul id="passwordCriteria">
+              <li id="criteria-uppercase">
+                <i class="fa fa-times"></i> One uppercase letter
+              </li>
+              <li id="criteria-lowercase">
+                <i class="fa fa-times"></i> One lowercase letter
+              </li>
+              <li id="criteria-number">
+                <i class="fa fa-times"></i> One number
+              </li>
+              <li id="criteria-special">
+                <i class="fa fa-times"></i> One special character
+              </li>
+              <li id="criteria-length">
+                <i class="fa fa-times"></i> Minimum 8 characters
+              </li>
+            </ul>
+          </div>
+          <div class="password-container" id="confirmPasswordContainer">
+            <div class="input-group">
+              <input
+                type="password"
+                id="pdfConfirmPassword"
+                class="password-input"
+                placeholder="Confirm password"
+              />
+              <i
+                class="fa fa-eye toggle-password"
+                data-target="pdfConfirmPassword"
+              ></i>
+            </div>
+          </div>
+
+          <!-- Protect button -->
+          <button id="protectBtn" class="cta-button">
+            <i
+              class="fa fa-spinner fa-spin"
+              style="display: none; margin-left: 5px"
+            ></i>
+            <i class="fa fa-lock"></i> Protect PDF
+          </button>
+
+          <!-- Error -->
+          <p id="errorMsg" class="error-text" style="display: none"></p>
+
+          <!-- Result -->
+          <div id="resultBtns" style="display: none; margin-top: 20px">
+            <div id="resultCard" class="result-card">
+              <i class="fa fa-file-pdf"></i>
+            </div>
+            <p class="file-name">
+              <a href="#" id="fileNameLink">protected.pdf</a>
+            </p>
+            <a id="downloadBtn" class="cta-button"
+              ><i class="fa fa-download"></i> Download PDF</a
+            >
+            <button id="shareBtn" class="cta-button" style="display: none">
+              <i class="fa fa-share-alt"></i> Share
+            </button>
+            <button id="resetBtn" class="secondary-btn">
+              <i class="fa fa-rotate-right"></i> Protect Another PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="footer-placeholder"></section>
+
+    <script src="./js/app.js"></script>
+    <script>
+      const BACKEND_PROTECT_URL = `${BACKEND_BASE_URL}/protect-pdf/`;
+
+      const pdfInput = document.getElementById("pdfUpload");
+      const passwordInput = document.getElementById("pdfPassword");
+      const confirmPasswordInput =
+        document.getElementById("pdfConfirmPassword");
+      const protectBtn = document.getElementById("protectBtn");
+      const loader = protectBtn.querySelector(".fa-spinner");
+      const resultSection = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const fileList = document.getElementById("fileList");
+      const errorMsg = document.getElementById("errorMsg");
+      const uploadSection = document.getElementById("uploadSection");
+      const fileNameLink = document.getElementById("fileNameLink");
+      const passwordContainer = document.getElementById("passwordContainer");
+      const confirmPasswordContainer = document.getElementById(
+        "confirmPasswordContainer",
+      );
+      const passwordCriteria = document.getElementById("passwordCriteria");
+
+      let selectedFile = null;
+
+      // Render file list
+      function renderFileList() {
+        if (!selectedFile) {
+          fileList.style.display = "none";
+          return;
+        }
+        fileList.style.display = "block";
+        fileList.innerHTML = `<li><span><i class="fa fa-file-pdf pdf-icon"></i><span>${selectedFile.name}</span></span><i class="fa fa-times delete-file"></i></li>`;
+      }
+
+      pdfInput.addEventListener("change", () => {
+        selectedFile = pdfInput.files[0];
+        if (selectedFile) {
+          passwordContainer.style.display = "block";
+          confirmPasswordContainer.style.display = "block";
+        } else {
+          passwordContainer.style.display = "none";
+          confirmPasswordContainer.style.display = "none";
+        }
+        errorMsg.style.display = "none";
+        renderFileList();
+      });
+
+      fileList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-file")) {
+          selectedFile = null;
+          pdfInput.value = "";
+          fileList.style.display = "none";
+          passwordContainer.style.display = "none";
+          confirmPasswordContainer.style.display = "none";
+          errorMsg.style.display = "none";
+        }
+      });
+
+      // Toggle password visibility
+      document.querySelectorAll(".toggle-password").forEach((icon) => {
+        icon.addEventListener("click", () => {
+          const target = document.getElementById(icon.dataset.target);
+          target.type = target.type === "password" ? "text" : "password";
+          icon.classList.toggle("fa-eye");
+          icon.classList.toggle("fa-eye-slash");
+        });
+      });
+
+      // Strong password validation
+      const criteriaList = {
+        uppercase: document.getElementById("criteria-uppercase"),
+        lowercase: document.getElementById("criteria-lowercase"),
+        number: document.getElementById("criteria-number"),
+        special: document.getElementById("criteria-special"),
+        length: document.getElementById("criteria-length"),
+      };
+
+      function checkAllCriteriaMet() {
+        return Object.values(criteriaList).every((li) =>
+          li.querySelector("i").classList.contains("fa-check"),
+        );
+      }
+
+      passwordInput.addEventListener("input", () => {
+        const val = passwordInput.value;
+        if (val) passwordCriteria.classList.add("active");
+        else passwordCriteria.classList.remove("active");
+
+        criteriaList.uppercase.querySelector("i").className = /[A-Z]/.test(val)
+          ? "fa fa-check"
+          : "fa fa-times";
+        criteriaList.lowercase.querySelector("i").className = /[a-z]/.test(val)
+          ? "fa fa-check"
+          : "fa fa-times";
+        criteriaList.number.querySelector("i").className = /\d/.test(val)
+          ? "fa fa-check"
+          : "fa fa-times";
+        criteriaList.special.querySelector("i").className = /[@$!%*?&]/.test(
+          val,
+        )
+          ? "fa fa-check"
+          : "fa fa-times";
+        criteriaList.length.querySelector("i").className =
+          val.length >= 8 ? "fa fa-check" : "fa fa-times";
+
+        if (checkAllCriteriaMet()) passwordCriteria.classList.remove("active");
+      });
+
+      // Protect PDF logic
+      protectBtn.addEventListener("click", async () => {
+        const password = passwordInput.value.trim();
+        const confirmPassword = confirmPasswordInput.value.trim();
+
+        if (!selectedFile) {
+          errorMsg.textContent = "Please select a PDF file";
+          errorMsg.style.display = "block";
+          return;
+        }
+        if (!password || !confirmPassword) {
+          errorMsg.textContent = "Please enter and confirm your password";
+          errorMsg.style.display = "block";
+          return;
+        }
+        if (password !== confirmPassword) {
+          errorMsg.textContent = "Passwords do not match";
+          errorMsg.style.display = "block";
+          return;
+        }
+
+        errorMsg.style.display = "none";
+        loader.style.display = "inline-block";
+        protectBtn.disabled = true;
+
+        try {
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          formData.append("password", password);
+
+          const response = await fetch(BACKEND_PROTECT_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) throw new Error("Failed to protect PDF");
+
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+
+          // Hide inputs and show result
+          uploadSection.style.display = "none";
+          passwordContainer.style.display = "none";
+          confirmPasswordContainer.style.display = "none";
+          protectBtn.style.display = "none";
+          resultSection.style.display = "block";
+          fileList.style.display = "none";
+
+          downloadBtn.href = url;
+          downloadBtn.download = `protected_${selectedFile.name}`;
+          fileNameLink.textContent = `protected_${selectedFile.name}`;
+
+          shareBtn.style.display = "inline-flex";
+          shareBtn.onclick = () => {
+            if (navigator.share) {
+              navigator.share({
+                title: selectedFile.name,
+                text: "Here is your protected PDF",
+                url: url,
+              });
+            } else
+              alert(
+                "Sharing not supported on this device. You can download the file instead.",
+              );
+          };
+        } catch (err) {
+          errorMsg.textContent = "Error protecting PDF. Please try again.";
+          errorMsg.style.display = "block";
+        } finally {
+          loader.style.display = "none";
+          protectBtn.disabled = false;
+        }
+      });
+
+      // Reset logic
+      resetBtn.addEventListener("click", () => {
+        pdfInput.value = "";
+        passwordInput.value = "";
+        confirmPasswordInput.value = "";
+        selectedFile = null;
+        fileList.style.display = "none";
+        resultSection.style.display = "none";
+        uploadSection.style.display = "block";
+        protectBtn.style.display = "inline-flex";
+        errorMsg.style.display = "none";
+        shareBtn.style.display = "none";
+        passwordCriteria.classList.remove("active");
+        passwordContainer.style.display = "none";
+        confirmPasswordContainer.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDFMaster - Unprotect PDF Online</title>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <style>
+      .input-group {
+        position: relative;
+      }
+      .input-group i {
+        position: absolute;
+        top: 43%;
+        transform: translateY(-50%);
+      }
+      .password-container {
+        position: relative;
+        margin-bottom: 15px;
+        display: none; /* Hide password input */
+      }
+      .toggle-password {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #555;
+      }
+      .error-text {
+        color: #d9534f;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <section id="header-placeholder"></section>
+
+    <section class="merge-tool">
+      <div class="container">
+        <h1>Unlock PDF</h1>
+        <p>
+          Upload your password-protected PDFs and we will unlock them for you.
+        </p>
+
+        <div class="upload-section" id="uploadWrapper">
+          <div id="uploadSection">
+            <label class="upload-label">
+              <i class="fa fa-upload"></i> Choose PDF files
+              <input type="file" id="pdfUpload" accept=".pdf" multiple hidden />
+            </label>
+          </div>
+
+          <ul id="fileList" class="file-list" style="display: none"></ul>
+
+          <button id="unlockBtn" class="cta-button">
+            <i
+              class="fa fa-spinner fa-spin"
+              style="display: none; margin-left: 5px"
+            ></i>
+            <i class="fa fa-unlock"></i> Unlock PDFs
+          </button>
+
+          <p id="errorMsg" class="error-text" style="display: none"></p>
+        </div>
+
+        <div id="resultBtns" style="display: none; margin-top: 20px">
+          <div id="resultCard" class="result-card">
+            <i class="fa fa-file-pdf"></i>
+          </div>
+          <p class="file-name">
+            <a href="#" id="fileNameLink">unprotected_files</a>
+          </p>
+          <a id="downloadBtn" class="cta-button">
+            <i class="fa fa-download"></i> Download Files
+          </a>
+          <button id="shareBtn" class="cta-button" style="display: none">
+            <i class="fa fa-share-alt"></i> Share
+          </button>
+          <button id="resetBtn" class="secondary-btn">
+            <i class="fa fa-rotate-right"></i> Unlock Another PDF
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="footer-placeholder"></section>
+
+    <script src="./js/app.js"></script>
+    <script>
+      const BACKEND_UNPROTECT_URL = `${BACKEND_BASE_URL}/unprotect-pdf`;
+
+      const pdfInput = document.getElementById("pdfUpload");
+      const unlockBtn = document.getElementById("unlockBtn");
+      const loader = unlockBtn.querySelector(".fa-spinner");
+      const resultSection = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const fileList = document.getElementById("fileList");
+      const errorMsg = document.getElementById("errorMsg");
+      const uploadWrapper = document.getElementById("uploadWrapper");
+
+      let selectedFiles = [];
+
+      // File selection
+      pdfInput.addEventListener("change", () => {
+        selectedFiles = Array.from(pdfInput.files);
+        fileList.innerHTML = "";
+        if (selectedFiles.length > 0) {
+          fileList.style.display = "block";
+          selectedFiles.forEach((file) => {
+            const listItem = document.createElement("li");
+            listItem.innerHTML = `<span><i class="fa fa-file-pdf pdf-icon"></i><span>${file.name}</span></span><i class="fa fa-times delete-file"></i>`;
+            fileList.appendChild(listItem);
+          });
+        } else {
+          fileList.style.display = "none";
+        }
+        errorMsg.style.display = "none";
+      });
+
+      fileList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-file")) {
+          const fileName = e.target.previousSibling.textContent.trim();
+          selectedFiles = selectedFiles.filter(
+            (file) => file.name !== fileName,
+          );
+          e.target.closest("li").remove();
+        }
+      });
+
+      // Unlock PDFs
+      unlockBtn.addEventListener("click", async () => {
+        if (selectedFiles.length === 0) {
+          errorMsg.textContent = "Please select at least one PDF file.";
+          errorMsg.style.display = "block";
+          return;
+        }
+
+        errorMsg.style.display = "none";
+        loader.style.display = "inline-block";
+        unlockBtn.disabled = true;
+
+        const formData = new FormData();
+        selectedFiles.forEach((file) => formData.append("files", file));
+
+        try {
+          const response = await fetch(BACKEND_UNPROTECT_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) throw new Error("Failed to unlock PDFs");
+
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+
+          // Hide upload section and show results
+          uploadWrapper.style.display = "none";
+          resultSection.style.display = "block";
+
+          const contentDisposition = response.headers.get(
+            "Content-Disposition",
+          );
+          const fileName = contentDisposition
+            ? contentDisposition.split("=")[1]
+            : "unprotected_files";
+
+          downloadBtn.href = url;
+          downloadBtn.download = fileName;
+
+          shareBtn.style.display = "inline-flex";
+          shareBtn.onclick = () => {
+            if (navigator.share) {
+              navigator.share({
+                title: "Unprotected PDF(s)",
+                text: "Here are your unlocked PDFs.",
+                url: url,
+              });
+            } else {
+              alert("Sharing is not supported on this device.");
+            }
+          };
+        } catch (err) {
+          errorMsg.textContent = "Error unlocking PDFs. Please try again.";
+          errorMsg.style.display = "block";
+        } finally {
+          loader.style.display = "none";
+          unlockBtn.disabled = false;
+        }
+      });
+
+      resetBtn.addEventListener("click", () => {
+        pdfInput.value = "";
+        selectedFiles = [];
+        fileList.style.display = "none";
+        uploadWrapper.style.display = "block";
+        resultSection.style.display = "none";
+        errorMsg.style.display = "none";
+        shareBtn.style.display = "none";
+      });
+    </script>
+  </body>
+</html>

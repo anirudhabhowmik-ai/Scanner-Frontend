@@ -591,8 +591,13 @@
             wm.classList.add("has-image");
             const img = document.createElement("img");
             img.src = URL.createObjectURL(wmImage.files[0]);
-            img.style.width = "150px";
+            if (old && old.dataset.imgWidth) {
+              img.style.width = old.dataset.imgWidth + "px"; // ✅ keep resized size
+            } else {
+              img.style.width = "150px"; // default only first time
+            }
             img.style.height = "auto";
+
             wm.appendChild(img);
           } else {
             wm.innerText = wmText.value;
@@ -763,6 +768,7 @@
             const newWidth = Math.max(50, Math.min(400, startWidth + diff));
             img.style.width = newWidth + "px";
             img.style.height = newWidth * aspectRatio + "px";
+            el.dataset.imgWidth = newWidth;
 
             const dims = getWatermarkDimensions(el);
             el.dataset.wmWidth = dims.width;
@@ -871,7 +877,16 @@
       rotation.addEventListener("input", debouncedUpdatePreview);
 
       wmText.addEventListener("input", updatePreview);
-      position.addEventListener("change", updatePreview);
+      position.addEventListener("change", () => {
+        document.querySelectorAll(".watermark-preview").forEach((wm) => {
+          delete wm.dataset.actualLeft;
+          delete wm.dataset.actualTop;
+          delete wm.dataset.canvasLeft;
+          delete wm.dataset.canvasTop;
+        });
+        updatePreview();
+      });
+
       fontFamily.addEventListener("change", updatePreview);
 
       pageStart.addEventListener(

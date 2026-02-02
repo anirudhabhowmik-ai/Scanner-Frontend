@@ -254,7 +254,7 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const BACKEND_URL = `${BACKEND_BASE_URL}/add-watermark`;
+      const BACKEND_URL = `http://127.0.0.1:8080/add-watermark`;
       const pdfUpload = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
       const pagesGrid = document.getElementById("pagesGrid");
@@ -972,11 +972,26 @@
           const leftPercent = (canvasRelativeX / canvasWidth) * 100;
           const topPercent = (canvasRelativeY / canvasHeight) * 100;
 
+          let alignment = "center";
+          switch (position.value) {
+            case "top-left":
+            case "bottom-left":
+              alignment = "left";
+              break;
+            case "top-right":
+            case "bottom-right":
+              alignment = "right";
+              break;
+            default:
+              alignment = "center";
+          }
+
           const pageData = {
             pageNum: parseInt(card.dataset.pageNum),
             left: leftPercent + "%",
             top: topPercent + "%",
             rotation: -parseFloat(rotation.value),
+            position: alignment,
           };
 
           if (type === "image") {

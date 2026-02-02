@@ -254,6 +254,9 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+      // ===== COMPLETE FIXED JAVASCRIPT CODE =====
+      // Replace everything inside your <script> tag with this code
+
       const BACKEND_URL = `http://127.0.0.1:8080/add-watermark`;
       const pdfUpload = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
@@ -353,7 +356,7 @@
           clearError();
           const isText = r.value === "text";
           document.getElementById("textControls").style.display = isText
-            ? "block"
+            ? "flex"
             : "none";
           document.getElementById("imageControls").style.display = isText
             ? "none"
@@ -415,77 +418,70 @@
         });
       }
 
-      /* ===== LOAD PDF PAGES ===== */
-     /* ===== UPDATED loadAllPDFs FUNCTION ===== */
-/* Replace your existing loadAllPDFs function with this one */
+      /* ===== LOAD PDF PAGES - PROPER SCALING ===== */
+      async function loadAllPDFs() {
+        pagesGrid.innerHTML = "";
+        if (files.length === 0) return;
 
-async function loadAllPDFs() {
-  pagesGrid.innerHTML = "";
-  if (files.length === 0) return;
+        pagesGrid.style.display = "flex";
+        wmOptions.style.display = "block";
+        totalPagesCount = 0;
 
-  pagesGrid.style.display = "flex"; // Changed from "grid"
-  wmOptions.style.display = "block";
-  totalPagesCount = 0;
+        for (let file of files) {
+          const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
+            .promise;
 
-  for (let file of files) {
-    const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
-    
-    for (let i = 1; i <= pdf.numPages; i++) {
-      totalPagesCount++;
-      const page = await pdf.getPage(i);
-      
-      // Calculate scale to fit screen while maintaining aspect ratio
-      // Target max width of 800px for desktop, or screen width - 40px for mobile
-      const maxWidth = window.innerWidth < 768 ? window.innerWidth - 40 : 800;
-      const viewport = page.getViewport({ scale: 1 });
-      const scale = Math.min(maxWidth / viewport.width, 2); // Cap at 2x for very small PDFs
-      
-      // Get viewport at calculated scale
-      const scaledViewport = page.getViewport({ scale: scale });
-      
-      const canvas = document.createElement("canvas");
-      canvas.width = scaledViewport.width;
-      canvas.height = scaledViewport.height;
-      
-      // Render the page
-      await page.render({
-        canvasContext: canvas.getContext("2d"),
-        viewport: scaledViewport,
-      }).promise;
+          for (let i = 1; i <= pdf.numPages; i++) {
+            totalPagesCount++;
+            const page = await pdf.getPage(i);
 
-      const card = document.createElement("div");
-      card.className = "page-card";
-      card.dataset.pageNum = totalPagesCount;
-      
-      // Store the actual PDF dimensions (unscaled) for accurate calculations
-      card.dataset.actualWidth = viewport.width;
-      card.dataset.actualHeight = viewport.height;
-      card.dataset.scale = scale;
+            // Calculate scale to fit screen while maintaining aspect ratio
+            const maxWidth =
+              window.innerWidth < 768 ? window.innerWidth - 40 : 800;
+            const viewport = page.getViewport({ scale: 1 });
+            const scale = Math.min(maxWidth / viewport.width, 2);
 
-      // Add page number badge
-      const badge = document.createElement("div");
-      badge.className = "page-number-badge";
-      badge.textContent = `Page ${totalPagesCount}`;
-      card.appendChild(badge);
+            // Get viewport at calculated scale
+            const scaledViewport = page.getViewport({ scale: scale });
 
-      canvas.style.width = scaledViewport.width + "px";
-      canvas.style.height = scaledViewport.height + "px";
-      card.appendChild(canvas);
+            const canvas = document.createElement("canvas");
+            canvas.width = scaledViewport.width;
+            canvas.height = scaledViewport.height;
 
-      // Add "Apply to All" button for this page
-      const applyBtn = document.createElement("button");
-      applyBtn.className = "page-apply-btn";
-      applyBtn.innerHTML = '<i class="fa fa-clone"></i> Apply to All';
-      applyBtn.onclick = () => applyThisPageToAll(card);
-      card.appendChild(applyBtn);
+            // Render the page
+            await page.render({
+              canvasContext: canvas.getContext("2d"),
+              viewport: scaledViewport,
+            }).promise;
 
-      pagesGrid.appendChild(card);
-    }
-  }
-  
-  updatePageRangeDisplay();
-  updatePreview();
-}
+            const card = document.createElement("div");
+            card.className = "page-card";
+            card.dataset.pageNum = totalPagesCount;
+
+            // Add page number badge
+            const badge = document.createElement("div");
+            badge.className = "page-number-badge";
+            badge.textContent = `Page ${totalPagesCount}`;
+            card.appendChild(badge);
+
+            canvas.style.width = scaledViewport.width + "px";
+            canvas.style.height = scaledViewport.height + "px";
+            card.appendChild(canvas);
+
+            // Add "Apply to All" button
+            const applyBtn = document.createElement("button");
+            applyBtn.className = "page-apply-btn";
+            applyBtn.innerHTML = '<i class="fa fa-clone"></i> Apply to All';
+            applyBtn.onclick = () => applyThisPageToAll(card);
+            card.appendChild(applyBtn);
+
+            pagesGrid.appendChild(card);
+          }
+        }
+
+        updatePageRangeDisplay();
+        updatePreview();
+      }
 
       /* ===== UPDATE PAGE RANGE DISPLAY ===== */
       function updatePageRangeDisplay() {
@@ -503,7 +499,6 @@ async function loadAllPDFs() {
           }
         });
 
-        // Update preview to remove watermarks from out-of-range pages
         updatePreview();
       }
 
@@ -519,18 +514,15 @@ async function loadAllPDFs() {
 
       /* ===== HELPER: GET WATERMARK DIMENSIONS (accounting for rotation) ===== */
       function getWatermarkDimensions(el) {
-        // Temporarily measure the element without rotation to get base dimensions
         const currentTransform = el.style.transform;
-        el.style.transform = "translate(-50%, -50%)"; // Remove rotation temporarily
+        el.style.transform = "translate(-50%, -50%)";
 
         const rect = el.getBoundingClientRect();
         const baseWidth = rect.width;
         const baseHeight = rect.height;
 
-        // Restore original transform
         el.style.transform = currentTransform;
 
-        // Calculate rotated bounding box dimensions
         const rotationRad = ((parseFloat(rotation.value) || 0) * Math.PI) / 180;
         const cos = Math.abs(Math.cos(rotationRad));
         const sin = Math.abs(Math.sin(rotationRad));
@@ -546,7 +538,7 @@ async function loadAllPDFs() {
         };
       }
 
-      /* ===== PREVIEW WITH PROPER DIMENSION CALCULATION ===== */
+      /* ===== PREVIEW - FIXED TO PRESERVE DRAGGED POSITIONS ===== */
       function updatePreview() {
         clearError();
         const type = document.querySelector(
@@ -554,8 +546,23 @@ async function loadAllPDFs() {
         ).value;
 
         document.querySelectorAll(".page-card").forEach((card) => {
-          // Remove existing watermark
           const old = card.querySelector(".watermark-preview");
+
+          // Store current position BEFORE removing
+          let storedLeft = null;
+          let storedTop = null;
+          let storedTransform = null;
+          let storedCanvasLeft = null;
+          let storedCanvasTop = null;
+
+          if (old && (old.dataset.actualLeft || old.dataset.actualTop)) {
+            storedLeft = old.dataset.actualLeft;
+            storedTop = old.dataset.actualTop;
+            storedTransform = old.style.transform;
+            storedCanvasLeft = old.dataset.canvasLeft;
+            storedCanvasTop = old.dataset.canvasTop;
+          }
+
           if (old) old.remove();
 
           if (card.classList.contains("out-of-range")) return;
@@ -595,41 +602,44 @@ async function loadAllPDFs() {
           wm.style.transform = `rotate(${rotationValue}deg)`;
           card.appendChild(wm);
 
-          // Measure rotated dimensions
           const dims = getWatermarkDimensions(wm);
-
           const padding = 10;
-
-          // Compute positions relative to canvas
           const canvasOffsetLeft = canvas.offsetLeft;
           const canvasOffsetTop = canvas.offsetTop;
 
           let left, top;
 
-          // Check if user dragged
-          if (wm.dataset.actualLeft && wm.dataset.actualTop) {
-            left = parseFloat(wm.dataset.actualLeft);
-            top = parseFloat(wm.dataset.actualTop);
+          // CRITICAL FIX: Check if position was previously stored (user dragged)
+          if (storedLeft && storedTop) {
+            // RESTORE the dragged position
+            left = parseFloat(storedLeft);
+            top = parseFloat(storedTop);
+            wm.style.transform = storedTransform;
+            wm.dataset.actualLeft = storedLeft;
+            wm.dataset.actualTop = storedTop;
+            if (storedCanvasLeft) wm.dataset.canvasLeft = storedCanvasLeft;
+            if (storedCanvasTop) wm.dataset.canvasTop = storedCanvasTop;
           } else {
+            // Use position from dropdown
             switch (position.value) {
               case "top-left":
                 left = canvasOffsetLeft + padding;
                 top = canvasOffsetTop + padding;
-                // wm.style.transform = `rotate(${rotationValue}deg)`;
+                wm.style.transform = `rotate(${rotationValue}deg)`;
                 break;
 
               case "top-right":
                 left =
                   canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
                 top = canvasOffsetTop + padding;
-                // wm.style.transform = `rotate(${rotationValue}deg)`;
+                wm.style.transform = `rotate(${rotationValue}deg)`;
                 break;
 
               case "bottom-left":
                 left = canvasOffsetLeft + padding;
                 top =
                   canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
-                // wm.style.transform = `rotate(${rotationValue}deg)`;
+                wm.style.transform = `rotate(${rotationValue}deg)`;
                 break;
 
               case "bottom-right":
@@ -637,7 +647,7 @@ async function loadAllPDFs() {
                   canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
                 top =
                   canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
-                // wm.style.transform = `rotate(${rotationValue}deg)`;
+                wm.style.transform = `rotate(${rotationValue}deg)`;
                 break;
 
               default: // center
@@ -665,7 +675,7 @@ async function loadAllPDFs() {
         });
       }
 
-      /* ===== IMPROVED DRAG WITH BETTER VERTICAL MOVEMENT ===== */
+      /* ===== IMPROVED DRAG ===== */
       function makeDraggable(el, card) {
         el.addEventListener("pointerdown", (e) => {
           if (e.target.classList.contains("resize-handle")) return;
@@ -674,49 +684,40 @@ async function loadAllPDFs() {
           el.setPointerCapture(e.pointerId);
 
           const canvas = card.querySelector("canvas");
-
-          // Get canvas position relative to card
           const canvasRect = canvas.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
           const canvasOffsetLeft = canvasRect.left - cardRect.left;
           const canvasOffsetTop = canvasRect.top - cardRect.top;
 
-          // Get initial position when drag starts
           const startLeft = parseFloat(el.style.left) || 0;
           const startTop = parseFloat(el.style.top) || 0;
           const startX = e.clientX;
           const startY = e.clientY;
 
           function move(ev) {
-            // Calculate how much the mouse has moved
             const deltaX = ev.clientX - startX;
             const deltaY = ev.clientY - startY;
 
-            // Calculate new position in card coordinates (this is the CENTER due to translate(-50%, -50%))
             let centerX = startLeft + deltaX;
             let centerY = startTop + deltaY;
 
-            // Convert center to canvas-relative coordinates
             let canvasRelativeCenterX = centerX - canvasOffsetLeft;
             let canvasRelativeCenterY = centerY - canvasOffsetTop;
 
             el.style.left = centerX + "px";
             el.style.top = centerY + "px";
+
             if (position.value === "center") {
               el.style.transform = `translate(-50%, -50%) rotate(${rotation.value}deg)`;
             } else {
               el.style.transform = `rotate(${rotation.value}deg)`;
             }
 
-            // Store the CENTER position in card coordinates
             el.dataset.actualLeft = centerX;
             el.dataset.actualTop = centerY;
-
-            // Also store canvas-relative position for easier saving
             el.dataset.canvasLeft = canvasRelativeCenterX;
             el.dataset.canvasTop = canvasRelativeCenterY;
 
-            // Store watermark dimensions for backend
             const dims = getWatermarkDimensions(el);
             el.dataset.wmWidth = dims.width;
             el.dataset.wmHeight = dims.height;
@@ -737,7 +738,7 @@ async function loadAllPDFs() {
         });
       }
 
-      /* ===== RESIZE IMAGES WITH DIMENSION TRACKING ===== */
+      /* ===== RESIZE IMAGES ===== */
       function makeResizable(el, img, handle, position, card) {
         handle.addEventListener("pointerdown", (e) => {
           e.preventDefault();
@@ -757,7 +758,6 @@ async function loadAllPDFs() {
             img.style.width = newWidth + "px";
             img.style.height = newWidth * aspectRatio + "px";
 
-            // Update stored dimensions
             const dims = getWatermarkDimensions(el);
             el.dataset.wmWidth = dims.width;
             el.dataset.wmHeight = dims.height;
@@ -778,7 +778,7 @@ async function loadAllPDFs() {
         });
       }
 
-      /* ===== SHOW APPLY BUTTON FOR SPECIFIC PAGE ===== */
+      /* ===== SHOW APPLY BUTTON ===== */
       function showApplyButton(card) {
         const applyBtn = card.querySelector(".page-apply-btn");
         if (applyBtn) {
@@ -786,12 +786,11 @@ async function loadAllPDFs() {
         }
       }
 
-      /* ===== APPLY THIS PAGE TO ALL PAGES ===== */
+      /* ===== APPLY TO ALL PAGES ===== */
       function applyThisPageToAll(sourceCard) {
         const sourceWm = sourceCard.querySelector(".watermark-preview");
         if (!sourceWm) return;
 
-        // Get actual positions from data attributes (if dragged) or from style
         const refLeft = sourceWm.dataset.actualLeft
           ? sourceWm.dataset.actualLeft + "px"
           : sourceWm.style.left;
@@ -808,10 +807,9 @@ async function loadAllPDFs() {
           refHeight = refImg.style.height;
         }
 
-        // Apply to all pages in range
         document.querySelectorAll(".page-card").forEach((card) => {
           if (card.classList.contains("out-of-range")) return;
-          if (card === sourceCard) return; // Skip source card
+          if (card === sourceCard) return;
 
           const wm = card.querySelector(".watermark-preview");
           if (wm) {
@@ -819,7 +817,6 @@ async function loadAllPDFs() {
             wm.style.top = refTop;
             wm.style.transform = refTransform;
 
-            // Copy all data attributes
             if (sourceWm.dataset.actualLeft)
               wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
             if (sourceWm.dataset.actualTop)
@@ -846,14 +843,12 @@ async function loadAllPDFs() {
             }
           }
 
-          // Hide apply button on other pages since they're now synced
           const applyBtn = card.querySelector(".page-apply-btn");
           if (applyBtn) {
             applyBtn.classList.remove("show");
           }
         });
 
-        // Hide the source button too
         const sourceApplyBtn = sourceCard.querySelector(".page-apply-btn");
         if (sourceApplyBtn) {
           sourceApplyBtn.classList.remove("show");
@@ -862,21 +857,17 @@ async function loadAllPDFs() {
         showSuccess("✓ Applied to all pages in range!");
       }
 
-      /* ===== EVENT LISTENERS WITH DEBOUNCING ===== */
-      // Create debounced version of updatePreview
+      /* ===== EVENT LISTENERS ===== */
       const debouncedUpdatePreview = debounce(updatePreview, 100);
 
-      // Use debounced version for numeric inputs
       fontSize.addEventListener("input", debouncedUpdatePreview);
       opacity.addEventListener("input", debouncedUpdatePreview);
       rotation.addEventListener("input", debouncedUpdatePreview);
 
-      // Keep immediate updates for these
       wmText.addEventListener("input", updatePreview);
       position.addEventListener("change", updatePreview);
       fontFamily.addEventListener("change", updatePreview);
 
-      // Page range updates with debouncing
       pageStart.addEventListener(
         "input",
         debounce(updatePageRangeDisplay, 100),
@@ -885,7 +876,7 @@ async function loadAllPDFs() {
 
       wmImage.addEventListener("change", updatePreview);
 
-      /* ===== WATERMARK BUTTON - WITH DIMENSION DATA ===== */
+      /* ===== WATERMARK BUTTON ===== */
       watermarkBtn.onclick = async () => {
         clearError();
 
@@ -908,38 +899,31 @@ async function loadAllPDFs() {
           return;
         }
 
-        // Collect watermark positions from all pages
         const pages = [];
         document.querySelectorAll(".page-card").forEach((card) => {
           const wm = card.querySelector(".watermark-preview");
           if (!wm) return;
 
           const canvas = card.querySelector("canvas");
-
-          // Get the canvas dimensions (these are already at the display scale)
           const canvasWidth = canvas.offsetWidth;
           const canvasHeight = canvas.offsetHeight;
 
-          // Get canvas position relative to card
           const canvasRect = canvas.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
           const canvasOffsetLeft = canvasRect.left - cardRect.left;
           const canvasOffsetTop = canvasRect.top - cardRect.top;
 
-          // Get watermark dimensions (accounting for rotation)
           const dims = getWatermarkDimensions(wm);
           const wmWidth = dims.width;
           const wmHeight = dims.height;
 
           let canvasRelativeX, canvasRelativeY;
 
-          // Check if using center positioning (translate -50%, -50%)
           const isCenterTransform = wm.style.transform.includes(
             "translate(-50%, -50%)",
           );
 
           if (wm.dataset.actualLeft && wm.dataset.actualTop) {
-            // User has dragged the watermark
             const cardRelativeLeft = parseFloat(wm.dataset.actualLeft);
             const cardRelativeTop = parseFloat(wm.dataset.actualTop);
 
@@ -947,12 +931,10 @@ async function loadAllPDFs() {
             canvasRelativeY = cardRelativeTop - canvasOffsetTop;
 
             if (!isCenterTransform) {
-              // Position is top-left corner, convert to center
               canvasRelativeX += wmWidth / 2;
               canvasRelativeY += wmHeight / 2;
             }
           } else {
-            // Using preset position from dropdown
             const cardRelativeLeft = parseFloat(wm.style.left);
             const cardRelativeTop = parseFloat(wm.style.top);
 
@@ -960,13 +942,11 @@ async function loadAllPDFs() {
             canvasRelativeY = cardRelativeTop - canvasOffsetTop;
 
             if (!isCenterTransform) {
-              // Convert corner position to center
               canvasRelativeX += wmWidth / 2;
               canvasRelativeY += wmHeight / 2;
             }
           }
 
-          // Convert to percentage (works because canvas is already at proper scale)
           const leftPercent = (canvasRelativeX / canvasWidth) * 100;
           const topPercent = (canvasRelativeY / canvasHeight) * 100;
 
@@ -980,7 +960,6 @@ async function loadAllPDFs() {
           if (type === "image") {
             const img = wm.querySelector("img");
             if (img) {
-              // Calculate image width as percentage of canvas width
               const imgWidthPercent = (img.offsetWidth / canvasWidth) * 100;
               pageData.widthPercent = imgWidthPercent;
             }
@@ -1082,7 +1061,6 @@ async function loadAllPDFs() {
         resultBtns.style.display = "none";
         document.querySelector(".note-box").style.display = "block";
 
-        // Reset form values
         wmText.value = "";
         fontSize.value = 36;
         opacity.value = 0.3;
@@ -1098,16 +1076,13 @@ async function loadAllPDFs() {
         italicBtn.classList.remove("active");
         underlineBtn.classList.remove("active");
 
-        // Clear the image input
         wmImage.value = "";
 
-        // Reset to text mode
         document.querySelector("input[name='wmType'][value='text']").checked =
           true;
-        document.getElementById("textControls").style.display = "block";
+        document.getElementById("textControls").style.display = "flex";
         document.getElementById("imageControls").style.display = "none";
 
-        // Proper iframe cleanup
         pdfFrame.src = "";
         pdfPreview.style.display = "none";
         window.scrollTo({ top: 0, behavior: "smooth" });

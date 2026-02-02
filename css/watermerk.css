@@ -8,13 +8,13 @@
 
 @media (max-width: 1024px) {
   .pages-grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
   }
 }
 
 @media (max-width: 600px) {
   .pages-grid {
-    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
@@ -36,6 +36,7 @@
 
 .page-card.out-of-range {
   opacity: 0.4;
+  pointer-events: none;
 }
 
 .page-card canvas {
@@ -64,22 +65,25 @@
 .watermark-preview {
   position: absolute;
   cursor: move;
-  font-weight: bold;
   user-select: none;
   white-space: nowrap;
+  pointer-events: auto;
   z-index: 10;
-  line-height: 0;
+  /* CRITICAL: Remove line-height that was causing vertical offset */
+  line-height: normal;
+  touch-action: none;
 }
 
 .watermark-preview img {
   pointer-events: none;
   display: block;
+  user-select: none;
 }
 
 .watermark-preview.has-image {
-  border: 2px dashed #4f46e5;
-  padding: 5px;
-  background: rgba(79, 70, 229, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .watermark-preview .resize-handle {
@@ -91,6 +95,7 @@
   border-radius: 50%;
   pointer-events: all;
   z-index: 20;
+  touch-action: none;
 }
 
 .resize-handle-tl {
@@ -420,14 +425,6 @@
 
 #wmOptions::-webkit-scrollbar-thumb:hover {
   background: #4338ca;
-}
-
-.watermark-preview {
-  touch-action: none;
-}
-
-.resize-handle {
-  touch-action: none;
 }
 
 /* Responsive breakpoints */

@@ -169,7 +169,7 @@
               class="fa fa-spinner fa-spin"
               style="display: none; margin-left: 5px"
             ></i>
-            <i class="fa fa-lock"></i> Protect PDF
+            <span id="upload-icon"><i class="fa fa-lock"></i></span> Protect PDF
           </button>
 
           <!-- Error -->
@@ -218,6 +218,7 @@
       const uploadSection = document.getElementById("uploadSection");
       const fileNameLink = document.getElementById("fileNameLink");
       const passwordContainer = document.getElementById("passwordContainer");
+      const uploadIcon = document.getElementById("upload-icon");
       const confirmPasswordContainer = document.getElementById(
         "confirmPasswordContainer",
       );
@@ -332,6 +333,7 @@
 
         errorMsg.style.display = "none";
         loader.style.display = "inline-block";
+        uploadIcon.style.display = "none";
         protectBtn.disabled = true;
 
         try {
@@ -378,6 +380,7 @@
           errorMsg.style.display = "block";
         } finally {
           loader.style.display = "none";
+          uploadIcon.style.display = "inline-block";
           protectBtn.disabled = false;
         }
       });

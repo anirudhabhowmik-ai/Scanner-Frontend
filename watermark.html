@@ -591,11 +591,12 @@
             wm.classList.add("has-image");
             const img = document.createElement("img");
             img.src = URL.createObjectURL(wmImage.files[0]);
-            if (old && old.dataset.imgWidth) {
-              img.style.width = old.dataset.imgWidth + "px"; // ✅ keep resized size
+            if (card.dataset.imgWidth) {
+              img.style.width = card.dataset.imgWidth + "px"; // ✅ correct page size
             } else {
-              img.style.width = "150px"; // default only first time
+              img.style.width = "150px";
             }
+
             img.style.height = "auto";
 
             wm.appendChild(img);
@@ -768,7 +769,7 @@
             const newWidth = Math.max(50, Math.min(400, startWidth + diff));
             img.style.width = newWidth + "px";
             img.style.height = newWidth * aspectRatio + "px";
-            el.dataset.imgWidth = newWidth;
+            card.dataset.imgWidth = newWidth;
 
             const dims = getWatermarkDimensions(el);
             el.dataset.wmWidth = dims.width;
@@ -852,6 +853,9 @@
                 img.style.width = refWidth;
                 if (refHeight) img.style.height = refHeight;
               }
+            }
+            if (sourceCard.dataset.imgWidth) {
+              card.dataset.imgWidth = sourceCard.dataset.imgWidth; // ✅ sync size
             }
           }
 

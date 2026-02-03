@@ -484,10 +484,6 @@
     gap: 6px;
   }
 
-  .result-btns-container {
-    flex-direction: column;
-  }
-
   .text-style-buttons .option-group {
     min-width: 75px;
   }

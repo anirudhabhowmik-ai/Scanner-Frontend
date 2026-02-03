@@ -446,6 +446,7 @@
             const maxWidth =
               window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
+
             const scale = Math.min(maxWidth / viewport.width, 1);
 
             // Get viewport at calculated scale
@@ -464,6 +465,9 @@
             const card = document.createElement("div");
             card.className = "page-card";
             card.dataset.pageNum = totalPagesCount;
+
+            card.dataset.scale = scale;
+            card.dataset.baseWidth = viewport.width;
 
             // Add page number badge
             const badge = document.createElement("div");
@@ -578,7 +582,10 @@
           const wm = document.createElement("div");
           wm.className = "watermark-preview";
           wm.style.opacity = opacity.value;
-          wm.style.fontSize = fontSize.value + "px";
+          const visualScale =
+            canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+
+          wm.style.fontSize = fontSize.value * visualScale + "px";
 
           const rotationValue = parseFloat(rotation.value) || 0;
 

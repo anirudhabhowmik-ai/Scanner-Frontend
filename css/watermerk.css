@@ -392,14 +392,6 @@
   display: block;
 }
 
-.result-btns-container {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
 .btn-loading .btn-spinner {
   display: inline-block;
   margin-right: 8px;

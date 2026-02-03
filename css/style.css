@@ -540,6 +540,14 @@ footer a:hover {
     cursor: pointer;
 }
 
+.result-btns-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
 .secondary-btn {
     background: #1e3a8a;
     border: 2px solid #1e3a8a;

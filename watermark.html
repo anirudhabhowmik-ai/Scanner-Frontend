@@ -199,7 +199,7 @@
               </div>
             </div>
           </div>
-
+          
           <button id="watermarkBtn" class="cta-button" style="margin-top: 15px">
             <span class="btn-spinner">
               <i class="fa fa-spinner fa-spin"></i>
@@ -254,7 +254,7 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const BACKEND_URL = `http://127.0.0.1:8080/add-watermark`;
+      const BACKEND_URL = `${BACKEND_BASE_URL}/add-watermark`;
       const pdfUpload = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
       const pagesGrid = document.getElementById("pagesGrid");
@@ -446,7 +446,7 @@
             const maxWidth =
               window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
-            const scale = Math.min(maxWidth / viewport.width, 2);
+            const scale = Math.min(maxWidth / viewport.width, 1);
 
             // Get viewport at calculated scale
             const scaledViewport = page.getViewport({ scale: scale });

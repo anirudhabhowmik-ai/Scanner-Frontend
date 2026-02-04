@@ -784,11 +784,15 @@
             const page = await pdf.getPage(i);
 
             // Calculate scale to fit screen (same as watermark)
+            // Calculate DISPLAY scale
             const maxWidth =
               window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
-            const scale = Math.min(maxWidth / viewport.width, 1);
-            const scaledViewport = page.getViewport({ scale: scale });
+            const displayScale = Math.min(maxWidth / viewport.width, 1);
+
+            // Render at HIGHER resolution for crisp text (2x or 3x)
+            const renderScale = displayScale * (window.devicePixelRatio || 2);
+            const scaledViewport = page.getViewport({ scale: renderScale });
 
             const canvas = document.createElement("canvas");
             canvas.width = scaledViewport.width;
@@ -799,10 +803,14 @@
               viewport: scaledViewport,
             }).promise;
 
+            // Scale down with CSS for display (this keeps text sharp)
+            canvas.style.width = viewport.width * displayScale + "px";
+            canvas.style.height = viewport.height * displayScale + "px";
+
             const card = document.createElement("div");
             card.className = "page-card";
             card.dataset.pageNum = pageNo;
-            card.dataset.scale = scale;
+            card.dataset.scale = displayScale; // Store display scale, not render scale
             card.dataset.baseWidth = viewport.width;
             card.dataset.baseHeight = viewport.height;
 
@@ -856,7 +864,8 @@
         preview.textContent = text;
 
         // Style the preview
-        const visualScale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+        const visualScale =
+          canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
         preview.style.fontSize = fontSize.value * visualScale + "px";
         preview.style.color = fontColor.value;
         preview.style.fontWeight = boldBtn.classList.contains("active")

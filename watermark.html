@@ -756,60 +756,61 @@
 
       /* ===== RESIZE IMAGES ===== */
       function makeResizable(el, img, handle, position, card) {
-  handle.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+        handle.addEventListener("pointerdown", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
 
-    handle.setPointerCapture(e.pointerId);
+          handle.setPointerCapture(e.pointerId);
 
-    const startWidth = img.offsetWidth;
-    const startX = e.clientX;
-    const aspectRatio = img.offsetHeight / startWidth;
+          const startWidth = img.offsetWidth;
+          const startX = e.clientX;
+          const aspectRatio = img.offsetHeight / startWidth;
 
-    // Precompute visualScale once here
-    const canvas = card.querySelector("canvas");
-    const visualScale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+          // Precompute visualScale once here
+          const canvas = card.querySelector("canvas");
+          const visualScale =
+            canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
 
-    // Base width in unscaled units
-    const baseWidth = parseFloat(card.dataset.imgWidth) || startWidth / visualScale;
+          // Base width in unscaled units
+          const baseWidth =
+            parseFloat(card.dataset.imgWidth) || startWidth / visualScale;
 
-    function move(ev) {
-      let diffX = ev.clientX - startX;
-      let diff = position === "br" || position === "tr" ? diffX : -diffX;
+          function move(ev) {
+            let diffX = ev.clientX - startX;
+            let diff = position === "br" || position === "tr" ? diffX : -diffX;
 
-      // Compute new width in base units
-      let newBaseWidth = baseWidth + diff / visualScale;
-      newBaseWidth = Math.max(50, Math.min(400, newBaseWidth)); // clamp
+            // Compute new width in base units
+            let newBaseWidth = baseWidth + diff / visualScale;
+            newBaseWidth = Math.max(50, Math.min(400, newBaseWidth)); // clamp
 
-      // Convert back to actual displayed width
-      const newWidth = newBaseWidth * visualScale;
-      img.style.width = newWidth + "px";
-      img.style.height = newWidth * aspectRatio + "px";
+            // Convert back to actual displayed width
+            const newWidth = newBaseWidth * visualScale;
+            img.style.width = newWidth + "px";
+            img.style.height = newWidth * aspectRatio + "px";
 
-      // Store base size for future drags/resizes
-      card.dataset.imgWidth = newBaseWidth;
+            // Store base size for future drags/resizes
+            card.dataset.imgWidth = newBaseWidth;
 
-      const dims = getWatermarkDimensions(el);
-      el.dataset.wmWidth = dims.width;
-      el.dataset.wmHeight = dims.height;
-      el.dataset.wmBaseWidth = dims.baseWidth;
-      el.dataset.wmBaseHeight = dims.baseHeight;
+            const dims = getWatermarkDimensions(el);
+            el.dataset.wmWidth = dims.width;
+            el.dataset.wmHeight = dims.height;
+            el.dataset.wmBaseWidth = dims.baseWidth;
+            el.dataset.wmBaseHeight = dims.baseHeight;
 
-      showApplyButton(card);
-    }
+            showApplyButton(card);
+          }
 
-    function up(ev) {
-      handle.releasePointerCapture(ev.pointerId);
-      handle.removeEventListener("pointermove", move);
-      handle.removeEventListener("pointerup", up);
-    }
+          function up(ev) {
+            handle.releasePointerCapture(ev.pointerId);
+            handle.removeEventListener("pointermove", move);
+            handle.removeEventListener("pointerup", up);
+          }
 
-    handle.addEventListener("pointermove", move);
-    handle.addEventListener("pointerup", up);
-  });
-}
+          handle.addEventListener("pointermove", move);
+          handle.addEventListener("pointerup", up);
+        });
+      }
 
-      
       /* ===== SHOW APPLY BUTTON ===== */
       function showApplyButton(card) {
         const applyBtn = card.querySelector(".page-apply-btn");
@@ -820,80 +821,79 @@
 
       /* ===== APPLY TO ALL PAGES ===== */
       function applyThisPageToAll(sourceCard) {
-  const sourceWm = sourceCard.querySelector(".watermark-preview");
-  if (!sourceWm) return;
+        const sourceWm = sourceCard.querySelector(".watermark-preview");
+        if (!sourceWm) return;
 
-  const refLeft = sourceWm.dataset.actualLeft
-    ? sourceWm.dataset.actualLeft + "px"
-    : sourceWm.style.left;
-  const refTop = sourceWm.dataset.actualTop
-    ? sourceWm.dataset.actualTop + "px"
-    : sourceWm.style.top;
-  const refTransform = sourceWm.style.transform;
+        const refLeft = sourceWm.dataset.actualLeft
+          ? sourceWm.dataset.actualLeft + "px"
+          : sourceWm.style.left;
+        const refTop = sourceWm.dataset.actualTop
+          ? sourceWm.dataset.actualTop + "px"
+          : sourceWm.style.top;
+        const refTransform = sourceWm.style.transform;
 
-  let refWidth = null;
-  let refHeight = null;
-  const refImg = sourceWm.querySelector("img");
-  if (refImg) {
-    refWidth = refImg.style.width;
-    refHeight = refImg.style.height;
-  }
-
-  document.querySelectorAll(".page-card").forEach((card) => {
-    if (card.classList.contains("out-of-range")) return;
-    if (card === sourceCard) return;
-
-    const wm = card.querySelector(".watermark-preview");
-    if (wm) {
-      wm.style.left = refLeft;
-      wm.style.top = refTop;
-      wm.style.transform = refTransform;
-
-      if (sourceWm.dataset.actualLeft)
-        wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
-      if (sourceWm.dataset.actualTop)
-        wm.dataset.actualTop = sourceWm.dataset.actualTop;
-      if (sourceWm.dataset.canvasLeft)
-        wm.dataset.canvasLeft = sourceWm.dataset.canvasLeft;
-      if (sourceWm.dataset.canvasTop)
-        wm.dataset.canvasTop = sourceWm.dataset.canvasTop;
-      if (sourceWm.dataset.wmWidth)
-        wm.dataset.wmWidth = sourceWm.dataset.wmWidth;
-      if (sourceWm.dataset.wmHeight)
-        wm.dataset.wmHeight = sourceWm.dataset.wmHeight;
-      if (sourceWm.dataset.wmBaseWidth)
-        wm.dataset.wmBaseWidth = sourceWm.dataset.wmBaseWidth;
-      if (sourceWm.dataset.wmBaseHeight)
-        wm.dataset.wmBaseHeight = sourceWm.dataset.wmBaseHeight;
-
-      if (refWidth) {
-        const img = wm.querySelector("img");
-        if (img) {
-          img.style.width = refWidth;
-          if (refHeight) img.style.height = refHeight;
+        let refWidth = null;
+        let refHeight = null;
+        const refImg = sourceWm.querySelector("img");
+        if (refImg) {
+          refWidth = refImg.style.width;
+          refHeight = refImg.style.height;
         }
+
+        document.querySelectorAll(".page-card").forEach((card) => {
+          if (card.classList.contains("out-of-range")) return;
+          if (card === sourceCard) return;
+
+          const wm = card.querySelector(".watermark-preview");
+          if (wm) {
+            wm.style.left = refLeft;
+            wm.style.top = refTop;
+            wm.style.transform = refTransform;
+
+            if (sourceWm.dataset.actualLeft)
+              wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
+            if (sourceWm.dataset.actualTop)
+              wm.dataset.actualTop = sourceWm.dataset.actualTop;
+            if (sourceWm.dataset.canvasLeft)
+              wm.dataset.canvasLeft = sourceWm.dataset.canvasLeft;
+            if (sourceWm.dataset.canvasTop)
+              wm.dataset.canvasTop = sourceWm.dataset.canvasTop;
+            if (sourceWm.dataset.wmWidth)
+              wm.dataset.wmWidth = sourceWm.dataset.wmWidth;
+            if (sourceWm.dataset.wmHeight)
+              wm.dataset.wmHeight = sourceWm.dataset.wmHeight;
+            if (sourceWm.dataset.wmBaseWidth)
+              wm.dataset.wmBaseWidth = sourceWm.dataset.wmBaseWidth;
+            if (sourceWm.dataset.wmBaseHeight)
+              wm.dataset.wmBaseHeight = sourceWm.dataset.wmBaseHeight;
+
+            if (refWidth) {
+              const img = wm.querySelector("img");
+              if (img) {
+                img.style.width = refWidth;
+                if (refHeight) img.style.height = refHeight;
+              }
+            }
+
+            if (sourceCard.dataset.imgWidth) {
+              card.dataset.imgWidth = sourceCard.dataset.imgWidth; // ✅ sync size
+              card.dataset.imgHeight = sourceCard.dataset.imgHeight;
+            }
+          }
+
+          const applyBtn = card.querySelector(".page-apply-btn");
+          if (applyBtn) {
+            applyBtn.classList.remove("show");
+          }
+        });
+
+        const sourceApplyBtn = sourceCard.querySelector(".page-apply-btn");
+        if (sourceApplyBtn) {
+          sourceApplyBtn.classList.remove("show");
+        }
+
+        showSuccess("✓ Applied to all pages in range!");
       }
-
-      if (sourceCard.dataset.imgWidth) {
-        card.dataset.imgWidth = sourceCard.dataset.imgWidth; // ✅ sync size
-        card.dataset.imgHeight = sourceCard.dataset.imgHeight;
-      }
-    }
-
-    const applyBtn = card.querySelector(".page-apply-btn");
-    if (applyBtn) {
-      applyBtn.classList.remove("show");
-    }
-  });
-
-  const sourceApplyBtn = sourceCard.querySelector(".page-apply-btn");
-  if (sourceApplyBtn) {
-    sourceApplyBtn.classList.remove("show");
-  }
-
-  showSuccess("✓ Applied to all pages in range!");
-}
-
 
       /* ===== EVENT LISTENERS ===== */
       const debouncedUpdatePreview = debounce(updatePreview, 100);

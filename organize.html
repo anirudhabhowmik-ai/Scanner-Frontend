@@ -31,7 +31,7 @@
     <style>
       .pages-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(2, 1fr); /* Changed from 4 to 2 */
         gap: 20px;
         margin-top: 30px;
         padding: 20px;
@@ -85,7 +85,7 @@
 
       .page-number {
         position: absolute;
-        top: 8px;
+        top: -24px;
         left: 8px;
         background: #4f46e5;
         color: white;
@@ -99,18 +99,18 @@
       .page-canvas-wrapper {
         position: relative;
         width: 100%;
-        height: 200px;
         overflow: visible;
         border-radius: 8px;
         background: #f9fafb;
         display: flex;
         align-items: center;
         justify-content: center;
+        min-height: 200px;
       }
 
       .page-card canvas {
-        max-width: 100%;
-        max-height: 100%;
+        width: 100%;
+        height: auto !important;
         display: block;
         border-radius: 8px;
         transition: transform 0.3s ease;
@@ -118,7 +118,9 @@
 
       .blank-page {
         width: 100%;
-        height: 100%;
+        height: auto;
+        min-height: 400px;
+        aspect-ratio: 8.5 / 11;
         background: white;
         border: 2px dashed #cbd5e1;
         display: flex;
@@ -196,35 +198,33 @@
 
       @media (max-width: 1024px) {
         .pages-grid {
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
           gap: 18px;
         }
       }
 
       @media (max-width: 768px) {
         .pages-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(1, 1fr);
           gap: 15px;
           padding: 15px;
-        }
-
-        .page-canvas-wrapper {
-          height: 180px;
         }
 
         .result-btns-container {
           flex-direction: column;
         }
+        .blank-page {
+          min-height: 300px;
+        }
       }
 
       @media (max-width: 480px) {
         .pages-grid {
-          grid-template-columns: repeat(2, 1fr);
+          grid-template-columns: repeat(1, 1fr);
           gap: 12px;
         }
-
-        .page-canvas-wrapper {
-          height: 160px;
+        .blank-page {
+          min-height: 250px;
         }
       }
     </style>
@@ -427,17 +427,43 @@
       /* ================= RENDER PAGE ================= */
       async function renderPage(pdf, pageNum, globalIndex, fileIndex) {
         const page = await pdf.getPage(pageNum);
+
+        // Get base viewport at scale 1
         const viewport = page.getViewport({ scale: 1 });
+
+        // Calculate appropriate scale based on viewport
+        let maxWidth;
+        if (window.innerWidth < 768) {
+          // Mobile: 1 column, use most of screen width
+          maxWidth = window.innerWidth - 80;
+        } else {
+          // Desktop: 2 columns
+          maxWidth = (window.innerWidth - 140) / 2;
+        }
+
+        // Calculate display scale to fit width (no max limit)
+        const displayScale = maxWidth / viewport.width;
+
+        // Render at HIGHER resolution for crisp text
+        const renderScale = displayScale * (window.devicePixelRatio || 2);
+        const scaledViewport = page.getViewport({ scale: renderScale });
 
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
 
+        // Set canvas resolution to high DPI
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+
+        // Render at high resolution
         await page.render({
           canvasContext: context,
-          viewport: viewport,
+          viewport: scaledViewport,
         }).promise;
+
+        // Let CSS handle the display size while maintaining aspect ratio
+        canvas.style.width = "100%";
+        canvas.style.height = "auto";
 
         const card = createPageCard(
           canvas,
@@ -481,6 +507,17 @@
           blankDiv.innerHTML =
             '<i class="fa fa-file" style="font-size:24px;"></i>';
           wrapper.appendChild(blankDiv);
+
+          // Match height of last rendered PDF page
+          setTimeout(() => {
+            const lastPdfCanvas = pagesGrid.querySelector(
+              '.page-card[data-type="page"] canvas',
+            );
+            if (lastPdfCanvas) {
+              blankDiv.style.height = lastPdfCanvas.offsetHeight + "px";
+              blankDiv.style.minHeight = lastPdfCanvas.offsetHeight + "px";
+            }
+          }, 100);
         } else {
           wrapper.appendChild(content);
         }

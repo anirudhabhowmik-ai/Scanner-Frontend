@@ -442,21 +442,21 @@
             totalPagesCount++;
             const page = await pdf.getPage(i);
 
-            // Calculate scale to fit screen while maintaining aspect ratio
+            // Calculate DISPLAY scale to fit screen
             const maxWidth =
               window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
+            const displayScale = Math.min(maxWidth / viewport.width, 1);
 
-            const scale = Math.min(maxWidth / viewport.width, 1);
-
-            // Get viewport at calculated scale
-            const scaledViewport = page.getViewport({ scale: scale });
+            // Render at HIGHER resolution for crisp text (2x or 3x)
+            const renderScale = displayScale * (window.devicePixelRatio || 2);
+            const scaledViewport = page.getViewport({ scale: renderScale });
 
             const canvas = document.createElement("canvas");
             canvas.width = scaledViewport.width;
             canvas.height = scaledViewport.height;
 
-            // Render the page
+            // Render the page at high resolution
             await page.render({
               canvasContext: canvas.getContext("2d"),
               viewport: scaledViewport,
@@ -466,7 +466,8 @@
             card.className = "page-card";
             card.dataset.pageNum = totalPagesCount;
 
-            card.dataset.scale = scale;
+            // Store DISPLAY scale (not render scale)
+            card.dataset.scale = displayScale;
             card.dataset.baseWidth = viewport.width;
 
             // Add page number badge
@@ -475,8 +476,9 @@
             badge.textContent = `Page ${totalPagesCount}`;
             card.appendChild(badge);
 
-            canvas.style.width = scaledViewport.width + "px";
-            canvas.style.height = scaledViewport.height + "px";
+            // Scale down canvas display with CSS for crisp rendering
+            canvas.style.width = viewport.width * displayScale + "px";
+            canvas.style.height = viewport.height * displayScale + "px";
             card.appendChild(canvas);
 
             // Add "Apply to All" button

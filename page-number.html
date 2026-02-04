@@ -26,447 +26,447 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon" />
 
     <style>
-  .btn-loading .btn-spinner {
-    display: inline-block;
-  }
-
-  .btn-loading .btn-text {
-    display: none;
-  }
-
-  .btn-spinner {
-    display: none;
-  }
-
-  /* ===== STICKY OPTIONS PANEL AT BOTTOM ===== */
-  .options-panel {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    display: none;
-    background: white;
-    z-index: 1000;
-    overflow-y: auto;
-    border-top: 3px solid #4f46e5;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-    max-height: 220px;
-    padding: 12px 16px 14px;
-    transition: max-height 0.3s ease;
-  }
-
-  .options-panel.show {
-    display: block;
-  }
-
-  /* Scrollbar styling */
-  .options-panel::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  .options-panel::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  .options-panel::-webkit-scrollbar-thumb {
-    background: #4f46e5;
-    border-radius: 4px;
-  }
-
-  .options-panel::-webkit-scrollbar-thumb:hover {
-    background: #4338ca;
-  }
-
-  /* Panel Container */
-  .panel-flex {
-    max-width: 1600px;
-    margin: 0 auto;
-    text-align: left;
-  }
-
-  /* Options Grid Layout */
-  .panel-flex {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 10px;
-    align-items: flex-end;
-  }
-
-  .option-group {
-    display: flex;
-    flex-direction: column;
-    min-width: 0; /* CRITICAL: Prevents grid overflow */
-  }
-
-  .option-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 6px;
-    color: #1e3a8a;
-    font-size: 11px;
-  }
-
-  .option-group label i {
-    margin-right: 6px;
-    color: #4f46e5;
-    font-size: 12px;
-    width: 14px;
-    text-align: center;
-  }
-
-  .option-group select,
-  .option-group input[type="number"],
-  .option-group input[type="text"] {
-    width: 100%;
-    padding: 7px 9px;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    font-size: 12px;
-    transition: border-color 0.2s;
-    background: #fafafa;
-    box-sizing: border-box; /* CRITICAL: Include padding in width */
-    min-width: 0; /* CRITICAL: Allows shrinking */
-  }
-
-  .option-group select:focus,
-  .option-group input:focus {
-    outline: none;
-    border-color: #4f46e5;
-    background: white;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-  }
-
-  /* Hide number input spinners to prevent overflow */
-  .option-group input[type="number"]::-webkit-inner-spin-button,
-  .option-group input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-
-  .option-group input[type="number"] {
-    -moz-appearance: textfield; /* Firefox */
-    appearance: textfield;
-  }
-
-  /* Color Input - Smaller Width */
-  .option-group input[type="color"] {
-    width: 50px;
-    height: 36px;
-    cursor: pointer;
-    padding: 3px;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
-    background: #fafafa;
-    box-sizing: border-box;
-  }
-
-  .option-group input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 2px;
-  }
-
-  .option-group input[type="color"]::-webkit-color-swatch {
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
-  }
-
-  .option-group input[type="color"]:focus {
-    outline: none;
-    border-color: #4f46e5;
-    background: white;
-    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
-  }
-
-  /* Format Toggles */
-  .format-toggles {
-    display: flex;
-    gap: 6px;
-  }
-
-  .format-btn {
-    flex: 1;
-    padding: 7px 8px;
-    border: 2px solid #e5e7eb;
-    background: #fafafa;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 600;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-  }
-
-  .format-btn:hover {
-    border-color: #4f46e5;
-    background: #f0f1ff;
-  }
-
-  .format-btn.active {
-    border-color: #4f46e5;
-    background: #4f46e5;
-    color: white;
-    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
-  }
-
-  .format-btn i {
-    font-size: 13px;
-  }
-
-  /* Preview Grid - Vertical Stack */
-  .pages-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin: 30px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 12px;
-    border: 2px dashed #e5e7eb;
-    max-width: 900px;
-  }
-
-  .pages-grid:empty::after {
-    content: "Upload PDF files to see preview";
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #9ca3af;
-    font-size: 14px;
-    min-height: 200px;
-  }
-
-  .page-card {
-    position: relative;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: fit-content;
-    max-width: 100%;
-    transition: all 0.3s ease;
-    margin: 0 auto;
-  }
-
-  .page-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  }
-
-  .page-number-badge {
-    position: absolute;
-    top: -8px;
-    left: 8px;
-    background: #4f46e5;
-    color: white;
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    z-index: 10;
-  }
-
-  .page-card canvas {
-    display: block;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: relative;
-    border: 1px solid #e5e7eb;
-    max-width: min(100%, 800px) !important;
-    height: auto !important;
-    width: auto !important;
-  }
-
-  .page-number-preview {
-    position: absolute;
-    font-weight: 700;
-    pointer-events: none;
-    z-index: 5;
-    white-space: nowrap;
-    line-height: normal;
-  }
-
-  .out-of-range {
-    opacity: 0.4;
-    pointer-events: none;
-  }
-
-  .result-btns-container {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-  }
-
-  /* Large Desktop - 5 columns */
-  @media (min-width: 1400px) {
-    .panel-flex {
-      grid-template-columns: repeat(5, 1fr);
-    }
-  }
-
-  /* Desktop - 4 columns */
-  @media (min-width: 1200px) and (max-width: 1399px) {
-    .panel-flex {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  /* Medium Desktop - 3 columns */
-  @media (min-width: 992px) and (max-width: 1199px) {
-    .panel-flex {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .options-panel {
-      max-height: 240px;
-    }
-  }
-
-  /* Tablet - 2 columns */
-  @media (min-width: 768px) and (max-width: 991px) {
-    .panel-flex {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .options-panel {
-      max-height: 260px;
-      padding: 10px 14px 12px;
-    }
-
-    .pages-grid {
-      gap: 25px;
-      padding: 15px;
-    }
-  }
-
-  /* Mobile - 2 columns (compact) */
-  @media (min-width: 600px) and (max-width: 767px) {
-    .panel-flex {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-    }
-
-    .options-panel {
-      max-height: 280px;
-      padding: 8px 12px 10px;
-    }
-
-    .option-group label {
-      font-size: 10px;
-      margin-bottom: 5px;
-    }
-
-    .option-group select,
-    .option-group input {
-      font-size: 11px;
-      padding: 6px 8px;
-    }
-
-    .option-group input[type="color"] {
-      width: 45px;
-      height: 32px;
-    }
-
-    .format-btn {
-      padding: 7px;
-      font-size: 12px;
-    }
-
-    .pages-grid {
-      gap: 20px;
-      padding: 12px;
-    }
-
-    .page-number-badge {
-      font-size: 10px;
-      padding: 3px 8px;
-    }
-  }
-
-  /* Small Mobile - 1 column */
-  @media (max-width: 599px) {
-    .panel-flex {
-      grid-template-columns: 1fr 1fr;
-      gap: 6px;
-    }
-
-    .options-panel {
-      max-height: 300px;
-      padding: 8px 10px;
-    }
-
-    .option-group label {
-      font-size: 10px;
-      margin-bottom: 4px;
-    }
-
-    .option-group label i {
-      font-size: 11px;
-      width: 12px;
-    }
-
-    .option-group select,
-    .option-group input {
-      font-size: 11px;
-      padding: 5px 7px;
-    }
-
-    .option-group input[type="color"] {
-      width: 40px;
-      height: 32px;
-    }
-
-    .format-toggles {
-      gap: 4px;
-    }
-
-    .format-btn {
-      padding: 6px;
-      font-size: 11px;
-    }
-
-    .format-btn i {
-      font-size: 11px;
-    }
-
-    .pages-grid {
-      gap: 20px;
-      padding: 10px;
-    }
-
-    .page-number-badge {
-      font-size: 10px;
-      padding: 3px 7px;
-    }
-  }
-
-  /* Extra Small Mobile */
-  @media (max-width: 480px) {
-    .options-panel {
-      max-height: 200px;
-    }
-
-    .panel-flex {
-      gap: 5px;
-    }
-
-    .option-group select,
-    .option-group input {
-      font-size: 10px;
-      padding: 4px 6px;
-    }
-
-    .option-group input[type="color"] {
-      width: 38px;
-      height: 30px;
-    }
-
-    .format-btn {
-      padding: 5px;
-    }
-  }
-</style>
+      .btn-loading .btn-spinner {
+        display: inline-block;
+      }
+
+      .btn-loading .btn-text {
+        display: none;
+      }
+
+      .btn-spinner {
+        display: none;
+      }
+
+      /* ===== STICKY OPTIONS PANEL AT BOTTOM ===== */
+      .options-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: none;
+        background: white;
+        z-index: 1000;
+        overflow-y: auto;
+        border-top: 3px solid #4f46e5;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        max-height: 220px;
+        padding: 12px 16px 14px;
+        transition: max-height 0.3s ease;
+      }
+
+      .options-panel.show {
+        display: block;
+      }
+
+      /* Scrollbar styling */
+      .options-panel::-webkit-scrollbar {
+        width: 5px;
+      }
+
+      .options-panel::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .options-panel::-webkit-scrollbar-thumb {
+        background: #4f46e5;
+        border-radius: 4px;
+      }
+
+      .options-panel::-webkit-scrollbar-thumb:hover {
+        background: #4338ca;
+      }
+
+      /* Panel Container */
+      .panel-flex {
+        max-width: 1600px;
+        margin: 0 auto;
+        text-align: left;
+      }
+
+      /* Options Grid Layout */
+      .panel-flex {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 10px;
+        align-items: flex-end;
+      }
+
+      .option-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 0; /* CRITICAL: Prevents grid overflow */
+      }
+
+      .option-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #1e3a8a;
+        font-size: 11px;
+      }
+
+      .option-group label i {
+        margin-right: 6px;
+        color: #4f46e5;
+        font-size: 12px;
+        width: 14px;
+        text-align: center;
+      }
+
+      .option-group select,
+      .option-group input[type="number"],
+      .option-group input[type="text"] {
+        width: 100%;
+        padding: 7px 9px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        font-size: 12px;
+        transition: border-color 0.2s;
+        background: #fafafa;
+        box-sizing: border-box; /* CRITICAL: Include padding in width */
+        min-width: 0; /* CRITICAL: Allows shrinking */
+      }
+
+      .option-group select:focus,
+      .option-group input:focus {
+        outline: none;
+        border-color: #4f46e5;
+        background: white;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+      }
+
+      /* Hide number input spinners to prevent overflow */
+      .option-group input[type="number"]::-webkit-inner-spin-button,
+      .option-group input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .option-group input[type="number"] {
+        -moz-appearance: textfield; /* Firefox */
+        appearance: textfield;
+      }
+
+      /* Color Input - Smaller Width */
+      .option-group input[type="color"] {
+        width: 50px;
+        height: 36px;
+        cursor: pointer;
+        padding: 3px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        background: #fafafa;
+        box-sizing: border-box;
+      }
+
+      .option-group input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 2px;
+      }
+
+      .option-group input[type="color"]::-webkit-color-swatch {
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+      }
+
+      .option-group input[type="color"]:focus {
+        outline: none;
+        border-color: #4f46e5;
+        background: white;
+        box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.1);
+      }
+
+      /* Format Toggles */
+      .format-toggles {
+        display: flex;
+        gap: 6px;
+      }
+
+      .format-btn {
+        flex: 1;
+        padding: 7px 8px;
+        border: 2px solid #e5e7eb;
+        background: #fafafa;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+      }
+
+      .format-btn:hover {
+        border-color: #4f46e5;
+        background: #f0f1ff;
+      }
+
+      .format-btn.active {
+        border-color: #4f46e5;
+        background: #4f46e5;
+        color: white;
+        box-shadow: 0 2px 6px rgba(79, 70, 229, 0.3);
+      }
+
+      .format-btn i {
+        font-size: 13px;
+      }
+
+      /* Preview Grid - Vertical Stack */
+      .pages-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin: 30px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 12px;
+        border: 2px dashed #e5e7eb;
+        max-width: 900px;
+      }
+
+      .pages-grid:empty::after {
+        content: "Upload PDF files to see preview";
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #9ca3af;
+        font-size: 14px;
+        min-height: 200px;
+      }
+
+      .page-card {
+        position: relative;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        width: fit-content;
+        max-width: 100%;
+        transition: all 0.3s ease;
+        margin: 0 auto;
+      }
+
+      .page-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .page-number-badge {
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        background: #4f46e5;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 10;
+      }
+
+      .page-card canvas {
+        display: block;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        border: 1px solid #e5e7eb;
+        max-width: min(100%, 800px) !important;
+        height: auto !important;
+        width: auto !important;
+      }
+
+      .page-number-preview {
+        position: absolute;
+        font-weight: 700;
+        pointer-events: none;
+        z-index: 5;
+        white-space: nowrap;
+        line-height: normal;
+      }
+
+      .out-of-range {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .result-btns-container {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      /* Large Desktop - 5 columns */
+      @media (min-width: 1400px) {
+        .panel-flex {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      /* Desktop - 4 columns */
+      @media (min-width: 1200px) and (max-width: 1399px) {
+        .panel-flex {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      /* Medium Desktop - 3 columns */
+      @media (min-width: 992px) and (max-width: 1199px) {
+        .panel-flex {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .options-panel {
+          max-height: 240px;
+        }
+      }
+
+      /* Tablet - 2 columns */
+      @media (min-width: 768px) and (max-width: 991px) {
+        .panel-flex {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .options-panel {
+          max-height: 260px;
+          padding: 10px 14px 12px;
+        }
+
+        .pages-grid {
+          gap: 25px;
+          padding: 15px;
+        }
+      }
+
+      /* Mobile - 2 columns (compact) */
+      @media (min-width: 600px) and (max-width: 767px) {
+        .panel-flex {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+        }
+
+        .options-panel {
+          max-height: 280px;
+          padding: 8px 12px 10px;
+        }
+
+        .option-group label {
+          font-size: 10px;
+          margin-bottom: 5px;
+        }
+
+        .option-group select,
+        .option-group input {
+          font-size: 11px;
+          padding: 6px 8px;
+        }
+
+        .option-group input[type="color"] {
+          width: 45px;
+          height: 32px;
+        }
+
+        .format-btn {
+          padding: 7px;
+          font-size: 12px;
+        }
+
+        .pages-grid {
+          gap: 20px;
+          padding: 12px;
+        }
+
+        .page-number-badge {
+          font-size: 10px;
+          padding: 3px 8px;
+        }
+      }
+
+      /* Small Mobile - 1 column */
+      @media (max-width: 599px) {
+        .panel-flex {
+          grid-template-columns: 1fr 1fr;
+          gap: 6px;
+        }
+
+        .options-panel {
+          max-height: 300px;
+          padding: 8px 10px;
+        }
+
+        .option-group label {
+          font-size: 10px;
+          margin-bottom: 4px;
+        }
+
+        .option-group label i {
+          font-size: 11px;
+          width: 12px;
+        }
+
+        .option-group select,
+        .option-group input {
+          font-size: 11px;
+          padding: 5px 7px;
+        }
+
+        .option-group input[type="color"] {
+          width: 40px;
+          height: 32px;
+        }
+
+        .format-toggles {
+          gap: 4px;
+        }
+
+        .format-btn {
+          padding: 6px;
+          font-size: 11px;
+        }
+
+        .format-btn i {
+          font-size: 11px;
+        }
+
+        .pages-grid {
+          gap: 20px;
+          padding: 10px;
+        }
+
+        .page-number-badge {
+          font-size: 10px;
+          padding: 3px 7px;
+        }
+      }
+
+      /* Extra Small Mobile */
+      @media (max-width: 480px) {
+        .options-panel {
+          max-height: 200px;
+        }
+
+        .panel-flex {
+          gap: 5px;
+        }
+
+        .option-group select,
+        .option-group input {
+          font-size: 10px;
+          padding: 4px 6px;
+        }
+
+        .option-group input[type="color"] {
+          width: 38px;
+          height: 30px;
+        }
+
+        .format-btn {
+          padding: 5px;
+        }
+      }
+    </style>
   </head>
 
   <body>
@@ -827,7 +827,6 @@
       function updatePreview(card) {
         const canvas = card.querySelector("canvas");
         const pageNum = parseInt(card.dataset.pageNum);
-        const scale = parseFloat(card.dataset.scale);
 
         // Remove old preview
         const oldPreview = card.querySelector(".page-number-preview");
@@ -857,7 +856,8 @@
         preview.textContent = text;
 
         // Style the preview
-        preview.style.fontSize = fontSize.value * scale + "px";
+        const visualScale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+        preview.style.fontSize = fontSize.value * visualScale + "px";
         preview.style.color = fontColor.value;
         preview.style.fontWeight = boldBtn.classList.contains("active")
           ? "bold"
@@ -878,34 +878,33 @@
         };
         preview.style.fontFamily = fonts[fontFamily.value] || fonts.helvetica;
 
-        // Position the preview (relative to canvas)
-        const margin = 10 * scale;
-        const pos = position.value;
-
+        // Temporarily add to card to measure if needed
         preview.style.position = "absolute";
-
-        const canvasRect = canvas.getBoundingClientRect();
-        const cardRect = card.getBoundingClientRect();
-
-        // Temporarily add to measure
         preview.style.left = "-9999px";
         preview.style.top = "-9999px";
         card.appendChild(preview);
 
-        const previewWidth = preview.offsetWidth;
-        const previewHeight = preview.offsetHeight;
+        // Measure text width using canvas for consistent mobile/desktop alignment
+        const ctx = canvas.getContext("2d");
+        ctx.font = `${fontSize.value * visualScale}px ${preview.style.fontFamily}`;
+        const previewWidth = ctx.measureText(text).width;
+        const previewHeight = fontSize.value * visualScale;
 
-        // Calculate position relative to card
-        let left, top;
+        const margin = 10 * visualScale;
+        const pos = position.value;
         const canvasLeft = canvas.offsetLeft;
         const canvasTop = canvas.offsetTop;
 
+        let left, top;
+
+        // Vertical position
         if (pos.startsWith("top")) {
           top = canvasTop + margin;
         } else {
           top = canvasTop + canvas.offsetHeight - margin - previewHeight;
         }
 
+        // Horizontal position
         if (pos.includes("left")) {
           left = canvasLeft + margin;
         } else if (pos.includes("right")) {
@@ -972,7 +971,7 @@
           if (!preview) return;
 
           const canvas = card.querySelector("canvas");
-          const scale = parseFloat(card.dataset.scale);
+          const scale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
           const baseWidth = parseFloat(card.dataset.baseWidth);
           const baseHeight = parseFloat(card.dataset.baseHeight);
 

@@ -1,111 +1,123 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Image to PDF Online Free | PDFMaster</title>
-    <meta name="description" content="Convert images to PDF online quickly and securely.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Convert images to PDF online quickly and securely."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="icon" href="./favicon.ico" type="image/x-icon" />
 
     <style>
-        .btn-loading {
-            pointer-events: none;
-        }
+      .btn-loading {
+        pointer-events: none;
+      }
 
-        .btn-loading .btn-text {
-            display: none;
-        }
+      .btn-loading .btn-text {
+        display: none;
+      }
 
-        .btn-loading .btn-spinner {
-            display: inline-block;
-        }
+      .btn-loading .btn-spinner {
+        display: inline-block;
+      }
 
-        .btn-spinner {
-            display: none;
-        }
+      .btn-spinner {
+        display: none;
+      }
 
-        #imageUpload {
-            display: none;
-        }
+      #imageUpload {
+        display: none;
+      }
 
-        .note-box {
-            background: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            padding: 12px 16px;
-            margin-top: 15px;
-            font-size: 14px;
-            border-radius: 4px;
-        }
+      .note-box {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        padding: 12px 16px;
+        margin-top: 15px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <section id="header-placeholder"></section>
 
     <section class="merge-tool">
-        <div class="container">
-            <h1>Image to PDF</h1>
-            <p>Convert your images to a PDF quickly and securely.</p>
+      <div class="container">
+        <h1>Image to PDF</h1>
+        <p>Convert your images to a PDF quickly and securely.</p>
 
-            <div class="upload-section">
-                <div id="uploadSection">
-                    <label for="imageUpload" class="upload-label">
-                        <i class="fa fa-upload"></i> Choose Image(s)
-                    </label>
-                    <input type="file" id="imageUpload" accept="image/*" multiple>
-                </div>
+        <div class="upload-section">
+          <div id="uploadSection">
+            <label for="imageUpload" class="upload-label">
+              <i class="fa fa-upload"></i> Choose Image(s)
+            </label>
+            <input type="file" id="imageUpload" accept="image/*" multiple />
+          </div>
 
-                <ul id="fileList" class="file-list" style="display:none;"></ul>
+          <ul id="fileList" class="file-list" style="display: none"></ul>
 
-                <button id="convertBtn" class="cta-button" style="margin-top:15px;">
-                    <span class="btn-spinner">
-                        <i class="fa fa-spinner fa-spin"></i>
-                    </span>
-                    <span class="btn-text">
-                        <i class="fa fa-file-pdf"></i></span> Convert to PDF
-                </button>
+          <button id="convertBtn" class="cta-button" style="margin-top: 15px">
+            <span class="btn-spinner">
+              <i class="fa fa-spinner fa-spin"></i>
+            </span>
+            <span class="btn-text"> <i class="fa fa-file-pdf"></i></span>
+            Convert to PDF
+          </button>
 
-                <p id="errorMsg" class="error-text" style="display:none;"></p>
+          <p id="errorMsg" class="error-text" style="display: none"></p>
 
-                <div class="note-box" id="noteBox">
-                    💡 You can upload multiple images. They will be merged into one PDF in the same order.
-                </div>
+          <div class="note-box" id="noteBox">
+            💡 You can upload multiple images. They will be merged into one PDF
+            in the same order.
+          </div>
 
-                <div id="resultBtns" style="display:none; margin-top:15px;">
-                    <div class="result-card">
-                        <i class="fa fa-file-pdf"></i>
-                    </div>
-
-                    <p class="file-name">
-                        <a href="#" id="fileNameLink">converted.pdf</a>
-                    </p>
-
-                    <a id="downloadBtn" href="#" class="cta-button">
-                        <i class="fa fa-download"></i> Download PDF
-                    </a>
-
-                    <a id="shareBtn" href="#" class="cta-button">
-                        <i class="fa fa-share-alt"></i> Share
-                    </a>
-
-                    <button id="resetBtn" class="secondary-btn">
-                        <i class="fa fa-rotate-right"></i> Convert Another
-                    </button>
-                </div>
+          <div id="resultBtns" style="display: none; margin-top: 15px">
+            <div class="result-card">
+              <i class="fa fa-file-pdf"></i>
             </div>
 
-            <div id="pdfPreview" style="display:none; margin-top:30px;">
-                <h4>Preview PDF</h4>
-                <iframe id="pdfFrame" width="100%" height="600"
-                    style="border-radius:12px; border:1px solid #e5e7eb;"></iframe>
-            </div>
+            <p class="file-name">
+              <a href="#" id="fileNameLink">converted.pdf</a>
+            </p>
+
+            <a id="downloadBtn" href="#" class="cta-button">
+              <i class="fa fa-download"></i> Download PDF
+            </a>
+
+            <a id="shareBtn" href="#" class="cta-button">
+              <i class="fa fa-share-alt"></i> Share
+            </a>
+
+            <button id="resetBtn" class="secondary-btn">
+              <i class="fa fa-rotate-right"></i> Convert Another
+            </button>
+          </div>
         </div>
+
+        <div id="pdfPreview" style="display: none; margin-top: 30px">
+          <h4>Preview PDF</h4>
+          <iframe
+            id="pdfFrame"
+            width="100%"
+            height="600"
+            style="border-radius: 12px; border: 1px solid #e5e7eb"
+          ></iframe>
+        </div>
+      </div>
     </section>
 
     <section id="footer-placeholder"></section>
@@ -114,138 +126,140 @@
     <script src="./js/app.js"></script>
 
     <script>
-        const BACKEND_URL = `${BACKEND_BASE_URL}/image-to-pdf`;
+      const BACKEND_URL = `${BACKEND_BASE_URL}/image-to-pdf`;
 
-        const imageInput = document.getElementById("imageUpload");
-        const fileList = document.getElementById("fileList");
-        const convertBtn = document.getElementById("convertBtn");
-        const errorMsg = document.getElementById("errorMsg");
-        const resultBtns = document.getElementById("resultBtns");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const shareBtn = document.getElementById("shareBtn");
-        const resetBtn = document.getElementById("resetBtn");
-        const fileNameLink = document.getElementById("fileNameLink");
-        const uploadSection = document.getElementById("uploadSection");
-        const pdfPreview = document.getElementById("pdfPreview");
-        const pdfFrame = document.getElementById("pdfFrame");
-        const noteBox = document.getElementById("noteBox");
+      const imageInput = document.getElementById("imageUpload");
+      const fileList = document.getElementById("fileList");
+      const convertBtn = document.getElementById("convertBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const resultBtns = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const fileNameLink = document.getElementById("fileNameLink");
+      const uploadSection = document.getElementById("uploadSection");
+      const pdfPreview = document.getElementById("pdfPreview");
+      const pdfFrame = document.getElementById("pdfFrame");
+      const noteBox = document.getElementById("noteBox");
 
-        let selectedFiles = [];
+      let selectedFiles = [];
 
-        /* ---------- FILE LIST UI ---------- */
-        function renderFileList() {
-            if (selectedFiles.length === 0) {
-                fileList.style.display = "none";
-                return;
-            }
+      /* ---------- FILE LIST UI ---------- */
+      function renderFileList() {
+        if (selectedFiles.length === 0) {
+          fileList.style.display = "none";
+          return;
+        }
 
-            fileList.style.display = "block";
-            fileList.innerHTML = "";
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
 
-            selectedFiles.forEach((file, index) => {
-                const li = document.createElement("li");
-                li.innerHTML = `
+        selectedFiles.forEach((file, index) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
             <i class="fa fa-file-image" style="margin-right: 10px;"></i>
             <span>${file.name}</span>
             <i class="fa fa-times delete-file" data-index="${index}"></i>
         `;
-                fileList.appendChild(li);
-            });
-        }
+          fileList.appendChild(li);
+        });
+      }
 
-        imageInput.addEventListener("change", () => {
-            const newFiles = Array.from(imageInput.files);
+      imageInput.addEventListener("change", () => {
+        const newFiles = Array.from(imageInput.files);
 
-            // ✅ CLEAR ERROR WHEN USER UPLOADS
+        // ✅ CLEAR ERROR WHEN USER UPLOADS
+        errorMsg.textContent = "";
+        errorMsg.style.display = "none";
+
+        newFiles.forEach((file) => {
+          if (
+            !selectedFiles.some(
+              (f) => f.name === file.name && f.size === file.size,
+            )
+          ) {
+            selectedFiles.push(file);
+          }
+        });
+
+        renderFileList();
+        imageInput.value = "";
+      });
+
+      /* ---------- DELETE IMAGE ---------- */
+      fileList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-file")) {
+          const index = e.target.dataset.index;
+          selectedFiles.splice(index, 1);
+          renderFileList();
+
+          if (selectedFiles.length > 0) {
             errorMsg.textContent = "";
             errorMsg.style.display = "none";
+          }
+        }
+      });
 
-            newFiles.forEach(file => {
-                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                    selectedFiles.push(file);
-                }
-            });
+      /* ---------- CONVERT ---------- */
+      convertBtn.addEventListener("click", async () => {
+        if (selectedFiles.length === 0) {
+          errorMsg.textContent = "Please upload image(s)";
+          errorMsg.style.display = "block";
+          return;
+        }
 
-            renderFileList();
-            imageInput.value = "";
-        });
+        convertBtn.classList.add("btn-loading");
+        convertBtn.disabled = true;
 
+        const formData = new FormData();
+        selectedFiles.forEach((file) => formData.append("images", file));
 
-        /* ---------- DELETE IMAGE ---------- */
-        fileList.addEventListener("click", (e) => {
-            if (e.target.classList.contains("delete-file")) {
-                const index = e.target.dataset.index;
-                selectedFiles.splice(index, 1);
-                renderFileList();
+        try {
+          const response = await fetch(BACKEND_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!response.ok) throw new Error("Conversion failed");
 
-                if (selectedFiles.length > 0) {
-                    errorMsg.textContent = "";
-                    errorMsg.style.display = "none";
-                }
-            }
-        });
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
 
+          downloadBtn.href = url;
+          downloadBtn.download = "converted.pdf";
+          shareBtn.href = url;
 
-        /* ---------- CONVERT ---------- */
-        convertBtn.addEventListener("click", async () => {
-            if (selectedFiles.length === 0) {
-                errorMsg.textContent = "Please upload image(s)";
-                errorMsg.style.display = "block";
-                return;
-            }
+          fileNameLink.href = url;
+          fileNameLink.textContent = "converted.pdf";
 
-            convertBtn.classList.add("btn-loading");
-            convertBtn.disabled = true;
+          resultBtns.style.display = "block";
+          uploadSection.style.display = "none";
+          convertBtn.style.display = "none";
+          fileList.style.display = "none";
+          noteBox.style.display = "none";
 
-            const formData = new FormData();
-            selectedFiles.forEach(file => formData.append("images", file));
+          pdfFrame.src = url;
+          pdfPreview.style.display = "block";
+        } catch (err) {
+          errorMsg.textContent = err.message;
+          errorMsg.style.display = "block";
+        } finally {
+          convertBtn.classList.remove("btn-loading");
+          convertBtn.disabled = false;
+        }
+      });
 
-            try {
-                const response = await fetch(BACKEND_URL, { method: "POST", body: formData });
-                if (!response.ok) throw new Error("Conversion failed");
-
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-
-                downloadBtn.href = url;
-                downloadBtn.download = "converted.pdf";
-                shareBtn.href = url;
-
-                fileNameLink.href = url;
-                fileNameLink.textContent = "converted.pdf";
-
-                resultBtns.style.display = "block";
-                uploadSection.style.display = "none";
-                convertBtn.style.display = "none";
-                fileList.style.display = "none";
-                noteBox.style.display = "none";
-
-                pdfFrame.src = url;
-                pdfPreview.style.display = "block";
-
-            } catch (err) {
-                errorMsg.textContent = err.message;
-                errorMsg.style.display = "block";
-            } finally {
-                convertBtn.classList.remove("btn-loading");
-                convertBtn.disabled = false;
-            }
-        });
-
-        /* ---------- RESET ---------- */
-        resetBtn.addEventListener("click", () => {
-            selectedFiles = [];
-            fileList.innerHTML = "";
-            fileList.style.display = "none";
-            uploadSection.style.display = "block";
-            resultBtns.style.display = "none";
-            convertBtn.style.display = "inline-flex";
-            pdfPreview.style.display = "none";
-            noteBox.style.display = "block";
-            pdfFrame.src = "";
-        });
+      /* ---------- RESET ---------- */
+      resetBtn.addEventListener("click", () => {
+        selectedFiles = [];
+        fileList.innerHTML = "";
+        fileList.style.display = "none";
+        uploadSection.style.display = "block";
+        resultBtns.style.display = "none";
+        convertBtn.style.display = "inline-flex";
+        pdfPreview.style.display = "none";
+        noteBox.style.display = "block";
+        pdfFrame.src = "";
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

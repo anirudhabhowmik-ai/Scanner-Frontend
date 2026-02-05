@@ -1,4 +1,4 @@
-const BACKEND_BASE_URL = "https://api.nextopdf.com";
+// const BACKEND_BASE_URL = "https://api.nextopdf.com";
 
 // Load header
 fetch('/header.html')

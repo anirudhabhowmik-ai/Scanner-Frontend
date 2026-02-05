@@ -215,7 +215,6 @@
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     padding: 20px;
     position: relative;
-    height: calc(100vh - 220px);
     overflow: hidden;
     display: flex;
     justify-content: center;

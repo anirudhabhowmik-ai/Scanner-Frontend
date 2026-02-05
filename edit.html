@@ -788,107 +788,116 @@
         });
 
         async function loadPDF(file) {
-            editorContainer.style.display = 'block';
-            uploadSection.style.display = 'none';
-            const arrayBuffer = await file.arrayBuffer();
-            pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    editorContainer.style.display = 'block';
+    uploadSection.style.display = 'none';
+    const arrayBuffer = await file.arrayBuffer();
+    pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-            canvasContainer.innerHTML = '';
-            thumbnailContainer.innerHTML = '';
-            pages = [];
+    canvasContainer.innerHTML = '';
+    thumbnailContainer.innerHTML = '';
+    pages = [];
 
-            for (let i = 1; i <= pdfDoc.numPages; i++) {
-                const page = await pdfDoc.getPage(i);
-                const actualViewport = page.getViewport({ scale: 1 });
+    for (let i = 1; i <= pdfDoc.numPages; i++) {
+        const page = await pdfDoc.getPage(i);
+        
+        // Get the original viewport at scale 1
+        const baseViewport = page.getViewport({ scale: 1 });
 
-                const containerRect = canvasContainer.getBoundingClientRect();
-                const containerWidth = containerRect.width || MAX_WIDTH;
-                const containerHeight = containerRect.height || window.innerHeight - 300;
+        // Calculate scale to fit container width while maintaining aspect ratio
+        const containerRect = canvasContainer.getBoundingClientRect();
+        const containerWidth = containerRect.width || MAX_WIDTH;
+        const maxWidth = Math.min(containerWidth - 40, MAX_WIDTH);
 
-                const maxWidth = containerWidth - 40;
-                const maxHeight = containerHeight - 40;
+        // Calculate display scale based on width
+        const displayScale = maxWidth / baseViewport.width;
 
-                const scaleX = maxWidth / actualViewport.width;
-                const scaleY = maxHeight / actualViewport.height;
+        // Render at HIGH resolution for crisp text
+        const renderScale = displayScale * (window.devicePixelRatio || 2);
+        const renderViewport = page.getViewport({ scale: renderScale });
 
-                scale = Math.max(0.2, Math.min(scaleX, scaleY, 2));
+        const wrapper = document.createElement('div');
+        wrapper.className = 'pdf-page-wrapper';
+        wrapper.style.width = (baseViewport.width * displayScale) + 'px';
+        wrapper.style.height = (baseViewport.height * displayScale) + 'px';
+        if (i === 1) wrapper.classList.add('active');
 
-                const viewport = page.getViewport({ scale: scale });
+        const canvas = document.createElement('canvas');
+        canvas.className = 'pdf-canvas';
+        canvas.width = renderViewport.width;
+        canvas.height = renderViewport.height;
 
-                const wrapper = document.createElement('div');
-                wrapper.className = 'pdf-page-wrapper';
-                wrapper.style.width = viewport.width + 'px';
-                if (i === 1) wrapper.classList.add('active');
+        // Style the canvas to display at correct size
+        canvas.style.width = (baseViewport.width * displayScale) + 'px';
+        canvas.style.height = (baseViewport.height * displayScale) + 'px';
 
-                const canvas = document.createElement('canvas');
-                canvas.className = 'pdf-canvas';
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+        const context = canvas.getContext('2d');
+        await page.render({ canvasContext: context, viewport: renderViewport }).promise;
 
-                const context = canvas.getContext('2d');
-                await page.render({ canvasContext: context, viewport: viewport }).promise;
+        const annotationLayer = document.createElement('div');
+        annotationLayer.className = 'annotation-layer';
+        annotationLayer.style.width = (baseViewport.width * displayScale) + 'px';
+        annotationLayer.style.height = (baseViewport.height * displayScale) + 'px';
 
-                const annotationLayer = document.createElement('div');
-                annotationLayer.className = 'annotation-layer';
-                annotationLayer.style.width = viewport.width + 'px';
-                annotationLayer.style.height = viewport.height + 'px';
+        const ocrLayer = document.createElement('div');
+        ocrLayer.className = 'ocr-layer';
+        ocrLayer.style.width = (baseViewport.width * displayScale) + 'px';
+        ocrLayer.style.height = (baseViewport.height * displayScale) + 'px';
+        ocrLayer.style.position = 'absolute';
+        ocrLayer.style.top = '0';
+        ocrLayer.style.left = '0';
+        ocrLayer.style.pointerEvents = 'none';
 
-                const ocrLayer = document.createElement('div');
-                ocrLayer.className = 'ocr-layer';
-                ocrLayer.style.width = viewport.width + 'px';
-                ocrLayer.style.height = viewport.height + 'px';
-                ocrLayer.style.position = 'absolute';
-                ocrLayer.style.top = '0';
-                ocrLayer.style.left = '0';
-                ocrLayer.style.pointerEvents = 'none';
+        const drawingCanvas = document.createElement('canvas');
+        drawingCanvas.className = 'drawing-canvas';
+        drawingCanvas.width = renderViewport.width;
+        drawingCanvas.height = renderViewport.height;
+        drawingCanvas.style.width = (baseViewport.width * displayScale) + 'px';
+        drawingCanvas.style.height = (baseViewport.height * displayScale) + 'px';
 
-                const drawingCanvas = document.createElement('canvas');
-                drawingCanvas.className = 'drawing-canvas';
-                drawingCanvas.width = viewport.width;
-                drawingCanvas.height = viewport.height;
+        wrapper.appendChild(canvas);
+        wrapper.appendChild(ocrLayer);
+        wrapper.appendChild(annotationLayer);
+        wrapper.appendChild(drawingCanvas);
+        canvasContainer.appendChild(wrapper);
 
-                wrapper.appendChild(canvas);
-                wrapper.appendChild(ocrLayer);
-                wrapper.appendChild(annotationLayer);
-                wrapper.appendChild(drawingCanvas);
-                canvasContainer.appendChild(wrapper);
+        // Thumbnail - keep existing code
+        const thumbViewport = page.getViewport({ scale: 0.2 });
+        const thumbCanvas = document.createElement('canvas');
+        thumbCanvas.width = thumbViewport.width;
+        thumbCanvas.height = thumbViewport.height;
+        const thumbContext = thumbCanvas.getContext('2d');
+        await page.render({ canvasContext: thumbContext, viewport: thumbViewport }).promise;
 
-                // Thumbnail
-                const thumbViewport = page.getViewport({ scale: 0.2 });
-                const thumbCanvas = document.createElement('canvas');
-                thumbCanvas.width = thumbViewport.width;
-                thumbCanvas.height = thumbViewport.height;
-                const thumbContext = thumbCanvas.getContext('2d');
-                await page.render({ canvasContext: thumbContext, viewport: thumbViewport }).promise;
+        const thumbItem = document.createElement('div');
+        thumbItem.className = 'thumbnail-item';
+        if (i === 1) thumbItem.classList.add('active');
+        thumbItem.dataset.page = i - 1;
+        thumbItem.appendChild(thumbCanvas);
 
-                const thumbItem = document.createElement('div');
-                thumbItem.className = 'thumbnail-item';
-                if (i === 1) thumbItem.classList.add('active');
-                thumbItem.dataset.page = i - 1;
-                thumbItem.appendChild(thumbCanvas);
+        const pageLabel = document.createElement('div');
+        pageLabel.className = 'page-label';
+        pageLabel.textContent = `Page ${i}`;
+        thumbItem.appendChild(pageLabel);
 
-                const pageLabel = document.createElement('div');
-                pageLabel.className = 'page-label';
-                pageLabel.textContent = `Page ${i}`;
-                thumbItem.appendChild(pageLabel);
+        thumbItem.addEventListener('click', () => switchToPage(i - 1));
+        thumbnailContainer.appendChild(thumbItem);
 
-                thumbItem.addEventListener('click', () => switchToPage(i - 1));
-                thumbnailContainer.appendChild(thumbItem);
+        // Store the display viewport (not render viewport)
+        const displayViewport = page.getViewport({ scale: displayScale });
+        const pdfPage = new PDFPage(i, canvas, displayViewport);
+        pdfPage.wrapper = wrapper;
+        pdfPage.annotationLayer = annotationLayer;
+        pdfPage.ocrLayer = ocrLayer;
+        pdfPage.drawingCanvas = drawingCanvas;
+        pdfPage.scale = displayScale;
+        pages.push(pdfPage);
 
-                const pdfPage = new PDFPage(i, canvas, viewport);
-                pdfPage.wrapper = wrapper;
-                pdfPage.annotationLayer = annotationLayer;
-                pdfPage.ocrLayer = ocrLayer;
-                pdfPage.drawingCanvas = drawingCanvas;
-                pdfPage.scale = scale;
-                pages.push(pdfPage);
+        setupDrawing(pdfPage);
+    }
 
-                setupDrawing(pdfPage);
-            }
-
-            editorContainer.style.display = 'block';
-            uploadSection.style.display = 'none';
-        }
+    editorContainer.style.display = 'block';
+    uploadSection.style.display = 'none';
+}
 
         // Edit PDF Button - Extract text using OCR
         editPdfBtn.addEventListener('click', async () => {

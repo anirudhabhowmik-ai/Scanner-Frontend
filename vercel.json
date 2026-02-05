@@ -14,5 +14,11 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://api.nextopdf.com/$1"
+    }
   ]
 }

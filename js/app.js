@@ -1,4 +1,4 @@
-const BACKEND_BASE_URL = "https://scanner-backend-production-fa11.up.railway.app";
+const BACKEND_BASE_URL = "api.nextopdf.com";
 
 // Load header
 fetch('/header.html')

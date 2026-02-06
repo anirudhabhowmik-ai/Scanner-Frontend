@@ -4,6 +4,10 @@
     {
       "source": "/api/:path*",
       "destination": "https://api.nextopdf.com/:path*"
+    },
+    {
+      "source": "/((?!api/|.*\\..*).*)",
+      "destination": "/"
     }
   ],
   "headers": [

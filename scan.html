@@ -1,26 +1,38 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document Scanner - PDFMaster</title>
+    <meta
+      name="description"
+      content="Professional document scanner with auto edge detection and OCR. Scan, crop, extract text, and export to PDF or JPG."
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="theme-color" content="#2563eb" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-  <meta charset="UTF-8" />
-  <title>Document Scanner - PDFMaster</title>
-  <meta name="description"
-    content="Professional document scanner with auto edge detection and OCR. Scan, crop, extract text, and export to PDF or JPG." />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#2563eb" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-    rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/scan.css" />
 
-  <!-- CSS -->
-  <link rel="stylesheet" href="./css/style.css">
-  <link rel="stylesheet" href="./css/scan.css">
-
-  <!-- Favicon -->
+    <!-- Favicon -->
     <link
       rel="icon"
       type="image/png"
@@ -38,662 +50,688 @@
       sizes="180x180"
       href="./images/apple-touch-icon.png"
     />
-</head>
+  </head>
 
-<body>
+  <body>
+    <section id="header-placeholder"></section>
 
-  <section id="header-placeholder"></section>
-
-  <div class="scanner-container">
-    <div class="heading-scanner">
-      <h1>📄 Document Scanner</h1>
-      <p class="subtitle">Smart edge detection, cropping & OCR</p>
-    </div>
-
-    <div class="message-container">
-      <div class="message message-loading" id="loadingMsg">
-        <div class="spinner"></div>
-        <span id="loadingText">Processing...</span>
+    <div class="scanner-container">
+      <div class="heading-scanner">
+        <h1>📄 Document Scanner</h1>
+        <p class="subtitle">Smart edge detection, cropping & OCR</p>
       </div>
-      <div class="message message-success" id="successMsg">
-        <span>✓</span>
-        <span id="successText"></span>
-      </div>
-      <div class="message message-error" id="errorMsg">
-        <span>✕</span>
-        <span id="errorText"></span>
-      </div>
-    </div>
 
-    <div class="content-card">
-      <div class="media-container" id="mediaContainer">
-        <div class="placeholder" id="placeholder">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-text">Ready to scan your document</div>
+      <div class="message-container">
+        <div class="message message-loading" id="loadingMsg">
+          <div class="spinner"></div>
+          <span id="loadingText">Processing...</span>
         </div>
-        <video id="video" autoplay playsinline style="display: none"></video>
-        <canvas id="canvas"></canvas>
-        <img id="preview" style="display: none" alt="Document preview" />
+        <div class="message message-success" id="successMsg">
+          <span>✓</span>
+          <span id="successText"></span>
+        </div>
+        <div class="message message-error" id="errorMsg">
+          <span>✕</span>
+          <span id="errorText"></span>
+        </div>
       </div>
 
-      <div class="btn-container" id="btnContainer">
-        <button class="btn-primary" id="openCameraBtn">
-          <span>📷</span>
-          <span>Open Camera</span>
-        </button>
-        <button class="btn-primary" id="uploadBtn">
-          <span>📁</span>
-          <span>Upload Image</span>
-        </button>
-        <input type="file" id="fileInput" accept="image/*" style="display: none" />
+      <div class="content-card">
+        <div class="media-container" id="mediaContainer">
+          <div class="placeholder" id="placeholder">
+            <div class="placeholder-icon">📷</div>
+            <div class="placeholder-text">Ready to scan your document</div>
+          </div>
+          <video id="video" autoplay playsinline style="display: none"></video>
+          <canvas id="canvas"></canvas>
+          <img id="preview" style="display: none" alt="Document preview" />
+        </div>
 
-        <button class="btn-success" id="captureBtn" style="display: none">
-          <span>📸</span>
-          <span>Capture Document</span>
-        </button>
+        <div class="btn-container" id="btnContainer">
+          <button class="btn-primary" id="openCameraBtn">
+            <span>📷</span>
+            <span>Open Camera</span>
+          </button>
+          <button class="btn-primary" id="uploadBtn">
+            <span>📁</span>
+            <span>Upload Image</span>
+          </button>
+          <input
+            type="file"
+            id="fileInput"
+            accept="image/*"
+            style="display: none"
+          />
 
-        <button class="btn-success" id="cropBtn" style="display: none">
-          <span>✂️</span>
-          <span>Process & Save</span>
-        </button>
+          <button class="btn-success" id="captureBtn" style="display: none">
+            <span>📸</span>
+            <span>Capture Document</span>
+          </button>
 
-        <button class="btn-secondary" id="retakeBtn" style="display: none">
-          <span>🔄</span>
-          <span>Start Over</span>
-        </button>
-      </div>
+          <button class="btn-success" id="cropBtn" style="display: none">
+            <span>✂️</span>
+            <span>Process & Save</span>
+          </button>
 
-      <div class="result-actions" id="resultActions">
-        <button class="btn-ocr" id="ocrBtn">
-          <span>📝</span>
-          <span>Extract Text (OCR)</span>
-        </button>
-        <a class="btn btn-download" id="downloadJpg" href="#" download="scanned.jpg">
-          <span>📥</span>
-          <span>Download JPG</span>
-        </a>
-        <a class="btn btn-download" id="downloadPdf" href="#" download="scanned.pdf">
-          <span>📥</span>
-          <span>Download PDF</span>
-        </a>
-        <button class="btn-share" id="shareBtn">
-          <span>📤</span>
-          <span>Share</span>
-        </button>
+          <button class="btn-secondary" id="retakeBtn" style="display: none">
+            <span>🔄</span>
+            <span>Start Over</span>
+          </button>
+        </div>
+
+        <div class="result-actions" id="resultActions">
+          <button class="btn-ocr" id="ocrBtn">
+            <span>📝</span>
+            <span>Extract Text (OCR)</span>
+          </button>
+          <a
+            class="btn btn-download"
+            id="downloadJpg"
+            href="#"
+            download="scanned.jpg"
+          >
+            <span>📥</span>
+            <span>Download JPG</span>
+          </a>
+          <a
+            class="btn btn-download"
+            id="downloadPdf"
+            href="#"
+            download="scanned.pdf"
+          >
+            <span>📥</span>
+            <span>Download PDF</span>
+          </a>
+          <button class="btn-share" id="shareBtn">
+            <span>📤</span>
+            <span>Share</span>
+          </button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="loading-overlay" id="loadingOverlay">
-    <div class="loading-content">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Processing your document...</div>
-    </div>
-  </div>
-
-  <!-- OCR Modal -->
-  <div class="ocr-modal" id="ocrModal">
-    <div class="ocr-content">
-      <div class="ocr-header">
-        <h2>📝 Extracted Text</h2>
-        <button class="ocr-close" id="ocrCloseBtn">×</button>
-      </div>
-      <div class="ocr-body">
-        <div class="ocr-text" id="ocrText">Extracting text...</div>
-      </div>
-      <div class="ocr-footer">
-        <button class="btn-secondary" id="copyTextBtn">
-          <span>📋</span>
-          <span>Copy Text</span>
-        </button>
-        <button class="btn-download" id="downloadTextBtn">
-          <span>📥</span>
-          <span>Download TXT</span>
-        </button>
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Processing your document...</div>
       </div>
     </div>
-  </div>
 
-  <section id="footer-placeholder"></section>
+    <!-- OCR Modal -->
+    <div class="ocr-modal" id="ocrModal">
+      <div class="ocr-content">
+        <div class="ocr-header">
+          <h2>📝 Extracted Text</h2>
+          <button class="ocr-close" id="ocrCloseBtn">×</button>
+        </div>
+        <div class="ocr-body">
+          <div class="ocr-text" id="ocrText">Extracting text...</div>
+        </div>
+        <div class="ocr-footer">
+          <button class="btn-secondary" id="copyTextBtn">
+            <span>📋</span>
+            <span>Copy Text</span>
+          </button>
+          <button class="btn-download" id="downloadTextBtn">
+            <span>📥</span>
+            <span>Download TXT</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
-  <!-- JS -->
-  <script src="./js/app.js"></script>
-  <script>
-    const BACKEND_URL = `${BACKEND_BASE_URL}`;
+    <section id="footer-placeholder"></section>
 
-    let stream = null;
-    let cropper = null;
-    let currentImageBlob = null;
-    let processedImageBlob = null;
-    let extractedText = "";
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <!-- JS -->
+    <script src="./js/app.js"></script>
+    <script>
+      const BACKEND_URL = `${BACKEND_BASE_URL}`;
 
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const preview = document.getElementById("preview");
-    const placeholder = document.getElementById("placeholder");
-    const mediaContainer = document.getElementById("mediaContainer");
+      let stream = null;
+      let cropper = null;
+      let currentImageBlob = null;
+      let processedImageBlob = null;
+      let extractedText = "";
 
-    const openCameraBtn = document.getElementById("openCameraBtn");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const fileInput = document.getElementById("fileInput");
-    const captureBtn = document.getElementById("captureBtn");
-    const cropBtn = document.getElementById("cropBtn");
-    const retakeBtn = document.getElementById("retakeBtn");
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const preview = document.getElementById("preview");
+      const placeholder = document.getElementById("placeholder");
+      const mediaContainer = document.getElementById("mediaContainer");
 
-    const loadingMsg = document.getElementById("loadingMsg");
-    const successMsg = document.getElementById("successMsg");
-    const errorMsg = document.getElementById("errorMsg");
-    const loadingOverlay = document.getElementById("loadingOverlay");
+      const openCameraBtn = document.getElementById("openCameraBtn");
+      const uploadBtn = document.getElementById("uploadBtn");
+      const fileInput = document.getElementById("fileInput");
+      const captureBtn = document.getElementById("captureBtn");
+      const cropBtn = document.getElementById("cropBtn");
+      const retakeBtn = document.getElementById("retakeBtn");
 
-    const resultActions = document.getElementById("resultActions");
-    const downloadJpg = document.getElementById("downloadJpg");
-    const downloadPdf = document.getElementById("downloadPdf");
-    const shareBtn = document.getElementById("shareBtn");
-    const ocrBtn = document.getElementById("ocrBtn");
+      const loadingMsg = document.getElementById("loadingMsg");
+      const successMsg = document.getElementById("successMsg");
+      const errorMsg = document.getElementById("errorMsg");
+      const loadingOverlay = document.getElementById("loadingOverlay");
 
-    const ocrModal = document.getElementById("ocrModal");
-    const ocrText = document.getElementById("ocrText");
-    const ocrCloseBtn = document.getElementById("ocrCloseBtn");
-    const copyTextBtn = document.getElementById("copyTextBtn");
-    const downloadTextBtn = document.getElementById("downloadTextBtn");
+      const resultActions = document.getElementById("resultActions");
+      const downloadJpg = document.getElementById("downloadJpg");
+      const downloadPdf = document.getElementById("downloadPdf");
+      const shareBtn = document.getElementById("shareBtn");
+      const ocrBtn = document.getElementById("ocrBtn");
 
-    function showLoading(text = "Processing...") {
-      hideMessages();
-      document.getElementById("loadingText").textContent = text;
-      loadingMsg.style.display = "flex";
-    }
+      const ocrModal = document.getElementById("ocrModal");
+      const ocrText = document.getElementById("ocrText");
+      const ocrCloseBtn = document.getElementById("ocrCloseBtn");
+      const copyTextBtn = document.getElementById("copyTextBtn");
+      const downloadTextBtn = document.getElementById("downloadTextBtn");
 
-    function showSuccess(text) {
-      hideMessages();
-      document.getElementById("successText").textContent = text;
-      successMsg.style.display = "flex";
-      setTimeout(() => (successMsg.style.display = "none"), 5000);
-    }
-
-    function showError(text) {
-      hideMessages();
-      document.getElementById("errorText").textContent = text;
-      errorMsg.style.display = "flex";
-      loadingOverlay.classList.remove("show");
-    }
-
-    function hideMessages() {
-      loadingMsg.style.display = "none";
-      successMsg.style.display = "none";
-      errorMsg.style.display = "none";
-    }
-
-    function resetUI() {
-      if (stream) {
-        stream.getTracks().forEach((t) => t.stop());
-        stream = null;
-      }
-
-      if (cropper) {
-        cropper.destroy();
-        cropper = null;
-      }
-
-      video.style.display = "none";
-      preview.style.display = "none";
-      placeholder.style.display = "block";
-      mediaContainer.classList.add("empty");
-
-      openCameraBtn.style.display = "inline-flex";
-      uploadBtn.style.display = "inline-flex";
-      captureBtn.style.display = "none";
-      cropBtn.style.display = "none";
-      retakeBtn.style.display = "none";
-      resultActions.classList.remove("show");
-
-      cropBtn.disabled = false;
-
-      currentImageBlob = null;
-      processedImageBlob = null;
-      extractedText = "";
-      fileInput.value = "";
-      hideMessages();
-    }
-
-    openCameraBtn.onclick = async () => {
-      try {
+      function showLoading(text = "Processing...") {
         hideMessages();
-        showLoading("Opening camera...");
+        document.getElementById("loadingText").textContent = text;
+        loadingMsg.style.display = "flex";
+      }
 
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: "environment",
-            width: { ideal: 1920 },
-            height: { ideal: 1080 },
-          },
-        });
-
-        video.srcObject = stream;
-        video.style.display = "block";
-        placeholder.style.display = "none";
-        mediaContainer.classList.remove("empty");
-
-        openCameraBtn.style.display = "none";
-        uploadBtn.style.display = "none";
-        captureBtn.style.display = "inline-flex";
-
+      function showSuccess(text) {
         hideMessages();
-      } catch (err) {
-        console.error("Camera error:", err);
-        showError("Camera access denied. Please allow camera permissions.");
-        resetUI();
+        document.getElementById("successText").textContent = text;
+        successMsg.style.display = "flex";
+        setTimeout(() => (successMsg.style.display = "none"), 5000);
       }
-    };
 
-    uploadBtn.onclick = () => {
-      hideMessages();
-      fileInput.click();
-    };
-
-    fileInput.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-
-      showLoading("Loading image...");
-
-      try {
-        currentImageBlob = file;
-        const imageUrl = URL.createObjectURL(file);
-        await setupCropper(imageUrl);
-      } catch (err) {
-        showError("Failed to load image: " + err.message);
+      function showError(text) {
+        hideMessages();
+        document.getElementById("errorText").textContent = text;
+        errorMsg.style.display = "flex";
+        loadingOverlay.classList.remove("show");
       }
-    };
 
-    captureBtn.onclick = async () => {
-      try {
-        showLoading("Capturing image...");
+      function hideMessages() {
+        loadingMsg.style.display = "none";
+        successMsg.style.display = "none";
+        errorMsg.style.display = "none";
+      }
 
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0);
-
+      function resetUI() {
         if (stream) {
           stream.getTracks().forEach((t) => t.stop());
           stream = null;
         }
-        video.style.display = "none";
-
-        currentImageBlob = await new Promise((resolve) => {
-          canvas.toBlob(resolve, "image/jpeg", 0.95);
-        });
-
-        const imageUrl = URL.createObjectURL(currentImageBlob);
-        await setupCropper(imageUrl);
-
-        captureBtn.style.display = "none";
-      } catch (err) {
-        showError("Failed to capture: " + err.message);
-      }
-    };
-
-    async function setupCropper(imageUrl) {
-      preview.src = imageUrl;
-      preview.style.display = "block";
-      placeholder.style.display = "none";
-
-      openCameraBtn.style.display = "none";
-      uploadBtn.style.display = "none";
-      captureBtn.style.display = "none";
-      cropBtn.style.display = "inline-flex";
-      retakeBtn.style.display = "inline-flex";
-
-      await new Promise((resolve, reject) => {
-        preview.onload = resolve;
-        preview.onerror = reject;
-      });
-
-      if (cropper) cropper.destroy();
-
-      // FIXED: Use event listener in config instead of method call
-      cropper = new Cropper(preview, {
-        viewMode: 1,
-        dragMode: 'move',
-        autoCropArea: 0.9,
-        restore: false,
-        modal: true,
-        guides: true,
-        center: true,
-        highlight: true,
-        cropBoxMovable: true,
-        cropBoxResizable: true,
-        toggleDragModeOnDblclick: false,
-        minContainerWidth: 200,
-        minContainerHeight: 200,
-        minCropBoxWidth: 100,
-        minCropBoxHeight: 100,
-        responsive: true,
-        checkCrossOrigin: false,
-        background: false,
-        movable: true,
-        zoomable: true,
-        zoomOnTouch: true,
-        zoomOnWheel: true,
-        wheelZoomRatio: 0.1,
-        scalable: true,
-        rotatable: true,
-        ready: function () {
-          // Auto-detect after cropper is initialized
-          tryAutoDetect();
-        }
-      });
-    }
-
-    async function tryAutoDetect() {
-      try {
-        showLoading("Detecting document edges...");
-
-        const formData = new FormData();
-        formData.append("image", currentImageBlob, "image.jpg");
-
-        const res = await fetch(`${BACKEND_URL}/detect-corners`, {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!res.ok) {
-          console.error("Detection failed:", res.status);
-          showSuccess("Ready to crop. Drag corners to adjust the selection.");
-          return;
-        }
-
-        const data = await res.json();
-
-        if (data.detected && data.corners && data.corners.length === 4) {
-          const corners = data.corners;
-          const imageData = cropper.getImageData();
-
-          const xs = corners.map((c) => c[0]);
-          const ys = corners.map((c) => c[1]);
-          const minX = Math.min(...xs);
-          const minY = Math.min(...ys);
-          const maxX = Math.max(...xs);
-          const maxY = Math.max(...ys);
-
-          const scaleX = imageData.width / imageData.naturalWidth;
-          const scaleY = imageData.height / imageData.naturalHeight;
-
-          const cropBoxData = {
-            left: imageData.left + minX * scaleX,
-            top: imageData.top + minY * scaleY,
-            width: (maxX - minX) * scaleX,
-            height: (maxY - minY) * scaleY,
-          };
-
-          cropper.setCropBoxData(cropBoxData);
-
-          showSuccess("✓ Document detected! Drag corners to fine-tune the selection.");
-        } else {
-          showSuccess("Ready to crop. Drag corners to adjust the selection.");
-        }
-      } catch (err) {
-        console.error("Auto-detect error:", err);
-        showSuccess("Ready to crop. Drag corners to adjust the selection.");
-      }
-    }
-
-    cropBtn.onclick = async () => {
-      if (!cropper) {
-        showError("Please capture or upload an image first.");
-        return;
-      }
-
-      loadingOverlay.classList.add("show");
-      cropBtn.disabled = true;
-
-      try {
-        const croppedCanvas = cropper.getCroppedCanvas({
-          imageSmoothingQuality: "high",
-          maxWidth: 2400,
-          maxHeight: 2400,
-        });
-
-        const croppedBlob = await new Promise((resolve) =>
-          croppedCanvas.toBlob(resolve, "image/jpeg", 0.95),
-        );
-
-        // Process JPG
-        const jpgFormData = new FormData();
-        jpgFormData.append("image", croppedBlob, "cropped.jpg");
-        jpgFormData.append("format", "jpg");
-        jpgFormData.append("enhance", "true");
-
-        const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
-          method: "POST",
-          body: jpgFormData,
-        });
-
-        if (!jpgRes.ok) throw new Error(`JPG processing failed: ${jpgRes.status}`);
-
-        const jpgBlob = await jpgRes.blob();
-        processedImageBlob = jpgBlob; // Store for OCR
-
-        // Process PDF
-        const pdfFormData = new FormData();
-        pdfFormData.append("image", croppedBlob, "cropped.jpg");
-        pdfFormData.append("format", "pdf");
-        pdfFormData.append("enhance", "true");
-
-        const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
-          method: "POST",
-          body: pdfFormData,
-        });
-
-        if (!pdfRes.ok) throw new Error(`PDF processing failed: ${pdfRes.status}`);
-
-        const pdfBlob = await pdfRes.blob();
 
         if (cropper) {
           cropper.destroy();
           cropper = null;
         }
 
-        const jpgUrl = URL.createObjectURL(jpgBlob);
-        preview.src = jpgUrl;
+        video.style.display = "none";
+        preview.style.display = "none";
+        placeholder.style.display = "block";
+        mediaContainer.classList.add("empty");
 
-        setupDownload(downloadJpg, jpgBlob, "scanned.jpg", "image/jpeg");
-        setupDownload(downloadPdf, pdfBlob, "scanned.pdf", "application/pdf");
-
-        shareBtn.onclick = async () => {
-          if (navigator.share && navigator.canShare) {
-            try {
-              await navigator.share({
-                files: [new File([pdfBlob], "scanned.pdf", { type: "application/pdf" })],
-              });
-            } catch (err) {
-              if (err.name !== "AbortError") {
-                showError("Share failed: " + err.message);
-              }
-            }
-          } else {
-            showError("Share not supported on this device.");
-          }
-        };
-
+        openCameraBtn.style.display = "inline-flex";
+        uploadBtn.style.display = "inline-flex";
+        captureBtn.style.display = "none";
         cropBtn.style.display = "none";
-        resultActions.classList.add("show");
-        loadingOverlay.classList.remove("show");
-        showSuccess("✓ Document processed successfully!");
-      } catch (err) {
-        console.error("Processing error:", err);
-        showError("Processing failed: " + err.message);
-        loadingOverlay.classList.remove("show");
+        retakeBtn.style.display = "none";
+        resultActions.classList.remove("show");
+
         cropBtn.disabled = false;
-      }
-    };
 
-    // OCR functionality
-    ocrBtn.onclick = async () => {
-      if (!processedImageBlob) {
-        showError("No processed image available for OCR.");
-        return;
+        currentImageBlob = null;
+        processedImageBlob = null;
+        extractedText = "";
+        fileInput.value = "";
+        hideMessages();
       }
 
-      try {
-        loadingOverlay.classList.add("show");
-        ocrText.textContent = "Extracting text from document...";
+      openCameraBtn.onclick = async () => {
+        try {
+          hideMessages();
+          showLoading("Opening camera...");
 
-        const formData = new FormData();
-        formData.append("image", processedImageBlob, "image.jpg");
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {
+              facingMode: "environment",
+              width: { ideal: 1920 },
+              height: { ideal: 1080 },
+            },
+          });
 
-        const res = await fetch(`${BACKEND_URL}/ocr`, {
-          method: "POST",
-          body: formData,
+          video.srcObject = stream;
+          video.style.display = "block";
+          placeholder.style.display = "none";
+          mediaContainer.classList.remove("empty");
+
+          openCameraBtn.style.display = "none";
+          uploadBtn.style.display = "none";
+          captureBtn.style.display = "inline-flex";
+
+          hideMessages();
+        } catch (err) {
+          console.error("Camera error:", err);
+          showError("Camera access denied. Please allow camera permissions.");
+          resetUI();
+        }
+      };
+
+      uploadBtn.onclick = () => {
+        hideMessages();
+        fileInput.click();
+      };
+
+      fileInput.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        showLoading("Loading image...");
+
+        try {
+          currentImageBlob = file;
+          const imageUrl = URL.createObjectURL(file);
+          await setupCropper(imageUrl);
+        } catch (err) {
+          showError("Failed to load image: " + err.message);
+        }
+      };
+
+      captureBtn.onclick = async () => {
+        try {
+          showLoading("Capturing image...");
+
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0);
+
+          if (stream) {
+            stream.getTracks().forEach((t) => t.stop());
+            stream = null;
+          }
+          video.style.display = "none";
+
+          currentImageBlob = await new Promise((resolve) => {
+            canvas.toBlob(resolve, "image/jpeg", 0.95);
+          });
+
+          const imageUrl = URL.createObjectURL(currentImageBlob);
+          await setupCropper(imageUrl);
+
+          captureBtn.style.display = "none";
+        } catch (err) {
+          showError("Failed to capture: " + err.message);
+        }
+      };
+
+      async function setupCropper(imageUrl) {
+        preview.src = imageUrl;
+        preview.style.display = "block";
+        placeholder.style.display = "none";
+
+        openCameraBtn.style.display = "none";
+        uploadBtn.style.display = "none";
+        captureBtn.style.display = "none";
+        cropBtn.style.display = "inline-flex";
+        retakeBtn.style.display = "inline-flex";
+
+        await new Promise((resolve, reject) => {
+          preview.onload = resolve;
+          preview.onerror = reject;
         });
 
-        if (!res.ok) {
-          const errorData = await res.json().catch(() => ({ error: "OCR failed" }));
-          throw new Error(errorData.error || `OCR failed: ${res.status}`);
+        if (cropper) cropper.destroy();
+
+        // FIXED: Use event listener in config instead of method call
+        cropper = new Cropper(preview, {
+          viewMode: 1,
+          dragMode: "move",
+          autoCropArea: 0.9,
+          restore: false,
+          modal: true,
+          guides: true,
+          center: true,
+          highlight: true,
+          cropBoxMovable: true,
+          cropBoxResizable: true,
+          toggleDragModeOnDblclick: false,
+          minContainerWidth: 200,
+          minContainerHeight: 200,
+          minCropBoxWidth: 100,
+          minCropBoxHeight: 100,
+          responsive: true,
+          checkCrossOrigin: false,
+          background: false,
+          movable: true,
+          zoomable: true,
+          zoomOnTouch: true,
+          zoomOnWheel: true,
+          wheelZoomRatio: 0.1,
+          scalable: true,
+          rotatable: true,
+          ready: function () {
+            // Auto-detect after cropper is initialized
+            tryAutoDetect();
+          },
+        });
+      }
+
+      async function tryAutoDetect() {
+        try {
+          showLoading("Detecting document edges...");
+
+          const formData = new FormData();
+          formData.append("image", currentImageBlob, "image.jpg");
+
+          const res = await fetch(`${BACKEND_URL}/detect-corners`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            console.error("Detection failed:", res.status);
+            showSuccess("Ready to crop. Drag corners to adjust the selection.");
+            return;
+          }
+
+          const data = await res.json();
+
+          if (data.detected && data.corners && data.corners.length === 4) {
+            const corners = data.corners;
+            const imageData = cropper.getImageData();
+
+            const xs = corners.map((c) => c[0]);
+            const ys = corners.map((c) => c[1]);
+            const minX = Math.min(...xs);
+            const minY = Math.min(...ys);
+            const maxX = Math.max(...xs);
+            const maxY = Math.max(...ys);
+
+            const scaleX = imageData.width / imageData.naturalWidth;
+            const scaleY = imageData.height / imageData.naturalHeight;
+
+            const cropBoxData = {
+              left: imageData.left + minX * scaleX,
+              top: imageData.top + minY * scaleY,
+              width: (maxX - minX) * scaleX,
+              height: (maxY - minY) * scaleY,
+            };
+
+            cropper.setCropBoxData(cropBoxData);
+
+            showSuccess(
+              "✓ Document detected! Drag corners to fine-tune the selection.",
+            );
+          } else {
+            showSuccess("Ready to crop. Drag corners to adjust the selection.");
+          }
+        } catch (err) {
+          console.error("Auto-detect error:", err);
+          showSuccess("Ready to crop. Drag corners to adjust the selection.");
+        }
+      }
+
+      cropBtn.onclick = async () => {
+        if (!cropper) {
+          showError("Please capture or upload an image first.");
+          return;
         }
 
-        const data = await res.json();
+        loadingOverlay.classList.add("show");
+        cropBtn.disabled = true;
 
-        extractedText = data.text || "";
+        try {
+          const croppedCanvas = cropper.getCroppedCanvas({
+            imageSmoothingQuality: "high",
+            maxWidth: 2400,
+            maxHeight: 2400,
+          });
 
-        if (!extractedText || extractedText.trim().length === 0) {
-          ocrText.textContent = "No text detected in the image.";
-        } else {
-          ocrText.textContent = extractedText;
-        }
+          const croppedBlob = await new Promise((resolve) =>
+            croppedCanvas.toBlob(resolve, "image/jpeg", 0.95),
+          );
 
-        loadingOverlay.classList.remove("show");
-        ocrModal.classList.add("show");
-        showSuccess("✓ Text extracted successfully!");
-      } catch (err) {
-        console.error("OCR error:", err);
-        loadingOverlay.classList.remove("show");
-        showError("OCR failed: " + err.message);
-      }
-    };
+          // Process JPG
+          const jpgFormData = new FormData();
+          jpgFormData.append("image", croppedBlob, "cropped.jpg");
+          jpgFormData.append("format", "jpg");
+          jpgFormData.append("enhance", "true");
 
-    // OCR Modal controls
-    ocrCloseBtn.onclick = () => {
-      ocrModal.classList.remove("show");
-    };
+          const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
+            method: "POST",
+            body: jpgFormData,
+          });
 
-    copyTextBtn.onclick = async () => {
-      try {
-        await navigator.clipboard.writeText(extractedText);
-        showSuccess("✓ Text copied to clipboard!");
-      } catch (err) {
-        showError("Failed to copy text.");
-      }
-    };
+          if (!jpgRes.ok)
+            throw new Error(`JPG processing failed: ${jpgRes.status}`);
 
-    downloadTextBtn.onclick = () => {
-      const blob = new Blob([extractedText], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "extracted_text.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showSuccess("✓ Text file downloaded!");
-    };
+          const jpgBlob = await jpgRes.blob();
+          processedImageBlob = jpgBlob; // Store for OCR
 
-    // Close modal on outside click
-    ocrModal.onclick = (e) => {
-      if (e.target === ocrModal) {
-        ocrModal.classList.remove("show");
-      }
-    };
+          // Process PDF
+          const pdfFormData = new FormData();
+          pdfFormData.append("image", croppedBlob, "cropped.jpg");
+          pdfFormData.append("format", "pdf");
+          pdfFormData.append("enhance", "true");
 
-    retakeBtn.onclick = () => {
-      resetUI();
-    };
+          const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
+            method: "POST",
+            body: pdfFormData,
+          });
 
-    function setupDownload(linkElement, blob, filename, mimeType) {
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+          if (!pdfRes.ok)
+            throw new Error(`PDF processing failed: ${pdfRes.status}`);
 
-      if (isIOS || isSafari) {
-        linkElement.onclick = async (e) => {
-          e.preventDefault();
+          const pdfBlob = await pdfRes.blob();
 
-          try {
-            showLoading("Preparing download...");
+          if (cropper) {
+            cropper.destroy();
+            cropper = null;
+          }
 
-            const reader = new FileReader();
-            const dataUrl = await new Promise((resolve, reject) => {
-              reader.onloadend = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            });
+          const jpgUrl = URL.createObjectURL(jpgBlob);
+          preview.src = jpgUrl;
 
-            const tempLink = document.createElement("a");
-            tempLink.href = dataUrl;
-            tempLink.download = filename;
+          setupDownload(downloadJpg, jpgBlob, "scanned.jpg", "image/jpeg");
+          setupDownload(downloadPdf, pdfBlob, "scanned.pdf", "application/pdf");
 
-            if (mimeType === "application/pdf") {
-              window.location.href = dataUrl;
-              hideMessages();
-              setTimeout(() => {
-                showSuccess("PDF opened. Tap Share (↑) → Save to Files");
-              }, 500);
+          shareBtn.onclick = async () => {
+            if (navigator.share && navigator.canShare) {
+              try {
+                await navigator.share({
+                  files: [
+                    new File([pdfBlob], "scanned.pdf", {
+                      type: "application/pdf",
+                    }),
+                  ],
+                });
+              } catch (err) {
+                if (err.name !== "AbortError") {
+                  showError("Share failed: " + err.message);
+                }
+              }
             } else {
+              showError("Share not supported on this device.");
+            }
+          };
+
+          cropBtn.style.display = "none";
+          resultActions.classList.add("show");
+          loadingOverlay.classList.remove("show");
+          showSuccess("✓ Document processed successfully!");
+        } catch (err) {
+          console.error("Processing error:", err);
+          showError("Processing failed: " + err.message);
+          loadingOverlay.classList.remove("show");
+          cropBtn.disabled = false;
+        }
+      };
+
+      // OCR functionality
+      ocrBtn.onclick = async () => {
+        if (!processedImageBlob) {
+          showError("No processed image available for OCR.");
+          return;
+        }
+
+        try {
+          loadingOverlay.classList.add("show");
+          ocrText.textContent = "Extracting text from document...";
+
+          const formData = new FormData();
+          formData.append("image", processedImageBlob, "image.jpg");
+
+          const res = await fetch(`${BACKEND_URL}/ocr`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            const errorData = await res
+              .json()
+              .catch(() => ({ error: "OCR failed" }));
+            throw new Error(errorData.error || `OCR failed: ${res.status}`);
+          }
+
+          const data = await res.json();
+
+          extractedText = data.text || "";
+
+          if (!extractedText || extractedText.trim().length === 0) {
+            ocrText.textContent = "No text detected in the image.";
+          } else {
+            ocrText.textContent = extractedText;
+          }
+
+          loadingOverlay.classList.remove("show");
+          ocrModal.classList.add("show");
+          showSuccess("✓ Text extracted successfully!");
+        } catch (err) {
+          console.error("OCR error:", err);
+          loadingOverlay.classList.remove("show");
+          showError("OCR failed: " + err.message);
+        }
+      };
+
+      // OCR Modal controls
+      ocrCloseBtn.onclick = () => {
+        ocrModal.classList.remove("show");
+      };
+
+      copyTextBtn.onclick = async () => {
+        try {
+          await navigator.clipboard.writeText(extractedText);
+          showSuccess("✓ Text copied to clipboard!");
+        } catch (err) {
+          showError("Failed to copy text.");
+        }
+      };
+
+      downloadTextBtn.onclick = () => {
+        const blob = new Blob([extractedText], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "extracted_text.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showSuccess("✓ Text file downloaded!");
+      };
+
+      // Close modal on outside click
+      ocrModal.onclick = (e) => {
+        if (e.target === ocrModal) {
+          ocrModal.classList.remove("show");
+        }
+      };
+
+      retakeBtn.onclick = () => {
+        resetUI();
+      };
+
+      function setupDownload(linkElement, blob, filename, mimeType) {
+        const isIOS =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isSafari = /^((?!chrome|android).)*safari/i.test(
+          navigator.userAgent,
+        );
+
+        if (isIOS || isSafari) {
+          linkElement.onclick = async (e) => {
+            e.preventDefault();
+
+            try {
+              showLoading("Preparing download...");
+
+              const reader = new FileReader();
+              const dataUrl = await new Promise((resolve, reject) => {
+                reader.onloadend = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+              });
+
+              const tempLink = document.createElement("a");
+              tempLink.href = dataUrl;
+              tempLink.download = filename;
+
+              if (mimeType === "application/pdf") {
+                window.location.href = dataUrl;
+                hideMessages();
+                setTimeout(() => {
+                  showSuccess("PDF opened. Tap Share (↑) → Save to Files");
+                }, 500);
+              } else {
+                document.body.appendChild(tempLink);
+                tempLink.click();
+                document.body.removeChild(tempLink);
+
+                hideMessages();
+                setTimeout(() => {
+                  showSuccess("Tap and hold image, then select 'Save Image'");
+                }, 500);
+              }
+            } catch (err) {
+              console.error("iOS download error:", err);
+              showError("Download failed. Please try again.");
+            }
+          };
+        } else {
+          const blobUrl = URL.createObjectURL(blob);
+          linkElement.href = blobUrl;
+          linkElement.download = filename;
+
+          linkElement.onclick = (e) => {
+            e.preventDefault();
+
+            try {
+              const tempLink = document.createElement("a");
+              tempLink.href = blobUrl;
+              tempLink.download = filename;
+              tempLink.style.display = "none";
+
               document.body.appendChild(tempLink);
               tempLink.click();
               document.body.removeChild(tempLink);
 
-              hideMessages();
-              setTimeout(() => {
-                showSuccess("Tap and hold image, then select 'Save Image'");
-              }, 500);
+              showSuccess(`Downloading ${filename}...`);
+
+              setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+            } catch (err) {
+              console.error("Download failed:", err);
+              showError("Download failed. Please try again.");
             }
-          } catch (err) {
-            console.error("iOS download error:", err);
-            showError("Download failed. Please try again.");
-          }
-        };
-      } else {
-        const blobUrl = URL.createObjectURL(blob);
-        linkElement.href = blobUrl;
-        linkElement.download = filename;
-
-        linkElement.onclick = (e) => {
-          e.preventDefault();
-
-          try {
-            const tempLink = document.createElement("a");
-            tempLink.href = blobUrl;
-            tempLink.download = filename;
-            tempLink.style.display = "none";
-
-            document.body.appendChild(tempLink);
-            tempLink.click();
-            document.body.removeChild(tempLink);
-
-            showSuccess(`Downloading ${filename}...`);
-
-            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
-          } catch (err) {
-            console.error("Download failed:", err);
-            showError("Download failed. Please try again.");
-          }
-        };
+          };
+        }
       }
-    }
 
-    window.addEventListener("load", async () => {
-      try {
-        const res = await fetch(`${BACKEND_URL}/`);
-        const data = await res.json();
-        console.log("✓ Backend connected:", data);
-      } catch (err) {
-        console.error("✗ Backend not reachable:", err);
-        showError("Backend server not reachable. Please check connection.");
-      }
-    });
-  </script>
-</body>
-
+      window.addEventListener("load", async () => {
+        try {
+          const res = await fetch(`${BACKEND_URL}/`);
+          const data = await res.json();
+          console.log("✓ Backend connected:", data);
+        } catch (err) {
+          console.error("✗ Backend not reachable:", err);
+          showError("Backend server not reachable. Please check connection.");
+        }
+      });
+    </script>
+  </body>
 </html>

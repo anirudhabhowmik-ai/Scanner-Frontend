@@ -35,11 +35,11 @@ header {
   z-index: 10000;
   background: #1e3a8a;
   transition: all 0.3s ease;
-  padding: 20px 0;
+  padding: 14px 0;
 }
 
 header.scrolled {
-  padding: 10px 0;
+  padding: 8px 0;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -55,6 +55,7 @@ header .logo a {
   font-size: 28px;
   color: white;
   text-decoration: none;
+  display: flex;
 }
 
 /* Nav Links */

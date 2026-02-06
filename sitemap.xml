@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <!-- Homepage -->
+   <url>
+      <loc>https://nextopdf.com/</loc>
+      <priority>1.0</priority>
+   </url>
+
+   <!-- Scan & OCR -->
+   <url>
+      <loc>https://nextopdf.com/scan</loc>
+      <priority>0.8</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/ocr_pdf</loc>
+      <priority>0.8</priority>
+   </url>
+
+   <!-- Organize PDF -->
+   <url>
+      <loc>https://nextopdf.com/merge</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/split</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/delete</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/extract</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/organize</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/rotate</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/page-number</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/watermark</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/crop</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/edit</loc>
+      <priority>0.7</priority>
+   </url>
+
+   <!-- Convert PDF -->
+   <url>
+      <loc>https://nextopdf.com/image-to-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/excel-to-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/word-to-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/ppt-to-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/html-to-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/pdf-to-image</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/pdf-to-excel</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/pdf-to-word</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/pdf-to-ppt</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/pdf-to-pdfa</loc>
+      <priority>0.7</priority>
+   </url>
+
+   <!-- Compress -->
+   <url>
+      <loc>https://nextopdf.com/compress-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/compress-image</loc>
+      <priority>0.7</priority>
+   </url>
+
+   <!-- Security -->
+   <url>
+      <loc>https://nextopdf.com/protect-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/unprotect-pdf</loc>
+      <priority>0.7</priority>
+   </url>
+
+   <!-- Footer / Legal -->
+   <url>
+      <loc>https://nextopdf.com/about</loc>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/contact</loc>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/privacy</loc>
+      <priority>0.5</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/terms</loc>
+      <priority>0.5</priority>
+   </url>
+</urlset>

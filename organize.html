@@ -2,30 +2,103 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-    <!-- SEO -->
-    <title>Organize PDF Pages Online Free | PDFMaster</title>
-    <meta
-      name="description"
-      content="Organize PDF pages online. Drag, delete, reorder and add blank pages easily."
-    />
-    <meta name="keywords" content="organize pdf, reorder pdf, edit pdf pages" />
-    <meta name="author" content="PDFMaster" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Fonts & Icons -->
+    <!-- Primary Meta Tags -->
+    <title>
+      Organize PDF Pages Online Free - Reorder, Rotate & Arrange PDFs | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Organize PDF Pages Online Free - Reorder, Rotate & Arrange PDFs | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Organize PDF pages online for free. Drag and drop to reorder pages, rotate, delete unwanted pages, and add blank pages. Rearrange PDF documents easily with visual page preview."
+    />
+    <meta
+      name="keywords"
+      content="organize PDF pages, reorder PDF, rearrange PDF, rotate PDF pages, delete PDF pages, PDF page organizer, sort PDF pages, reorganize PDF online free"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/organize" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/organize" />
+    <meta
+      property="og:title"
+      content="Organize PDF Pages Online Free - Reorder, Rotate & Arrange PDFs | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Organize PDF pages online for free. Drag and drop to reorder pages, rotate, delete unwanted pages, and add blank pages. Easy visual page preview."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/og-image.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/organize" />
+    <meta
+      name="twitter:title"
+      content="Organize PDF Pages Online Free - Reorder, Rotate & Arrange PDFs | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Organize PDF pages online for free. Drag and drop to reorder pages, rotate, delete unwanted pages, and add blank pages."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/twitter-card.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - Organize PDF Pages",
+        "url": "https://nextopdf.com/organize",
+        "description": "Free online tool to organize, reorder, rotate, and rearrange PDF pages with drag-and-drop interface",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "Reorder pages, Rotate pages, Delete pages, Add blank pages, Drag and drop interface, Visual page preview"
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css" />
     <!-- Favicon -->
     <link
       rel="icon"
@@ -45,10 +118,20 @@
       href="./images/apple-touch-icon.png"
     />
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
+
     <style>
       .pages-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Changed from 4 to 2 */
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         margin-top: 30px;
         padding: 20px;
@@ -191,7 +274,6 @@
         color: #059669;
       }
 
-      /* Loader inside button */
       .btn-loading .btn-spinner {
         display: inline-block;
         margin-right: 8px;
@@ -226,7 +308,6 @@
           gap: 15px;
           padding: 15px;
         }
-
         .result-btns-container {
           flex-direction: column;
         }
@@ -250,73 +331,982 @@
   <body>
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Organize PDF Pages</h1>
-        <p>Drag & drop pages to reorder, rotate, delete, or add blank pages.</p>
+    <main>
+      <section class="merge-tool" role="main">
+        <div class="container">
+          <h1>Organize PDF Pages Online - Reorder, Rotate & Rearrange</h1>
+          <p>
+            Drag & drop pages to reorder, rotate any page, delete unwanted
+            pages, or add blank pages. Visual interface makes PDF organization
+            effortless.
+          </p>
 
-        <div class="upload-section">
-          <div id="uploadSection">
-            <label class="upload-label" for="pdfUpload">
-              <i class="fa fa-upload"></i> Choose PDF files
-            </label>
-            <input type="file" id="pdfUpload" accept=".pdf" multiple />
-          </div>
-
-          <ul id="fileList" class="file-list" style="display: none"></ul>
-
-          <div id="pagesGrid" class="pages-grid" style="display: none"></div>
-
-          <button id="organizeBtn" class="cta-button" style="margin-top: 15px">
-            <span class="btn-spinner">
-              <i class="fa fa-spinner fa-spin"></i>
-            </span>
-            <span class="btn-text"><i class="fa fa-layer-group"></i></span>
-            Organize PDF
-          </button>
-
-          <p class="error-text" id="errorMsg" style="display: none"></p>
-
-          <div id="resultBtns" style="display: none; margin-top: 30px">
-            <div class="result-card">
-              <i class="fa fa-file-pdf"></i>
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label class="upload-label" for="pdfUpload">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose PDF files
+              </label>
+              <input
+                type="file"
+                id="pdfUpload"
+                accept=".pdf"
+                multiple
+                aria-label="Upload PDF files to organize"
+              />
             </div>
 
-            <p class="file-name">
-              <a href="#" id="fileNameLink">organized.pdf</a>
+            <ul
+              id="fileList"
+              class="file-list"
+              style="display: none"
+              role="list"
+            ></ul>
+
+            <div
+              id="pagesGrid"
+              class="pages-grid"
+              style="display: none"
+              role="region"
+              aria-label="PDF pages organizer"
+            ></div>
+
+            <button
+              id="organizeBtn"
+              class="cta-button"
+              aria-label="Organize PDF pages"
+            >
+              <span class="btn-spinner" aria-hidden="true">
+                <i class="fa fa-spinner fa-spin"></i>
+              </span>
+              <span class="btn-text"
+                ><i class="fa fa-layer-group" aria-hidden="true"></i
+              ></span>
+              Organize PDF
+            </button>
+
+            <p
+              class="error-text"
+              id="errorMsg"
+              style="display: none"
+              role="alert"
+            ></p>
+
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </div>
+
+              <p class="file-name">
+                <a href="#" id="fileNameLink">organized.pdf</a>
+              </p>
+
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  download
+                  aria-label="Download organized PDF"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
+                </a>
+                <a
+                  id="shareBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Share organized PDF"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </a>
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Organize another PDF"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Organize
+                  Another PDF
+                </button>
+              </div>
+            </div>
+
+            <p class="note" id="noteText">
+              Supported format: PDF. Select one file at a time, or use Ctrl
+              (desktop only) to select multiple files.
+            </p>
+          </div>
+
+          <!-- Show Preview -->
+          <div id="pdfPreview" style="display: none; margin-top: 30px">
+            <h2>Preview Organized PDF</h2>
+            <iframe
+              id="pdfFrame"
+              width="100%"
+              height="600"
+              style="border-radius: 12px; border: 1px solid #e5e7eb"
+              title="PDF Preview"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white">
+        <div class="container">
+          <h2>How to Organize PDF Pages</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                1
+              </div>
+              <h3>Upload Your PDF</h3>
+              <p>
+                Upload one or multiple PDF files. All pages will be displayed as
+                visual thumbnails for easy organization.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                2
+              </div>
+              <h3>Arrange Pages</h3>
+              <p>
+                Drag and drop pages to reorder, click rotate to adjust
+                orientation, delete unwanted pages, or add blank pages anywhere.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                3
+              </div>
+              <h3>Download Organized PDF</h3>
+              <p>
+                Download your newly organized PDF with pages in perfect order.
+                All changes are applied to your final document.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Organize PDFs Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Why Organize PDF Pages?</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              PDF organization is a common need in both professional and
+              personal document management. Whether you're preparing a
+              presentation, compiling a report, or simply fixing a scanned
+              document that came out in the wrong order, having the ability to
+              reorganize PDF pages quickly and easily can save significant time
+              and frustration.
             </p>
 
-            <div class="result-btns-container">
-              <a id="downloadBtn" href="#" class="cta-button">
-                <i class="fa fa-download"></i> Download
-              </a>
-              <a id="shareBtn" href="#" class="cta-button">
-                <i class="fa fa-share-alt"></i> Share
-              </a>
-              <button id="resetBtn" class="secondary-btn">
-                <i class="fa fa-rotate-right"></i> Organize Another PDF
-              </button>
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Common Scenarios Requiring PDF Organization
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              There are numerous situations where you might need to rearrange
+              PDF pages:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Scanned Documents in Wrong Order:</strong> When scanning
+                multiple pages, they sometimes get captured in the wrong
+                sequence. Rather than rescanning everything, simply reorder the
+                pages digitally.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Combining Multiple Documents:</strong> When merging
+                several PDFs, you often need to reorganize pages to create a
+                logical flow. Place title pages first, arrange sections
+                appropriately, and ensure appendices come last.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Creating Presentations:</strong> Compile slides from
+                different sources, remove duplicates, and arrange them in the
+                order you'll present. Add blank pages between sections for notes
+                or transitions.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Report Preparation:</strong> Assemble reports from
+                various departments or contributors, ensuring proper sequence
+                and removing unnecessary pages before final distribution.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Fixing Document Orientation:</strong> Some pages may be
+                scanned sideways or upside down. Rotate individual pages to
+                correct orientation without affecting the entire document.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Removing Unwanted Pages:</strong> Delete blank pages,
+                advertising inserts, or irrelevant sections from downloaded
+                documents before saving or sharing.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Adding Separator Pages:</strong> Insert blank pages
+                between chapters or sections to improve document structure and
+                readability.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Benefits of Visual Page Organization
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Unlike text-based tools that only show page numbers, our visual
+              organizer displays actual page thumbnails. This visual approach
+              makes it dramatically easier to identify and arrange pages
+              correctly. You can see at a glance which pages contain which
+              content, spot duplicates immediately, identify pages that need
+              rotation, and verify your organization before finalizing the
+              document. This visual feedback prevents mistakes that can occur
+              when working with page numbers alone, especially in long
+              documents.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Drag and Drop Interface Advantages
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              The drag-and-drop functionality makes page organization intuitive
+              and fast. Simply click and hold a page thumbnail, drag it to its
+              new position, and release. The other pages automatically adjust to
+              accommodate the change. This interactive approach is much faster
+              than traditional methods that require typing page numbers or using
+              complex commands. You can reorganize even large documents in
+              minutes, moving pages freely until the sequence is exactly right.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Professional Document Management
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              In business environments, document organization is crucial for
+              maintaining professionalism and efficiency. Well-organized PDFs
+              demonstrate attention to detail and make information easier to
+              find and understand. Common professional uses include:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                Preparing client deliverables with proper page sequencing and
+                presentation
+              </li>
+              <li style="margin-bottom: 10px">
+                Organizing contracts and legal documents in chronological or
+                logical order
+              </li>
+              <li style="margin-bottom: 10px">
+                Compiling financial reports with sections arranged by department
+                or category
+              </li>
+              <li style="margin-bottom: 10px">
+                Creating training materials with lessons in the correct teaching
+                sequence
+              </li>
+              <li style="margin-bottom: 10px">
+                Assembling employee handbooks from various policy documents
+              </li>
+              <li style="margin-bottom: 10px">
+                Organizing product catalogs with items grouped by category or
+                use
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Academic and Research Applications
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Students, researchers, and educators frequently need to organize
+              PDF documents. Compile research papers and articles in the order
+              they'll be discussed, organize lecture notes by topic or
+              chronological order, arrange thesis chapters in proper academic
+              sequence, create study guides with materials organized by
+              difficulty or importance, and assemble portfolios with works
+              arranged to showcase progression or thematic organization. Proper
+              organization makes studying more efficient and demonstrates
+              professional academic work.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Personal Document Organization
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Personal documents also benefit from proper organization. Arrange
+              family photo albums chronologically, organize tax documents with
+              forms and receipts in logical order, compile home improvement
+              records with before/after documentation properly sequenced, create
+              travel journals with days in correct order, and organize medical
+              records by date or type of treatment. Well-organized personal
+              documents are easier to reference later and look more professional
+              when shared with others.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Handling Large Documents
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              When working with PDFs containing dozens or hundreds of pages,
+              organization becomes even more critical. Our visual thumbnail view
+              makes it possible to manage large documents efficiently. You can
+              quickly scroll through all pages, identify specific sections by
+              visual content, move entire sections by dragging multiple times,
+              and verify the overall structure before saving. This capability is
+              especially valuable for books, comprehensive reports, technical
+              manuals, and compiled documentation where page order is crucial
+              for comprehension.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Powerful PDF Organization Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-arrows-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Drag & Drop Reordering</h3>
+              <p>
+                Intuitively reorganize pages by dragging thumbnails to new
+                positions. No complicated commands or page number inputs
+                required.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-sync-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Rotate Individual Pages</h3>
+              <p>
+                Fix orientation issues by rotating specific pages 90 degrees at
+                a time. Perfect for scanned documents with mixed orientations.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-trash-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Delete Unwanted Pages</h3>
+              <p>
+                Remove blank pages, duplicates, or unnecessary content with a
+                single click. Clean up your PDF before saving.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-plus-square"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Add Blank Pages</h3>
+              <p>
+                Insert blank pages anywhere in your document for notes,
+                separators, or additional content. Perfect for creating chapter
+                breaks.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-eye"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Visual Page Thumbnails</h3>
+              <p>
+                See actual page content as thumbnails, making it easy to
+                identify and organize pages correctly without guessing.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-layer-group"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Multi-File Support</h3>
+              <p>
+                Upload multiple PDFs and organize all pages together. Perfect
+                for combining and arranging documents from different sources.
+              </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          <p class="note" id="noteText">
-            Supported format: PDF. Select one file at a time, or use Ctrl
-            (desktop only) to select multiple files.
+      <!-- Tips and Best Practices Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>PDF Organization Tips and Best Practices</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Planning Your Document Structure
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Before you start dragging pages around, take a moment to plan
+                your final document structure. This planning phase can save
+                significant time and prevent mistakes:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Review All Pages First:</strong> Scroll through all
+                  thumbnails to understand what content you're working with and
+                  identify any issues upfront.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Determine Logical Sections:</strong> Group related
+                  pages together mentally before moving them. Think about
+                  chapters, topics, or chronological order.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Identify Problem Pages:</strong> Note which pages need
+                  rotation, which are duplicates to delete, and where blank
+                  pages might improve structure.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Consider Your Audience:</strong> Organize based on how
+                  readers will use the document. Front-to-back reading requires
+                  different organization than reference material.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Efficient Reordering Techniques
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Work smart when reorganizing large documents:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Move Pages in Groups:</strong> If several consecutive
+                pages need to move together, consider how you can minimize
+                individual moves. Sometimes it's faster to move surrounding
+                pages instead of moving a large block.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Work from Front to Back:</strong> Start organizing from
+                the beginning of your document and work toward the end. This
+                prevents confusion about which sections you've already
+                addressed.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Handle Rotations First:</strong> Fix all page
+                orientations before reordering. It's easier to judge proper page
+                sequence when you can read all the content correctly.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Delete Obviously Unnecessary Pages Early:</strong>
+                Remove blank pages and clear duplicates at the start to reduce
+                clutter and make the remaining organization clearer.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Using Blank Pages Effectively
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Blank pages serve several important purposes in organized
+                documents:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Section Separators:</strong> Add blank pages between
+                  major sections or chapters to create clear visual breaks and
+                  improve document navigation.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Note-Taking Space:</strong> Insert blank pages in
+                  educational materials or meeting documents where participants
+                  might want to add handwritten notes.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Printing Alignment:</strong> For documents that will
+                  be printed double-sided, blank pages ensure new sections start
+                  on the right-hand page.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Professional Formatting:</strong> Blank pages can
+                  improve the professional appearance of formal documents by
+                  creating appropriate spacing.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Quality Control Before Finalizing
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Before downloading your organized PDF, perform these quality
+                checks:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Verify Page Sequence:</strong> Scroll through all
+                  thumbnails one final time to ensure pages flow logically from
+                  start to finish.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Check All Rotations:</strong> Confirm that every page
+                  is oriented correctly and readable in the proper direction.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Review Page Count:</strong> Make sure you have the
+                  expected number of pages and haven't accidentally deleted
+                  anything important.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Look for Duplicates:</strong> Do a final check for any
+                  duplicate pages that should be removed.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Confirm Blank Pages:</strong> Ensure blank pages are
+                  positioned where intended and not accidentally inserted where
+                  they don't belong.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Organizing Multiple PDFs Together
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                When combining pages from multiple source PDFs, follow these
+                guidelines:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Upload in Desired Order:</strong> Upload files in
+                roughly the order you want them to appear. This minimizes the
+                amount of reordering needed afterward.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Use Blank Page Separators:</strong> Insert blank pages
+                between content from different source files to clearly delineate
+                where each document begins and ends.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Standardize Orientation:</strong> If source documents
+                have different orientations, rotate pages to maintain
+                consistency throughout the final document.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Remove Redundant Cover Pages:</strong> When merging
+                multiple reports or documents, you often don't need every cover
+                page. Keep the primary one and delete duplicates.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Naming and Saving Organized Files
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                After organizing your PDF, use good file management practices:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  Use descriptive filenames that indicate the document is
+                  organized (e.g., "Q4_Report_Organized.pdf")
+                </li>
+                <li style="margin-bottom: 10px">
+                  Keep the original unorganized version in case you need to
+                  reference the original sequence
+                </li>
+                <li style="margin-bottom: 10px">
+                  Include version numbers or dates if you're creating multiple
+                  iterations
+                </li>
+                <li style="margin-bottom: 10px">
+                  Store organized documents in a logical folder structure for
+                  easy retrieval
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About Organizing PDFs</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How do I reorder pages in a PDF?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Simply drag and drop page thumbnails to rearrange them. Click
+                and hold on any page, drag it to its new position, and release.
+                The pages automatically renumber to reflect the new order. This
+                visual drag-and-drop method is much faster than typing page
+                numbers.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I organize multiple PDF files together?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! Upload multiple PDFs and all pages from all files will
+                appear as thumbnails. You can then reorganize pages from
+                different source files into a single, perfectly organized
+                document. This is ideal for combining reports, presentations, or
+                documents from different sources.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will organizing reduce PDF quality?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. The organizing process maintains the original quality of all
+                pages. Images, text, and formatting remain unchanged. Only the
+                page order, rotation, and which pages are included are modified
+                based on your organization choices.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How do I rotate specific pages?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Each page thumbnail has a rotate button below it. Click the
+                rotate button to turn that specific page 90 degrees clockwise.
+                Click multiple times to continue rotating until the page is
+                oriented correctly. This allows you to fix pages that were
+                scanned sideways or upside down without affecting other pages.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I add blank pages between existing pages?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Absolutely. Each page has an "Add Blank" button that inserts a
+                blank page immediately after it. These blank pages can then be
+                moved anywhere in the document using drag and drop. Blank pages
+                are useful for section separators, note-taking space, or
+                ensuring proper pagination for printing.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What happens to page numbers after reorganizing?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Pages are automatically renumbered in the final PDF to reflect
+                their new sequence. If your original PDF had page numbers
+                embedded in the content (like "Page 5 of 10" in a footer), those
+                will not change - only the actual page order in the document
+                structure changes.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is there a limit to how many pages I can organize?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                You can organize PDFs of various sizes. Very large documents
+                (hundreds of pages) are fully supported. The visual thumbnail
+                interface makes it practical to work with even lengthy documents
+                by allowing you to scroll and quickly identify the pages you
+                need to move.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I undo changes if I make a mistake?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                While there's no undo button, you can simply drag pages back to
+                their original positions or click rotate again to correct
+                orientation. Nothing is final until you click the "Organize PDF"
+                button to download your result. You can rearrange as many times
+                as needed before finalizing.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Does this work on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, the organizer works on smartphones and tablets. On mobile
+                devices, you can still drag and drop pages (touch and hold, then
+                drag), rotate pages, delete pages, and add blank pages. The
+                interface adapts to smaller screens for comfortable mobile use.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Are my files secure during organization?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Files are processed securely and automatically deleted from
+                our servers after you download your organized PDF. We never
+                store, access, or retain your documents. The processing happens
+                in a secure environment with encryption during transmission.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I remove pages I don't want?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Each page thumbnail has a delete button. Click it to remove
+                that page from your final organized document. This is useful for
+                eliminating blank pages, duplicates, or irrelevant content
+                before saving your reorganized PDF.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does the organization process take?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                The visual organization happens instantly as you drag and drop
+                pages. When you click "Organize PDF" to create your final
+                document, processing typically takes just a few seconds, even
+                for documents with many pages. Processing time depends on file
+                size and complexity.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px">
+        <div class="container">
+          <h2>Related PDF Organization Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple PDF files into one document. Perfect for
+                bringing together organized pages from different sources.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-cut"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Split PDF</h3>
+              <p>
+                Divide PDFs into separate files by page ranges. Extract specific
+                sections after organizing your document.
+              </p>
+              <a
+                href="/split"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-sync-alt"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Rotate PDF</h3>
+              <p>
+                Rotate all pages in a PDF at once. Use after organizing to fix
+                orientation of entire documents.
+              </p>
+              <a
+                href="/rotate"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-trash-alt"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Delete Pages</h3>
+              <p>
+                Remove specific pages or page ranges from PDFs. Streamlined tool
+                for bulk page deletion.
+              </p>
+              <a
+                href="/delete"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-file-export"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Extract Pages</h3>
+              <p>
+                Create new PDFs from specific pages after organizing. Pull out
+                sections while keeping the original intact.
+              </p>
+              <a
+                href="/extract"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce file size of your organized PDFs for easier sharing and
+                storage while maintaining quality.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero" style="padding: 60px 20px">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px">
+            Ready to Organize Your PDFs?
+          </h2>
+          <p style="margin-bottom: 25px">
+            Drag, drop, and arrange pages in seconds. Visual interface makes PDF
+            organization effortless.
           </p>
+          <a
+            href="#"
+            class="cta-button"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            aria-label="Scroll to top to organize PDF"
+          >
+            <i class="fa fa-layer-group" aria-hidden="true"></i> Start
+            Organizing Now
+          </a>
         </div>
-
-        <!-- Show Preview -->
-        <div id="pdfPreview" style="display: none; margin-top: 30px">
-          <h4>Preview Organized PDF</h4>
-          <iframe
-            id="pdfFrame"
-            width="100%"
-            height="600"
-            style="border-radius: 12px; border: 1px solid #e5e7eb"
-          ></iframe>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
     <section id="footer-placeholder"></section>
 
@@ -346,7 +1336,7 @@
 
       let files = [];
       let draggedElement = null;
-      let allPages = []; // Store all pages from all PDFs
+      let allPages = [];
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -356,23 +1346,20 @@
         errorMsg.style.display = "none";
       }
 
-      // Render file list
       function renderFileList() {
         fileList.style.display = "block";
         fileList.innerHTML = "";
         files.forEach((file, index) => {
           const li = document.createElement("li");
-          li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${file.name}</span> <i class="fa fa-times delete-file" data-index="${index}"></i>`;
+          li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${file.name}</span> <i class="fa fa-times delete-file" data-index="${index}" role="button" aria-label="Remove ${file.name}" tabindex="0"></i>`;
           fileList.appendChild(li);
         });
       }
 
-      /* ================= LOAD PDF ================= */
       pdfUpload.addEventListener("change", async () => {
         clearError();
         const newFiles = Array.from(pdfUpload.files);
 
-        // Avoid duplicates
         newFiles.forEach((file) => {
           if (
             !files.some((f) => f.name === file.name && f.size === file.size)
@@ -382,11 +1369,8 @@
         });
 
         renderFileList();
-
-        // Reset input
         pdfUpload.value = "";
 
-        // Load all PDFs
         pagesGrid.innerHTML = "";
         pagesGrid.style.display = "grid";
         allPages = [];
@@ -408,7 +1392,6 @@
         }
       });
 
-      /* ================= DELETE FILE ================= */
       fileList.addEventListener("click", async (e) => {
         if (e.target.classList.contains("delete-file")) {
           const index = parseInt(e.target.dataset.index);
@@ -421,7 +1404,6 @@
             allPages = [];
           } else {
             renderFileList();
-            // Reload all PDFs
             pagesGrid.innerHTML = "";
             allPages = [];
 
@@ -436,49 +1418,36 @@
               }
             }
           }
-
           clearError();
         }
       });
 
-      /* ================= RENDER PAGE ================= */
       async function renderPage(pdf, pageNum, globalIndex, fileIndex) {
         const page = await pdf.getPage(pageNum);
-
-        // Get base viewport at scale 1
         const viewport = page.getViewport({ scale: 1 });
 
-        // Calculate appropriate scale based on viewport
         let maxWidth;
         if (window.innerWidth < 768) {
-          // Mobile: 1 column, use most of screen width
           maxWidth = window.innerWidth - 80;
         } else {
-          // Desktop: 2 columns
           maxWidth = (window.innerWidth - 140) / 2;
         }
 
-        // Calculate display scale to fit width (no max limit)
         const displayScale = maxWidth / viewport.width;
-
-        // Render at HIGHER resolution for crisp text
         const renderScale = displayScale * (window.devicePixelRatio || 2);
         const scaledViewport = page.getViewport({ scale: renderScale });
 
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d");
 
-        // Set canvas resolution to high DPI
         canvas.width = scaledViewport.width;
         canvas.height = scaledViewport.height;
 
-        // Render at high resolution
         await page.render({
           canvasContext: context,
           viewport: scaledViewport,
         }).promise;
 
-        // Let CSS handle the display size while maintaining aspect ratio
         canvas.style.width = "100%";
         canvas.style.height = "auto";
 
@@ -492,7 +1461,6 @@
         pagesGrid.appendChild(card);
       }
 
-      /* ================= CREATE CARD ================= */
       function createPageCard(
         content,
         globalIndex,
@@ -507,11 +1475,17 @@
         card.dataset.globalIndex = globalIndex ?? "";
         card.dataset.fileIndex = fileIndex ?? "";
         card.dataset.rotation = "0";
+        card.setAttribute("role", "article");
+        card.setAttribute(
+          "aria-label",
+          isBlank ? "Blank page" : `Page ${pageNum}`,
+        );
 
         if (!isBlank) {
           const badge = document.createElement("div");
           badge.className = "page-number";
           badge.textContent = `Page ${pageNum}`;
+          badge.setAttribute("aria-hidden", "true");
           card.appendChild(badge);
         }
 
@@ -522,10 +1496,9 @@
           const blankDiv = document.createElement("div");
           blankDiv.className = "blank-page";
           blankDiv.innerHTML =
-            '<i class="fa fa-file" style="font-size:24px;"></i>';
+            '<i class="fa fa-file" style="font-size:24px;" aria-hidden="true"></i>';
           wrapper.appendChild(blankDiv);
 
-          // Match height of last rendered PDF page
           setTimeout(() => {
             const lastPdfCanvas = pagesGrid.querySelector(
               '.page-card[data-type="page"] canvas',
@@ -544,11 +1517,11 @@
         const actions = document.createElement("div");
         actions.className = "page-actions";
 
-        // Rotate button
         const rotateBtn = document.createElement("button");
         rotateBtn.className = "rotate";
-        rotateBtn.innerHTML = '<i class="fa fa-rotate-right"></i>';
-        rotateBtn.title = "Rotate";
+        rotateBtn.innerHTML =
+          '<i class="fa fa-rotate-right" aria-hidden="true"></i>';
+        rotateBtn.setAttribute("aria-label", "Rotate page");
         rotateBtn.onclick = (e) => {
           e.stopPropagation();
           const currentRotation = Number(card.dataset.rotation);
@@ -563,11 +1536,13 @@
           }
         };
 
-        // Add blank button
         const addBlankBtn = document.createElement("button");
         addBlankBtn.className = "add";
-        addBlankBtn.innerHTML = '<i class="fa fa-plus"></i>';
-        addBlankBtn.title = "Add blank page after";
+        addBlankBtn.innerHTML = '<i class="fa fa-plus" aria-hidden="true"></i>';
+        addBlankBtn.setAttribute(
+          "aria-label",
+          "Add blank page after this page",
+        );
         addBlankBtn.onclick = (e) => {
           e.stopPropagation();
           const blankCanvas = document.createElement("div");
@@ -576,11 +1551,10 @@
           updatePageNumbers();
         };
 
-        // Delete button
         const delBtn = document.createElement("button");
         delBtn.className = "delete";
-        delBtn.innerHTML = '<i class="fa fa-trash"></i>';
-        delBtn.title = "Delete";
+        delBtn.innerHTML = '<i class="fa fa-trash" aria-hidden="true"></i>';
+        delBtn.setAttribute("aria-label", "Delete this page");
         delBtn.onclick = (e) => {
           e.stopPropagation();
           card.remove();
@@ -594,7 +1568,6 @@
         return card;
       }
 
-      /* ================= DRAG & DROP ================= */
       function setupDragAndDrop(card) {
         card.addEventListener("dragstart", (e) => {
           draggedElement = card;
@@ -668,7 +1641,6 @@
         });
       }
 
-      /* ================= ORGANIZE ================= */
       organizeBtn.addEventListener("click", async () => {
         clearError();
 
@@ -758,7 +1730,6 @@
         }
       });
 
-      /* ================= RESET ================= */
       resetBtn.addEventListener("click", () => {
         clearError();
         files = [];
@@ -774,8 +1745,6 @@
         noteText.style.display = "block";
         organizeBtn.classList.remove("btn-loading");
         loaderIcon.style.display = "none";
-
-        // Proper iframe cleanup
         pdfFrame.src = "";
         pdfPreview.style.display = "none";
         window.scrollTo({ top: 0, behavior: "smooth" });

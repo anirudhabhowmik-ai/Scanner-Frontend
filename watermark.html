@@ -2,269 +2,648 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Add Watermark to PDF | PDFMaster</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <!-- Primary Meta Tags -->
+    <title>Add Watermark to PDF Online Free - Text & Image Watermarks | NextoPDF</title>
+    <meta name="title" content="Add Watermark to PDF Online Free - Text & Image Watermarks | NextoPDF" />
+    <meta name="description" content="Add watermark to PDF files online for free. Add text or image watermarks with custom position, opacity, and rotation. Protect your documents and establish copyright ownership instantly." />
+    <meta name="keywords" content="add watermark to PDF, PDF watermark online, watermark PDF free, text watermark, image watermark, protect PDF, copyright watermark, PDF branding" />
+    <meta name="author" content="NextoPDF" />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/watermark" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/watermark" />
+    <meta property="og:title" content="Add Watermark to PDF Online Free - Text & Image Watermarks | NextoPDF" />
+    <meta property="og:description" content="Add watermark to PDF files online for free. Add text or image watermarks with custom position, opacity, and rotation. Protect your documents instantly." />
+    <meta property="og:image" content="https://nextopdf.com/images/og-image.png" />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/watermark" />
+    <meta name="twitter:title" content="Add Watermark to PDF Online Free - Text & Image Watermarks | NextoPDF" />
+    <meta name="twitter:description" content="Add watermark to PDF files online for free. Add text or image watermarks with custom position, opacity, and rotation." />
+    <meta name="twitter:image" content="https://nextopdf.com/images/twitter-card.png" />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - Add Watermark to PDF",
+        "url": "https://nextopdf.com/watermark",
+        "description": "Free online tool to add text or image watermarks to PDF documents with custom positioning and styling",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": "Text watermarks, Image watermarks, Custom positioning, Opacity control, Rotation, Batch processing"
+    }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png" />
+
+    <!-- Main CSS -->
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/watermerk.css" />
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./images/favicon-16x16.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./images/apple-touch-icon.png"
-    />
+
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
   </head>
 
   <body>
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Add Watermark</h1>
-        <p>
-          Add watermark to multiple PDFs with custom positioning and styling.
-        </p>
+    <main>
+      <section class="merge-tool" role="main">
+        <div class="container">
+          <h1>Add Watermark to PDF Online - Protect Your Documents</h1>
+          <p>Add custom text or image watermarks to PDFs with full control over position, opacity, and rotation. Protect copyright and establish document ownership.</p>
 
-        <div class="upload-section">
-          <div id="uploadSection">
-            <label class="upload-label" for="pdfUpload"
-              ><i class="fa fa-upload"></i> Choose PDF files</label
-            >
-            <input type="file" id="pdfUpload" accept=".pdf" multiple />
-          </div>
-
-          <div class="success-message" id="successMsg"></div>
-
-          <ul id="fileList" class="file-list" style="display: none"></ul>
-          <div id="pagesGrid" class="pages-grid" style="display: none"></div>
-
-          <!-- OPTIONS -->
-          <div id="wmOptions" style="display: none; text-align: left">
-            <label>Watermark Type</label>
-            <div class="radio-group">
-              <label style="display: flex; align-items: center"
-                ><input
-                  type="radio"
-                  name="wmType"
-                  value="text"
-                  checked
-                  style="margin-top: 0"
-                />
-                Text</label
-              >
-              <label style="display: flex; align-items: center"
-                ><input
-                  type="radio"
-                  name="wmType"
-                  value="image"
-                  style="margin-top: 0"
-                />
-                Image</label
-              >
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label class="upload-label" for="pdfUpload">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose PDF files
+              </label>
+              <input type="file" id="pdfUpload" accept=".pdf" multiple aria-label="Upload PDF files to add watermark" />
             </div>
 
-            <div id="textControls" style="display: flex; gap: 10px">
-              <div style="margin-bottom: 5px">
-                <label>Watermark Text</label>
-                <input
-                  type="text"
-                  id="wmText"
-                  placeholder="Enter watermark text"
-                  style="
-                    padding: 6px 8px;
-                    border: 1px solid #e5e7eb;
-                    border-radius: 6px;
-                  "
-                />
+            <div class="success-message" id="successMsg" role="status" aria-live="polite"></div>
+
+            <ul id="fileList" class="file-list" style="display: none" role="list"></ul>
+            <div id="pagesGrid" class="pages-grid" style="display: none" role="region" aria-label="PDF pages preview with watermarks"></div>
+
+            <!-- OPTIONS -->
+            <div id="wmOptions" style="display: none; text-align: left">
+              <label>Watermark Type</label>
+              <div class="radio-group" role="radiogroup" aria-label="Choose watermark type">
+                <label style="display: flex; align-items: center">
+                  <input type="radio" name="wmType" value="text" checked style="margin-top: 0" aria-label="Text watermark" />
+                  Text
+                </label>
+                <label style="display: flex; align-items: center">
+                  <input type="radio" name="wmType" value="image" style="margin-top: 0" aria-label="Image watermark" />
+                  Image
+                </label>
               </div>
 
-              <div>
-                <label>Text Styling</label>
-                <div class="text-style-buttons">
-                  <!-- Font Family -->
-                  <div class="option-group" id="fontFamilyGroup">
-                    <select id="fontFamily">
-                      <option value="Helvetica">Helvetica</option>
-                      <option value="Helvetica-Bold">Helvetica Bold</option>
-                      <option value="Courier">Courier</option>
-                      <option value="Times-Roman">Times Roman</option>
-                    </select>
-                  </div>
-                  <!-- Font Size -->
-                  <div class="option-group" id="fontSizeGroup">
-                    <input
-                      type="number"
-                      id="fontSize"
-                      value="36"
-                      min="8"
-                      max="200"
-                    />
-                  </div>
+              <div id="textControls" style="display: flex; gap: 10px">
+                <div style="margin-bottom: 5px">
+                  <label for="wmText">Watermark Text</label>
+                  <input type="text" id="wmText" placeholder="Enter watermark text" style="padding: 6px 8px; border: 1px solid #e5e7eb; border-radius: 6px" aria-label="Enter watermark text" />
+                </div>
 
-                  <!-- Font color -->
-                  <div class="color-input-wrapper">
-                    <input type="color" id="textColor" value="#000000" />
-                    <input
-                      type="text"
-                      id="textColorHex"
-                      value="#000000"
-                      placeholder="#000000"
-                    />
-                  </div>
+                <div>
+                  <label>Text Styling</label>
+                  <div class="text-style-buttons">
+                    <div class="option-group" id="fontFamilyGroup">
+                      <select id="fontFamily" aria-label="Select font family">
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Helvetica-Bold">Helvetica Bold</option>
+                        <option value="Courier">Courier</option>
+                        <option value="Times-Roman">Times Roman</option>
+                      </select>
+                    </div>
+                    <div class="option-group" id="fontSizeGroup">
+                      <input type="number" id="fontSize" value="36" min="8" max="200" aria-label="Font size" />
+                    </div>
 
-                  <button type="button" id="boldBtn" title="Bold">
-                    <i class="fa fa-bold"></i>
-                  </button>
-                  <button type="button" id="italicBtn" title="Italic">
-                    <i class="fa fa-italic"></i>
-                  </button>
-                  <button type="button" id="underlineBtn" title="Underline">
-                    <i class="fa fa-underline"></i>
-                  </button>
+                    <div class="color-input-wrapper">
+                      <input type="color" id="textColor" value="#000000" aria-label="Text color picker" />
+                      <input type="text" id="textColorHex" value="#000000" placeholder="#000000" aria-label="Text color hex code" />
+                    </div>
+
+                    <button type="button" id="boldBtn" title="Bold" aria-label="Toggle bold text" aria-pressed="false">
+                      <i class="fa fa-bold" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="italicBtn" title="Italic" aria-label="Toggle italic text" aria-pressed="false">
+                      <i class="fa fa-italic" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" id="underlineBtn" title="Underline" aria-label="Toggle underline text" aria-pressed="false">
+                      <i class="fa fa-underline" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="imageControls" style="display: none">
+                <label for="wmImage">Watermark Image</label>
+                <input type="file" id="wmImage" accept="image/*" style="padding: 10px; border: 1px solid #e5e7eb; border-radius: 6px" aria-label="Upload watermark image" />
+              </div>
+
+              <div class="options-grid">
+                <div class="option-group">
+                  <label for="opacity">Opacity</label>
+                  <input type="number" id="opacity" step="0.1" min="0.1" max="1" value="0.3" aria-label="Watermark opacity from 0.1 to 1" />
+                </div>
+
+                <div class="option-group">
+                  <label for="rotation">Rotation (degrees)</label>
+                  <input type="number" id="rotation" value="0" min="-180" max="180" step="15" aria-label="Rotation angle in degrees" />
+                </div>
+
+                <div class="option-group">
+                  <label for="position">Position</label>
+                  <select id="position" aria-label="Watermark position">
+                    <option value="center">Center</option>
+                    <option value="top-left">Top Left</option>
+                    <option value="top-right">Top Right</option>
+                    <option value="bottom-left">Bottom Left</option>
+                    <option value="bottom-right">Bottom Right</option>
+                  </select>
+                </div>
+
+                <div class="option-group">
+                  <label for="pageStart">Page Range</label>
+                  <div class="page-range-input">
+                    <input type="number" id="pageStart" value="1" min="1" placeholder="Start" aria-label="Starting page number" />
+                    <input type="number" id="pageEnd" value="0" min="0" placeholder="End (0=all)" aria-label="Ending page number, 0 for all pages" />
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div id="imageControls" style="display: none">
-              <label>Watermark Image</label>
-              <input
-                type="file"
-                id="wmImage"
-                accept="image/*"
-                style="
-                  padding: 10px;
-                  border: 1px solid #e5e7eb;
-                  border-radius: 6px;
-                "
-              />
+            <button id="watermarkBtn" class="cta-button" aria-label="Add watermark to PDF">
+              <span class="btn-spinner" aria-hidden="true">
+                <i class="fa fa-spinner fa-spin"></i>
+              </span>
+              <span class="btn-text"><i class="fa fa-stamp" aria-hidden="true"></i></span> Add Watermark
+            </button>
+
+            <p class="error-text" id="errorMsg" style="display: none" role="alert"></p>
+            <div class="note-box">
+              💡 Drag watermarks to reposition and resize images. Each modified page will show an "Apply to All" button.
             </div>
 
-            <div class="options-grid">
-              <div class="option-group">
-                <label>Opacity</label>
-                <input
-                  type="number"
-                  id="opacity"
-                  step="0.1"
-                  min="0.1"
-                  max="1"
-                  value="0.3"
-                />
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
               </div>
 
-              <div class="option-group">
-                <label>Rotation (degrees)</label>
-                <input
-                  type="number"
-                  id="rotation"
-                  value="0"
-                  min="-180"
-                  max="180"
-                  step="15"
-                />
-              </div>
+              <p class="file-name">
+                <a href="#" id="fileNameLink">watermarked.pdf</a>
+              </p>
 
-              <div class="option-group">
-                <label>Position</label>
-                <select id="position">
-                  <option value="center">Center</option>
-                  <option value="top-left">Top Left</option>
-                  <option value="top-right">Top Right</option>
-                  <option value="bottom-left">Bottom Left</option>
-                  <option value="bottom-right">Bottom Right</option>
-                </select>
-              </div>
-
-              <div class="option-group">
-                <label>Page Range</label>
-                <div class="page-range-input">
-                  <input
-                    type="number"
-                    id="pageStart"
-                    value="1"
-                    min="1"
-                    placeholder="Start"
-                  />
-                  <input
-                    type="number"
-                    id="pageEnd"
-                    value="0"
-                    min="0"
-                    placeholder="End (0=all)"
-                  />
-                </div>
+              <div class="result-btns-container">
+                <a id="downloadBtn" href="#" class="cta-button" download aria-label="Download watermarked PDF">
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
+                </a>
+                <a id="shareBtn" href="#" class="cta-button" aria-label="Share watermarked PDF">
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </a>
+                <button id="resetBtn" class="secondary-btn" aria-label="Add watermark to another PDF">
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Add Another Watermark
+                </button>
               </div>
             </div>
           </div>
 
-          <button id="watermarkBtn" class="cta-button" style="margin-top: 15px">
-            <span class="btn-spinner">
-              <i class="fa fa-spinner fa-spin"></i>
-            </span>
-            <span class="btn-text"><i class="fa fa-stamp"></i></span> Add
-            Watermark
-          </button>
-
-          <p class="error-text" id="errorMsg"></p>
-          <div class="note-box">
-            💡 Drag watermarks to reposition and resize images. Each modified
-            page will show an "Apply to All" button.
+          <div id="pdfPreview" style="display: none; margin-top: 30px">
+            <h2>Preview Watermarked PDF</h2>
+            <iframe id="pdfFrame" width="100%" height="600" style="border-radius: 12px; border: 1px solid #e5e7eb" title="Watermarked PDF preview"></iframe>
           </div>
+        </div>
+      </section>
 
-          <div id="resultBtns" style="display: none; margin-top: 30px">
-            <div class="result-card">
-              <i class="fa fa-file-pdf"></i>
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white;">
+        <div class="container">
+          <h2>How to Add Watermark to PDF</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div style="font-size: 48px; color: #fbbf24; font-weight: bold; margin-bottom: 10px;" aria-hidden="true">1</div>
+              <h3>Upload Your PDF</h3>
+              <p>Select one or multiple PDF files. Visual preview shows where watermarks will appear on each page.</p>
             </div>
+            <div class="feature-card">
+              <div style="font-size: 48px; color: #fbbf24; font-weight: bold; margin-bottom: 10px;" aria-hidden="true">2</div>
+              <h3>Customize Watermark</h3>
+              <p>Choose text or image watermark. Adjust position, opacity, rotation, font, color, and styling options.</p>
+            </div>
+            <div class="feature-card">
+              <div style="font-size: 48px; color: #fbbf24; font-weight: bold; margin-bottom: 10px;" aria-hidden="true">3</div>
+              <h3>Download Protected PDF</h3>
+              <p>Download your watermarked PDF with copyright protection applied permanently to all selected pages.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <p class="file-name">
-              <a href="#" id="fileNameLink">watermarked.pdf</a>
+      <!-- Why Add Watermarks Section -->
+      <section class="features" style="background: #f9fafb;">
+        <div class="container">
+          <h2>Why Add Watermarks to PDF Documents?</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left;">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px;">
+              Watermarks serve as a visible declaration of ownership, copyright protection, and document status. Whether you're sharing creative work, confidential documents, or branded materials, watermarks help protect your intellectual property and prevent unauthorized use.
             </p>
 
-            <div class="result-btns-container">
-              <a id="downloadBtn" href="#" class="cta-button">
-                <i class="fa fa-download"></i> Download
-              </a>
-              <a id="shareBtn" href="#" class="cta-button">
-                <i class="fa fa-share-alt"></i> Share
-              </a>
-              <button id="resetBtn" class="secondary-btn">
-                <i class="fa fa-rotate-right"></i> Add Another Watermark
-              </button>
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Copyright Protection and Ownership</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              Watermarks serve as the first line of defense for your intellectual property. By adding a visible watermark to PDFs, you establish clear ownership and make unauthorized reproduction more difficult. While watermarks don't legally prevent copying, they deter casual theft by making it obvious when content has been taken without permission. For photographers, designers, writers, and other creative professionals, watermarks protect work samples shared with potential clients or posted online. The watermark ensures that even if someone downloads or screenshots your work, your name or logo remains attached to it, helping potential clients find you and discouraging unauthorized commercial use.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Professional Branding</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+              Watermarks reinforce brand identity across all documents. Common professional branding applications include:
+            </p>
+            <ul style="color: #555; line-height: 1.8; margin-bottom: 25px; padding-left: 25px;">
+              <li style="margin-bottom: 10px;">
+                <strong>Company Documents:</strong> Add company logos to reports, proposals, and presentations to maintain brand consistency and professional appearance.
+              </li>
+              <li style="margin-bottom: 10px;">
+                <strong>Marketing Materials:</strong> Watermark promotional PDFs, brochures, and catalogs to ensure brand visibility even when documents are shared or redistributed.
+              </li>
+              <li style="margin-bottom: 10px;">
+                <strong>Portfolio Protection:</strong> Designers, photographers, and artists watermark portfolio pieces to protect work while showcasing capabilities to potential clients.
+              </li>
+              <li style="margin-bottom: 10px;">
+                <strong>Training Materials:</strong> Organizations watermark training documents and instructional materials to indicate proprietary content and prevent unauthorized distribution.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Document Status Indicators</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+              Watermarks communicate important information about document status and usage restrictions:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+              <strong>Draft vs. Final Status:</strong> "DRAFT" watermarks prevent confusion when multiple versions exist, ensuring recipients don't act on preliminary information. This is particularly important in legal, financial, and technical documentation where using outdated information could have serious consequences.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+              <strong>Confidentiality Markers:</strong> "CONFIDENTIAL," "PROPRIETARY," or "INTERNAL USE ONLY" watermarks remind all viewers of usage restrictions and discourage unauthorized sharing. These visual reminders reinforce security policies and help prevent accidental disclosure.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              <strong>Review Status:</strong> Watermarks like "FOR REVIEW," "PENDING APPROVAL," or "SAMPLE" clarify document purpose and prevent final-version treatment of preliminary work.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Legal and Compliance Requirements</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              Certain industries require watermarks for regulatory compliance or legal protection. Law firms watermark case documents and client materials to maintain confidentiality and establish privilege. Healthcare providers add watermarks to patient documents to indicate privacy protections under HIPAA. Financial institutions watermark statements and reports to prevent fraud and establish authenticity. Government agencies use watermarks to classify document sensitivity and control information distribution. These watermarks aren't just branding—they're essential components of compliance programs and legal risk management.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Preventing Unauthorized Distribution</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              Watermarks make unauthorized distribution less attractive and easier to trace. When sharing documents publicly or with limited audiences, watermarks discourage recipients from redistributing content without permission. If watermarked content appears somewhere it shouldn't, the watermark helps track the source of the leak. For subscription services, educational content, and proprietary research, watermarks protect revenue by making it obvious when content has been shared beyond its intended audience. Some organizations use personalized watermarks (including recipient names or tracking codes) to trace distribution and enforce usage agreements.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Adding Value to Free Samples</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              When offering free PDF content—such as ebooks, templates, reports, or guides—watermarks protect the full value of your work while still providing useful samples. "SAMPLE" or "PREVIEW" watermarks let potential customers evaluate your content quality while preventing the free version from substituting for the paid version. This approach is particularly effective for educational materials, stock assets, design templates, and research reports where you want to demonstrate value without giving away the entire product. The watermark reminds users they're viewing a limited version and directs them toward purchasing the full, unmarked version.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px;">Tracking and Attribution</h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+              Watermarks help track how documents circulate and ensure proper attribution. When your watermarked PDF appears online, in presentations, or in other contexts, the watermark ensures you receive credit. This is valuable for thought leadership, research publications, and creative work where attribution drives reputation and opportunities. The watermark acts as a persistent link back to the source, helping people find more of your work and contact you for permissions or collaborations. Even if someone removes metadata or changes filenames, the visible watermark maintains the connection to your identity or organization.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="benefits" style="padding-top: 60px;">
+        <div class="container">
+          <h2>Powerful Watermark Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i class="fas fa-font" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Text Watermarks</h3>
+              <p>Add custom text with full font control, color selection, size adjustment, and styling options including bold, italic, and underline.</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-image" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Image Watermarks</h3>
+              <p>Upload logos, signatures, or custom graphics as watermarks. Resize and position images exactly where you need them.</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-arrows-alt" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Custom Positioning</h3>
+              <p>Drag and drop watermarks to any location. Choose preset positions or manually place watermarks with pixel precision.</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-adjust" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Opacity Control</h3>
+              <p>Adjust watermark transparency from subtle background marks to bold foreground declarations. Perfect balance for any use case.</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-redo" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Rotation Options</h3>
+              <p>Rotate watermarks to any angle for diagonal placement or to match document orientation. Full 360-degree control.</p>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-clone" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Apply to All Pages</h3>
+              <p>Position watermark on one page and apply identical placement to all pages instantly. Consistent branding across documents.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <div id="pdfPreview" style="display: none; margin-top: 30px">
-          <h4>Preview Watermarked PDF</h4>
-          <iframe
-            id="pdfFrame"
-            width="100%"
-            height="600"
-            style="border-radius: 12px; border: 1px solid #e5e7eb"
-          ></iframe>
+      <!-- Tips Section -->
+      <section class="features" style="background: white;">
+        <div class="container">
+          <h2>Watermark Design Tips and Best Practices</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left;">
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Choosing Between Text and Image Watermarks</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                The choice between text and image watermarks depends on your goals and branding needs:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>Text Watermarks Work Best For:</strong> Copyright notices (© 2024 Company Name), confidentiality markers (CONFIDENTIAL, DRAFT), simple branding with company names, date and time stamps, and status indicators. Text watermarks are clearer at small sizes, easier to read, and create minimal visual distraction.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+                <strong>Image Watermarks Work Best For:</strong> Company logos for brand recognition, signature graphics for personal branding, complex designs or seals, visual brand elements that can't be replicated with text, and situations where visual impact matters more than readability. Images can convey more information in less space but require careful sizing to remain visible without overwhelming content.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Opacity and Visibility Balance</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                Finding the right opacity is crucial for effective watermarking:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>High Opacity (70-100%):</strong> Use for strong copyright protection, preview/sample watermarks, or when you want watermarks to be the dominant visual element. This works well for draft documents or samples where you deliberately want to limit usability.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>Medium Opacity (40-70%):</strong> Ideal for professional branding on finished documents. Watermarks are clearly visible but don't dominate the page. Good for company logos on reports or photographer watermarks on portfolios.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+                <strong>Low Opacity (10-40%):</strong> Creates subtle background watermarks that establish ownership without distracting from content. Perfect for legal documents, academic papers, or any situation where content readability is paramount but you still want to mark ownership.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Strategic Watermark Positioning</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                Watermark placement affects both protection effectiveness and document usability:
+              </p>
+              <ul style="color: #555; line-height: 1.8; margin-bottom: 20px; padding-left: 25px;">
+                <li style="margin-bottom: 10px;">
+                  <strong>Center Placement:</strong> Most visible and difficult to crop out. Ideal for maximum protection on images, design work, or samples you want to strongly watermark.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>Corner Placement:</strong> Less intrusive while maintaining visibility. Professional looking for business documents, reports, and presentations where you want branding without distraction.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>Diagonal Placement:</strong> Crossing the entire page diagonally makes removal very difficult while distributing visual weight evenly. Excellent for draft documents or confidential materials.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>Edge Placement:</strong> Along page borders or margins. Subtle but permanent, good for archival documents or situations where you need to mark ownership without affecting content usability.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Font Selection for Text Watermarks</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                Font choice affects readability and professional appearance:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>Sans-serif fonts (Helvetica, Arial):</strong> Clean, modern appearance. Excellent readability even at small sizes or low opacity. Best for professional business documents and contemporary branding.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>Serif fonts (Times Roman):</strong> Traditional, authoritative look. Appropriate for legal documents, academic work, and situations requiring a more formal appearance.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+                <strong>Monospace fonts (Courier):</strong> Distinctive appearance, good for technical documents or when you want watermarks to stand apart from document text.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Color Psychology and Selection</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                Watermark color impacts visibility and emotional response:
+              </p>
+              <ul style="color: #555; line-height: 1.8; margin-bottom: 20px; padding-left: 25px;">
+                <li style="margin-bottom: 10px;">
+                  <strong>Black or Dark Gray:</strong> Professional, authoritative, works well on light backgrounds. Classic choice for copyright notices and business branding.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>White or Light Gray:</strong> Subtle, elegant, ideal for dark backgrounds or when you want watermarks barely perceptible. Good for artistic work where heavy watermarking would detract from aesthetics.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>Brand Colors:</strong> Reinforce company identity using corporate colors. Maintains brand consistency across all materials.
+                </li>
+                <li style="margin-bottom: 10px;">
+                  <strong>Red:</strong> Attention-grabbing, excellent for DRAFT or CONFIDENTIAL markers. Psychologically signals importance and urgency.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Image Watermark Optimization</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                When using logos or graphics as watermarks:
+              </p>
+              <ul style="color: #555; line-height: 1.8; margin-bottom: 20px; padding-left: 25px;">
+                <li style="margin-bottom: 10px;">
+                  Use PNG format with transparent backgrounds for clean integration over any document content
+                </li>
+                <li style="margin-bottom: 10px;">
+                  Ensure logos are high-resolution to avoid pixelation when resized
+                </li>
+                <li style="margin-bottom: 10px;">
+                  Simplify complex logos for watermark use—intricate details may become muddy at smaller sizes
+                </li>
+                <li style="margin-bottom: 10px;">
+                  Consider creating a dedicated watermark version of your logo with optimized opacity
+                </li>
+                <li style="margin-bottom: 10px;">
+                  Test watermark visibility on various background colors and content types
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Page Range Strategies</h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
+                Strategic page selection can enhance watermark effectiveness:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>All Pages:</strong> Maximum protection and consistent branding. Appropriate for most business documents, portfolios, and confidential materials.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>First Page Only:</strong> Establishes ownership without affecting content readability on subsequent pages. Good for reports or documents where you want minimal visual interference.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px;">
+                <strong>Odd or Even Pages:</strong> Creates a lighter watermark presence while maintaining protection. Can be effective for printed documents.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
+                <strong>Custom Ranges:</strong> Watermark only specific sections (like sensitive data pages) while leaving other content unwatermarked for clarity.
+              </p>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb;">
+        <div class="container">
+          <h2>Frequently Asked Questions About PDF Watermarks</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Can watermarks be removed from PDFs?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                While watermarks can technically be removed with advanced editing tools, the process is time-consuming and often leaves visible artifacts. Watermarks serve as a deterrent to casual unauthorized use. For maximum protection, combine watermarks with other security measures like password protection.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">What's the difference between text and image watermarks?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Text watermarks display custom text (like copyright notices or company names) with adjustable font, size, and color. Image watermarks use logos, graphics, or signatures. Text watermarks are better for simple messages and remain clear at any size. Image watermarks are ideal for branding with company logos or complex graphics.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">How do I choose the right opacity level?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                For strong protection (like sample documents), use 60-80% opacity so watermarks are prominent. For professional documents where you want to mark ownership without heavy visual impact, 20-40% opacity works well. Preview different opacity levels to find the right balance for your specific needs.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Can I watermark specific pages only?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Yes. Use the page range feature to apply watermarks only to specific pages. You can watermark just the first page, certain page ranges, or all pages. This is useful when you want to protect specific sections while leaving others unmarked for clarity.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Will watermarks affect PDF file size?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Text watermarks add minimal file size. Image watermarks increase file size depending on image resolution and complexity. For most documents, the increase is negligible. If file size is a concern, compress your watermarked PDF afterward using our compression tool.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Can I use my company logo as a watermark?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Absolutely. Upload your logo as an image watermark. PNG format with transparent background works best. You can resize, position, and adjust opacity to integrate your logo perfectly with document content while maintaining brand visibility.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">How do I watermark multiple PDFs at once?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Upload multiple PDF files simultaneously. Configure your watermark settings once, and they'll be applied consistently across all documents. This batch processing saves significant time when watermarking large document collections.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Can watermarks be rotated?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Yes. Rotate watermarks to any angle from -180 to +180 degrees. Diagonal watermarks (typically 45 degrees) are particularly effective for protection as they're harder to crop out while distributing visual weight evenly across the page.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Will watermarks print on paper?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Yes. Watermarks are permanently embedded in the PDF and will print along with document content. Very low opacity watermarks may be less visible when printed, so test print a page if print appearance is important for your use case.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Can I preview watermarks before applying?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Yes. Our tool shows live preview of watermarks on your PDF pages as you adjust settings. You can see exactly how watermarks will look, test different positions, and adjust styling before downloading the final watermarked PDF.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">Are watermarks permanent?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Yes. Once you download your watermarked PDF, the watermarks are permanently embedded. Your original file remains unchanged. If you need to modify watermarks, start over with the original PDF and apply new watermark settings.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px;">What file formats are supported for image watermarks?</h3>
+              <p style="color: #555; line-height: 1.8;">
+                Common image formats are supported: PNG, JPG, JPEG, GIF, and more. PNG format with transparent backgrounds is recommended for best integration. Upload your image, and our tool handles the conversion and placement automatically.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px;">
+        <div class="container">
+          <h2>Related PDF Protection Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i class="fas fa-lock" style="font-size: 40px; color: #4f46e5; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Protect PDF</h3>
+              <p>Add password encryption to watermarked documents for maximum security. Combine watermarks with password protection.</p>
+              <a href="/protect-pdf" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-sort-numeric-up" style="font-size: 40px; color: #4f46e5; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Add Page Numbers</h3>
+              <p>Add professional page numbering to watermarked documents. Combine watermarks with page numbers for complete branding.</p>
+              <a href="/page-number" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-file-pdf" style="font-size: 40px; color: #10b981; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>PDF to PDF/A</h3>
+              <p>Convert watermarked PDFs to archival format for long-term storage with embedded protection.</p>
+              <a href="/pdf-to-pdfa" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-object-group" style="font-size: 40px; color: #4f46e5; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Merge PDF</h3>
+              <p>Combine multiple watermarked PDFs into single documents while preserving all watermarks.</p>
+              <a href="/merge" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-compress" style="font-size: 40px; color: #f59e0b; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Compress PDF</h3>
+              <p>Reduce file size of watermarked PDFs for easier sharing while maintaining watermark quality.</p>
+              <a href="/compress-pdf" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+            <div class="feature-card">
+              <i class="fas fa-edit" style="font-size: 40px; color: #4f46e5; margin-bottom: 15px;" aria-hidden="true"></i>
+              <h3>Edit PDF</h3>
+              <p>Make content changes before adding watermarks. Edit text and images, then apply protection.</p>
+              <a href="/edit" class="cta-button" style="font-size: 14px; padding: 8px 16px; margin-top: 10px;">Use Tool</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero" style="padding: 60px 20px;">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px;">Ready to Protect Your PDFs?</h2>
+          <p style="margin-bottom: 25px;">Add professional watermarks instantly. Protect copyright and establish ownership with custom text or logos.</p>
+          <a href="#" class="cta-button" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;" aria-label="Scroll to top to add watermark">
+            <i class="fa fa-stamp" aria-hidden="true"></i> Start Adding Watermarks
+          </a>
+        </div>
+      </section>
+    </main>
 
     <section id="footer-placeholder"></section>
 
@@ -328,7 +707,6 @@
         }
       }
 
-      /* ===== DEBOUNCE HELPER ===== */
       function debounce(func, wait) {
         let timeout;
         return function executedFunction(...args) {
@@ -341,7 +719,6 @@
         };
       }
 
-      /* ===== COLOR SYNC ===== */
       textColor.oninput = () => {
         textColorHex.value = textColor.value.toUpperCase();
         updatePreview();
@@ -355,7 +732,6 @@
         }
       };
 
-      /* ===== ERROR & SUCCESS ===== */
       function showError(msg) {
         errorMsg.textContent = msg;
         errorMsg.style.display = "block";
@@ -374,41 +750,37 @@
         setTimeout(() => successMsg.classList.remove("show"), 3000);
       }
 
-      /* ===== RADIO FIX - Hide font controls for images ===== */
       document.querySelectorAll("input[name='wmType']").forEach((r) => {
         r.onchange = () => {
           clearError();
           const isText = r.value === "text";
-          document.getElementById("textControls").style.display = isText
-            ? "flex"
-            : "none";
-          document.getElementById("imageControls").style.display = isText
-            ? "none"
-            : "block";
+          document.getElementById("textControls").style.display = isText ? "flex" : "none";
+          document.getElementById("imageControls").style.display = isText ? "none" : "block";
           updatePreview();
         };
       });
 
-      /* ===== TEXT STYLE BUTTONS ===== */
       boldBtn.onclick = () => {
         watermarkData.bold = !watermarkData.bold;
         boldBtn.classList.toggle("active", watermarkData.bold);
+        boldBtn.setAttribute("aria-pressed", watermarkData.bold);
         updatePreview();
       };
 
       italicBtn.onclick = () => {
         watermarkData.italic = !watermarkData.italic;
         italicBtn.classList.toggle("active", watermarkData.italic);
+        italicBtn.setAttribute("aria-pressed", watermarkData.italic);
         updatePreview();
       };
 
       underlineBtn.onclick = () => {
         watermarkData.underline = !watermarkData.underline;
         underlineBtn.classList.toggle("active", watermarkData.underline);
+        underlineBtn.setAttribute("aria-pressed", watermarkData.underline);
         updatePreview();
       };
 
-      /* ===== UPLOAD (NO DUPLICATES) ===== */
       pdfUpload.onchange = (e) => {
         clearError();
         const newFiles = [...e.target.files];
@@ -420,7 +792,6 @@
         loadAllPDFs();
       };
 
-      /* ===== FILE LIST + DELETE FIX ===== */
       function renderFileList() {
         if (files.length === 0) {
           fileList.style.display = "none";
@@ -432,7 +803,7 @@
         fileList.innerHTML = "";
         files.forEach((f, i) => {
           const li = document.createElement("li");
-          li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${f.name}</span> <i class="fa fa-times delete-file"></i>`;
+          li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${f.name}</span> <i class="fa fa-times delete-file" role="button" aria-label="Remove ${f.name}" tabindex="0"></i>`;
           li.querySelector(".delete-file").onclick = () => {
             files.splice(i, 1);
             renderFileList();
@@ -442,7 +813,6 @@
         });
       }
 
-      /* ===== LOAD PDF PAGES - PROPER SCALING ===== */
       async function loadAllPDFs() {
         pagesGrid.innerHTML = "";
         if (files.length === 0) return;
@@ -452,20 +822,16 @@
         totalPagesCount = 0;
 
         for (let file of files) {
-          const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
-            .promise;
+          const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file)).promise;
 
           for (let i = 1; i <= pdf.numPages; i++) {
             totalPagesCount++;
             const page = await pdf.getPage(i);
 
-            // Calculate DISPLAY scale to fit screen
-            const maxWidth =
-              window.innerWidth < 768 ? window.innerWidth - 40 : 800;
+            const maxWidth = window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
             const displayScale = Math.min(maxWidth / viewport.width, 1);
 
-            // Render at HIGHER resolution for crisp text (2x or 3x)
             const renderScale = displayScale * (window.devicePixelRatio || 2);
             const scaledViewport = page.getViewport({ scale: renderScale });
 
@@ -473,7 +839,6 @@
             canvas.width = scaledViewport.width;
             canvas.height = scaledViewport.height;
 
-            // Render the page at high resolution
             await page.render({
               canvasContext: canvas.getContext("2d"),
               viewport: scaledViewport,
@@ -482,26 +847,25 @@
             const card = document.createElement("div");
             card.className = "page-card";
             card.dataset.pageNum = totalPagesCount;
-
-            // Store DISPLAY scale (not render scale)
             card.dataset.scale = displayScale;
             card.dataset.baseWidth = viewport.width;
+            card.setAttribute("role", "article");
+            card.setAttribute("aria-label", `Page ${totalPagesCount}`);
 
-            // Add page number badge
             const badge = document.createElement("div");
             badge.className = "page-number-badge";
             badge.textContent = `Page ${totalPagesCount}`;
+            badge.setAttribute("aria-hidden", "true");
             card.appendChild(badge);
 
-            // Scale down canvas display with CSS for crisp rendering
             canvas.style.width = viewport.width * displayScale + "px";
             canvas.style.height = viewport.height * displayScale + "px";
             card.appendChild(canvas);
 
-            // Add "Apply to All" button
             const applyBtn = document.createElement("button");
             applyBtn.className = "page-apply-btn";
-            applyBtn.innerHTML = '<i class="fa fa-clone"></i> Apply to All';
+            applyBtn.innerHTML = '<i class="fa fa-clone" aria-hidden="true"></i> Apply to All';
+            applyBtn.setAttribute("aria-label", "Apply this watermark position to all pages");
             applyBtn.onclick = () => applyThisPageToAll(card);
             card.appendChild(applyBtn);
 
@@ -513,12 +877,10 @@
         updatePreview();
       }
 
-      /* ===== UPDATE PAGE RANGE DISPLAY ===== */
       function updatePageRangeDisplay() {
         const start = parseInt(pageStart.value) || 1;
         const end = parseInt(pageEnd.value) || totalPagesCount;
-        const effectiveEnd =
-          end === 0 ? totalPagesCount : Math.min(end, totalPagesCount);
+        const effectiveEnd = end === 0 ? totalPagesCount : Math.min(end, totalPagesCount);
 
         document.querySelectorAll(".page-card").forEach((card) => {
           const pageNum = parseInt(card.dataset.pageNum);
@@ -542,7 +904,6 @@
         return map[pdfFont] || "Arial, sans-serif";
       }
 
-      /* ===== HELPER: GET WATERMARK DIMENSIONS (accounting for rotation) ===== */
       function getWatermarkDimensions(el) {
         const currentTransform = el.style.transform;
         el.style.transform = "translate(-50%, -50%)";
@@ -568,17 +929,13 @@
         };
       }
 
-      /* ===== PREVIEW - FIXED TO PRESERVE DRAGGED POSITIONS ===== */
       function updatePreview() {
         clearError();
-        const type = document.querySelector(
-          "input[name='wmType']:checked",
-        ).value;
+        const type = document.querySelector("input[name='wmType']:checked").value;
 
         document.querySelectorAll(".page-card").forEach((card) => {
           const old = card.querySelector(".watermark-preview");
 
-          // Store current position BEFORE removing
           let storedLeft = null;
           let storedTop = null;
           let storedTransform = null;
@@ -601,25 +958,21 @@
           const wm = document.createElement("div");
           wm.className = "watermark-preview";
           wm.style.opacity = opacity.value;
-          const visualScale =
-            canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+          const visualScale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
 
           wm.style.fontSize = fontSize.value * visualScale + "px";
 
           const rotationValue = parseFloat(rotation.value) || 0;
 
-          // Add content
           if (type === "image") {
             if (!wmImage.files[0]) return;
             wm.classList.add("has-image");
             const img = document.createElement("img");
             img.src = URL.createObjectURL(wmImage.files[0]);
-            const baseImgWidth = card.dataset.imgWidth
-              ? parseFloat(card.dataset.imgWidth)
-              : 150;
+            img.alt = "Watermark image";
+            const baseImgWidth = card.dataset.imgWidth ? parseFloat(card.dataset.imgWidth) : 150;
 
             img.style.width = baseImgWidth * visualScale + "px";
-
             img.style.height = "auto";
 
             wm.appendChild(img);
@@ -628,13 +981,10 @@
             wm.style.color = textColor.value;
             wm.style.fontWeight = watermarkData.bold ? "bold" : "normal";
             wm.style.fontStyle = watermarkData.italic ? "italic" : "normal";
-            wm.style.textDecoration = watermarkData.underline
-              ? "underline"
-              : "none";
+            wm.style.textDecoration = watermarkData.underline ? "underline" : "none";
             wm.style.fontFamily = getPreviewFont(fontFamily.value);
           }
 
-          // Temporarily add off-screen to measure
           wm.style.position = "absolute";
           wm.style.left = "-9999px";
           wm.style.top = "-9999px";
@@ -648,9 +998,7 @@
 
           let left, top;
 
-          // CRITICAL FIX: Check if position was previously stored (user dragged)
           if (storedLeft && storedTop) {
-            // RESTORE the dragged position
             left = parseFloat(storedLeft);
             top = parseFloat(storedTop);
             applyTransform(wm, position.value === "center");
@@ -659,7 +1007,6 @@
             if (storedCanvasLeft) wm.dataset.canvasLeft = storedCanvasLeft;
             if (storedCanvasTop) wm.dataset.canvasTop = storedCanvasTop;
           } else {
-            // Use position from dropdown
             switch (position.value) {
               case "top-left":
                 left = canvasOffsetLeft + padding;
@@ -668,28 +1015,24 @@
                 break;
 
               case "top-right":
-                left =
-                  canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
+                left = canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
                 top = canvasOffsetTop + padding;
                 applyTransform(wm, false);
                 break;
 
               case "bottom-left":
                 left = canvasOffsetLeft + padding;
-                top =
-                  canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
+                top = canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
                 applyTransform(wm, false);
                 break;
 
               case "bottom-right":
-                left =
-                  canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
-                top =
-                  canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
+                left = canvasOffsetLeft + canvas.offsetWidth - dims.width - padding;
+                top = canvasOffsetTop + canvas.offsetHeight - dims.height - padding;
                 applyTransform(wm, false);
                 break;
 
-              default: // center
+              default:
                 left = canvasOffsetLeft + canvas.offsetWidth / 2;
                 top = canvasOffsetTop + canvas.offsetHeight / 2;
                 applyTransform(wm, true);
@@ -699,12 +1042,13 @@
           wm.style.left = left + "px";
           wm.style.top = top + "px";
 
-          // Add resize handles for images
           if (type === "image") {
             const handles = ["tl", "tr", "bl", "br"];
             handles.forEach((pos) => {
               const handle = document.createElement("div");
               handle.className = `resize-handle resize-handle-${pos}`;
+              handle.setAttribute("role", "button");
+              handle.setAttribute("aria-label", `Resize watermark from ${pos} corner`);
               wm.appendChild(handle);
               makeResizable(wm, wm.querySelector("img"), handle, pos, card);
             });
@@ -714,7 +1058,6 @@
         });
       }
 
-      /* ===== IMPROVED DRAG ===== */
       function makeDraggable(el, card) {
         el.addEventListener("pointerdown", (e) => {
           if (e.target.classList.contains("resize-handle")) return;
@@ -773,7 +1116,6 @@
         });
       }
 
-      /* ===== RESIZE IMAGES ===== */
       function makeResizable(el, img, handle, position, card) {
         handle.addEventListener("pointerdown", (e) => {
           e.preventDefault();
@@ -785,29 +1127,22 @@
           const startX = e.clientX;
           const aspectRatio = img.offsetHeight / startWidth;
 
-          // Precompute visualScale once here
           const canvas = card.querySelector("canvas");
-          const visualScale =
-            canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+          const visualScale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
 
-          // Base width in unscaled units
-          const baseWidth =
-            parseFloat(card.dataset.imgWidth) || startWidth / visualScale;
+          const baseWidth = parseFloat(card.dataset.imgWidth) || startWidth / visualScale;
 
           function move(ev) {
             let diffX = ev.clientX - startX;
             let diff = position === "br" || position === "tr" ? diffX : -diffX;
 
-            // Compute new width in base units
             let newBaseWidth = baseWidth + diff / visualScale;
-            newBaseWidth = Math.max(50, Math.min(400, newBaseWidth)); // clamp
+            newBaseWidth = Math.max(50, Math.min(400, newBaseWidth));
 
-            // Convert back to actual displayed width
             const newWidth = newBaseWidth * visualScale;
             img.style.width = newWidth + "px";
             img.style.height = newWidth * aspectRatio + "px";
 
-            // Store base size for future drags/resizes
             card.dataset.imgWidth = newBaseWidth;
 
             const dims = getWatermarkDimensions(el);
@@ -830,7 +1165,6 @@
         });
       }
 
-      /* ===== SHOW APPLY BUTTON ===== */
       function showApplyButton(card) {
         const applyBtn = card.querySelector(".page-apply-btn");
         if (applyBtn) {
@@ -838,17 +1172,12 @@
         }
       }
 
-      /* ===== APPLY TO ALL PAGES ===== */
       function applyThisPageToAll(sourceCard) {
         const sourceWm = sourceCard.querySelector(".watermark-preview");
         if (!sourceWm) return;
 
-        const refLeft = sourceWm.dataset.actualLeft
-          ? sourceWm.dataset.actualLeft + "px"
-          : sourceWm.style.left;
-        const refTop = sourceWm.dataset.actualTop
-          ? sourceWm.dataset.actualTop + "px"
-          : sourceWm.style.top;
+        const refLeft = sourceWm.dataset.actualLeft ? sourceWm.dataset.actualLeft + "px" : sourceWm.style.left;
+        const refTop = sourceWm.dataset.actualTop ? sourceWm.dataset.actualTop + "px" : sourceWm.style.top;
         const refTransform = sourceWm.style.transform;
 
         let refWidth = null;
@@ -869,22 +1198,14 @@
             wm.style.top = refTop;
             wm.style.transform = refTransform;
 
-            if (sourceWm.dataset.actualLeft)
-              wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
-            if (sourceWm.dataset.actualTop)
-              wm.dataset.actualTop = sourceWm.dataset.actualTop;
-            if (sourceWm.dataset.canvasLeft)
-              wm.dataset.canvasLeft = sourceWm.dataset.canvasLeft;
-            if (sourceWm.dataset.canvasTop)
-              wm.dataset.canvasTop = sourceWm.dataset.canvasTop;
-            if (sourceWm.dataset.wmWidth)
-              wm.dataset.wmWidth = sourceWm.dataset.wmWidth;
-            if (sourceWm.dataset.wmHeight)
-              wm.dataset.wmHeight = sourceWm.dataset.wmHeight;
-            if (sourceWm.dataset.wmBaseWidth)
-              wm.dataset.wmBaseWidth = sourceWm.dataset.wmBaseWidth;
-            if (sourceWm.dataset.wmBaseHeight)
-              wm.dataset.wmBaseHeight = sourceWm.dataset.wmBaseHeight;
+            if (sourceWm.dataset.actualLeft) wm.dataset.actualLeft = sourceWm.dataset.actualLeft;
+            if (sourceWm.dataset.actualTop) wm.dataset.actualTop = sourceWm.dataset.actualTop;
+            if (sourceWm.dataset.canvasLeft) wm.dataset.canvasLeft = sourceWm.dataset.canvasLeft;
+            if (sourceWm.dataset.canvasTop) wm.dataset.canvasTop = sourceWm.dataset.canvasTop;
+            if (sourceWm.dataset.wmWidth) wm.dataset.wmWidth = sourceWm.dataset.wmWidth;
+            if (sourceWm.dataset.wmHeight) wm.dataset.wmHeight = sourceWm.dataset.wmHeight;
+            if (sourceWm.dataset.wmBaseWidth) wm.dataset.wmBaseWidth = sourceWm.dataset.wmBaseWidth;
+            if (sourceWm.dataset.wmBaseHeight) wm.dataset.wmBaseHeight = sourceWm.dataset.wmBaseHeight;
 
             if (refWidth) {
               const img = wm.querySelector("img");
@@ -895,7 +1216,7 @@
             }
 
             if (sourceCard.dataset.imgWidth) {
-              card.dataset.imgWidth = sourceCard.dataset.imgWidth; // ✅ sync size
+              card.dataset.imgWidth = sourceCard.dataset.imgWidth;
               card.dataset.imgHeight = sourceCard.dataset.imgHeight;
             }
           }
@@ -914,7 +1235,6 @@
         showSuccess("✓ Applied to all pages in range!");
       }
 
-      /* ===== EVENT LISTENERS ===== */
       const debouncedUpdatePreview = debounce(updatePreview, 100);
 
       fontSize.addEventListener("input", debouncedUpdatePreview);
@@ -934,15 +1254,11 @@
 
       fontFamily.addEventListener("change", updatePreview);
 
-      pageStart.addEventListener(
-        "input",
-        debounce(updatePageRangeDisplay, 100),
-      );
+      pageStart.addEventListener("input", debounce(updatePageRangeDisplay, 100));
       pageEnd.addEventListener("input", debounce(updatePageRangeDisplay, 100));
 
       wmImage.addEventListener("change", updatePreview);
 
-      /* ===== WATERMARK BUTTON ===== */
       watermarkBtn.onclick = async () => {
         clearError();
 
@@ -951,9 +1267,7 @@
           return;
         }
 
-        const type = document.querySelector(
-          "input[name='wmType']:checked",
-        ).value;
+        const type = document.querySelector("input[name='wmType']:checked").value;
 
         if (type === "text" && !wmText.value.trim()) {
           showError("Please enter watermark text!");
@@ -985,9 +1299,7 @@
 
           let canvasRelativeX, canvasRelativeY;
 
-          const isCenterTransform = wm.style.transform.includes(
-            "translate(-50%, -50%)",
-          );
+          const isCenterTransform = wm.style.transform.includes("translate(-50%, -50%)");
 
           if (wm.dataset.actualLeft && wm.dataset.actualTop) {
             const cardRelativeLeft = parseFloat(wm.dataset.actualLeft);
@@ -1072,8 +1384,7 @@
 
         watermarkBtn.disabled = true;
         watermarkBtn.classList.add("btn-loading");
-        watermarkBtn.querySelector(".btn-spinner").style.display =
-          "inline-block";
+        watermarkBtn.querySelector(".btn-spinner").style.display = "inline-block";
         watermarkBtn.querySelector(".btn-text").style.display = "none";
 
         try {
@@ -1119,12 +1430,10 @@
           watermarkBtn.disabled = false;
           watermarkBtn.classList.remove("btn-loading");
           watermarkBtn.querySelector(".btn-spinner").style.display = "none";
-          watermarkBtn.querySelector(".btn-text").style.display =
-            "inline-block";
+          watermarkBtn.querySelector(".btn-text").style.display = "inline-block";
         }
       };
 
-      /* ===== RESET BUTTON ===== */
       resetBtn.onclick = () => {
         clearError();
         successMsg.classList.remove("show");
@@ -1156,11 +1465,13 @@
         boldBtn.classList.remove("active");
         italicBtn.classList.remove("active");
         underlineBtn.classList.remove("active");
+        boldBtn.setAttribute("aria-pressed", "false");
+        italicBtn.setAttribute("aria-pressed", "false");
+        underlineBtn.setAttribute("aria-pressed", "false");
 
         wmImage.value = "";
 
-        document.querySelector("input[name='wmType'][value='text']").checked =
-          true;
+        document.querySelector("input[name='wmType'][value='text']").checked = true;
         document.getElementById("textControls").style.display = "flex";
         document.getElementById("imageControls").style.display = "none";
 

@@ -2,25 +2,101 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-    <title>Rotate PDF Pages Online Free | PDFMaster</title>
-    <meta
-      name="description"
-      content="Rotate PDF pages online. Rotate pages easily."
-    />
-    <meta name="keywords" content="rotate pdf" />
-    <meta name="author" content="PDFMaster" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Primary Meta Tags -->
+    <title>Rotate PDF Pages Online Free - Fix PDF Orientation | NextoPDF</title>
+    <meta
+      name="title"
+      content="Rotate PDF Pages Online Free - Fix PDF Orientation | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Rotate PDF pages online for free. Fix page orientation by rotating pages 90, 180, or 270 degrees. Rotate individual pages or entire documents. Perfect for scanned PDFs with wrong orientation."
+    />
+    <meta
+      name="keywords"
+      content="rotate PDF online free, rotate PDF pages, fix PDF orientation, turn PDF pages, rotate scanned PDF, flip PDF pages, correct PDF rotation"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/rotate" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/rotate" />
+    <meta
+      property="og:title"
+      content="Rotate PDF Pages Online Free - Fix PDF Orientation | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Rotate PDF pages online for free. Fix page orientation by rotating pages 90, 180, or 270 degrees. Perfect for scanned PDFs with wrong orientation."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/og-image.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/rotate" />
+    <meta
+      name="twitter:title"
+      content="Rotate PDF Pages Online Free - Fix PDF Orientation | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Rotate PDF pages online for free. Fix page orientation by rotating pages 90, 180, or 270 degrees. Perfect for scanned PDFs."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/twitter-card.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - Rotate PDF Pages",
+        "url": "https://nextopdf.com/rotate",
+        "description": "Free online tool to rotate PDF pages and fix document orientation",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "Rotate individual pages, Rotate entire documents, 90/180/270 degree rotation, Visual page preview, Fix scanned document orientation"
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
-    <link rel="stylesheet" href="./css/style.css" />
+
     <!-- Favicon -->
     <link
       rel="icon"
@@ -40,8 +116,17 @@
       href="./images/apple-touch-icon.png"
     />
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
+
     <style>
-      /* RESPONSIVE GRID */
       .pages-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
@@ -55,7 +140,6 @@
         position: relative;
       }
 
-      /* Desktop - keep 2 columns */
       @media (max-width: 1024px) {
         .pages-grid {
           grid-template-columns: repeat(2, 1fr);
@@ -63,7 +147,6 @@
         }
       }
 
-      /* Mobile - 1 column */
       @media (max-width: 768px) {
         .pages-grid {
           grid-template-columns: 1fr;
@@ -97,6 +180,14 @@
         padding: 12px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         position: relative;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+
+      .page-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
       }
 
       .page-number {
@@ -145,19 +236,15 @@
         cursor: pointer;
         transition: all 0.2s ease;
         font-size: 20px;
-      }
-
-      .page-actions .delete:hover {
-        background: #fee2e2;
-        color: #dc2626;
+        color: #4b5563;
       }
 
       .page-actions .rotate:hover {
         background: #dbeafe;
         color: #2563eb;
+        transform: scale(1.05);
       }
 
-      /* Loader */
       .btn-loading .btn-spinner {
         display: inline-block;
         margin-right: 6px;
@@ -190,71 +277,945 @@
   <body>
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Rotate PDF Pages</h1>
-        <p>Rotate individual pages clockwise.</p>
+    <main>
+      <section class="merge-tool" role="main">
+        <div class="container">
+          <h1>Rotate PDF Pages Online - Fix Document Orientation</h1>
+          <p>
+            Rotate individual PDF pages or entire documents clockwise. Perfect
+            for fixing scanned documents with wrong orientation.
+          </p>
 
-        <div class="upload-section">
-          <div id="uploadSection">
-            <label class="upload-label" for="pdfUpload">
-              <i class="fa fa-upload"></i> Choose PDF files
-            </label>
-            <input type="file" id="pdfUpload" accept=".pdf" multiple />
-          </div>
-
-          <ul id="fileList" class="file-list" style="display: none"></ul>
-
-          <div id="pagesGrid" class="pages-grid" style="display: none"></div>
-
-          <button id="rotateBtn" class="cta-button" style="margin-top: 15px">
-            <span class="btn-spinner"
-              ><i class="fa fa-spinner fa-spin"></i
-            ></span>
-            <span class="btn-text"><i class="fa fa-rotate-right"></i></span>
-            Rotate PDF
-          </button>
-
-          <p id="errorMsg" class="error-text" style="display: none"></p>
-
-          <div id="resultBtns" style="display: none; margin-top: 30px">
-            <div class="result-card">
-              <i class="fa fa-file-pdf"></i>
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label class="upload-label" for="pdfUpload">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose PDF files
+              </label>
+              <input
+                type="file"
+                id="pdfUpload"
+                accept=".pdf"
+                multiple
+                aria-label="Upload PDF files to rotate"
+              />
             </div>
 
-            <p class="file-name">
-              <a href="#" id="fileNameLink">rotated.pdf</a>
+            <ul
+              id="fileList"
+              class="file-list"
+              style="display: none"
+              role="list"
+            ></ul>
+
+            <div
+              id="pagesGrid"
+              class="pages-grid"
+              style="display: none"
+              role="region"
+              aria-label="PDF pages preview"
+            ></div>
+
+            <button
+              id="rotateBtn"
+              class="cta-button"
+              aria-label="Apply rotation to PDF"
+            >
+              <span class="btn-spinner" aria-hidden="true">
+                <i class="fa fa-spinner fa-spin"></i>
+              </span>
+              <span class="btn-text"
+                ><i class="fa fa-rotate-right" aria-hidden="true"></i
+              ></span>
+              Rotate PDF
+            </button>
+
+            <p
+              id="errorMsg"
+              class="error-text"
+              style="display: none"
+              role="alert"
+            ></p>
+
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </div>
+
+              <p class="file-name">
+                <a href="#" id="fileNameLink">rotated.pdf</a>
+              </p>
+
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  class="cta-button"
+                  download
+                  aria-label="Download rotated PDF"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
+                </a>
+                <a
+                  id="shareBtn"
+                  class="cta-button"
+                  aria-label="Share rotated PDF"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </a>
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Rotate another PDF"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Rotate
+                  Another PDF
+                </button>
+              </div>
+            </div>
+
+            <p class="note" id="noteText">
+              Supported format: PDF. Select one or multiple files.
+            </p>
+          </div>
+
+          <div id="pdfPreview" style="display: none; margin-top: 30px">
+            <h2>Preview Rotated PDF</h2>
+            <iframe
+              id="pdfFrame"
+              width="100%"
+              height="600"
+              style="border-radius: 12px; border: 1px solid #e5e7eb"
+              title="Rotated PDF preview"
+            ></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white">
+        <div class="container">
+          <h2>How to Rotate PDF Pages</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                1
+              </div>
+              <h3>Upload Your PDF</h3>
+              <p>
+                Select PDF files from your device. All pages will display as
+                visual thumbnails for easy identification.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                2
+              </div>
+              <h3>Rotate Pages</h3>
+              <p>
+                Click the rotate button on each page to turn it 90 degrees
+                clockwise. Click multiple times for 180° or 270° rotation.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                3
+              </div>
+              <h3>Download Result</h3>
+              <p>
+                Download your PDF with all pages in the correct orientation. All
+                rotations are permanently applied.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Rotate PDFs Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Why You Need to Rotate PDF Pages</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              PDF rotation is one of the most common document editing needs,
+              particularly when dealing with scanned documents, photos converted
+              to PDF, or files created from multiple sources. Incorrect page
+              orientation makes documents difficult to read and appears
+              unprofessional when shared with others.
             </p>
 
-            <div class="result-btns-container">
-              <a id="downloadBtn" class="cta-button"
-                ><i class="fa fa-download"></i> Download</a
-              >
-              <a id="shareBtn" class="cta-button"
-                ><i class="fa fa-share-alt"></i> Share</a
-              >
-              <button id="resetBtn" class="secondary-btn">
-                <i class="fa fa-rotate-right"></i> Rotate Another PDF
-              </button>
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Common Reasons for PDF Rotation
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Understanding when and why to rotate PDF pages helps you manage
+              documents more effectively:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Scanned Documents:</strong> When scanning physical
+                documents, pages sometimes feed through the scanner sideways or
+                upside down, especially in automatic document feeders. This
+                results in PDFs where some pages are rotated incorrectly.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Mobile Phone Photos:</strong> Photos taken with
+                smartphones and converted to PDF often have orientation issues
+                because the phone's orientation sensor doesn't always match how
+                you held the device when capturing the image.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Mixed Source Documents:</strong> When combining pages
+                from different sources—some scanned, some digital, some from
+                photos—the resulting PDF often has pages in various orientations
+                that need standardization.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Landscape vs Portrait Pages:</strong> Documents with a
+                mix of landscape and portrait pages (like reports with wide
+                tables or charts) sometimes need rotation to ensure consistent
+                reading orientation.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Incorrectly Saved Documents:</strong> PDFs created from
+                presentation software or design programs sometimes save with
+                incorrect orientation if the page setup wasn't configured
+                properly before export.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Faxed Documents:</strong> Faxes received as PDF often
+                have orientation problems, particularly cover pages or pages
+                that were fed into the fax machine at different angles.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Downloaded Forms:</strong> Some online forms or
+                downloadable documents display incorrectly depending on how they
+                were created or what device you use to view them.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Understanding Rotation Angles
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDF rotation works in 90-degree increments, allowing you to fix
+              virtually any orientation issue:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>90 Degrees Clockwise:</strong> This is the most common
+              rotation needed. It turns a page that's tilted to the right into
+              proper upright orientation, or converts landscape orientation to
+              portrait (or vice versa). One click rotates a page 90 degrees
+              clockwise.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>180 Degrees (Upside Down):</strong> Sometimes pages are
+              completely inverted. Clicking the rotate button twice achieves a
+              180-degree rotation, flipping the page so what was upside down is
+              now right-side up.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              <strong>270 Degrees (90 Counter-Clockwise):</strong> This is
+              equivalent to rotating counter-clockwise by 90 degrees. Click the
+              rotate button three times to achieve this rotation, useful when a
+              page is tilted to the left.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Visual Preview for Accuracy
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Our tool displays actual page thumbnails, allowing you to see
+              exactly how each page looks before and after rotation. This visual
+              preview is crucial for accuracy—you can immediately verify that
+              you've rotated pages to the correct orientation before
+              downloading. The preview updates in real-time as you click the
+              rotate button, so you can see the transformation happen instantly
+              and make sure every page is oriented exactly as needed.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Professional Document Presentation
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Properly oriented documents demonstrate professionalism and
+              attention to detail. Whether you're sharing a proposal with a
+              client, submitting a report to management, filing legal documents,
+              or distributing training materials, having all pages in the
+              correct orientation shows care and respect for your readers.
+              Incorrectly oriented pages force readers to rotate their screens
+              or turn their heads, creating frustration and a poor impression.
+              Taking a few moments to rotate pages correctly makes documents far
+              more accessible and professional.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Accessibility Considerations
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Correct page orientation is essential for accessibility. Screen
+              readers and other assistive technologies work best when pages are
+              properly oriented. Users with visual impairments who rely on
+              screen magnification need pages in the correct orientation to
+              follow text properly. Properly rotated documents also ensure that
+              text extraction, searching, and copying work correctly, which is
+              important for users who need to access document content
+              programmatically or adapt it for their specific needs.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Digital Workflow Integration
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Many business workflows depend on properly oriented PDFs. Document
+              management systems, automated processing tools, OCR software, and
+              archival systems all function better with correctly oriented
+              pages. Fixing orientation issues upfront prevents problems
+              downstream when documents are indexed, searched, or processed by
+              automated systems. This is particularly important in legal,
+              medical, financial, and government contexts where documents may be
+              processed through multiple systems and need to maintain consistent
+              orientation throughout their lifecycle.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Powerful PDF Rotation Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-sync-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Individual Page Rotation</h3>
+              <p>
+                Rotate specific pages independently. Perfect for documents where
+                only some pages need orientation correction.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-eye"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Visual Page Preview</h3>
+              <p>
+                See actual page content as thumbnails. Verify correct
+                orientation before downloading your PDF.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-redo"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Multiple Rotation Angles</h3>
+              <p>
+                Rotate pages 90°, 180°, or 270° by clicking multiple times. Fix
+                any orientation issue instantly.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-layer-group"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Multi-File Support</h3>
+              <p>
+                Upload multiple PDFs and rotate all pages at once. Efficient
+                batch processing for multiple documents.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-bolt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Instant Processing</h3>
+              <p>
+                See rotation changes immediately in preview. Fast processing
+                means your rotated PDF is ready in seconds.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-check-circle"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Quality Preservation</h3>
+              <p>
+                Rotation doesn't affect image quality or text clarity. All
+                content remains crisp and readable.
+              </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          <p class="note" id="noteText">
-            Supported format: PDF. Select one or multiple files.
+      <!-- Tips Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>PDF Rotation Tips and Best Practices</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Identifying Orientation Issues
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Before you start rotating, identify which pages need adjustment
+                and in which direction:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Quick Scan:</strong> Scroll through all page
+                  thumbnails to get an overview of orientation issues. This
+                  helps you plan your rotation strategy.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Text Direction:</strong> Look at any visible text on
+                  the page. Text should read left-to-right and top-to-bottom for
+                  correct orientation.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Image Recognition:</strong> For pages with images or
+                  logos, look for familiar objects or text to determine which
+                  way is "up."
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Sequential Pages:</strong> If most pages are correctly
+                  oriented, adjacent pages should probably match that
+                  orientation.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Efficient Rotation Workflow
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Work smart when rotating documents with many pages:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Group Similar Issues:</strong> If multiple pages need
+                the same rotation (for example, all scanned sideways), mentally
+                group them and rotate them in sequence for faster processing.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Work Systematically:</strong> Go through pages in order
+                from first to last, rather than jumping around. This prevents
+                missing pages or rotating the same page multiple times.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Count Clicks:</strong> Remember that one click = 90°,
+                two clicks = 180°, three clicks = 270°. This helps you rotate
+                pages efficiently without overshooting.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Double-Check Before Saving:</strong> After rotating all
+                pages, do a final scroll through to ensure every page is
+                correctly oriented before downloading.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Handling Scanned Documents
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Scanned documents present unique rotation challenges:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Automatic Document Feeders:</strong> Pages fed through
+                scanners often have alternating orientations if the paper wasn't
+                perfectly aligned. Check each page individually rather than
+                assuming they all need the same rotation.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Mixed Document Types:</strong> A scanned stack might
+                include papers that were originally in different
+                orientations—for example, a mix of standard letter pages and
+                wide spreadsheets. Each requires different rotation to achieve
+                proper viewing orientation.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Blank or Nearly Blank Pages:</strong> Pages with minimal
+                content can be harder to orient correctly. Look for any text,
+                even page numbers or headers, to guide rotation decisions.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Mobile Phone Photo PDFs
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Photos taken with mobile devices and converted to PDF often need
+                rotation:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Portrait vs Landscape:</strong> Even though you may have
+                held your phone vertically, the image might be saved in
+                landscape orientation. This requires 90° or 270° rotation to
+                view correctly.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Orientation Lock:</strong> If your phone's orientation
+                was locked when you took photos, all images might need the same
+                rotation adjustment. This makes batch rotation particularly
+                efficient.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Document Apps:</strong> Some mobile scanning apps have
+                their own orientation logic. If a document scanning app created
+                your PDF, check if pages need consistent rotation adjustments.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Maintaining Document Quality
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Proper rotation technique ensures document quality:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  Rotation is a lossless operation—it doesn't reduce image
+                  quality or blur text
+                </li>
+                <li style="margin-bottom: 10px">
+                  All embedded elements (images, hyperlinks, annotations) rotate
+                  with the page
+                </li>
+                <li style="margin-bottom: 10px">
+                  Searchable text in PDFs remains searchable after rotation
+                </li>
+                <li style="margin-bottom: 10px">
+                  File size stays essentially the same after rotation
+                </li>
+                <li style="margin-bottom: 10px">
+                  Form fields and interactive elements maintain their
+                  functionality
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                After Rotation: File Management
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Once you've rotated your PDF, follow these best practices:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Save Appropriately:</strong> Use a clear filename like
+                  "Document_Rotated.pdf" to distinguish from the original
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Keep Originals:</strong> Maintain the unrotated
+                  version temporarily in case you need to reference the original
+                  orientation
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Verify on Different Devices:</strong> Open your
+                  rotated PDF on different devices to confirm rotation appears
+                  correct everywhere
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Share Promptly:</strong> Once rotated, distribute the
+                  corrected version to ensure recipients see properly oriented
+                  content
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Combining Rotation with Other Tools
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                PDF rotation often works best as part of a larger document
+                preparation workflow:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Rotate Then Merge:</strong> Fix orientation issues in
+                individual PDFs before combining them into a single document for
+                consistent presentation.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Rotate Then Organize:</strong> Correct orientation
+                first, then use page organization tools to reorder pages into
+                the proper sequence.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Rotate Then Compress:</strong> After fixing orientation,
+                compress the PDF if file size is a concern for sharing or
+                storage.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About Rotating PDFs</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How do I rotate just one page in a PDF?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Each page thumbnail has its own rotate button. Click the rotate
+                button only on the pages you want to turn. Other pages remain in
+                their original orientation. This allows you to fix specific
+                pages without affecting the entire document.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I rotate pages counter-clockwise?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Click the rotate button three times to achieve
+                counter-clockwise rotation (270° clockwise = 90°
+                counter-clockwise). Each click rotates the page 90 degrees
+                clockwise, so clicking three times achieves the same result as
+                one counter-clockwise rotation.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Does rotating reduce PDF quality?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. PDF rotation is a lossless operation that doesn't affect
+                image quality, text clarity, or file content. The page is simply
+                reoriented without any recompression or quality degradation.
+                Your rotated PDF looks exactly the same as the original, just in
+                the correct orientation.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What rotation angles are available?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                You can rotate pages in 90-degree increments: 90°, 180°, or
+                270°. Click once for 90° clockwise, twice for 180° (upside
+                down), or three times for 270° clockwise. These angles cover all
+                practical orientation correction needs.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I rotate multiple PDFs at once?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! Upload multiple PDF files and all pages from all files will
+                appear as thumbnails. Rotate each page individually as needed,
+                then download a single PDF with all the corrected pages from all
+                your original files combined.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will rotation affect text in my PDF?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Text rotates with the page but remains fully searchable and
+                selectable. If your PDF has searchable text (not scanned
+                images), that text remains searchable after rotation. For
+                scanned documents, consider using OCR after rotation to make
+                text searchable.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How do I fix a PDF that's upside down?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Click the rotate button twice on any upside-down pages to
+                achieve a 180° rotation. This flips the page right-side up. The
+                visual preview lets you confirm the page is now correctly
+                oriented before downloading.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is the rotation permanent?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. When you download your rotated PDF, all rotation changes
+                are permanently applied to the file. The pages will open in the
+                correct orientation in any PDF reader. Your original file
+                remains unchanged unless you replace it with the rotated
+                version.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I undo a rotation before downloading?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Simply click the rotate button on that page until it
+                returns to the desired orientation. Since each click rotates
+                90°, clicking four times brings you back to the starting
+                position. Nothing is final until you download the PDF.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Does this work with scanned PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Absolutely. The rotation tool works perfectly with scanned
+                documents. This is actually one of the most common uses—fixing
+                orientation issues in scanned paperwork where pages went through
+                the scanner at different angles.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I rotate pages on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. The rotation tool works on smartphones and tablets. The
+                interface adapts to mobile screens, and you can tap the rotate
+                button on each page thumbnail just as you would click on a
+                desktop computer.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does rotation take?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                The visual preview updates instantly as you click rotate. When
+                you're ready to download, processing typically takes just a few
+                seconds, even for documents with many pages. Processing time
+                depends on file size and page count.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px">
+        <div class="container">
+          <h2>Related PDF Organization Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-th-large"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Organize PDF</h3>
+              <p>
+                Reorder, rotate, delete, and add pages in one comprehensive
+                tool. Complete document reorganization.
+              </p>
+              <a
+                href="/organize"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine rotated PDFs with other documents into a single file
+                with consistent orientation.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-cut"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Split PDF</h3>
+              <p>
+                Divide your rotated PDF into separate files. Extract sections
+                after fixing orientation.
+              </p>
+              <a
+                href="/split"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-crop-alt"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Crop PDF</h3>
+              <p>
+                Trim margins and adjust page boundaries after rotating for
+                perfect page presentation.
+              </p>
+              <a
+                href="/crop"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-file-alt"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>OCR PDF</h3>
+              <p>
+                Make rotated scanned documents searchable with optical character
+                recognition technology.
+              </p>
+              <a
+                href="/ocr_pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce file size of rotated PDFs for easier sharing and storage
+                while maintaining quality.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero" style="padding: 60px 20px">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px">
+            Ready to Fix Your PDF Orientation?
+          </h2>
+          <p style="margin-bottom: 25px">
+            Rotate individual pages or entire documents in seconds. Visual
+            preview ensures perfect orientation.
           </p>
+          <a
+            href="#"
+            class="cta-button"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            aria-label="Scroll to top to rotate PDF"
+          >
+            <i class="fa fa-sync-alt" aria-hidden="true"></i> Start Rotating Now
+          </a>
         </div>
-
-        <div id="pdfPreview" style="display: none; margin-top: 30px">
-          <h4>Preview Rotated PDF</h4>
-          <iframe
-            id="pdfFrame"
-            width="100%"
-            height="600"
-            style="border-radius: 12px; border: 1px solid #e5e7eb"
-          ></iframe>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
     <section id="footer-placeholder"></section>
 
@@ -276,6 +1237,8 @@
       const uploadSection = document.getElementById("uploadSection");
       const fileNameLink = document.getElementById("fileNameLink");
       const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const noteText = document.getElementById("noteText");
 
       let files = [];
 
@@ -291,7 +1254,6 @@
         errorMsg.style.display = "none";
       }
 
-      /* ================= FILE LIST ================= */
       function renderFileList() {
         if (files.length === 0) {
           fileList.style.display = "none";
@@ -304,15 +1266,14 @@
         files.forEach((file, index) => {
           const li = document.createElement("li");
           li.innerHTML = `
-                <i class="fa fa-file-pdf pdf-icon"></i>
-                <span>${file.name}</span>
-                <i class="fa fa-times delete-file" data-index="${index}"></i>
-            `;
+            <i class="fa fa-file-pdf pdf-icon"></i>
+            <span>${file.name}</span>
+            <i class="fa fa-times delete-file" data-index="${index}" role="button" aria-label="Remove ${file.name}" tabindex="0"></i>
+          `;
           fileList.appendChild(li);
         });
       }
 
-      /* ================= LOAD PDF PAGES ================= */
       async function loadPDFs() {
         clearError();
         pagesGrid.innerHTML = "";
@@ -332,56 +1293,47 @@
 
           for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
-
-            // Get base viewport at scale 1
             const viewport = page.getViewport({ scale: 1 });
 
-            // Calculate appropriate scale based on viewport
             let maxWidth;
             if (window.innerWidth < 768) {
-              // Mobile: 1 column, use most of screen width
               maxWidth = window.innerWidth - 80;
             } else {
-              // Desktop: 2 columns
               maxWidth = (window.innerWidth - 140) / 2;
             }
 
-            // Calculate display scale to fit width
             const displayScale = maxWidth / viewport.width;
-
-            // Render at HIGHER resolution for crisp text
             const renderScale = displayScale * (window.devicePixelRatio || 2);
             const scaledViewport = page.getViewport({ scale: renderScale });
 
             const canvas = document.createElement("canvas");
             const context = canvas.getContext("2d");
 
-            // Set canvas resolution to high DPI
             canvas.width = scaledViewport.width;
             canvas.height = scaledViewport.height;
 
-            // Render at high resolution
             await page.render({
               canvasContext: context,
               viewport: scaledViewport,
             }).promise;
 
-            // Let CSS handle the display size while maintaining aspect ratio
             canvas.style.width = "100%";
             canvas.style.height = "auto";
 
             const card = document.createElement("div");
             card.className = "page-card";
             card.dataset.rotation = "0";
+            card.setAttribute("role", "article");
+            card.setAttribute("aria-label", `Page ${pageNo}`);
 
             card.innerHTML = `
-                <div class="page-number">Page ${pageNo++}</div>
-                <div class="page-canvas-wrapper"></div>
-                <div class="page-actions">
-                    <button class="rotate">
-                        <i class="fa fa-rotate-right"></i>
-                    </button>
-                </div>
+              <div class="page-number" aria-hidden="true">Page ${pageNo++}</div>
+              <div class="page-canvas-wrapper"></div>
+              <div class="page-actions">
+                <button class="rotate" aria-label="Rotate this page 90 degrees clockwise">
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i>
+                </button>
+              </div>
             `;
 
             card.querySelector(".page-canvas-wrapper").appendChild(canvas);
@@ -397,7 +1349,6 @@
         }
       }
 
-      /* ================= UPLOAD ================= */
       pdfUpload.addEventListener("change", async () => {
         const newFiles = Array.from(pdfUpload.files);
 
@@ -414,7 +1365,6 @@
         await loadPDFs();
       });
 
-      /* ================= DELETE FILE ================= */
       fileList.addEventListener("click", async (e) => {
         if (!e.target.classList.contains("delete-file")) return;
 
@@ -425,7 +1375,6 @@
         await loadPDFs();
       });
 
-      /* ================= ROTATE ================= */
       rotateBtn.onclick = async () => {
         clearError();
 
@@ -465,6 +1414,7 @@
           rotateBtn.style.display = "none";
           fileList.style.display = "none";
           pagesGrid.style.display = "none";
+          noteText.style.display = "none";
 
           const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
           if (!isSmallDevice) {
@@ -486,24 +1436,20 @@
         }
       };
 
-      /* ✅ RESET BUTTON FUNCTIONALITY */
       resetBtn.onclick = () => {
         files = [];
-
         pagesGrid.innerHTML = "";
         pagesGrid.style.display = "none";
-
         fileList.innerHTML = "";
         fileList.style.display = "none";
-
         resultBtns.style.display = "none";
         pdfPreview.style.display = "none";
-
-        /* ✅ SHOW UPLOAD + ROTATE AGAIN */
+        pdfFrame.src = "";
         uploadSection.style.display = "block";
         rotateBtn.style.display = "inline-flex";
-
+        noteText.style.display = "block";
         clearError();
+        window.scrollTo({ top: 0, behavior: "smooth" });
       };
     </script>
   </body>

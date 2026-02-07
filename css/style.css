@@ -302,6 +302,12 @@ header .logo a {
   background: #f59e0b;
 }
 
+@media (max-width: 638px) {
+  #resultBtns a{
+    margin-bottom: 10px;
+  }
+}
+
 /* Features */
 .features,
 .benefits {

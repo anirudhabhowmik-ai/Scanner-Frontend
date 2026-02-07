@@ -1,27 +1,133 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>
+      Free PDF Splitter Online - Extract & Split PDF Pages | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Free PDF Splitter Online - Extract & Split PDF Pages | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Split PDF files online for free. Extract specific pages or split PDFs into multiple files. Fast, secure, and no registration required. Works with large files."
+    />
+    <meta
+      name="keywords"
+      content="split pdf online, pdf splitter, extract pdf pages, divide pdf, split pdf into pages, pdf page extractor, free pdf splitter, online pdf tool, separate pdf pages"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
 
-    <title>PDFMaster - Split PDF Online</title>
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/split" />
 
-    <!-- SEO Meta -->
-    <meta name="description"
-        content="Split PDF files online with PDFMaster. Extract pages or split PDFs securely. Free, fast, and works for large files.">
-    <meta name="keywords" content="split pdf, pdf splitter, extract pdf pages, free pdf tools">
-    <meta name="author" content="PDFMaster">
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/split" />
+    <meta
+      property="og:title"
+      content="Free PDF Splitter Online - Extract & Split PDF Pages | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Split PDF files online for free. Extract specific pages or split PDFs into multiple files. Fast, secure, and no registration required."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/split-pdf-og.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/split" />
+    <meta
+      name="twitter:title"
+      content="Free PDF Splitter Online - Extract & Split PDF Pages | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Split PDF files online for free. Extract specific pages or split PDFs into multiple files."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/split-pdf-twitter.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "PDF Splitter - NextoPDF",
+        "url": "https://nextopdf.com/split",
+        "description": "Free online PDF splitter tool to extract specific pages or split PDF files into multiple documents",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Requires HTML5.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Split PDF into individual pages",
+          "Extract specific page ranges",
+          "Process large PDF files",
+          "Secure browser-based processing",
+          "Download as ZIP archive",
+          "No file size limits"
+        ]
+      }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://nextopdf.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Split PDF",
+            "item": "https://nextopdf.com/split"
+          }
+        ]
+      }
+    </script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
 
     <!-- Main CSS -->
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style.css" />
 
     <!-- Favicon -->
     <link
@@ -42,156 +148,686 @@
       href="./images/apple-touch-icon.png"
     />
 
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
+
     <style>
-        /* ================= CUSTOM RADIO BUTTON ================= */
+      /* ================= CUSTOM RADIO BUTTON ================= */
 
+      .radio-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+
+      .custom-radio {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #1e3a8a;
+        user-select: none;
+        position: relative;
+      }
+
+      /* Hide default radio */
+      .custom-radio input[type="radio"] {
+        display: none;
+      }
+
+      /* Radio outer circle */
+      .radio-mark {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #1e3a8a;
+        border-radius: 50%;
+        margin-right: 8px;
+        position: relative;
+        transition: all 0.25s ease;
+      }
+
+      /* Inner dot */
+      .radio-mark::after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: #fbbf24;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        transition: transform 0.25s ease;
+      }
+
+      /* Checked state */
+      .custom-radio input:checked + .radio-mark {
+        border-color: #fbbf24;
+      }
+
+      .custom-radio input:checked + .radio-mark::after {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      /* Hover effect */
+      .custom-radio:hover .radio-mark {
+        border-color: #f59e0b;
+      }
+
+      /* Mobile spacing */
+      @media (max-width: 480px) {
         .radio-group {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-            flex-wrap: wrap;
+          gap: 12px;
         }
-
-        .custom-radio {
-            display: flex;
-            align-items: center;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e3a8a;
-            user-select: none;
-            position: relative;
-        }
-
-        /* Hide default radio */
-        .custom-radio input[type="radio"] {
-            display: none;
-        }
-
-        /* Radio outer circle */
-        .radio-mark {
-            width: 18px;
-            height: 18px;
-            border: 2px solid #1e3a8a;
-            border-radius: 50%;
-            margin-right: 8px;
-            position: relative;
-            transition: all 0.25s ease;
-        }
-
-        /* Inner dot */
-        .radio-mark::after {
-            content: "";
-            width: 10px;
-            height: 10px;
-            background: #fbbf24;
-            border-radius: 50%;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            transition: transform 0.25s ease;
-        }
-
-        /* Checked state */
-        .custom-radio input:checked+.radio-mark {
-            border-color: #fbbf24;
-        }
-
-        .custom-radio input:checked+.radio-mark::after {
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        /* Hover effect */
-        .custom-radio:hover .radio-mark {
-            border-color: #f59e0b;
-        }
-
-        /* Mobile spacing */
-        @media (max-width: 480px) {
-            .radio-group {
-                gap: 12px;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <section id="header-placeholder"></section>
 
     <!-- ================= SPLIT TOOL ================= -->
     <section class="merge-tool">
-        <div class="container">
-            <h1>Split PDF File</h1>
-            <p>Split a PDF into individual pages or selected ranges. Fast, secure, and free.</p>
+      <div class="container">
+        <h1>Split PDF File Online Free</h1>
+        <p>
+          Split a PDF into individual pages or extract specific page ranges.
+          Fast, secure, and completely free.
+        </p>
 
-            <div class="upload-section">
+        <div class="upload-section">
+          <!-- Upload Section -->
+          <div id="uploadSection">
+            <label for="pdfUpload" class="upload-label">
+              <i class="fa fa-upload"></i> Choose PDF file
+            </label>
+            <input type="file" id="pdfUpload" accept=".pdf" />
+          </div>
 
-                <!-- Upload Section -->
-                <div id="uploadSection">
-                    <label for="pdfUpload" class="upload-label">
-                        <i class="fa fa-upload"></i> Choose PDF file
-                    </label>
-                    <input type="file" id="pdfUpload" accept=".pdf">
-                </div>
+          <!-- File List -->
+          <ul id="fileList" class="file-list" style="display: none"></ul>
 
-                <!-- File List -->
-                <ul id="fileList" class="file-list" style="display:none;"></ul>
+          <!-- Split Options -->
+          <div id="splitOptions" class="radio-group">
+            <label class="custom-radio">
+              <input type="radio" name="splitType" value="all" checked />
+              <span class="radio-mark"></span>
+              Extract All Pages
+            </label>
 
-                <!-- Split Options -->
-                <div id="splitOptions" class="radio-group">
-                    <label class="custom-radio">
-                        <input type="radio" name="splitType" value="all" checked>
-                        <span class="radio-mark"></span>
-                        Extract All Pages
-                    </label>
+            <label class="custom-radio">
+              <input type="radio" name="splitType" value="range" />
+              <span class="radio-mark"></span>
+              Page Range
+            </label>
+          </div>
 
-                    <label class="custom-radio">
-                        <input type="radio" name="splitType" value="range">
-                        <span class="radio-mark"></span>
-                        Page Range
-                    </label>
-                </div>
+          <!-- Page range -->
+          <input
+            type="text"
+            id="pageRange"
+            class="page-range"
+            placeholder="e.g., 1-3,5,7-9"
+            style="display: none"
+          />
 
+          <!-- Split button -->
+          <button id="splitBtn" class="cta-button" style="margin-top: 15px">
+            <i class="fa fa-spinner fa-spin" style="display: none"></i>
+            Split PDF
+          </button>
 
-                <!-- Page range -->
-                <input type="text" id="pageRange" class="page-range" placeholder="e.g., 1-3,5,7-9"
-                    style="display: none;" />
+          <!-- Error -->
+          <p id="errorMsg" class="error-text"></p>
 
-                <!-- Split button -->
-                <button id="splitBtn" class="cta-button" style="margin-top:15px;">
-                    <i class="fa fa-spinner fa-spin" style="display:none;"></i>
-                    Split PDF
-                </button>
+          <!-- Note -->
+          <p id="noteText" class="note">
+            Supported format: PDF. Files larger than 20MB are processed on the
+            server.
+          </p>
 
-                <!-- Error -->
-                <p id="errorMsg" class="error-text"></p>
-
-                <!-- Note -->
-                <p id="noteText" class="note">
-                    Supported format: PDF. Files larger than 20MB are processed on the server.
-                </p>
-
-                <!-- Result Section -->
-                <div id="resultBtns" style="display:none; margin-top:15px;">
-                    <div id="resultCard" class="result-card">
-                        <i class="fa fa-file-archive"></i>
-                    </div>
-                    <p class="file-name">
-                        split-pages.zip
-                    </p>
-
-                    <a id="downloadBtn" href="#" class="cta-button">
-                        <i class="fa fa-download"></i> Download
-                    </a>
-                    <button id="resetBtn" class="secondary-btn">
-                        <i class="fa fa-rotate-right"></i> Split Another PDF
-                    </button>
-                </div>
-
+          <!-- Result Section -->
+          <div id="resultBtns" style="display: none; margin-top: 15px">
+            <div id="resultCard" class="result-card">
+              <i class="fa fa-file-archive"></i>
             </div>
+            <p class="file-name">split-pages.zip</p>
+
+            <a id="downloadBtn" href="#" class="cta-button">
+              <i class="fa fa-download"></i> Download Split Pages
+            </a>
+            <button id="resetBtn" class="secondary-btn">
+              <i class="fa fa-rotate-right"></i> Split Another PDF
+            </button>
+          </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Understanding PDF Splitting Section -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <div class="container">
+        <h2>Understanding PDF Splitting and Page Extraction</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+            PDF splitting is an essential document management task that allows
+            you to break down large PDF files into smaller, more manageable
+            pieces. Whether you need to extract specific pages, create
+            individual files for each page, or divide a document into sections,
+            our free PDF splitter makes the process simple and efficient.
+          </p>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            Why Split PDF Files?
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+            There are many practical reasons to split PDF documents. You might
+            receive a multi-page document but only need specific pages for a
+            particular purpose. For example, extracting pages from a
+            comprehensive report to create a focused presentation, separating
+            chapters from an ebook for individual distribution, or removing
+            unnecessary pages before sharing sensitive documents. Splitting PDFs
+            also helps when file size limitations prevent you from uploading or
+            emailing the entire document.
+          </p>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            How Our PDF Splitter Works
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+            Our tool offers two flexible splitting methods to suit different
+            needs:
+          </p>
+          <ul
+            style="
+              color: #555;
+              line-height: 1.8;
+              margin-bottom: 25px;
+              padding-left: 25px;
+            "
+          >
+            <li style="margin-bottom: 10px">
+              <strong>Extract All Pages:</strong> This option separates every
+              page of your PDF into individual files. Each page becomes a
+              standalone PDF document, making it perfect for scenarios where you
+              need to work with pages independently or share specific pages with
+              different recipients.
+            </li>
+            <li style="margin-bottom: 10px">
+              <strong>Page Range Extraction:</strong> Select specific pages or
+              ranges using a simple notation system. For example, "1-3,5,7-9"
+              extracts pages 1 through 3, page 5, and pages 7 through 9. This
+              gives you precise control over which pages to extract without
+              creating unnecessary files.
+            </li>
+          </ul>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            Technical Processing Methods
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+            Our PDF splitter uses intelligent processing based on your file
+            size. Smaller PDF files under 20MB are processed directly in your
+            web browser using advanced JavaScript libraries. This means your
+            file never leaves your device, ensuring maximum privacy and faster
+            processing. For larger files exceeding 20MB, we use server-side
+            processing to handle the split efficiently. In both cases, your
+            extracted pages are packaged into a convenient ZIP file for easy
+            download and organization.
+          </p>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            Common Use Cases for PDF Splitting
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+            PDF splitting serves various professional and personal needs:
+          </p>
+          <ul
+            style="
+              color: #555;
+              line-height: 1.8;
+              margin-bottom: 25px;
+              padding-left: 25px;
+            "
+          >
+            <li style="margin-bottom: 10px">
+              <strong>Document Organization:</strong> Separate different
+              sections of lengthy reports, manuals, or proposals into focused
+              files. This makes finding and sharing specific information much
+              easier.
+            </li>
+            <li style="margin-bottom: 10px">
+              <strong>Email Attachments:</strong> When a PDF is too large to
+              email, extract only the relevant pages to create smaller
+              attachments that meet size restrictions.
+            </li>
+            <li style="margin-bottom: 10px">
+              <strong>Academic Work:</strong> Students often need to extract
+              specific chapters or pages from textbooks, research papers, or
+              study materials for assignments and citations.
+            </li>
+            <li style="margin-bottom: 10px">
+              <strong>Business Documents:</strong> Extract individual invoices,
+              receipts, or contracts from batch-scanned documents for proper
+              filing and record-keeping.
+            </li>
+            <li style="margin-bottom: 10px">
+              <strong>Publishing and Printing:</strong> Separate manuscript
+              pages or design layouts for individual review, editing, or
+              printing.
+            </li>
+          </ul>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            Security and Privacy Considerations
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+            When splitting PDF files online, security matters. Our tool
+            prioritizes your privacy by processing smaller files directly in
+            your browser whenever possible. For files that require server
+            processing, we implement strict security measures. All uploaded
+            files are automatically deleted from our servers immediately after
+            processing, and we never retain, access, or share your document
+            content. This approach ensures that your sensitive business
+            documents, personal files, or confidential information remains
+            protected throughout the splitting process.
+          </p>
+
+          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+            Quality Preservation During Splitting
+          </h3>
+          <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+            A critical aspect of PDF splitting is maintaining the original
+            quality and formatting of your documents. Our tool preserves all
+            elements of your PDF pages including text, images, fonts, colors,
+            and layout. Extracted pages retain their original resolution and
+            clarity, ensuring that split PDFs look identical to the source
+            document. This is essential when working with professional documents
+            where visual accuracy and formatting consistency matter.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tips and Best Practices Section -->
+    <section class="features" style="background: white; padding: 60px 20px">
+      <div class="container">
+        <h2>PDF Splitting Tips and Best Practices</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Using Page Range Notation Effectively
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Understanding how to specify page ranges saves time and ensures
+              you extract exactly what you need. The notation system is
+              straightforward. Use single numbers for individual pages like "5"
+              for page 5 only. Use hyphens for continuous ranges such as "1-5"
+              to extract pages 1 through 5. Combine multiple selections with
+              commas like "1-3,7,10-12" to extract pages 1, 2, 3, 7, 10, 11, and
+              12.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              When working with large documents, plan your page selections
+              before starting. Open the original PDF to note the page numbers
+              you need, especially if the document has a table of contents or
+              index. This prevents the need to split multiple times or extract
+              unnecessary pages.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Organizing Split PDF Files
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              After splitting a PDF, you receive a ZIP file containing all
+              extracted pages. Proper organization of these files is important
+              for maintaining workflow efficiency. Extract the ZIP file to a
+              dedicated folder on your computer. If you extracted all pages
+              individually, consider renaming them with descriptive names rather
+              than generic page numbers.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              For business documents, create a naming convention that includes
+              dates, project names, or client identifiers. For example, instead
+              of "page-5.pdf", use "InvoiceJan2024-Client-ABC.pdf". This makes
+              files searchable and easier to locate later. Always keep the
+              original PDF file as a backup until you confirm all extracted
+              pages are correct and complete.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Dealing with Large PDF Documents
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Large PDF files require special consideration when splitting.
+              Documents exceeding several hundred pages can take time to
+              process, especially if extracting all pages individually. For very
+              large files, consider whether you really need every page as a
+              separate file, or if extracting specific sections might be more
+              practical.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              If you have a 500-page document but only need pages scattered
+              throughout, using the page range option is more efficient than
+              extracting all 500 pages and then manually selecting the ones you
+              need. Files larger than 20MB automatically use our server-based
+              processing, which handles large documents efficiently while
+              maintaining security through automatic file deletion after
+              processing.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Combining Split with Other PDF Operations
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDF splitting often works as part of a larger document workflow.
+              You might split a PDF to extract certain pages, then merge those
+              pages with other documents to create a new compilation. Or you
+              might extract pages, compress them individually for easier
+              sharing, then send specific pages to different recipients.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              Consider your end goal when planning splits. If you need to
+              reorganize a document, you might split it into pages, then use a
+              merge tool to reassemble them in a new order. If you need to
+              remove confidential pages, split the document to extract only the
+              pages safe for sharing. Understanding how splitting fits into your
+              overall document management strategy helps you work more
+              efficiently.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Troubleshooting Common Issues
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Most PDF splitting issues are easily resolved with simple checks.
+              If your page range seems incorrect, verify that you are using
+              correct syntax with commas between individual pages and ranges,
+              and hyphens within ranges. Make sure page numbers are within the
+              actual document range. A 20-page document does not have a page 25
+              to extract.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              If processing seems slow, check your file size. Very large files
+              naturally take longer to process. If you encounter errors with
+              password-protected PDFs, you must remove the password protection
+              before splitting. Use our unlock PDF tool first if your document
+              is password-protected. For corrupted PDFs that won't split
+              properly, try opening and re-saving the document in a PDF reader
+              before attempting to split it again.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 40px">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Best Practices for Professional Use
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              When splitting PDFs for professional purposes, maintain consistent
+              quality standards. Always review extracted pages before
+              distributing them to ensure all content appears correctly and
+              nothing was inadvertently cut off. Check that extracted pages
+              maintain their original formatting, especially important for
+              documents with complex layouts, tables, or graphics.
+            </p>
+            <p style="color: #555; line-height: 1.8">
+              For client-facing documents, add proper file names and metadata
+              after splitting. Consider whether extracted pages need headers,
+              footers, or page numbers added to provide context now that they
+              are standalone files. If splitting removes important context like
+              cover pages or tables of contents, you might need to add
+              explanatory notes to the extracted pages.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <div class="container">
+        <h2>Frequently Asked Questions About PDF Splitting</h2>
+        <div style="max-width: 800px; margin: 0 auto; text-align: left">
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              How do I split a PDF into separate pages?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Upload your PDF file, select "Extract All Pages" option, and click
+              the Split PDF button. Our tool will create individual PDF files
+              for each page and package them into a ZIP file for easy download.
+              The entire process takes just seconds for most documents.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Can I extract specific pages from a PDF?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Yes, select the "Page Range" option and enter the pages you want
+              to extract. Use numbers separated by commas for individual pages,
+              or ranges with hyphens. For example, "1-5,8,10-12" extracts pages
+              1 through 5, page 8, and pages 10 through 12.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Is there a file size limit for splitting PDFs?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              There is no strict file size limit. Files under 20MB are processed
+              directly in your browser for maximum privacy and speed. Larger
+              files are processed on our secure servers and automatically
+              deleted after splitting. Both methods produce the same
+              high-quality results.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Will splitting a PDF affect the quality?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              No, splitting a PDF does not degrade quality. All extracted pages
+              maintain their original resolution, formatting, fonts, images, and
+              layout. The split pages are identical to the corresponding pages
+              in the source document.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Are my PDF files secure when splitting online?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Yes, your files are completely secure. Smaller files are processed
+              directly in your browser, so they never leave your device. For
+              larger files processed on our servers, we automatically delete
+              them immediately after splitting. We never store, access, or share
+              your documents.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Why do I receive a ZIP file after splitting?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Since splitting creates multiple PDF files, we package them into a
+              single ZIP archive for convenient download. This is much easier
+              than downloading dozens or hundreds of individual files one by
+              one. Simply extract the ZIP file on your computer to access all
+              the split pages.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Can I split password-protected PDFs?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Password-protected PDFs must have their protection removed before
+              splitting. You can use our Unlock PDF tool if you know the
+              password, then proceed with splitting the unprotected version.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              How many pages can I extract at once?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              You can extract as many pages as your PDF contains. Whether you
+              need to split a 10-page document or a 1000-page document, our tool
+              handles it efficiently. There is no limit on the number of pages
+              you can extract in a single operation.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              What happens to bookmarks and links when splitting?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Each extracted page becomes a standalone PDF file. Internal links
+              and bookmarks that reference other pages in the original document
+              will not function in the split files since those pages may not be
+              included. However, external links to websites remain functional.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Can I split PDFs on mobile devices?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Yes, our PDF splitter works on all devices including smartphones
+              and tablets. The tool is fully responsive and functions on iOS,
+              Android, and all modern mobile browsers. You can upload, split,
+              and download PDFs directly from your mobile device.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Is this tool really free to use?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Yes, our PDF splitter is completely free with no hidden costs,
+              subscriptions, or premium features. You can split as many PDF
+              files as you need without any limitations or charges.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 30px">
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              How long does PDF splitting take?
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Most PDF files split within seconds. Small to medium documents
+              process almost instantly. Very large files with hundreds of pages
+              may take 30-60 seconds, depending on file size and your internet
+              connection speed for server-processed files.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Tools Section -->
+    <section class="features" style="background: white; padding: 60px 20px">
+      <div class="container">
+        <h2>Related PDF Tools</h2>
+        <p style="text-align: center; color: #555; margin-bottom: 40px">
+          Explore our other free PDF management tools
+        </p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <i
+              class="fas fa-object-group"
+              style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+            ></i>
+            <h3>Merge PDFs</h3>
+            <p>
+              Combine multiple PDF files into one document. Perfect for
+              organizing split pages back together.
+            </p>
+            <a
+              href="/merge"
+              class="cta-button"
+              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+              >Use Tool</a
+            >
+          </div>
+          <div class="feature-card">
+            <i
+              class="fas fa-file-export"
+              style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+            ></i>
+            <h3>Extract Pages</h3>
+            <p>
+              Extract specific pages from PDF into a new document while keeping
+              the original intact.
+            </p>
+            <a
+              href="/extract"
+              class="cta-button"
+              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+              >Use Tool</a
+            >
+          </div>
+          <div class="feature-card">
+            <i
+              class="fas fa-trash-alt"
+              style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+            ></i>
+            <h3>Delete Pages</h3>
+            <p>
+              Remove unwanted pages from your PDF files. Clean up documents
+              before sharing.
+            </p>
+            <a
+              href="/delete"
+              class="cta-button"
+              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+              >Use Tool</a
+            >
+          </div>
+          <div class="feature-card">
+            <i
+              class="fas fa-th-large"
+              style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+            ></i>
+            <h3>Organize PDF</h3>
+            <p>
+              Reorder, rearrange, and organize PDF pages in any sequence you
+              need.
+            </p>
+            <a
+              href="/organize"
+              class="cta-button"
+              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+              >Use Tool</a
+            >
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="footer-placeholder"></section>
@@ -205,234 +841,234 @@
 
     <!-- ================= SCRIPT ================= -->
     <script>
-        /* ================= CONFIG ================= */
-        const BACKEND_SPLIT_URL = `${BACKEND_BASE_URL}/split-pdf`;
-        const MAX_FRONTEND_SIZE = 20 * 1024 * 1024; // 20MB
+      /* ================= CONFIG ================= */
+      const BACKEND_SPLIT_URL = `${BACKEND_BASE_URL}/split-pdf`;
+      const MAX_FRONTEND_SIZE = 20 * 1024 * 1024; // 20MB
 
-        /* ================= ELEMENTS ================= */
-        const pdfInput = document.getElementById("pdfUpload");
-        const fileList = document.getElementById("fileList");
-        const splitBtn = document.getElementById("splitBtn");
-        const loader = splitBtn.querySelector(".fa-spinner");
-        const resultSection = document.getElementById("resultBtns");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const resetBtn = document.getElementById("resetBtn");
-        const noteText = document.getElementById("noteText");
-        const errorMsg = document.getElementById("errorMsg");
-        const pageRangeInput = document.getElementById("pageRange");
-        const splitOptions = document.getElementById("splitOptions");
-        splitOptions.style.display = "none";
-        const splitTypeRadios = document.getElementsByName("splitType");
-        const uploadSection = document.getElementById("uploadSection");
+      /* ================= ELEMENTS ================= */
+      const pdfInput = document.getElementById("pdfUpload");
+      const fileList = document.getElementById("fileList");
+      const splitBtn = document.getElementById("splitBtn");
+      const loader = splitBtn.querySelector(".fa-spinner");
+      const resultSection = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const noteText = document.getElementById("noteText");
+      const errorMsg = document.getElementById("errorMsg");
+      const pageRangeInput = document.getElementById("pageRange");
+      const splitOptions = document.getElementById("splitOptions");
+      splitOptions.style.display = "none";
+      const splitTypeRadios = document.getElementsByName("splitType");
+      const uploadSection = document.getElementById("uploadSection");
 
-        let selectedFile = null;
+      let selectedFile = null;
 
+      /* ================= FILE SELECT ================= */
+      pdfInput.addEventListener("change", () => {
+        selectedFile = pdfInput.files[0];
+        errorMsg.style.display = "none";
 
-        /* ================= FILE SELECT ================= */
-        pdfInput.addEventListener("change", () => {
-            selectedFile = pdfInput.files[0];
-            errorMsg.style.display = "none";
-
-            if (selectedFile) {
-                splitOptions.style.display = "flex";
-                renderFileList();
-            }
-
-            // Reset input
-            pdfInput.value = '';
-        });
-
-        /* ================= RENDER FILE LIST ================= */
-        function renderFileList() {
-            fileList.style.display = "block";
-            fileList.innerHTML = '';
-
-            const li = document.createElement('li');
-            li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${selectedFile.name}</span> <i class="fa fa-times delete-file"></i>`;
-            fileList.appendChild(li);
+        if (selectedFile) {
+          splitOptions.style.display = "flex";
+          renderFileList();
         }
 
-        /* ================= DELETE FILE ================= */
-        fileList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-file')) {
-                selectedFile = null;
-                fileList.style.display = "none";
-                splitOptions.style.display = "none";
-                fileList.innerHTML = '';
-                pageRangeInput.style.display = "none";
-                errorMsg.style.display = "none";
-                document.querySelector('input[name="splitType"][value="all"]').checked = true;
-            }
-        });
+        // Reset input
+        pdfInput.value = "";
+      });
 
-        /* ================= SPLIT TYPE TOGGLE ================= */
-        splitTypeRadios.forEach(option => {
-            option.addEventListener("change", () => {
-                if (option.value === "range" && option.checked) {
-                    pageRangeInput.style.display = "block";
-                } else if (option.value === "all" && option.checked) {
-                    pageRangeInput.style.display = "none";
-                }
-            });
-        });
+      /* ================= RENDER FILE LIST ================= */
+      function renderFileList() {
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
 
-        /* ================= SPLIT CLICK ================= */
-        splitBtn.addEventListener("click", async () => {
-            if (!selectedFile) {
-                errorMsg.textContent = "Please select a PDF file.";
-                errorMsg.style.display = "block";
-                return;
-            }
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${selectedFile.name}</span> <i class="fa fa-times delete-file"></i>`;
+        fileList.appendChild(li);
+      }
 
-            errorMsg.style.display = "none";
-
-            try {
-                let blob;
-                const splitType = document.querySelector('input[name="splitType"]:checked').value;
-                const range = splitType === "range" ? pageRangeInput.value.trim() : "";
-
-                if (splitType === "range" && range === "") {
-                    showError("Please enter a valid page range (e.g. 1-3,5,7-9).");
-                    return;
-                }
-
-                loader.style.display = "inline-block";
-                splitBtn.disabled = true;
-
-                clearError();
-
-
-                if (selectedFile.size <= MAX_FRONTEND_SIZE) {
-                    blob = await splitFrontend(selectedFile, range);
-                } else {
-                    blob = await splitBackend(selectedFile, range);
-                }
-
-                const url = URL.createObjectURL(blob);
-
-                // Hide UI elements
-                fileList.style.display = "none";
-                uploadSection.style.display = "none";
-                splitOptions.style.display = "none";
-                pageRangeInput.style.display = "none";
-                noteText.style.display = "none";
-                splitBtn.style.display = "none";
-                loader.style.display = "none";
-
-                // Show result
-                resultSection.style.display = "block";
-                downloadBtn.href = url;
-                downloadBtn.download = "split-pages.zip";
-
-            } catch (err) {
-                errorMsg.textContent = "Error splitting PDF: " + err.message;
-                errorMsg.style.display = "block";
-                splitBtn.disabled = false;
-                loader.style.display = "none";
-            }
-        });
-
-        pageRangeInput.addEventListener("input", () => {
-            if (pageRangeInput.value.trim() !== "") {
-                clearError();
-            }
-        });
-
-        function showError(message) {
-            errorMsg.textContent = message;
-            errorMsg.style.display = "block";
+      /* ================= DELETE FILE ================= */
+      fileList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-file")) {
+          selectedFile = null;
+          fileList.style.display = "none";
+          splitOptions.style.display = "none";
+          fileList.innerHTML = "";
+          pageRangeInput.style.display = "none";
+          errorMsg.style.display = "none";
+          document.querySelector(
+            'input[name="splitType"][value="all"]',
+          ).checked = true;
         }
+      });
 
-        function clearError() {
-            errorMsg.textContent = "";
-            errorMsg.style.display = "none";
-        }
-
-
-        /* ================= FRONTEND SPLIT ================= */
-        async function splitFrontend(file, range) {
-            const zip = new JSZip();
-            const pdfBytes = await file.arrayBuffer();
-            const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
-            const totalPages = pdfDoc.getPageCount();
-
-            const pages = parseRange(range, totalPages);
-
-            for (const i of pages) {
-                const newPdf = await PDFLib.PDFDocument.create();
-                const [page] = await newPdf.copyPages(pdfDoc, [i]);
-                newPdf.addPage(page);
-
-                const bytes = await newPdf.save();
-                zip.file(`page-${i + 1}.pdf`, bytes);
-            }
-
-            return await zip.generateAsync({ type: "blob" });
-        }
-
-        /* ================= BACKEND SPLIT ================= */
-        async function splitBackend(file, range) {
-            const formData = new FormData();
-            formData.append("file", file);
-            formData.append("range", range);
-
-            const response = await fetch(BACKEND_SPLIT_URL, {
-                method: "POST",
-                body: formData
-            });
-
-            if (!response.ok) throw new Error("Backend error");
-
-            return await response.blob();
-        }
-
-        /* ================= RANGE PARSER ================= */
-        function parseRange(range, total) {
-            if (!range) return [...Array(total).keys()];
-
-            const pages = new Set();
-            range.split(",").forEach(part => {
-                if (part.includes("-")) {
-                    let [s, e] = part.split("-").map(n => parseInt(n) - 1);
-                    for (let i = s; i <= e; i++) {
-                        if (i >= 0 && i < total) pages.add(i);
-                    }
-                } else {
-                    const p = parseInt(part) - 1;
-                    if (p >= 0 && p < total) pages.add(p);
-                }
-            });
-
-            return [...pages].sort((a, b) => a - b);
-        }
-
-        /* ================= RESET ================= */
-        resetBtn.addEventListener("click", () => {
-            // Reset file
-            pdfInput.value = "";
-            pageRangeInput.value = "";
-            selectedFile = null;
-
-            // Reset UI
-            fileList.innerHTML = '';
-            fileList.style.display = "none";
-            uploadSection.style.display = "block";
-            resultSection.style.display = "none";
-            noteText.style.display = "block";
-            splitBtn.style.display = "inline-flex";
-            splitBtn.disabled = false;
-            loader.style.display = "none";
-            errorMsg.style.display = "none";
-            splitOptions.style.display = "none";
+      /* ================= SPLIT TYPE TOGGLE ================= */
+      splitTypeRadios.forEach((option) => {
+        option.addEventListener("change", () => {
+          if (option.value === "range" && option.checked) {
+            pageRangeInput.style.display = "block";
+          } else if (option.value === "all" && option.checked) {
             pageRangeInput.style.display = "none";
-
-            // Reset radio
-            document.querySelector('input[name="splitType"][value="all"]').checked = true;
-
-            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
         });
+      });
+
+      /* ================= SPLIT CLICK ================= */
+      splitBtn.addEventListener("click", async () => {
+        if (!selectedFile) {
+          errorMsg.textContent = "Please select a PDF file.";
+          errorMsg.style.display = "block";
+          return;
+        }
+
+        errorMsg.style.display = "none";
+
+        try {
+          let blob;
+          const splitType = document.querySelector(
+            'input[name="splitType"]:checked',
+          ).value;
+          const range =
+            splitType === "range" ? pageRangeInput.value.trim() : "";
+
+          if (splitType === "range" && range === "") {
+            showError("Please enter a valid page range (e.g. 1-3,5,7-9).");
+            return;
+          }
+
+          loader.style.display = "inline-block";
+          splitBtn.disabled = true;
+
+          clearError();
+
+          if (selectedFile.size <= MAX_FRONTEND_SIZE) {
+            blob = await splitFrontend(selectedFile, range);
+          } else {
+            blob = await splitBackend(selectedFile, range);
+          }
+
+          const url = URL.createObjectURL(blob);
+
+          // Hide UI elements
+          fileList.style.display = "none";
+          uploadSection.style.display = "none";
+          splitOptions.style.display = "none";
+          pageRangeInput.style.display = "none";
+          noteText.style.display = "none";
+          splitBtn.style.display = "none";
+          loader.style.display = "none";
+
+          // Show result
+          resultSection.style.display = "block";
+          downloadBtn.href = url;
+          downloadBtn.download = "split-pages.zip";
+        } catch (err) {
+          errorMsg.textContent = "Error splitting PDF: " + err.message;
+          errorMsg.style.display = "block";
+          splitBtn.disabled = false;
+          loader.style.display = "none";
+        }
+      });
+
+      pageRangeInput.addEventListener("input", () => {
+        if (pageRangeInput.value.trim() !== "") {
+          clearError();
+        }
+      });
+
+      function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = "block";
+      }
+
+      function clearError() {
+        errorMsg.textContent = "";
+        errorMsg.style.display = "none";
+      }
+
+      /* ================= FRONTEND SPLIT ================= */
+      async function splitFrontend(file, range) {
+        const zip = new JSZip();
+        const pdfBytes = await file.arrayBuffer();
+        const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+        const totalPages = pdfDoc.getPageCount();
+
+        const pages = parseRange(range, totalPages);
+
+        for (const i of pages) {
+          const newPdf = await PDFLib.PDFDocument.create();
+          const [page] = await newPdf.copyPages(pdfDoc, [i]);
+          newPdf.addPage(page);
+
+          const bytes = await newPdf.save();
+          zip.file(`page-${i + 1}.pdf`, bytes);
+        }
+
+        return await zip.generateAsync({ type: "blob" });
+      }
+
+      /* ================= BACKEND SPLIT ================= */
+      async function splitBackend(file, range) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("range", range);
+
+        const response = await fetch(BACKEND_SPLIT_URL, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error("Backend error");
+
+        return await response.blob();
+      }
+
+      /* ================= RANGE PARSER ================= */
+      function parseRange(range, total) {
+        if (!range) return [...Array(total).keys()];
+
+        const pages = new Set();
+        range.split(",").forEach((part) => {
+          if (part.includes("-")) {
+            let [s, e] = part.split("-").map((n) => parseInt(n) - 1);
+            for (let i = s; i <= e; i++) {
+              if (i >= 0 && i < total) pages.add(i);
+            }
+          } else {
+            const p = parseInt(part) - 1;
+            if (p >= 0 && p < total) pages.add(p);
+          }
+        });
+
+        return [...pages].sort((a, b) => a - b);
+      }
+
+      /* ================= RESET ================= */
+      resetBtn.addEventListener("click", () => {
+        // Reset file
+        pdfInput.value = "";
+        pageRangeInput.value = "";
+        selectedFile = null;
+
+        // Reset UI
+        fileList.innerHTML = "";
+        fileList.style.display = "none";
+        uploadSection.style.display = "block";
+        resultSection.style.display = "none";
+        noteText.style.display = "block";
+        splitBtn.style.display = "inline-flex";
+        splitBtn.disabled = false;
+        loader.style.display = "none";
+        errorMsg.style.display = "none";
+        splitOptions.style.display = "none";
+        pageRangeInput.style.display = "none";
+
+        // Reset radio
+        document.querySelector('input[name="splitType"][value="all"]').checked =
+          true;
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

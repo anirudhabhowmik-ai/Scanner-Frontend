@@ -35,7 +35,7 @@ header {
   z-index: 10000;
   background: #1e3a8a;
   transition: all 0.3s ease;
-  padding: 14px 0;
+  padding: 18px 0;
 }
 
 header.scrolled {
@@ -181,7 +181,7 @@ header .logo a {
 }
 
 /* Mobile Nav */
-@media (max-width: 900px) {
+@media (max-width: 1200px) {
   .nav-links {
     position: fixed;
     top: 85px;

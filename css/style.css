@@ -401,7 +401,7 @@ footer a:hover {
 
 /* Merge Page */
 .merge-tool {
-  padding: 80px 20px 0;
+  padding: 80px 20px 80px;
   text-align: center;
   background: #f4f6fc;
 }

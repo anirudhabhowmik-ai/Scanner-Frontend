@@ -3,9 +3,88 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDFMaster - Unlock PDF Online</title>
+
+    <!-- Primary Meta Tags -->
+    <title>
+      Unlock PDF Online Free - Remove Password Protection | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Unlock PDF Online Free - Remove Password Protection | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Unlock password-protected PDF files online for free. Remove PDF restrictions and decrypt encrypted PDFs instantly. Secure, fast, no registration required. Works with all PDF types."
+    />
+    <meta
+      name="keywords"
+      content="unlock PDF online, remove PDF password, decrypt PDF, unlock protected PDF, remove PDF restrictions, PDF password remover, unlock encrypted PDF free"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/unprotect-pdf" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/unprotect-pdf" />
+    <meta
+      property="og:title"
+      content="Unlock PDF Online Free - Remove Password Protection | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Unlock password-protected PDF files online for free. Remove PDF restrictions and decrypt encrypted PDFs instantly. Secure, fast, no registration required."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/og-image.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/unprotect-pdf" />
+    <meta
+      name="twitter:title"
+      content="Unlock PDF Online Free - Remove Password Protection | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Unlock password-protected PDF files online for free. Remove PDF restrictions and decrypt encrypted PDFs instantly."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/twitter-card.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - Unlock PDF",
+        "url": "https://nextopdf.com/unprotect-pdf",
+        "description": "Free online tool to unlock password-protected PDFs and remove restrictions from encrypted PDF files",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "Remove password protection, Unlock encrypted PDFs, Remove restrictions, Decrypt PDF files, Batch processing"
+      }
+    </script>
 
     <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
       rel="stylesheet"
@@ -15,7 +94,11 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
+
     <!-- Favicon -->
     <link
       rel="icon"
@@ -34,8 +117,16 @@
       sizes="180x180"
       href="./images/apple-touch-icon.png"
     />
+
     <!-- Main CSS -->
     <link rel="stylesheet" href="./css/style.css" />
+
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
 
     <style>
       .error-text {
@@ -134,95 +225,987 @@
   <body>
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Unlock PDF</h1>
-        <p>
-          Remove password protection and restrictions from your PDFs. Works
-          automatically for restriction-only PDFs.
-        </p>
-
-        <div class="upload-section" id="uploadWrapper">
-          <div id="uploadSection">
-            <label class="upload-label">
-              <i class="fa fa-upload"></i> Choose PDF files
-              <input type="file" id="pdfUpload" accept=".pdf" hidden />
-            </label>
-          </div>
-
-          <ul id="fileList" class="file-list" style="display: none"></ul>
-
-          <!-- Password Input (Initially Hidden) -->
-          <div class="password-container" id="passwordContainer">
-            <div class="warning-box">
-              <i class="fa fa-lock"></i>
-              <p id="passwordWarning">
-                <strong>Password Required:</strong> Your PDF(s) are
-                password-protected. Please enter the password below.
-              </p>
-            </div>
-            <label for="pdfPassword">PDF Password</label>
-            <div class="password-input-wrapper">
-              <input
-                type="password"
-                id="pdfPassword"
-                class="password-input"
-                placeholder="Enter PDF password"
-              />
-              <i class="fa fa-eye toggle-password" id="togglePassword"></i>
-            </div>
-            <p class="password-hint">
-              Enter the password used to protect this PDF
-            </p>
-          </div>
-
-          <button id="unlockBtn" class="cta-button">
-            <i
-              class="fa fa-spinner fa-spin"
-              id="loader"
-              style="display: none; margin-left: 5px"
-            ></i>
-            <span id="unlockBtnText"> <i class="fa fa-unlock"></i></span> Unlock
-            PDFs
-          </button>
-
-          <p id="errorMsg" class="error-text" style="display: none"></p>
-
-          <div class="info-box" id="infoBox">
-            <i class="fa fa-info-circle"></i>
-            <p>
-              <strong>How it works:</strong> We'll try to unlock your PDFs
-              automatically. If they require a password, you'll be prompted to
-              enter it.
-            </p>
-          </div>
-        </div>
-
-        <div id="resultBtns" style="display: none; margin-top: 20px">
-          <div id="resultCard" class="result-card">
-            <i
-              class="fa fa-check-circle"
-              style="color: #28a745; font-size: 48px"
-            ></i>
-          </div>
-          <p class="file-name">
-            <strong>Success!</strong> Your PDF(s) have been unlocked
+    <main>
+      <section class="merge-tool" role="main">
+        <div class="container">
+          <h1>Unlock PDF Files Online - Remove Password Protection</h1>
+          <p>
+            Remove password protection and restrictions from your PDFs
+            instantly. Works automatically for restriction-only PDFs or with
+            password for encrypted files.
           </p>
 
-          <div class="result-btns-container">
-            <a id="downloadBtn" class="cta-button">
-              <i class="fa fa-download"></i> Download Unlocked Files
-            </a>
-            <a id="shareBtn" class="cta-button" style="display: none">
-              <i class="fa fa-share-alt"></i> Share
-            </a>
-            <button id="resetBtn" class="secondary-btn">
-              <i class="fa fa-rotate-right"></i> Unlock Another PDF
+          <div class="upload-section" id="uploadWrapper">
+            <div id="uploadSection">
+              <label class="upload-label" for="pdfUpload">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose PDF files
+                <input
+                  type="file"
+                  id="pdfUpload"
+                  accept=".pdf"
+                  hidden
+                  aria-label="Upload PDF files to unlock"
+                  multiple
+                />
+              </label>
+            </div>
+
+            <ul
+              id="fileList"
+              class="file-list"
+              style="display: none"
+              role="list"
+            ></ul>
+
+            <!-- Password Input (Initially Hidden) -->
+            <div class="password-container" id="passwordContainer">
+              <div class="warning-box">
+                <i class="fa fa-lock" aria-hidden="true"></i>
+                <p id="passwordWarning">
+                  <strong>Password Required:</strong> Your PDF(s) are
+                  password-protected. Please enter the password below.
+                </p>
+              </div>
+              <label for="pdfPassword">PDF Password</label>
+              <div class="password-input-wrapper">
+                <input
+                  type="password"
+                  id="pdfPassword"
+                  class="password-input"
+                  placeholder="Enter PDF password"
+                  aria-label="Enter the password to unlock PDF"
+                />
+                <i
+                  class="fa fa-eye toggle-password"
+                  id="togglePassword"
+                  role="button"
+                  aria-label="Toggle password visibility"
+                  tabindex="0"
+                ></i>
+              </div>
+              <p class="password-hint">
+                Enter the password used to protect this PDF
+              </p>
+            </div>
+
+            <button
+              id="unlockBtn"
+              class="cta-button"
+              aria-label="Unlock PDF files"
+            >
+              <i
+                class="fa fa-spinner fa-spin"
+                id="loader"
+                style="display: none; margin-left: 5px"
+                aria-hidden="true"
+              ></i>
+              <span id="unlockBtnText">
+                <i class="fa fa-unlock" aria-hidden="true"></i
+              ></span>
+              Unlock PDFs
             </button>
+
+            <p
+              id="errorMsg"
+              class="error-text"
+              style="display: none"
+              role="alert"
+            ></p>
+
+            <div class="info-box" id="infoBox">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              <p>
+                <strong>How it works:</strong> We'll try to unlock your PDFs
+                automatically. If they require a password, you'll be prompted to
+                enter it.
+              </p>
+            </div>
+          </div>
+
+          <div id="resultBtns" style="display: none; margin-top: 20px">
+            <div id="resultCard" class="result-card">
+              <i
+                class="fa fa-check-circle"
+                style="color: #28a745; font-size: 48px"
+                aria-hidden="true"
+              ></i>
+            </div>
+            <p class="file-name">
+              <strong>Success!</strong> Your PDF(s) have been unlocked
+            </p>
+
+            <div class="result-btns-container">
+              <a
+                id="downloadBtn"
+                class="cta-button"
+                download
+                aria-label="Download unlocked PDF files"
+              >
+                <i class="fa fa-download" aria-hidden="true"></i> Download
+                Unlocked Files
+              </a>
+              <a
+                id="shareBtn"
+                class="cta-button"
+                style="display: none"
+                aria-label="Share unlocked files"
+              >
+                <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+              </a>
+              <button
+                id="resetBtn"
+                class="secondary-btn"
+                aria-label="Unlock another PDF"
+              >
+                <i class="fa fa-rotate-right" aria-hidden="true"></i> Unlock
+                Another PDF
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white">
+        <div class="container">
+          <h2>How to Unlock PDF Files Online</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                1
+              </div>
+              <h3>Upload Your PDF</h3>
+              <p>
+                Select the password-protected PDF files you want to unlock. You
+                can upload multiple files at once.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                2
+              </div>
+              <h3>Enter Password (If Required)</h3>
+              <p>
+                If your PDF has an open password, you'll be prompted to enter
+                it. Restriction-only PDFs unlock automatically.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                3
+              </div>
+              <h3>Download Unlocked PDF</h3>
+              <p>
+                Download your unlocked PDF files immediately. All restrictions
+                and passwords are removed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Understanding PDF Locks Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Understanding PDF Password Protection and Restrictions</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              PDF files can have different types of security that prevent you
+              from accessing or modifying them. Understanding these protection
+              types helps you know when and why you might need to unlock a PDF
+              file. Our tool handles both types of PDF security effectively.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Types of PDF Protection
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDFs can be secured in two primary ways, each serving different
+              purposes:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>User Password (Open Password):</strong> This type of
+              protection prevents anyone from opening the PDF without the
+              correct password. The entire document is encrypted, and you cannot
+              view any content until you provide the password. This is commonly
+              used for highly confidential documents like financial records,
+              legal contracts, or sensitive business information.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              <strong>Owner Password (Permissions/Restrictions):</strong> This
+              allows the PDF to be opened and viewed, but restricts certain
+              actions like printing, copying text, editing content, or
+              extracting pages. Many organizations use this to share information
+              while maintaining control over how recipients use the document.
+              For example, a company might send you a report that you can read
+              but not copy or modify.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              When You Need to Unlock PDFs
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              There are many legitimate reasons why you might need to remove
+              password protection or restrictions from a PDF:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Editing Your Own Documents:</strong> You created a PDF
+                with restrictions but now need to make changes or copy content
+                for a new project.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Forgotten Passwords:</strong> You password-protected a
+                personal document but forgot the password and need to regain
+                access to your own file.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Printing Restrictions:</strong> You received a document
+                that prevents printing, but you have legitimate need to create a
+                physical copy for your records or work.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Merging Documents:</strong> You need to combine multiple
+                PDFs, but some have restrictions that prevent them from being
+                merged with other files.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Text Extraction:</strong> You need to copy information
+                from a PDF for research, quoting, or data analysis, but copying
+                is disabled.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Accessibility Needs:</strong> Screen readers and
+                assistive technologies may not work properly with restricted
+                PDFs, requiring removal of limitations for accessibility.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Workflow Integration:</strong> Automated systems or
+                software tools need to process PDFs but are blocked by security
+                restrictions.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Legal and Ethical Considerations
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              It's important to understand the legal implications of unlocking
+              PDFs. You should only remove password protection from PDFs that
+              you own, created yourself, or have explicit permission to unlock.
+              Circumventing security on copyrighted materials without
+              authorization may violate copyright laws or terms of service.
+              Always respect intellectual property rights and only unlock PDFs
+              when you have the legal right to do so. Legitimate uses include
+              unlocking your own documents, files you've received permission to
+              edit, or removing restrictions you set yourself.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              How PDF Unlocking Works
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              The process of unlocking a PDF varies depending on the type of
+              protection:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>For Restriction-Only PDFs:</strong> When a PDF has only
+              owner password restrictions (no user password required to open),
+              our tool can automatically remove these limitations. The process
+              involves reconstructing the PDF without the restriction flags,
+              giving you full access to print, copy, edit, and use the content
+              as needed. This works immediately without any password input.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              <strong>For Password-Protected PDFs:</strong> When a PDF requires
+              a password to open (user password), you must provide the correct
+              password. Our tool uses this password to decrypt the file and
+              create an unlocked version. The decryption process uses the same
+              encryption standards (AES-128 or AES-256) that were used to
+              protect the file originally, ensuring the content remains intact
+              and unaltered.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Common Issues and Solutions
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              When unlocking PDFs, you might encounter several common scenarios:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Incorrect Password:</strong> If you receive an error
+                about an incorrect password, verify you're entering the right
+                password. Passwords are case-sensitive and include all spaces
+                and special characters exactly as they were set.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Multiple Protection Layers:</strong> Some PDFs have both
+                user and owner passwords. You'll need the user password to open
+                the file, after which restrictions are automatically removed.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Corrupted Files:</strong> If a PDF is corrupted in
+                addition to being protected, unlocking may fail. Try opening the
+                file in a PDF reader first to verify it's not corrupted.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Lost Passwords:</strong> If you've forgotten the
+                password to your own PDF and don't have a backup, there's no way
+                to recover it. PDF encryption is designed to be irreversible
+                without the password for security reasons.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Security During Unlocking Process
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              When you use our unlocking service, security and privacy are
+              paramount. Your PDF files are transmitted securely using HTTPS
+              encryption. On our server, files are processed in isolated
+              environments and immediately deleted after unlocking is complete.
+              We never store your files, access their contents, or retain the
+              passwords you provide. The entire process is designed to maintain
+              your document confidentiality while removing the protection you
+              need removed. For maximum security with highly sensitive
+              documents, consider using our client-side tools when available,
+              which process files entirely in your browser.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Batch Unlocking Multiple PDFs
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Our tool supports unlocking multiple PDF files simultaneously,
+              which is particularly useful when you have a collection of
+              protected documents. When batch processing, if all files have the
+              same password, you only need to enter it once. Files with only
+              restrictions and no user password are processed automatically
+              without any input required. This batch capability saves
+              significant time when managing document libraries or processing
+              multiple files received from the same source.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Benefits Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Why Use NextoPDF to Unlock PDFs?</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-shield-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Secure & Private</h3>
+              <p>
+                Your files are processed securely and deleted immediately after
+                unlocking. We never store your documents or passwords.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-dollar-sign"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Completely Free</h3>
+              <p>
+                Unlock unlimited PDF files at no cost. No subscriptions, no
+                hidden fees, no premium tiers to unlock features.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-bolt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Instant Processing</h3>
+              <p>
+                PDFs are unlocked within seconds. No waiting in queues or
+                dealing with slow processing times.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-layer-group"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Batch Processing</h3>
+              <p>
+                Upload and unlock multiple PDF files at once. Perfect for
+                processing document collections efficiently.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-user-lock"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>No Registration</h3>
+              <p>
+                Start unlocking PDFs immediately without creating an account or
+                providing any personal information.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-mobile-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Works Everywhere</h3>
+              <p>
+                Unlock PDFs from any device - Windows, Mac, Linux, iOS, or
+                Android. Fully responsive design.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Use Cases Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>Common PDF Unlocking Scenarios</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                <i class="fa fa-briefcase" aria-hidden="true"></i> Business and
+                Professional Use
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                In business environments, PDF restrictions can sometimes hinder
+                legitimate workflows. Common professional scenarios include:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 8px">
+                  Editing templates or forms that were over-secured during
+                  creation
+                </li>
+                <li style="margin-bottom: 8px">
+                  Extracting data from reports for analysis in spreadsheets or
+                  databases
+                </li>
+                <li style="margin-bottom: 8px">
+                  Merging quarterly reports that have individual protection
+                  settings
+                </li>
+                <li style="margin-bottom: 8px">
+                  Printing documents that were meant for digital distribution
+                  only
+                </li>
+                <li style="margin-bottom: 8px">
+                  Converting legacy documents with outdated security for modern
+                  systems
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                <i class="fa fa-graduation-cap" aria-hidden="true"></i> Academic
+                and Research
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Students, researchers, and educators often need to unlock PDFs
+                for legitimate academic purposes:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 8px">
+                  Copying citations and references from research papers for
+                  bibliography
+                </li>
+                <li style="margin-bottom: 8px">
+                  Extracting data tables and charts for thesis work
+                </li>
+                <li style="margin-bottom: 8px">
+                  Annotating and highlighting study materials that prevent
+                  editing
+                </li>
+                <li style="margin-bottom: 8px">
+                  Combining course materials from multiple sources into study
+                  guides
+                </li>
+                <li style="margin-bottom: 8px">
+                  Printing educational resources for offline study
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                <i class="fa fa-home" aria-hidden="true"></i> Personal Document
+                Management
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Personal documents often require unlocking for practical
+                reasons:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 8px">
+                  Accessing old personal documents where you've forgotten the
+                  password
+                </li>
+                <li style="margin-bottom: 8px">
+                  Removing restrictions you previously set on your own files
+                </li>
+                <li style="margin-bottom: 8px">
+                  Organizing family documents that have varying protection
+                  levels
+                </li>
+                <li style="margin-bottom: 8px">
+                  Preparing documents for archival or backup purposes
+                </li>
+                <li style="margin-bottom: 8px">
+                  Sharing information from protected PDFs with family members
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                <i class="fa fa-universal-access" aria-hidden="true"></i>
+                Accessibility Requirements
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                PDF restrictions can interfere with accessibility tools that
+                assist users with disabilities:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                Screen readers and text-to-speech software may not function
+                properly with restricted PDFs. Users who rely on these assistive
+                technologies need unrestricted access to read the content aloud
+                or convert it to Braille. Similarly, users with visual
+                impairments may need to adjust font sizes or colors, which
+                requires removing editing restrictions.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                Unlocking PDFs for accessibility is not only a practical
+                necessity but often a legal requirement under disability rights
+                legislation like the Americans with Disabilities Act (ADA) in
+                the United States or similar laws in other countries.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Best Practices After Unlocking
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Once you've unlocked a PDF, consider these best practices for
+                managing your files:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Keep the Original:</strong> Store the original
+                  protected version separately in case you need to maintain the
+                  protection or verify authenticity later.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Rename Unlocked Files:</strong> Use clear naming
+                  conventions like "filename_unlocked.pdf" to distinguish
+                  unlocked versions from originals.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Re-protect if Necessary:</strong> If you unlocked a
+                  PDF to make edits, consider re-protecting it after changes are
+                  complete, especially for sensitive documents.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Respect Copyright:</strong> Just because you can
+                  unlock a PDF doesn't mean you have the right to distribute or
+                  modify copyrighted content. Use unlocked files responsibly.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Secure Storage:</strong> Store unlocked versions of
+                  sensitive documents securely, as they no longer have password
+                  protection.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About Unlocking PDFs</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I unlock a PDF without the password?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                It depends on the type of protection. If the PDF has only
+                restrictions (you can open it without a password but can't print
+                or copy), our tool can remove these restrictions automatically.
+                However, if the PDF requires a password to open, you must have
+                that password to unlock it. There is no way to recover or bypass
+                a forgotten user password due to strong encryption.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is it legal to unlock password-protected PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Unlocking PDFs is legal when you own the document, created it
+                yourself, have permission from the owner, or are removing
+                restrictions you set yourself. It may be illegal to unlock
+                copyrighted materials without authorization. Always ensure you
+                have the right to unlock the PDFs you're processing. Our service
+                is designed for legitimate personal and professional use.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Are my files safe when unlocking online?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Your files are transmitted securely via HTTPS encryption.
+                They are processed and immediately deleted from our servers
+                after unlocking. We never store, access, or retain your
+                documents or passwords. For maximum security with highly
+                confidential files, ensure you're unlocking PDFs you have the
+                right to access.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What's the difference between user password and owner password?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                A user password (also called open password) prevents anyone from
+                opening the PDF without the password. An owner password
+                (permissions password) allows opening the PDF but restricts
+                actions like printing, editing, or copying. Some PDFs have both
+                types of protection. Our tool can remove owner password
+                restrictions automatically but requires the user password if one
+                is set.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I unlock multiple PDFs at once?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! Our tool supports batch processing. You can upload multiple
+                PDF files simultaneously. If they all have the same password,
+                you only need to enter it once. Files with only restrictions (no
+                user password) are processed automatically without password
+                input.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will unlocking change the PDF content or quality?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. Unlocking only removes the security layer from the PDF. All
+                content, formatting, images, fonts, and layout remain completely
+                unchanged. The unlocked PDF will be identical to the original in
+                every way except for the removed restrictions.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does it take to unlock a PDF?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Most PDFs are unlocked within a few seconds. Processing time
+                depends on file size and the type of encryption used, but even
+                large files typically process in under a minute. Batch
+                processing of multiple files may take slightly longer.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What if I get an "incorrect password" error?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                This means the password you entered doesn't match the one used
+                to protect the PDF. Passwords are case-sensitive and must be
+                entered exactly as they were set, including spaces and special
+                characters. Double-check your password and try again. If you've
+                forgotten the password, there's no way to recover access to the
+                file.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I unlock PDFs on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Absolutely. Our tool works perfectly on smartphones and tablets.
+                The interface is fully responsive and optimized for mobile use.
+                You can unlock PDFs from iOS, Android, or any device with a
+                modern web browser.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is there a file size limit for unlocking?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our tool can handle PDFs of various sizes. Very large files
+                (over 50MB) may take longer to process but are fully supported.
+                The unlocking process doesn't increase file size - the unlocked
+                PDF will be approximately the same size as the original.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What happens to my password after I enter it?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Your password is used only to decrypt the PDF during processing
+                and is immediately discarded. We never log, store, or retain
+                passwords in any form. The password exists only temporarily in
+                server memory during the unlocking process.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I re-lock a PDF after unlocking it?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Once you have an unlocked PDF, you can use our Protect PDF
+                tool to add new password protection or restrictions. This is
+                useful if you need to make temporary edits and then re-secure
+                the document with the same or different security settings.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px">
+        <div class="container">
+          <h2>Related PDF Security Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-lock"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Protect PDF</h3>
+              <p>
+                Add password protection and restrictions to your unlocked PDFs.
+                Secure documents after editing.
+              </p>
+              <a
+                href="/protect-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine unlocked PDFs with other documents into a single file.
+                Perfect after removing restrictions.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-edit"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Edit PDF</h3>
+              <p>
+                Edit unlocked PDF content, add text, modify images, and make
+                changes to your documents.
+              </p>
+              <a
+                href="/edit"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce file size of your unlocked PDFs for easier sharing and
+                storage.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-cut"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Split PDF</h3>
+              <p>
+                Divide unlocked PDFs into multiple files or extract specific
+                pages for separate use.
+              </p>
+              <a
+                href="/split"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-file-pdf"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>PDF to Word</h3>
+              <p>
+                Convert unlocked PDFs to editable Word documents for extensive
+                modifications.
+              </p>
+              <a
+                href="/pdf-to-word"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero" style="padding: 60px 20px">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px">
+            Ready to Unlock Your PDFs?
+          </h2>
+          <p style="margin-bottom: 25px">
+            Remove password protection and restrictions instantly. Free, secure,
+            and works in seconds.
+          </p>
+          <a
+            href="#"
+            class="cta-button"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            aria-label="Scroll to top to unlock PDF"
+          >
+            <i class="fa fa-unlock" aria-hidden="true"></i> Start Unlocking Now
+          </a>
+        </div>
+      </section>
+    </main>
 
     <section id="footer-placeholder"></section>
 
@@ -257,6 +1240,14 @@
         togglePassword.classList.toggle("fa-eye-slash");
       });
 
+      // Keyboard support for toggle password
+      togglePassword.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          togglePassword.click();
+        }
+      });
+
       // File selection
       pdfInput.addEventListener("change", () => {
         selectedFiles = Array.from(pdfInput.files);
@@ -269,7 +1260,7 @@
           fileList.style.display = "block";
           selectedFiles.forEach((file) => {
             const listItem = document.createElement("li");
-            listItem.innerHTML = `<span><i class="fa fa-file-pdf pdf-icon"></i><span>${file.name}</span></span><i class="fa fa-times delete-file"></i>`;
+            listItem.innerHTML = `<span><i class="fa fa-file-pdf pdf-icon"></i><span>${file.name}</span></span><i class="fa fa-times delete-file" role="button" aria-label="Remove ${file.name}" tabindex="0"></i>`;
             fileList.appendChild(listItem);
           });
         } else {
@@ -294,6 +1285,17 @@
             fileList.style.display = "none";
             passwordContainer.style.display = "none";
           }
+        }
+      });
+
+      // Keyboard support for delete
+      fileList.addEventListener("keypress", (e) => {
+        if (
+          (e.key === "Enter" || e.key === " ") &&
+          e.target.classList.contains("delete-file")
+        ) {
+          e.preventDefault();
+          e.target.click();
         }
       });
 
@@ -415,6 +1417,14 @@
         resultSection.style.display = "none";
         errorMsg.style.display = "none";
         shareBtn.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Enter key to unlock
+      passwordInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          unlockBtn.click();
+        }
       });
     </script>
   </body>

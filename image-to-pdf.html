@@ -2,22 +2,143 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Image to PDF Online Free | PDFMaster</title>
-    <meta
-      name="description"
-      content="Convert images to PDF online quickly and securely."
-    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Primary Meta Tags -->
+    <title>
+      Image to PDF Converter Online Free - JPG, PNG to PDF | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Image to PDF Converter Online Free - JPG, PNG to PDF | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Free online image to PDF converter. Convert JPG, PNG, JPEG, GIF, WEBP images to PDF instantly. Merge multiple images into one PDF. No registration required, works in your browser."
+    />
+    <meta
+      name="keywords"
+      content="image to PDF, JPG to PDF, PNG to PDF, convert image to PDF, photo to PDF, picture to PDF, image converter, merge images to PDF, combine images PDF"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://NextoPDF.com/image-to-pdf" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://NextoPDF.com/image-to-pdf" />
+    <meta
+      property="og:title"
+      content="Image to PDF Converter Online Free - JPG, PNG to PDF | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Free online tool to convert images to PDF. Supports JPG, PNG, JPEG, GIF, WEBP. Merge multiple images into one PDF document."
+    />
+    <meta
+      property="og:image"
+      content="https://NextoPDF.com/images/image-to-pdf-tool.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://NextoPDF.com/image-to-pdf" />
+    <meta
+      name="twitter:title"
+      content="Image to PDF Converter Online Free - JPG, PNG to PDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Free online tool to convert images to PDF instantly. No registration required."
+    />
+    <meta
+      name="twitter:image"
+      content="https://NextoPDF.com/images/image-to-pdf-tool.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Image to PDF Converter Online",
+        "url": "https://NextoPDF.com/image-to-pdf",
+        "description": "Free online tool to convert images (JPG, PNG, JPEG, GIF, WEBP) to PDF format and merge multiple images into one PDF document",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Modern browser with HTML5 support.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Convert JPG to PDF",
+          "Convert PNG to PDF",
+          "Convert JPEG to PDF",
+          "Convert GIF to PDF",
+          "Convert WEBP to PDF",
+          "Merge multiple images into one PDF",
+          "Maintain image quality",
+          "No file size limits",
+          "Secure browser-based processing"
+        ],
+        "author": {
+          "@type": "Organization",
+          "name": "NextoPDF"
+        }
+      }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://NextoPDF.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Image to PDF",
+            "item": "https://NextoPDF.com/image-to-pdf"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
+
+    <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
+
     <!-- Favicon -->
     <link
       rel="icon"
@@ -36,6 +157,13 @@
       sizes="180x180"
       href="./images/apple-touch-icon.png"
     />
+
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
 
     <style>
       .btn-loading {
@@ -59,84 +187,885 @@
       }
 
       .note-box {
-        background: #f0f9ff;
+        background: #eff6ff;
         border-left: 4px solid #3b82f6;
         padding: 12px 16px;
         margin-top: 15px;
         font-size: 14px;
-        border-radius: 4px;
+        border-radius: 6px;
+        line-height: 1.6;
+      }
+
+      .file-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .file-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        margin: 8px 0;
+        background: #f3f4f6;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .file-list .delete-file {
+        cursor: pointer;
+        color: #ef4444;
+        font-size: 18px;
+        transition: color 0.2s;
+      }
+
+      .file-list .delete-file:hover {
+        color: #dc2626;
+      }
+
+      .error-text {
+        color: #ef4444;
+        margin-top: 10px;
+        padding: 10px;
+        background: #fee2e2;
+        border-radius: 6px;
+        display: none;
+      }
+
+      .content-section {
+        background: #f9fafb;
+        padding: 60px 20px;
+      }
+
+      .content-section h2 {
+        color: #1e3a8a;
+        margin-bottom: 20px;
+        font-size: 28px;
+      }
+
+      .content-section h3 {
+        color: #1e3a8a;
+        margin-bottom: 15px;
+        margin-top: 35px;
+        font-size: 22px;
+      }
+
+      .content-section p {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .content-section ul {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 25px;
+        padding-left: 25px;
+      }
+
+      .content-section li {
+        margin-bottom: 10px;
+      }
+
+      .content-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: left;
+      }
+
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .benefit-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .benefit-card i {
+        font-size: 36px;
+        color: #3b82f6;
+        margin-bottom: 15px;
+      }
+
+      .benefit-card h4 {
+        color: #1f2937;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .benefit-card p {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .result-card {
+        text-align: center;
+        margin: 20px auto;
+      }
+
+      .result-card i {
+        font-size: 48px;
+        color: #3b82f6;
+      }
+
+      .file-name {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 16px;
+      }
+
+      .file-name a {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .file-name a:hover {
+        text-decoration: underline;
+      }
+
+      .result-btns-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .result-btns-container {
+          flex-direction: column;
+        }
       }
     </style>
   </head>
 
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a
+      href="#main-content"
+      class="skip-to-content"
+      style="position: absolute; left: -9999px; z-index: 999"
+      >Skip to main content</a
+    >
+
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Image to PDF</h1>
-        <p>Convert your images to a PDF quickly and securely.</p>
+    <main id="main-content">
+      <!-- Tool Section -->
+      <section class="merge-tool">
+        <div class="container">
+          <h1>Image to PDF Converter Online Free</h1>
+          <p>
+            Convert JPG, PNG, JPEG, GIF, and WEBP images to PDF format
+            instantly. Upload multiple images and merge them into a single
+            professional PDF document. No registration required, completely
+            free.
+          </p>
 
-        <div class="upload-section">
-          <div id="uploadSection">
-            <label for="imageUpload" class="upload-label">
-              <i class="fa fa-upload"></i> Choose Image(s)
-            </label>
-            <input type="file" id="imageUpload" accept="image/*" multiple />
-          </div>
-
-          <ul id="fileList" class="file-list" style="display: none"></ul>
-
-          <button id="convertBtn" class="cta-button" style="margin-top: 15px">
-            <span class="btn-spinner">
-              <i class="fa fa-spinner fa-spin"></i>
-            </span>
-            <span class="btn-text"> <i class="fa fa-file-pdf"></i></span>
-            Convert to PDF
-          </button>
-
-          <p id="errorMsg" class="error-text" style="display: none"></p>
-
-          <div class="note-box" id="noteBox">
-            💡 You can upload multiple images. They will be merged into one PDF
-            in the same order.
-          </div>
-
-          <div id="resultBtns" style="display: none; margin-top: 15px">
-            <div class="result-card">
-              <i class="fa fa-file-pdf"></i>
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label for="imageUpload" class="upload-label">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose Image
+                Files
+              </label>
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                multiple
+                aria-label="Upload image files for PDF conversion"
+              />
             </div>
 
-            <p class="file-name">
-              <a href="#" id="fileNameLink">converted.pdf</a>
-            </p>
+            <ul
+              id="fileList"
+              class="file-list"
+              style="display: none"
+              role="list"
+            ></ul>
 
-            <a id="downloadBtn" href="#" class="cta-button">
-              <i class="fa fa-download"></i> Download PDF
-            </a>
-
-            <a id="shareBtn" href="#" class="cta-button">
-              <i class="fa fa-share-alt"></i> Share
-            </a>
-
-            <button id="resetBtn" class="secondary-btn">
-              <i class="fa fa-rotate-right"></i> Convert Another
+            <button
+              id="convertBtn"
+              class="cta-button"
+              aria-label="Convert images to PDF"
+            >
+              <span class="btn-spinner">
+                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="btn-text">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </span>
+              Convert to PDF
             </button>
+
+            <p
+              id="errorMsg"
+              class="error-text"
+              role="alert"
+              aria-live="assertive"
+            ></p>
+
+            <div class="note-box" id="noteBox" role="note">
+              <strong
+                ><i class="fas fa-info-circle" aria-hidden="true"></i> Quick
+                Tip:</strong
+              >
+              You can upload multiple images at once. They will be merged into
+              one PDF in the same order you select them. Supported formats: JPG,
+              PNG, JPEG, GIF, WEBP.
+            </div>
+
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </div>
+
+              <p class="file-name">
+                <a href="#" id="fileNameLink" download="converted.pdf"
+                  >converted.pdf</a
+                >
+              </p>
+
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Download PDF file"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download PDF
+                </a>
+
+                <a
+                  id="shareBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Share PDF file"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </a>
+
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Start over with new images"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert
+                  Another
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="pdfPreview"
+            style="display: none; margin-top: 30px"
+            role="region"
+            aria-label="PDF preview"
+          >
+            <h4>Preview PDF</h4>
+            <iframe
+              id="pdfFrame"
+              width="100%"
+              height="600"
+              style="border-radius: 12px; border: 1px solid #e5e7eb"
+              title="PDF preview frame"
+            ></iframe>
           </div>
         </div>
+      </section>
 
-        <div id="pdfPreview" style="display: none; margin-top: 30px">
-          <h4>Preview PDF</h4>
-          <iframe
-            id="pdfFrame"
-            width="100%"
-            height="600"
-            style="border-radius: 12px; border: 1px solid #e5e7eb"
-          ></iframe>
+      <!-- How It Works Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>How to Convert Images to PDF Online</h2>
+            <p>
+              Our image to PDF converter makes it incredibly easy to transform
+              your photos, screenshots, and graphics into professional PDF
+              documents. Whether you need to convert a single image or merge
+              multiple images into one PDF file, our tool handles it all with
+              just a few clicks.
+            </p>
+
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <i class="fas fa-upload" aria-hidden="true"></i>
+                <h4>1. Upload Your Images</h4>
+                <p>
+                  Select one or multiple image files from your device. Supports
+                  JPG, PNG, JPEG, GIF, and WEBP formats. You can drag and drop
+                  files or browse to select them.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-sort" aria-hidden="true"></i>
+                <h4>2. Arrange Images (Optional)</h4>
+                <p>
+                  If you've uploaded multiple images, they will appear in the
+                  order you selected. Remove any unwanted images by clicking the
+                  X icon next to each file.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                <h4>3. Convert & Download</h4>
+                <p>
+                  Click the "Convert to PDF" button. Your images will be
+                  processed instantly and merged into a single PDF that you can
+                  download or share immediately.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
+      <!-- Why Convert Images to PDF Section -->
+      <section class="content-section">
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Why Convert Images to PDF Format?</h2>
+
+            <h3>Common Use Cases for Image to PDF Conversion</h3>
+            <p>
+              Converting images to PDF is a practical solution for many everyday
+              tasks. Here are some common scenarios where image to PDF
+              conversion becomes essential:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Document Submission:</strong> Many organizations,
+                schools, and government agencies require documents in PDF
+                format. Converting scanned receipts, forms, or ID cards to PDF
+                ensures compatibility and acceptance.
+              </li>
+              <li>
+                <strong>Professional Portfolios:</strong> Combine multiple
+                images of your work, designs, or projects into a single,
+                professional PDF portfolio that's easy to share with clients or
+                employers.
+              </li>
+              <li>
+                <strong>Email Attachments:</strong> Instead of sending multiple
+                image files separately, merge them into one PDF. This makes it
+                easier for recipients to download and view all images in one
+                document.
+              </li>
+              <li>
+                <strong>Archiving and Storage:</strong> PDF files are ideal for
+                long-term storage as they maintain image quality, are
+                universally compatible, and can be easily organized and
+                searched.
+              </li>
+              <li>
+                <strong>Printing Consistency:</strong> PDF format ensures that
+                your images will print exactly as they appear on screen, with no
+                formatting issues or quality loss.
+              </li>
+              <li>
+                <strong>Document Security:</strong> PDFs can be
+                password-protected and have restricted permissions, making them
+                more secure than standard image files for sensitive documents.
+              </li>
+            </ul>
+
+            <h3>Benefits of PDF Format for Images</h3>
+            <p>
+              PDF (Portable Document Format) offers several advantages over
+              standard image formats when it comes to sharing and storing visual
+              content:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Universal Compatibility:</strong> PDFs can be opened on
+                any device, operating system, or PDF reader without specialized
+                software.
+              </li>
+              <li>
+                <strong>Maintains Quality:</strong> Images retain their original
+                quality and resolution when converted to PDF, with no
+                compression or degradation.
+              </li>
+              <li>
+                <strong>Professional Appearance:</strong> PDFs look more
+                professional and polished, especially for business or academic
+                purposes.
+              </li>
+              <li>
+                <strong>Smaller File Sizes:</strong> When multiple images are
+                combined, the resulting PDF is often smaller than sending
+                individual image files.
+              </li>
+              <li>
+                <strong>Easy to Organize:</strong> Multiple images in one PDF
+                are easier to manage, share, and keep organized than scattered
+                image files.
+              </li>
+            </ul>
+
+            <h3>Supported Image Formats</h3>
+            <p>
+              Our image to PDF converter supports all major image formats,
+              ensuring you can convert virtually any photo or graphic to PDF:
+            </p>
+
+            <ul>
+              <li>
+                <strong>JPG/JPEG:</strong> The most common image format, perfect
+                for photographs and complex images with many colors.
+              </li>
+              <li>
+                <strong>PNG:</strong> Ideal for images with transparency,
+                screenshots, and graphics with sharp edges or text.
+              </li>
+              <li>
+                <strong>GIF:</strong> Great for simple graphics, logos, and
+                images with limited colors.
+              </li>
+              <li>
+                <strong>WEBP:</strong> Modern image format that provides
+                superior compression while maintaining quality.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Key Features of Our Image to PDF Converter</h2>
+
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <h4>100% Secure & Private</h4>
+                <p>
+                  All conversions happen directly in your browser. Your images
+                  never leave your device, ensuring complete privacy and
+                  security for your sensitive documents.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                <h4>Completely Free</h4>
+                <p>
+                  No subscriptions, no hidden fees, no watermarks. Convert
+                  unlimited images to PDF without any restrictions or cost.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-desktop" aria-hidden="true"></i>
+                <h4>Works on All Devices</h4>
+                <p>
+                  Use on any device with a modern browser - Windows, Mac, Linux,
+                  iOS, or Android. No software installation or downloads
+                  required.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-bolt" aria-hidden="true"></i>
+                <h4>Instant Conversion</h4>
+                <p>
+                  Lightning-fast processing with immediate results. Convert your
+                  images to PDF in seconds and download instantly.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-images" aria-hidden="true"></i>
+                <h4>Merge Multiple Images</h4>
+                <p>
+                  Upload and combine multiple images into a single PDF document.
+                  Perfect for creating photo albums, portfolios, or multi-page
+                  documents.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-user-lock" aria-hidden="true"></i>
+                <h4>No Registration Required</h4>
+                <p>
+                  Start converting immediately without creating an account or
+                  providing personal information. Quick and hassle-free.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <h4>High Quality Output</h4>
+                <p>
+                  Maintains original image quality and resolution. No
+                  compression or quality loss during the conversion process.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-infinity" aria-hidden="true"></i>
+                <h4>Unlimited Conversions</h4>
+                <p>
+                  Convert as many images as you need with no daily limits, file
+                  size restrictions, or usage caps.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                <h4>Mobile Friendly</h4>
+                <p>
+                  Fully responsive design works perfectly on smartphones and
+                  tablets. Convert images on the go, anytime, anywhere.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips Section -->
+      <section class="content-section">
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Tips for Best Results When Converting Images to PDF</h2>
+
+            <h3>Image Quality and Preparation</h3>
+            <p>
+              To ensure the best possible PDF output, consider these tips when
+              preparing your images:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Use High-Resolution Images:</strong> Higher resolution
+                images produce clearer, more professional PDFs. Avoid using
+                low-quality or heavily compressed images if possible.
+              </li>
+              <li>
+                <strong>Check Image Orientation:</strong> Make sure your images
+                are properly oriented before conversion. Rotate images as needed
+                on your device before uploading.
+              </li>
+              <li>
+                <strong>Crop Unnecessary Areas:</strong> Remove unwanted
+                borders, backgrounds, or empty space from your images before
+                converting to create a cleaner, more focused PDF.
+              </li>
+              <li>
+                <strong>Maintain Consistent Dimensions:</strong> When merging
+                multiple images, using images with similar dimensions creates a
+                more cohesive final document.
+              </li>
+              <li>
+                <strong>File Naming:</strong> Give your images descriptive names
+                before uploading, as this helps you organize and identify
+                content later.
+              </li>
+            </ul>
+
+            <h3>Organizing Multiple Images</h3>
+            <p>
+              When converting multiple images into a single PDF, organization is
+              key:
+            </p>
+
+            <ul>
+              <li>
+                Select images in the order you want them to appear in the final
+                PDF
+              </li>
+              <li>
+                Review the file list before converting to ensure correct
+                ordering
+              </li>
+              <li>
+                Remove any unwanted images by clicking the X icon next to each
+                file
+              </li>
+              <li>
+                Consider creating separate PDFs for different topics or
+                categories rather than one massive file
+              </li>
+              <li>
+                Keep related images together for logical flow and easier
+                navigation
+              </li>
+            </ul>
+
+            <h3>Common Conversion Scenarios</h3>
+            <p>
+              Here are some practical examples of when image to PDF conversion
+              is particularly useful:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Receipts and Invoices:</strong> Convert photos of
+                receipts to PDF for expense reports or tax documentation
+              </li>
+              <li>
+                <strong>ID Documents:</strong> Create PDF copies of driver's
+                licenses, passports, or other identification for online
+                verification
+              </li>
+              <li>
+                <strong>Whiteboard Notes:</strong> Convert photos of whiteboard
+                sessions or meeting notes into shareable PDF documents
+              </li>
+              <li>
+                <strong>Product Catalogs:</strong> Combine multiple product
+                photos into a single PDF catalog for clients or customers
+              </li>
+              <li>
+                <strong>Photo Albums:</strong> Create digital photo albums by
+                merging vacation or event photos into one PDF
+              </li>
+              <li>
+                <strong>Design Mockups:</strong> Share design concepts or
+                mockups with clients in a professional PDF format
+              </li>
+            </ul>
+
+            <h3>File Size Considerations</h3>
+            <p>
+              While our tool has no strict file size limits, keep these points
+              in mind for optimal performance:
+            </p>
+
+            <ul>
+              <li>
+                Very large images (10MB+) may take longer to process on slower
+                devices
+              </li>
+              <li>
+                Converting many high-resolution images at once may require more
+                processing time
+              </li>
+              <li>
+                If you need to email your PDF, consider the recipient's email
+                size limits (usually 10-25MB)
+              </li>
+              <li>
+                For web uploads, smaller PDFs load faster and are more
+                user-friendly
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Frequently Asked Questions</h2>
+
+            <h3>Is this image to PDF converter really free?</h3>
+            <p>
+              Yes, our image to PDF converter is completely free with no
+              limitations. You can convert unlimited images to PDF without any
+              subscriptions, hidden fees, or watermarks on your documents.
+            </p>
+
+            <h3>Are my images safe when using this tool?</h3>
+            <p>
+              Absolutely. All image processing and PDF conversion happens
+              directly in your browser using JavaScript. Your images are never
+              uploaded to our servers, ensuring complete privacy and security.
+              We cannot access, store, or view your files.
+            </p>
+
+            <h3>What image formats can I convert to PDF?</h3>
+            <p>
+              Our tool supports all major image formats including JPG, JPEG,
+              PNG, GIF, and WEBP. You can upload any of these formats and
+              convert them to PDF instantly.
+            </p>
+
+            <h3>Can I convert multiple images at once?</h3>
+            <p>
+              Yes, you can select and upload multiple images simultaneously. All
+              selected images will be merged into a single PDF document in the
+              order you selected them.
+            </p>
+
+            <h3>Will converting images to PDF reduce quality?</h3>
+            <p>
+              No, our converter maintains the original quality and resolution of
+              your images. There is no compression or quality loss during the
+              conversion process. Your PDF will contain the same high-quality
+              images you uploaded.
+            </p>
+
+            <h3>How do I change the order of images in my PDF?</h3>
+            <p>
+              The images will appear in your PDF in the order you select them.
+              Currently, to reorder images, you would need to remove all images
+              and re-upload them in the desired order. We recommend selecting
+              files carefully or renaming them sequentially before uploading.
+            </p>
+
+            <h3>Is there a limit to how many images I can convert?</h3>
+            <p>
+              There are no artificial limits imposed by our tool. However, very
+              large batches of high-resolution images may take longer to process
+              depending on your device's capabilities and available memory.
+            </p>
+
+            <h3>Can I use this tool on my smartphone or tablet?</h3>
+            <p>
+              Yes, our image to PDF converter is fully responsive and works
+              perfectly on smartphones and tablets. You can convert images on
+              any mobile device with a modern browser.
+            </p>
+
+            <h3>Do I need to install any software?</h3>
+            <p>
+              No software installation is required. Our tool works entirely in
+              your web browser, making it accessible from any device without
+              downloads or installations.
+            </p>
+
+            <h3>What happens to my PDF after conversion?</h3>
+            <p>
+              The converted PDF is generated in your browser and made available
+              for immediate download. Since the file only exists in your
+              browser's memory, it will be cleared when you close the tab or
+              click "Convert Another." We recommend downloading your PDF
+              promptly.
+            </p>
+
+            <h3>Can I password-protect my PDF?</h3>
+            <p>
+              The current version focuses on quick, simple image to PDF
+              conversion. For additional features like password protection,
+              encryption, or editing, you can use our other PDF tools after
+              converting your images.
+            </p>
+
+            <h3>
+              Why should I use PDF instead of keeping images as JPG or PNG?
+            </h3>
+            <p>
+              PDF format offers several advantages: universal compatibility
+              across all devices and platforms, professional appearance, ability
+              to combine multiple images in one file, easier sharing and
+              archiving, and better security options. PDFs are also the
+              preferred format for most official submissions and business
+              communications.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: #f9fafb">
+        <div class="container">
+          <h2>Related PDF Tools You Might Need</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #3b82f6; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce PDF file size to make it easier to email, upload, or
+                store online.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Compress PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #3b82f6; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple PDF files into a single document for easy
+                sharing and organization.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Merge PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-crop"
+                style="font-size: 40px; color: #3b82f6; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Crop PDF</h3>
+              <p>
+                Remove unwanted margins and trim PDF pages to focus on essential
+                content.
+              </p>
+              <a
+                href="/crop"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Crop PDF</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section
+        class="hero"
+        style="
+          padding: 60px 20px;
+          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        "
+      >
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
+            Ready to Convert Your Images to PDF?
+          </h2>
+          <p style="margin-bottom: 25px; color: white">
+            Start converting your photos and images to PDF now. Fast, secure,
+            and completely free. No registration needed.
+          </p>
+          <a
+            href="#main-content"
+            class="cta-button"
+            style="background: white; color: #3b82f6"
+          >
+            <i class="fas fa-arrow-up" aria-hidden="true"></i> Convert Images
+            Now
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
     <section id="footer-placeholder"></section>
 
     <!-- Main JS (for hamburger menu) -->
@@ -161,6 +1090,14 @@
 
       let selectedFiles = [];
 
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = "block";
+        setTimeout(() => {
+          errorMsg.style.display = "none";
+        }, 5000);
+      }
+
       /* ---------- FILE LIST UI ---------- */
       function renderFileList() {
         if (selectedFiles.length === 0) {
@@ -174,9 +1111,11 @@
         selectedFiles.forEach((file, index) => {
           const li = document.createElement("li");
           li.innerHTML = `
-            <i class="fa fa-file-image" style="margin-right: 10px;"></i>
-            <span>${file.name}</span>
-            <i class="fa fa-times delete-file" data-index="${index}"></i>
+            <div style="display: flex; align-items: center;">
+              <i class="fa fa-file-image" style="margin-right: 10px; color: #3b82f6;" aria-hidden="true"></i>
+              <span>${file.name}</span>
+            </div>
+            <i class="fa fa-times delete-file" data-index="${index}" role="button" aria-label="Remove ${file.name}" tabindex="0"></i>
         `;
           fileList.appendChild(li);
         });
@@ -219,9 +1158,10 @@
 
       /* ---------- CONVERT ---------- */
       convertBtn.addEventListener("click", async () => {
+        errorMsg.style.display = "none";
+
         if (selectedFiles.length === 0) {
-          errorMsg.textContent = "Please upload image(s)";
-          errorMsg.style.display = "block";
+          showError("Please upload at least one image file to convert.");
           return;
         }
 
@@ -236,7 +1176,11 @@
             method: "POST",
             body: formData,
           });
-          if (!response.ok) throw new Error("Conversion failed");
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Conversion failed");
+          }
 
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
@@ -254,11 +1198,23 @@
           fileList.style.display = "none";
           noteBox.style.display = "none";
 
-          pdfFrame.src = url;
-          pdfPreview.style.display = "block";
+          // Show preview on desktop only
+          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+          if (!isSmallDevice) {
+            pdfFrame.src = url;
+            pdfPreview.style.display = "block";
+          }
+
+          fileNameLink.onclick = (e) => {
+            e.preventDefault();
+            if (isSmallDevice) {
+              window.open(url, "_blank");
+            } else {
+              pdfPreview.scrollIntoView({ behavior: "smooth" });
+            }
+          };
         } catch (err) {
-          errorMsg.textContent = err.message;
-          errorMsg.style.display = "block";
+          showError("Failed to convert images: " + err.message);
         } finally {
           convertBtn.classList.remove("btn-loading");
           convertBtn.disabled = false;
@@ -276,6 +1232,8 @@
         pdfPreview.style.display = "none";
         noteBox.style.display = "block";
         pdfFrame.src = "";
+        errorMsg.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     </script>
   </body>

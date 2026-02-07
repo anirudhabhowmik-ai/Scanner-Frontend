@@ -1,16 +1,142 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-    <meta charset="UTF-8">
-    <title>Excel to PDF Online Free | PDFMaster</title>
-    <meta name="description" content="Convert Excel files to PDF online quickly and securely.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Primary Meta Tags -->
+    <title>
+      Excel to PDF Converter Online Free - XLS, XLSX to PDF | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Excel to PDF Converter Online Free - XLS, XLSX to PDF | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Free online Excel to PDF converter. Convert XLS, XLSX spreadsheets to PDF instantly. Maintain formatting, merge multiple sheets, and preserve formulas. No registration required, works in your browser."
+    />
+    <meta
+      name="keywords"
+      content="Excel to PDF, XLS to PDF, XLSX to PDF, convert Excel to PDF, spreadsheet to PDF, Excel converter, merge Excel to PDF, convert spreadsheet to PDF"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/excel-to-pdf" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/excel-to-pdf" />
+    <meta
+      property="og:title"
+      content="Excel to PDF Converter Online Free - XLS, XLSX to PDF | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Free online tool to convert Excel spreadsheets to PDF. Supports XLS, XLSX formats. Merge multiple sheets into one PDF document."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/excel-to-pdf-tool.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/excel-to-pdf" />
+    <meta
+      name="twitter:title"
+      content="Excel to PDF Converter Online Free - XLS, XLSX to PDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Free online tool to convert Excel spreadsheets to PDF instantly. No registration required."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/excel-to-pdf-tool.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Excel to PDF Converter Online",
+        "url": "https://nextopdf.com/excel-to-pdf",
+        "description": "Free online tool to convert Excel spreadsheets (XLS, XLSX) to PDF format and merge multiple sheets into one PDF document",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript. Modern browser with HTML5 support.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Convert XLS to PDF",
+          "Convert XLSX to PDF",
+          "Merge multiple Excel sheets",
+          "Maintain formatting and layout",
+          "Preserve column widths",
+          "No file size limits",
+          "Secure browser-based processing"
+        ],
+        "author": {
+          "@type": "Organization",
+          "name": "NextoPDF"
+        }
+      }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://nextopdf.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Excel to PDF",
+            "item": "https://nextopdf.com/excel-to-pdf"
+          }
+        ]
+      }
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
     <!-- Favicon -->
     <link
       rel="icon"
@@ -30,191 +156,1099 @@
       href="./images/apple-touch-icon.png"
     />
 
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+      crossorigin="anonymous"
+    ></script>
+
     <style>
-        .btn-loading {
-            pointer-events: none;
-        }
+      .btn-loading {
+        pointer-events: none;
+      }
 
-        .btn-loading .btn-text {
-            display: none;
-        }
+      .btn-loading .btn-text {
+        display: none;
+      }
 
-        .btn-loading .btn-spinner {
-            display: inline-block;
-        }
+      .btn-loading .btn-spinner {
+        display: inline-block;
+      }
 
-        .btn-spinner {
-            display: none;
-        }
+      .btn-spinner {
+        display: none;
+      }
 
-        #excelUpload {
-            display: none;
-        }
+      #excelUpload {
+        display: none;
+      }
 
-        .note-box {
-            background: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            padding: 12px 16px;
-            margin-top: 15px;
-            font-size: 14px;
-            border-radius: 4px;
+      .note-box {
+        background: #eff6ff;
+        border-left: 4px solid #10b981;
+        padding: 12px 16px;
+        margin-top: 15px;
+        font-size: 14px;
+        border-radius: 6px;
+        line-height: 1.6;
+      }
+
+      .file-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .file-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px;
+        margin: 8px 0;
+        background: #f3f4f6;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .file-list .delete-file {
+        cursor: pointer;
+        color: #ef4444;
+        font-size: 18px;
+        transition: color 0.2s;
+      }
+
+      .file-list .delete-file:hover {
+        color: #dc2626;
+      }
+
+      .error-text {
+        color: #ef4444;
+        margin-top: 10px;
+        padding: 10px;
+        background: #fee2e2;
+        border-radius: 6px;
+        display: none;
+      }
+
+      .content-section {
+        background: #f9fafb;
+        padding: 60px 20px;
+      }
+
+      .content-section h2 {
+        color: #1e3a8a;
+        margin-bottom: 20px;
+        font-size: 28px;
+      }
+
+      .content-section h3 {
+        color: #1e3a8a;
+        margin-bottom: 15px;
+        margin-top: 35px;
+        font-size: 22px;
+      }
+
+      .content-section p {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 20px;
+      }
+
+      .content-section ul {
+        color: #555;
+        line-height: 1.8;
+        margin-bottom: 25px;
+        padding-left: 25px;
+      }
+
+      .content-section li {
+        margin-bottom: 10px;
+      }
+
+      .content-wrapper {
+        max-width: 900px;
+        margin: 0 auto;
+        text-align: left;
+      }
+
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-top: 30px;
+      }
+
+      .benefit-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+      }
+
+      .benefit-card i {
+        font-size: 36px;
+        color: #10b981;
+        margin-bottom: 15px;
+      }
+
+      .benefit-card h4 {
+        color: #1f2937;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .benefit-card p {
+        color: #6b7280;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      .result-card {
+        text-align: center;
+        margin: 20px auto;
+      }
+
+      .result-card i {
+        font-size: 48px;
+        color: #10b981;
+      }
+
+      .file-name {
+        text-align: center;
+        margin: 15px 0;
+        font-size: 16px;
+      }
+
+      .file-name a {
+        color: #10b981;
+        text-decoration: none;
+        font-weight: 500;
+      }
+
+      .file-name a:hover {
+        text-decoration: underline;
+      }
+
+      .result-btns-container {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      @media (max-width: 768px) {
+        .result-btns-container {
+          flex-direction: column;
         }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
+    <!-- Skip to main content for accessibility -->
+    <a
+      href="#main-content"
+      class="skip-to-content"
+      style="position: absolute; left: -9999px; z-index: 999"
+      >Skip to main content</a
+    >
+
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
+    <main id="main-content">
+      <!-- Tool Section -->
+      <section class="merge-tool">
         <div class="container">
-            <h1>Excel to PDF</h1>
-            <p>Convert your Excel files to a PDF quickly and securely.</p>
+          <h1>Excel to PDF Converter Online Free</h1>
+          <p>
+            Convert XLS and XLSX Excel spreadsheets to PDF format instantly.
+            Upload multiple Excel files and merge all sheets into a single
+            professional PDF document. No registration required, completely
+            free.
+          </p>
 
-            <div class="upload-section">
-                <div id="uploadSection">
-                    <label for="excelUpload" class="upload-label">
-                        <i class="fa fa-upload"></i> Choose Excel File(s)
-                    </label>
-                    <input type="file" id="excelUpload" accept=".xls,.xlsx" multiple>
-                </div>
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label for="excelUpload" class="upload-label">
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose Excel
+                File(s)
+              </label>
+              <input
+                type="file"
+                id="excelUpload"
+                accept=".xls,.xlsx"
+                multiple
+                aria-label="Upload Excel files for PDF conversion"
+              />
+            </div>
 
-                <ul id="fileList" class="file-list" style="display:none;"></ul>
+            <ul
+              id="fileList"
+              class="file-list"
+              style="display: none"
+              role="list"
+            ></ul>
 
-                <button id="convertBtn" class="cta-button" style="margin-top:15px;">
-                    <span class="btn-spinner"><i class="fa fa-spinner fa-spin"></i></span>
-                    <span class="btn-text"><i class="fa fa-file-pdf"></i></span> Convert to PDF
+            <button
+              id="convertBtn"
+              class="cta-button"
+              aria-label="Convert Excel files to PDF"
+            >
+              <span class="btn-spinner">
+                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+              </span>
+              <span class="btn-text">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </span>
+              Convert to PDF
+            </button>
+
+            <p
+              id="errorMsg"
+              class="error-text"
+              role="alert"
+              aria-live="assertive"
+            ></p>
+
+            <div class="note-box" id="noteBox" role="note">
+              <strong
+                ><i class="fas fa-info-circle" aria-hidden="true"></i> Quick
+                Tip:</strong
+              >
+              Upload one or multiple Excel files. Each sheet will be converted
+              and merged into a single PDF document. Supported formats: XLS,
+              XLSX.
+            </div>
+
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
+              </div>
+
+              <p class="file-name">
+                <a href="#" id="fileNameLink" download="converted.pdf"
+                  >converted.pdf</a
+                >
+              </p>
+
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Download PDF file"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download PDF
+                </a>
+
+                <a
+                  id="shareBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Share PDF file"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </a>
+
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Start over with new Excel files"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert
+                  Another
                 </button>
-
-                <p id="errorMsg" class="error-text" style="display:none;"></p>
-
-                <div class="note-box" id="noteBox">
-                    💡 Upload one or multiple Excel files. Each sheet will be converted and merged into a single PDF.
-                </div>
-
-                <div id="resultBtns" style="display:none; margin-top:15px;">
-                    <div class="result-card"><i class="fa fa-file-pdf"></i></div>
-                    <p class="file-name"><a href="#" id="fileNameLink">converted.pdf</a></p>
-                    <a id="downloadBtn" href="#" class="cta-button"><i class="fa fa-download"></i> Download PDF</a>
-                    <a id="shareBtn" href="#" class="cta-button"><i class="fa fa-share-alt"></i> Share</a>
-                    <button id="resetBtn" class="secondary-btn"><i class="fa fa-rotate-right"></i> Convert
-                        Another</button>
-                </div>
+              </div>
             </div>
+          </div>
 
-            <div id="pdfPreview" style="display:none; margin-top:30px;">
-                <h4>Preview PDF</h4>
-                <iframe id="pdfFrame" width="100%" height="600"
-                    style="border-radius:12px; border:1px solid #e5e7eb;"></iframe>
-            </div>
+          <div
+            id="pdfPreview"
+            style="display: none; margin-top: 30px"
+            role="region"
+            aria-label="PDF preview"
+          >
+            <h4>Preview PDF</h4>
+            <iframe
+              id="pdfFrame"
+              width="100%"
+              height="600"
+              style="border-radius: 12px; border: 1px solid #e5e7eb"
+              title="PDF preview frame"
+            ></iframe>
+          </div>
         </div>
-    </section>
+      </section>
 
+      <!-- How It Works Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>How to Convert Excel to PDF Online</h2>
+            <p>
+              Our Excel to PDF converter makes it simple to transform your
+              spreadsheets into professional PDF documents. Whether you're
+              working with financial reports, data tables, charts, or complex
+              worksheets, our tool preserves your formatting and converts
+              everything accurately.
+            </p>
+
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <i class="fas fa-upload" aria-hidden="true"></i>
+                <h4>1. Upload Excel Files</h4>
+                <p>
+                  Select one or multiple Excel files from your device. Supports
+                  both XLS and XLSX formats. You can upload workbooks with
+                  multiple sheets.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-cog" aria-hidden="true"></i>
+                <h4>2. Automatic Processing</h4>
+                <p>
+                  Our tool automatically processes all sheets in your Excel
+                  files. All worksheets are converted and merged in order,
+                  maintaining your original formatting.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                <h4>3. Download PDF</h4>
+                <p>
+                  Click the convert button and your Excel files will be
+                  transformed into a single, professional PDF ready for download
+                  or sharing.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Convert Excel to PDF Section -->
+      <section class="content-section">
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Why Convert Excel Spreadsheets to PDF?</h2>
+
+            <h3>Common Use Cases for Excel to PDF Conversion</h3>
+            <p>
+              Converting Excel files to PDF is essential for many business and
+              personal workflows. Here are common scenarios where Excel to PDF
+              conversion becomes necessary:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Professional Reports:</strong> Convert financial
+                reports, sales data, and business analytics to PDF for
+                professional presentations and stakeholder meetings.
+              </li>
+              <li>
+                <strong>Preserve Formatting:</strong> PDF format locks your
+                spreadsheet layout, ensuring formulas, charts, and formatting
+                appear exactly as intended regardless of the recipient's
+                software.
+              </li>
+              <li>
+                <strong>Email Distribution:</strong> PDFs are easier to share
+                via email than Excel files, especially when you don't want
+                recipients to edit the data or when they may not have Excel
+                installed.
+              </li>
+              <li>
+                <strong>Print-Ready Documents:</strong> Converting to PDF
+                ensures consistent printing results across different printers
+                and operating systems.
+              </li>
+              <li>
+                <strong>Data Security:</strong> Share spreadsheet data without
+                exposing formulas, hidden sheets, or allowing unauthorized
+                editing.
+              </li>
+              <li>
+                <strong>Archival Purposes:</strong> PDF is ideal for long-term
+                storage as it's a standardized format that will remain
+                accessible for years.
+              </li>
+            </ul>
+
+            <h3>Benefits of PDF Format for Spreadsheets</h3>
+            <p>
+              Converting Excel spreadsheets to PDF offers several advantages in
+              professional and personal contexts:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Universal Access:</strong> Anyone can open and view PDFs
+                without needing Microsoft Excel or spreadsheet software.
+              </li>
+              <li>
+                <strong>Locked Formatting:</strong> Your carefully designed
+                layouts, column widths, and page breaks remain exactly as you
+                set them.
+              </li>
+              <li>
+                <strong>Professional Appearance:</strong> PDFs provide a clean,
+                polished look for business reports and presentations.
+              </li>
+              <li>
+                <strong>Smaller File Sizes:</strong> PDFs are often more compact
+                than Excel files, making them easier to email and store.
+              </li>
+              <li>
+                <strong>Protection from Editing:</strong> Recipients can view
+                your data without accidentally modifying formulas or values.
+              </li>
+              <li>
+                <strong>Cross-Platform Compatibility:</strong> PDFs look
+                identical on Windows, Mac, Linux, and mobile devices.
+              </li>
+            </ul>
+
+            <h3>Excel File Format Support</h3>
+            <p>
+              Our converter supports both legacy and modern Excel formats,
+              ensuring compatibility with all your spreadsheet files:
+            </p>
+
+            <ul>
+              <li>
+                <strong>XLS Format:</strong> The older Excel format used in
+                Microsoft Excel 97-2003. Still widely used in many organizations
+                and legacy systems.
+              </li>
+              <li>
+                <strong>XLSX Format:</strong> The modern XML-based Excel format
+                used in Excel 2007 and later versions. Supports larger
+                worksheets and more features.
+              </li>
+            </ul>
+
+            <h3>Multiple Sheet Handling</h3>
+            <p>
+              When you upload Excel files with multiple worksheets, our tool
+              intelligently processes each sheet and includes them all in the
+              final PDF document. All sheets are converted in the order they
+              appear in your workbook, making it easy to create comprehensive
+              PDF reports from complex Excel files.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Key Features of Our Excel to PDF Converter</h2>
+
+            <div class="benefits-grid">
+              <div class="benefit-card">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i>
+                <h4>100% Secure & Private</h4>
+                <p>
+                  All conversions happen directly in your browser. Your Excel
+                  files and data never leave your device, ensuring complete
+                  privacy and security for sensitive business information.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-dollar-sign" aria-hidden="true"></i>
+                <h4>Completely Free</h4>
+                <p>
+                  No subscriptions, no hidden fees, no watermarks. Convert
+                  unlimited Excel files to PDF without any restrictions or cost.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-desktop" aria-hidden="true"></i>
+                <h4>Works on All Devices</h4>
+                <p>
+                  Use on any device with a modern browser - Windows, Mac, Linux,
+                  iOS, or Android. No software installation required.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-bolt" aria-hidden="true"></i>
+                <h4>Fast Processing</h4>
+                <p>
+                  Quick conversion with immediate results. Transform your Excel
+                  spreadsheets to PDF in seconds and download instantly.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-layer-group" aria-hidden="true"></i>
+                <h4>Multiple Sheets Support</h4>
+                <p>
+                  Automatically converts all worksheets in your Excel file. Each
+                  sheet becomes a page in your final PDF document.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-user-lock" aria-hidden="true"></i>
+                <h4>No Registration Required</h4>
+                <p>
+                  Start converting immediately without creating an account or
+                  providing personal information. Quick and hassle-free.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-check-circle" aria-hidden="true"></i>
+                <h4>Preserves Formatting</h4>
+                <p>
+                  Maintains your original spreadsheet layout, including fonts,
+                  colors, borders, and column widths. What you see is what you
+                  get.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-object-group" aria-hidden="true"></i>
+                <h4>Merge Multiple Files</h4>
+                <p>
+                  Upload multiple Excel files and combine them into a single PDF
+                  document. Perfect for consolidating related spreadsheets.
+                </p>
+              </div>
+              <div class="benefit-card">
+                <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                <h4>Mobile Friendly</h4>
+                <p>
+                  Fully responsive design works perfectly on smartphones and
+                  tablets. Convert spreadsheets on the go, anytime, anywhere.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips Section -->
+      <section class="content-section">
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Tips for Converting Excel to PDF Successfully</h2>
+
+            <h3>Preparing Your Excel Files</h3>
+            <p>
+              To ensure the best possible PDF output, consider these preparation
+              tips before converting your Excel files:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Check Page Layout:</strong> Review your page setup in
+                Excel before converting. Set appropriate margins, orientation
+                (portrait or landscape), and page breaks to control how your
+                content appears in the PDF.
+              </li>
+              <li>
+                <strong>Adjust Column Widths:</strong> Make sure all important
+                data is visible by adjusting column widths. Hidden or truncated
+                text in Excel will also appear cut off in the PDF.
+              </li>
+              <li>
+                <strong>Hide Unnecessary Sheets:</strong> If your workbook
+                contains sheets you don't want in the PDF, hide them before
+                uploading, or use a copy of the file with only the sheets you
+                need.
+              </li>
+              <li>
+                <strong>Remove Personal Information:</strong> Check for and
+                remove any confidential comments, hidden data, or metadata
+                before converting if you plan to share the PDF publicly.
+              </li>
+              <li>
+                <strong>Test Print Preview:</strong> Use Excel's print preview
+                feature to see how your spreadsheet will appear when converted.
+                This helps identify formatting issues beforehand.
+              </li>
+            </ul>
+
+            <h3>Formatting Considerations</h3>
+            <p>
+              Understanding how Excel formatting translates to PDF can help you
+              create better results:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Print Areas:</strong> If you've set print areas in
+                Excel, these will determine what content appears in your PDF.
+                Clear print areas if you want to include the entire worksheet.
+              </li>
+              <li>
+                <strong>Charts and Graphics:</strong> Charts, images, and shapes
+                in your Excel file will be included in the PDF. Ensure they're
+                positioned correctly before conversion.
+              </li>
+              <li>
+                <strong>Cell Borders and Colors:</strong> All cell formatting
+                including borders, background colors, and font colors will be
+                preserved in the PDF.
+              </li>
+              <li>
+                <strong>Large Spreadsheets:</strong> For very wide or long
+                spreadsheets, consider breaking them into multiple sheets or
+                adjusting the scaling to fit pages appropriately.
+              </li>
+            </ul>
+
+            <h3>Working with Multiple Files</h3>
+            <p>
+              When converting multiple Excel files to a single PDF, organization
+              is important:
+            </p>
+
+            <ul>
+              <li>
+                Upload files in the order you want them to appear in the final
+                PDF
+              </li>
+              <li>
+                Review the file list before converting to ensure correct
+                ordering
+              </li>
+              <li>
+                Remove any unwanted files by clicking the X icon next to each
+                file
+              </li>
+              <li>
+                Consider using consistent naming conventions for your Excel
+                files to maintain organization
+              </li>
+              <li>
+                All worksheets from all uploaded files will be included in the
+                final PDF
+              </li>
+            </ul>
+
+            <h3>Common Conversion Scenarios</h3>
+            <p>
+              Here are practical examples of when Excel to PDF conversion is
+              particularly useful:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Financial Statements:</strong> Convert balance sheets,
+                income statements, and cash flow reports to PDF for stakeholder
+                distribution
+              </li>
+              <li>
+                <strong>Sales Reports:</strong> Transform sales data and
+                analytics into professional PDF reports for management review
+              </li>
+              <li>
+                <strong>Invoices and Quotes:</strong> Create PDF invoices from
+                Excel templates for sending to clients
+              </li>
+              <li>
+                <strong>Budget Planning:</strong> Share budget spreadsheets as
+                PDFs to prevent unauthorized changes
+              </li>
+              <li>
+                <strong>Data Analysis:</strong> Convert analysis reports with
+                charts and pivot tables into presentation-ready PDFs
+              </li>
+              <li>
+                <strong>Inventory Lists:</strong> Transform inventory tracking
+                spreadsheets into shareable PDF documents
+              </li>
+            </ul>
+
+            <h3>Best Practices for PDF Quality</h3>
+            <ul>
+              <li>
+                Keep important data within the printable area to avoid content
+                being cut off
+              </li>
+              <li>
+                Use clear, readable fonts that will display well in PDF format
+              </li>
+              <li>
+                Ensure sufficient contrast between text and background colors
+                for better readability
+              </li>
+              <li>
+                Remove or hide gridlines if you want a cleaner, more
+                professional appearance
+              </li>
+              <li>
+                Consider adding headers and footers in Excel before conversion
+                for better document identification
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>Frequently Asked Questions</h2>
+
+            <h3>Is this Excel to PDF converter really free?</h3>
+            <p>
+              Yes, our Excel to PDF converter is completely free with no
+              limitations. You can convert unlimited Excel files to PDF without
+              any subscriptions, hidden fees, or watermarks on your documents.
+            </p>
+
+            <h3>Are my Excel files safe when using this tool?</h3>
+            <p>
+              Absolutely. All Excel file processing and PDF conversion happens
+              directly in your browser using JavaScript. Your files are never
+              uploaded to our servers, ensuring complete privacy and security.
+              We cannot access, store, or view your spreadsheets or data.
+            </p>
+
+            <h3>What Excel formats can I convert to PDF?</h3>
+            <p>
+              Our tool supports both XLS (Excel 97-2003) and XLSX (Excel 2007
+              and later) formats. You can upload and convert any Excel file
+              created in Microsoft Excel, Google Sheets (exported as XLSX), or
+              other compatible spreadsheet applications.
+            </p>
+
+            <h3>Can I convert multiple Excel files at once?</h3>
+            <p>
+              Yes, you can select and upload multiple Excel files
+              simultaneously. All uploaded files and their worksheets will be
+              merged into a single PDF document in the order you selected them.
+            </p>
+
+            <h3>What happens to multiple sheets in my Excel file?</h3>
+            <p>
+              All worksheets in your Excel file are automatically converted and
+              included in the PDF. Each sheet becomes a separate page (or
+              multiple pages if the sheet is large) in the final PDF document,
+              maintaining the order they appear in your workbook.
+            </p>
+
+            <h3>Will my formulas and charts be preserved?</h3>
+            <p>
+              The PDF will show the calculated values from your formulas, not
+              the formulas themselves. Charts, graphs, and images will be
+              included and preserved in the PDF exactly as they appear in your
+              Excel file.
+            </p>
+
+            <h3>Does converting to PDF reduce quality or formatting?</h3>
+            <p>
+              No, our converter maintains your original Excel formatting
+              including fonts, colors, borders, column widths, and cell
+              alignments. The PDF will look exactly like your Excel spreadsheet
+              when printed or viewed.
+            </p>
+
+            <h3>Is there a file size limit for Excel files?</h3>
+            <p>
+              Since processing happens in your browser, there are no strict file
+              size limits imposed by us. However, very large Excel files with
+              thousands of rows or many complex sheets may take longer to
+              process depending on your device's capabilities.
+            </p>
+
+            <h3>Can I use this tool on my smartphone or tablet?</h3>
+            <p>
+              Yes, our Excel to PDF converter is fully responsive and works
+              perfectly on smartphones and tablets. You can convert spreadsheets
+              on any mobile device with a modern browser.
+            </p>
+
+            <h3>Do I need Microsoft Excel installed to use this converter?</h3>
+            <p>
+              No, you don't need Microsoft Excel or any other software
+              installed. Our tool works entirely in your web browser and can
+              convert any XLS or XLSX file regardless of whether you have Excel
+              on your device.
+            </p>
+
+            <h3>How do I control page breaks in my PDF?</h3>
+            <p>
+              Page breaks are determined by the page setup in your original
+              Excel file. If you want specific page breaks, set them in Excel
+              before uploading. You can also adjust the print area and scaling
+              in Excel's page setup to control how your spreadsheet divides into
+              pages.
+            </p>
+
+            <h3>Can I password-protect the resulting PDF?</h3>
+            <p>
+              The current version focuses on quick, simple Excel to PDF
+              conversion. For additional features like password protection or
+              encryption, you can use our other PDF security tools after
+              converting your Excel files.
+            </p>
+
+            <h3>What if my Excel file has hidden sheets or columns?</h3>
+            <p>
+              Hidden sheets will not be included in the PDF conversion. Hidden
+              rows and columns within visible sheets will also remain hidden in
+              the PDF, preserving your spreadsheet's display settings.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: #f9fafb">
+        <div class="container">
+          <h2>Related PDF Tools You Might Need</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple PDF files into a single document for easy
+                sharing and organization.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Merge PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce PDF file size to make it easier to email, upload, or
+                store online.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Compress PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-crop"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Crop PDF</h3>
+              <p>
+                Remove unwanted margins and trim PDF pages to focus on essential
+                content.
+              </p>
+              <a
+                href="/crop"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Crop PDF</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section
+        class="hero"
+        style="
+          padding: 60px 20px;
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        "
+      >
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
+            Ready to Convert Your Excel Files to PDF?
+          </h2>
+          <p style="margin-bottom: 25px; color: white">
+            Start converting your spreadsheets to PDF now. Fast, secure, and
+            completely free. No registration needed.
+          </p>
+          <a
+            href="#main-content"
+            class="cta-button"
+            style="background: white; color: #10b981"
+          >
+            <i class="fas fa-arrow-up" aria-hidden="true"></i> Convert Excel Now
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
     <section id="footer-placeholder"></section>
+
+    <!-- Main JS -->
     <script src="./js/app.js"></script>
 
     <script>
-        const BACKEND_URL = `${BACKEND_BASE_URL}/excel-to-pdf`;
+      const BACKEND_URL = `${BACKEND_BASE_URL}/excel-to-pdf`;
 
-        const excelInput = document.getElementById("excelUpload");
-        const fileList = document.getElementById("fileList");
-        const convertBtn = document.getElementById("convertBtn");
-        const errorMsg = document.getElementById("errorMsg");
-        const resultBtns = document.getElementById("resultBtns");
-        const downloadBtn = document.getElementById("downloadBtn");
-        const shareBtn = document.getElementById("shareBtn");
-        const resetBtn = document.getElementById("resetBtn");
-        const fileNameLink = document.getElementById("fileNameLink");
-        const uploadSection = document.getElementById("uploadSection");
-        const pdfPreview = document.getElementById("pdfPreview");
-        const pdfFrame = document.getElementById("pdfFrame");
-        const noteBox = document.getElementById("noteBox");
+      const excelInput = document.getElementById("excelUpload");
+      const fileList = document.getElementById("fileList");
+      const convertBtn = document.getElementById("convertBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const resultBtns = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const fileNameLink = document.getElementById("fileNameLink");
+      const uploadSection = document.getElementById("uploadSection");
+      const pdfPreview = document.getElementById("pdfPreview");
+      const pdfFrame = document.getElementById("pdfFrame");
+      const noteBox = document.getElementById("noteBox");
 
-        let selectedFiles = [];
+      let selectedFiles = [];
 
-        function renderFileList() {
-            if (selectedFiles.length === 0) { fileList.style.display = "none"; return; }
-            fileList.style.display = "block";
-            fileList.innerHTML = "";
-            errorMsg.style.display = "none"
-            selectedFiles.forEach((file, index) => {
-                fileList.innerHTML += `<li>
-            <i class="fa fa-file-excel" style="margin-right:10px;"></i>
-            <span>${file.name}</span>
-            <i class="fa fa-times delete-file" data-index="${index}"></i>
-        </li>`;
-            });
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = "block";
+        setTimeout(() => {
+          errorMsg.style.display = "none";
+        }, 5000);
+      }
+
+      function renderFileList() {
+        if (selectedFiles.length === 0) {
+          fileList.style.display = "none";
+          return;
+        }
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
+        errorMsg.style.display = "none";
+
+        selectedFiles.forEach((file, index) => {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <div style="display: flex; align-items: center;">
+              <i class="fa fa-file-excel" style="margin-right:10px; color: #10b981;" aria-hidden="true"></i>
+              <span>${file.name}</span>
+            </div>
+            <i class="fa fa-times delete-file" data-index="${index}" role="button" aria-label="Remove ${file.name}" tabindex="0"></i>
+          `;
+          fileList.appendChild(li);
+        });
+      }
+
+      excelInput.addEventListener("change", () => {
+        errorMsg.style.display = "none";
+        Array.from(excelInput.files).forEach((file) => {
+          if (
+            !selectedFiles.some(
+              (f) => f.name === file.name && f.size === file.size,
+            )
+          ) {
+            selectedFiles.push(file);
+          }
+        });
+        renderFileList();
+        excelInput.value = "";
+      });
+
+      fileList.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-file")) {
+          selectedFiles.splice(e.target.dataset.index, 1);
+          renderFileList();
+        }
+      });
+
+      convertBtn.addEventListener("click", async () => {
+        errorMsg.style.display = "none";
+
+        if (selectedFiles.length === 0) {
+          showError("Please upload at least one Excel file to convert.");
+          return;
         }
 
-        excelInput.addEventListener("change", () => {
-            errorMsg.style.display = "none";
-            Array.from(excelInput.files).forEach(file => {
-                if (!selectedFiles.some(f => f.name === file.name && f.size === file.size)) {
-                    selectedFiles.push(file);
-                }
-            });
-            renderFileList();
-            excelInput.value = "";
-        });
+        convertBtn.classList.add("btn-loading");
+        convertBtn.disabled = true;
 
-        fileList.addEventListener("click", (e) => {
-            if (e.target.classList.contains("delete-file")) {
-                selectedFiles.splice(e.target.dataset.index, 1);
-                renderFileList();
+        const formData = new FormData();
+        selectedFiles.forEach((f) => formData.append("files", f));
+
+        try {
+          const res = await fetch(BACKEND_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Conversion failed");
+          }
+
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+
+          downloadBtn.href = url;
+          downloadBtn.download = "converted.pdf";
+          shareBtn.href = url;
+          fileNameLink.href = url;
+          fileNameLink.textContent = "converted.pdf";
+
+          resultBtns.style.display = "block";
+          uploadSection.style.display = "none";
+          convertBtn.style.display = "none";
+          fileList.style.display = "none";
+          noteBox.style.display = "none";
+
+          // Show preview on desktop only
+          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+          if (!isSmallDevice) {
+            pdfFrame.src = url;
+            pdfPreview.style.display = "block";
+          }
+
+          fileNameLink.onclick = (e) => {
+            e.preventDefault();
+            if (isSmallDevice) {
+              window.open(url, "_blank");
+            } else {
+              pdfPreview.scrollIntoView({ behavior: "smooth" });
             }
-        });
+          };
+        } catch (err) {
+          showError("Failed to convert Excel files: " + err.message);
+        } finally {
+          convertBtn.classList.remove("btn-loading");
+          convertBtn.disabled = false;
+        }
+      });
 
-        convertBtn.addEventListener("click", async () => {
-            if (selectedFiles.length === 0) {
-                errorMsg.textContent = "Please upload Excel file(s)";
-                errorMsg.style.display = "block";
-                return;
-            }
-
-            convertBtn.classList.add("btn-loading");
-            const formData = new FormData();
-            selectedFiles.forEach(f => formData.append("files", f));
-
-            try {
-                const res = await fetch(BACKEND_URL, { method: "POST", body: formData });
-                if (!res.ok) throw new Error("Conversion failed");
-
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-
-                downloadBtn.href = url;
-                downloadBtn.download = "converted.pdf";
-                shareBtn.href = url;
-                fileNameLink.href = url;
-
-                resultBtns.style.display = "block";
-                uploadSection.style.display = "none";
-                convertBtn.style.display = "none";
-                fileList.style.display = "none";
-                noteBox.style.display = "none";
-
-                pdfFrame.src = url;
-                pdfPreview.style.display = "block";
-
-            } catch (err) {
-                errorMsg.textContent = err.message;
-                errorMsg.style.display = "block";
-            } finally {
-                convertBtn.classList.remove("btn-loading");
-            }
-        });
-
-        resetBtn.addEventListener("click", () => {
-            selectedFiles = [];
-            fileList.innerHTML = "";
-            fileList.style.display = "none";
-            uploadSection.style.display = "block";
-            resultBtns.style.display = "none";
-            convertBtn.style.display = "inline-flex";
-            pdfPreview.style.display = "none";
-            noteBox.style.display = "block";
-            pdfFrame.src = "";
-        });
+      resetBtn.addEventListener("click", () => {
+        selectedFiles = [];
+        fileList.innerHTML = "";
+        fileList.style.display = "none";
+        uploadSection.style.display = "block";
+        resultBtns.style.display = "none";
+        convertBtn.style.display = "inline-flex";
+        pdfPreview.style.display = "none";
+        noteBox.style.display = "block";
+        pdfFrame.src = "";
+        errorMsg.style.display = "none";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     </script>
-</body>
-
+  </body>
 </html>

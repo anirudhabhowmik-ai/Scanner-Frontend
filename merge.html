@@ -210,7 +210,7 @@
         transition: background 0.3s ease;
       }
 
-      .delete-file i{
+      .delete-file i {
         color: #fff;
       }
 
@@ -290,6 +290,13 @@
                 style="display: none"
                 aria-hidden="true"
               ></i>
+              <span id="mergeIcon">
+                <i
+                  class="fa fa-object-group"
+                  aria-hidden="true"
+                  style="margin-right: 8px"
+                ></i>
+              </span>
               <span>Merge PDFs</span>
             </button>
             <p class="error-text" id="nopdf" role="alert" aria-live="polite">
@@ -1038,6 +1045,7 @@
       const downloadBtn = document.getElementById("downloadBtn");
       const shareBtn = document.getElementById("shareBtn");
       const loaderIcon = mergeBtn.querySelector(".fa-spinner");
+      const mergeIcon = document.getElementById("mergeIcon");
       const uploadSection = document.getElementById("uploadSection");
       const noteText = document.getElementById("noteText");
       const nopdf = document.getElementById("nopdf");
@@ -1105,6 +1113,7 @@
         }
 
         loaderIcon.style.display = "inline-block";
+        mergeIcon.style.display = "none";
         mergeBtn.disabled = true;
 
         try {
@@ -1153,6 +1162,7 @@
           uploadSection.style.display = "none";
           noteText.style.display = "none";
           loaderIcon.style.display = "none";
+          mergeIcon.style.display = "inline-block";
           resultBtns.style.display = "block";
 
           downloadBtn.href = url;
@@ -1176,6 +1186,7 @@
           alert("Error merging PDFs: " + err.message);
           mergeBtn.disabled = false;
           loaderIcon.style.display = "none";
+          mergeIcon.style.display = "inline-block";
         }
       });
 

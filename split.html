@@ -280,6 +280,7 @@
           <!-- Split button -->
           <button id="splitBtn" class="cta-button" style="margin-top: 15px">
             <i class="fa fa-spinner fa-spin" style="display: none"></i>
+            <span id="splitIcon"><i class="fa fa-cut" aria-hidden="true" style="margin-right:8px;"></i></span>
             Split PDF
           </button>
 
@@ -850,6 +851,7 @@
       const fileList = document.getElementById("fileList");
       const splitBtn = document.getElementById("splitBtn");
       const loader = splitBtn.querySelector(".fa-spinner");
+      const splitIcon = document.getElementById("splitIcon");
       const resultSection = document.getElementById("resultBtns");
       const downloadBtn = document.getElementById("downloadBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -937,6 +939,7 @@
           }
 
           loader.style.display = "inline-block";
+          splitIcon.style.display = "none";
           splitBtn.disabled = true;
 
           clearError();
@@ -957,6 +960,7 @@
           noteText.style.display = "none";
           splitBtn.style.display = "none";
           loader.style.display = "none";
+          splitIcon.style.display = "inline-block";
 
           // Show result
           resultSection.style.display = "block";
@@ -967,6 +971,7 @@
           errorMsg.style.display = "block";
           splitBtn.disabled = false;
           loader.style.display = "none";
+          splitIcon.style.display = "inline-block";
         }
       });
 
@@ -1059,6 +1064,7 @@
         splitBtn.style.display = "inline-flex";
         splitBtn.disabled = false;
         loader.style.display = "none";
+        splitIcon.style.display = "inline-block";
         errorMsg.style.display = "none";
         splitOptions.style.display = "none";
         pageRangeInput.style.display = "none";

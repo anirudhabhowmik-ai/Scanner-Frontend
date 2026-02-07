@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -48,7 +48,7 @@
       }
 
       body {
-        font-family: 'Sora', sans-serif;
+        font-family: "Sora", sans-serif;
         background: #fafafa;
         color: #1a1a1a;
         overflow-x: hidden;
@@ -79,7 +79,7 @@
       }
 
       .contact-label {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 12px;
         font-weight: 700;
         letter-spacing: 3px;
@@ -135,7 +135,7 @@
       }
 
       .info-title {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 14px;
         font-weight: 700;
         letter-spacing: 2px;
@@ -148,7 +148,7 @@
       }
 
       .info-title::before {
-        content: '';
+        content: "";
         width: 30px;
         height: 2px;
         background: #6366f1;
@@ -256,7 +256,7 @@
       }
 
       .faq-question {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 16px;
         font-weight: 700;
         padding: 20px 25px;
@@ -322,7 +322,7 @@
       }
 
       .form-label {
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 13px;
         font-weight: 700;
         text-transform: uppercase;
@@ -339,7 +339,7 @@
         padding: 15px 18px;
         border: 3px solid #1a1a1a;
         background: #fafafa;
-        font-family: 'Sora', sans-serif;
+        font-family: "Sora", sans-serif;
         font-size: 15px;
         color: #1a1a1a;
         transition: all 0.2s;
@@ -364,7 +364,7 @@
         background: #6366f1;
         color: white;
         border: 3px solid #1a1a1a;
-        font-family: 'JetBrains Mono', monospace;
+        font-family: "JetBrains Mono", monospace;
         font-size: 14px;
         font-weight: 700;
         text-transform: uppercase;
@@ -443,6 +443,12 @@
         }
       }
     </style>
+
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
@@ -660,35 +666,35 @@
       function toggleFaq(element) {
         const faqItem = element.parentElement;
         const answer = element.nextElementSibling;
-        const allFaqs = document.querySelectorAll('.faq-question');
-        const allAnswers = document.querySelectorAll('.faq-answer');
+        const allFaqs = document.querySelectorAll(".faq-question");
+        const allAnswers = document.querySelectorAll(".faq-answer");
 
         // Close all other FAQs
         allFaqs.forEach((faq, index) => {
           if (faq !== element) {
-            faq.classList.remove('active');
-            allAnswers[index].classList.remove('active');
+            faq.classList.remove("active");
+            allAnswers[index].classList.remove("active");
           }
         });
 
         // Toggle current FAQ
-        element.classList.toggle('active');
-        answer.classList.toggle('active');
+        element.classList.toggle("active");
+        answer.classList.toggle("active");
       }
 
       function handleSubmit(event) {
         event.preventDefault();
-        
+
         // Get form data
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData);
-        
+
         // Here you would typically send the data to your server
-        console.log('Form submitted:', data);
-        
+        console.log("Form submitted:", data);
+
         // Show success message
-        alert('Thank you for your message! We\'ll get back to you soon.');
-        
+        alert("Thank you for your message! We'll get back to you soon.");
+
         // Reset form
         event.target.reset();
       }

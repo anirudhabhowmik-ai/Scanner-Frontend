@@ -1,18 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>Edit PDF Online Free | PDFMaster</title>
-    <meta name="description" content="Edit PDF online: add text, images, shapes, draw, and annotate PDFs for free.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+      name="description"
+      content="Edit PDF online: add text, images, shapes, draw, and annotate PDFs for free."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/edit.css">
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/edit.css" />
 
     <!-- Favicon -->
     <link
@@ -33,181 +40,227 @@
       href="./images/apple-touch-icon.png"
     />
 
-</head>
+    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+      crossorigin="anonymous"
+    ></script>
+  </head>
 
-<body>
-
+  <body>
     <section id="header-placeholder"></section>
 
     <section class="merge-tool">
-        <div class="container">
-            <h1>Edit PDF</h1>
-            <p>Add text, images, shapes, and annotations to your PDF.</p>
+      <div class="container">
+        <h1>Edit PDF</h1>
+        <p>Add text, images, shapes, and annotations to your PDF.</p>
 
-            <div class="upload-section" id="uploadSection">
-                <label for="pdfUpload" class="upload-label">
-                    <i class="fa fa-upload"></i> Choose PDF file
-                </label>
-                <input type="file" id="pdfUpload" accept=".pdf" class="hidden">
+        <div class="upload-section" id="uploadSection">
+          <label for="pdfUpload" class="upload-label">
+            <i class="fa fa-upload"></i> Choose PDF file
+          </label>
+          <input type="file" id="pdfUpload" accept=".pdf" class="hidden" />
 
-                <div id="uploadLoader" class="upload-loader" style="display:none;">
-                    <div class="spinner"></div>
-                    <p>Loading PDF…</p>
-                </div>
-            </div>
-
-            <div id="editorContainer" class="editor-container">
-                <div class="file-info" id="fileInfo">
-                    <div class="file-info-left">
-                        <i class="fa fa-file-pdf"></i>
-                        <span class="file-name-text" id="currentFileName">document.pdf</span>
-                    </div>
-                    <button class="delete-file-btn" id="deleteFileBtn">
-                        <i class="fa fa-times"></i>
-                    </button>
-                </div>
-
-                <div class="toolbar">
-
-                    <button class="tool-btn" id="editPdf">
-                        <i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>
-                    </button>
-
-                    <button class="tool-btn" id="addTextBtn">
-                        <i class="fa fa-font"></i> <span>Add Text</span>
-                        <div class="properties-dropdown" id="textProperties">
-                            <div class="property-row">
-                                <div class="property-item">
-                                    <label>Size:</label>
-                                    <input type="number" id="fontSize" min="8" max="72" value="16">
-                                </div>
-                                <div class="property-item">
-                                    <label>Font:</label>
-                                    <select id="fontFamily">
-                                        <option value="Arial">Arial</option>
-                                        <option value="Helvetica">Helvetica</option>
-                                        <option value="Times New Roman">Times</option>
-                                        <option value="Courier New">Courier</option>
-                                        <option value="Georgia">Georgia</option>
-                                        <option value="Verdana">Verdana</option>
-                                    </select>
-                                </div>
-                                <div class="property-item">
-                                    <label>Color:</label>
-                                    <div class="color-select">
-                                        <input type="color" id="textColor" value="#000000">
-                                        <input type="text" id="textColorHex" value="#000000" maxlength="7">
-                                    </div>
-                                </div>
-                                <div class="property-item">
-                                    <label>Weight:</label>
-                                    <select id="fontWeight">
-                                        <option value="normal">Normal</option>
-                                        <option value="bold">Bold</option>
-                                    </select>
-                                </div>
-                                <div class="property-item">
-                                    <label>Style:</label>
-                                    <select id="fontStyle">
-                                        <option value="normal">Regular</option>
-                                        <option value="italic">Italic</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="tool-btn" id="addImageBtn">
-                        <i class="fa fa-image"></i> <span>Add Image</span>
-                    </button>
-
-                    <button class="tool-btn" id="drawBtn">
-                        <i class="fa fa-pencil"></i> <span>Draw</span>
-                        <div class="properties-dropdown" id="drawProperties">
-                            <div class="property-row">
-                                <div class="property-item">
-                                    <label>Color:</label>
-                                    <div class="color-select">
-                                        <input type="color" id="penColor" value="#000000">
-                                        <input type="text" id="penColorHex" value="#000000" maxlength="7">
-                                    </div>
-                                </div>
-                                <div class="property-item">
-                                    <label>Width:</label>
-                                    <input type="number" id="penWidth" min="1" max="20" value="3">
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="tool-btn" id="addShapeBtn">
-                        <i class="fa fa-shapes"></i> <span>Add Shape</span>
-                        <div class="properties-dropdown" id="shapeProperties">
-                            <div class="property-row">
-                                <div class="property-item">
-                                    <label>Shape:</label>
-                                    <select id="shapeType">
-                                        <option value="rectangle">Rectangle</option>
-                                        <option value="circle">Circle</option>
-                                        <option value="line">Line</option>
-                                    </select>
-                                </div>
-                                <div class="property-item">
-                                    <label>Fill:</label>
-                                    <div class="color-select">
-                                        <input type="color" id="shapeFillColor" value="#4f46e5">
-                                        <input type="text" id="shapeFillHex" value="#4f46e5" maxlength="7">
-                                    </div>
-                                </div>
-                                <div class="property-item">
-                                    <label>Border:</label>
-                                    <div class="color-select">
-                                        <input type="color" id="shapeBorderColor" value="#1e3a8a">
-                                        <input type="text" id="shapeBorderHex" value="#1e3a8a" maxlength="7">
-                                    </div>
-                                </div>
-                                <div class="property-item">
-                                    <label>Width:</label>
-                                    <input type="number" id="shapeBorderWidth" min="0" max="10" value="2">
-                                </div>
-                            </div>
-                        </div>
-                    </button>
-
-                    <button class="tool-btn" id="undoBtn">
-                        <i class="fa fa-undo"></i> <span>Undo</span>
-                    </button>
-                    <button class="tool-btn" id="clearAllBtn">
-                        <i class="fa fa-eraser"></i> <span>Clear All</span>
-                    </button>
-                    <button class="tool-btn cta-button" id="saveBtn">
-                        <i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>
-                    </button>
-                </div>
-
-                <div class="editor-layout">
-                    <div class="sidebar">
-                        <div class="page-thumbnails">
-                            <h4 class="pages-title">
-                                <i class="fa fa-images"></i> Pages
-                            </h4>
-
-                            <div class="thumbnails-scroll" id="thumbnailContainer"></div>
-                        </div>
-                    </div>
-
-                    <div class="main-editor">
-                        <div class="canvas-container" id="canvasContainer"></div>
-                    </div>
-                </div>
-
-                <input type="file" id="imageUpload" accept="image/*" class="hidden">
-            </div>
-
-            <p class="note">
-                Supported format: PDF. All editing is done in your browser.
-            </p>
+          <div id="uploadLoader" class="upload-loader" style="display: none">
+            <div class="spinner"></div>
+            <p>Loading PDF…</p>
+          </div>
         </div>
+
+        <div id="editorContainer" class="editor-container">
+          <div class="file-info" id="fileInfo">
+            <div class="file-info-left">
+              <i class="fa fa-file-pdf"></i>
+              <span class="file-name-text" id="currentFileName"
+                >document.pdf</span
+              >
+            </div>
+            <button class="delete-file-btn" id="deleteFileBtn">
+              <i class="fa fa-times"></i>
+            </button>
+          </div>
+
+          <div class="toolbar">
+            <button class="tool-btn" id="editPdf">
+              <i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>
+            </button>
+
+            <button class="tool-btn" id="addTextBtn">
+              <i class="fa fa-font"></i> <span>Add Text</span>
+              <div class="properties-dropdown" id="textProperties">
+                <div class="property-row">
+                  <div class="property-item">
+                    <label>Size:</label>
+                    <input
+                      type="number"
+                      id="fontSize"
+                      min="8"
+                      max="72"
+                      value="16"
+                    />
+                  </div>
+                  <div class="property-item">
+                    <label>Font:</label>
+                    <select id="fontFamily">
+                      <option value="Arial">Arial</option>
+                      <option value="Helvetica">Helvetica</option>
+                      <option value="Times New Roman">Times</option>
+                      <option value="Courier New">Courier</option>
+                      <option value="Georgia">Georgia</option>
+                      <option value="Verdana">Verdana</option>
+                    </select>
+                  </div>
+                  <div class="property-item">
+                    <label>Color:</label>
+                    <div class="color-select">
+                      <input type="color" id="textColor" value="#000000" />
+                      <input
+                        type="text"
+                        id="textColorHex"
+                        value="#000000"
+                        maxlength="7"
+                      />
+                    </div>
+                  </div>
+                  <div class="property-item">
+                    <label>Weight:</label>
+                    <select id="fontWeight">
+                      <option value="normal">Normal</option>
+                      <option value="bold">Bold</option>
+                    </select>
+                  </div>
+                  <div class="property-item">
+                    <label>Style:</label>
+                    <select id="fontStyle">
+                      <option value="normal">Regular</option>
+                      <option value="italic">Italic</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            <button class="tool-btn" id="addImageBtn">
+              <i class="fa fa-image"></i> <span>Add Image</span>
+            </button>
+
+            <button class="tool-btn" id="drawBtn">
+              <i class="fa fa-pencil"></i> <span>Draw</span>
+              <div class="properties-dropdown" id="drawProperties">
+                <div class="property-row">
+                  <div class="property-item">
+                    <label>Color:</label>
+                    <div class="color-select">
+                      <input type="color" id="penColor" value="#000000" />
+                      <input
+                        type="text"
+                        id="penColorHex"
+                        value="#000000"
+                        maxlength="7"
+                      />
+                    </div>
+                  </div>
+                  <div class="property-item">
+                    <label>Width:</label>
+                    <input
+                      type="number"
+                      id="penWidth"
+                      min="1"
+                      max="20"
+                      value="3"
+                    />
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            <button class="tool-btn" id="addShapeBtn">
+              <i class="fa fa-shapes"></i> <span>Add Shape</span>
+              <div class="properties-dropdown" id="shapeProperties">
+                <div class="property-row">
+                  <div class="property-item">
+                    <label>Shape:</label>
+                    <select id="shapeType">
+                      <option value="rectangle">Rectangle</option>
+                      <option value="circle">Circle</option>
+                      <option value="line">Line</option>
+                    </select>
+                  </div>
+                  <div class="property-item">
+                    <label>Fill:</label>
+                    <div class="color-select">
+                      <input type="color" id="shapeFillColor" value="#4f46e5" />
+                      <input
+                        type="text"
+                        id="shapeFillHex"
+                        value="#4f46e5"
+                        maxlength="7"
+                      />
+                    </div>
+                  </div>
+                  <div class="property-item">
+                    <label>Border:</label>
+                    <div class="color-select">
+                      <input
+                        type="color"
+                        id="shapeBorderColor"
+                        value="#1e3a8a"
+                      />
+                      <input
+                        type="text"
+                        id="shapeBorderHex"
+                        value="#1e3a8a"
+                        maxlength="7"
+                      />
+                    </div>
+                  </div>
+                  <div class="property-item">
+                    <label>Width:</label>
+                    <input
+                      type="number"
+                      id="shapeBorderWidth"
+                      min="0"
+                      max="10"
+                      value="2"
+                    />
+                  </div>
+                </div>
+              </div>
+            </button>
+
+            <button class="tool-btn" id="undoBtn">
+              <i class="fa fa-undo"></i> <span>Undo</span>
+            </button>
+            <button class="tool-btn" id="clearAllBtn">
+              <i class="fa fa-eraser"></i> <span>Clear All</span>
+            </button>
+            <button class="tool-btn cta-button" id="saveBtn">
+              <i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>
+            </button>
+          </div>
+
+          <div class="editor-layout">
+            <div class="sidebar">
+              <div class="page-thumbnails">
+                <h4 class="pages-title"><i class="fa fa-images"></i> Pages</h4>
+
+                <div class="thumbnails-scroll" id="thumbnailContainer"></div>
+              </div>
+            </div>
+
+            <div class="main-editor">
+              <div class="canvas-container" id="canvasContainer"></div>
+            </div>
+          </div>
+
+          <input type="file" id="imageUpload" accept="image/*" class="hidden" />
+        </div>
+
+        <p class="note">
+          Supported format: PDF. All editing is done in your browser.
+        </p>
+      </div>
     </section>
 
     <section id="footer-placeholder"></section>
@@ -219,1491 +272,1631 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-        // DOM Elements
-        const pdfUpload = document.getElementById('pdfUpload');
-        const editorContainer = document.getElementById('editorContainer');
-        const canvasContainer = document.getElementById('canvasContainer');
-        const thumbnailContainer = document.getElementById('thumbnailContainer');
-        const uploadSection = document.getElementById('uploadSection');
-        const currentFileName = document.getElementById('currentFileName');
-        const deleteFileBtn = document.getElementById('deleteFileBtn');
-        const editPdfBtn = document.getElementById('editPdf');
+      // DOM Elements
+      const pdfUpload = document.getElementById("pdfUpload");
+      const editorContainer = document.getElementById("editorContainer");
+      const canvasContainer = document.getElementById("canvasContainer");
+      const thumbnailContainer = document.getElementById("thumbnailContainer");
+      const uploadSection = document.getElementById("uploadSection");
+      const currentFileName = document.getElementById("currentFileName");
+      const deleteFileBtn = document.getElementById("deleteFileBtn");
+      const editPdfBtn = document.getElementById("editPdf");
 
-        // Tool buttons
-        const addTextBtn = document.getElementById('addTextBtn');
-        const addImageBtn = document.getElementById('addImageBtn');
-        const drawBtn = document.getElementById('drawBtn');
-        const addShapeBtn = document.getElementById('addShapeBtn');
-        const undoBtn = document.getElementById('undoBtn');
-        const clearAllBtn = document.getElementById('clearAllBtn');
-        const saveBtn = document.getElementById('saveBtn');
-        const imageUpload = document.getElementById('imageUpload');
-        const penColor = document.getElementById('penColor');
-        const penWidth = document.getElementById('penWidth');
-        const API_BASE_URL = 'http://127.0.0.1:8080';
+      // Tool buttons
+      const addTextBtn = document.getElementById("addTextBtn");
+      const addImageBtn = document.getElementById("addImageBtn");
+      const drawBtn = document.getElementById("drawBtn");
+      const addShapeBtn = document.getElementById("addShapeBtn");
+      const undoBtn = document.getElementById("undoBtn");
+      const clearAllBtn = document.getElementById("clearAllBtn");
+      const saveBtn = document.getElementById("saveBtn");
+      const imageUpload = document.getElementById("imageUpload");
+      const penColor = document.getElementById("penColor");
+      const penWidth = document.getElementById("penWidth");
+      const API_BASE_URL = "http://127.0.0.1:8080";
 
-        // State
-        let pdfDoc = null;
-        let pdfFile = null;
-        let currentTool = null;
-        let pages = [];
-        let currentPageIndex = 0;
-        let selectedAnnotation = null;
-        let isDragging = false;
-        let isResizing = false;
-        let dragStartX = 0;
-        let dragStartY = 0;
-        let resizeHandle = null;
-        let scale = 1;
-        let isEditMode = false;
-        let ocrTextBlocks = [];
-        const MAX_WIDTH = 800;
+      // State
+      let pdfDoc = null;
+      let pdfFile = null;
+      let currentTool = null;
+      let pages = [];
+      let currentPageIndex = 0;
+      let selectedAnnotation = null;
+      let isDragging = false;
+      let isResizing = false;
+      let dragStartX = 0;
+      let dragStartY = 0;
+      let resizeHandle = null;
+      let scale = 1;
+      let isEditMode = false;
+      let ocrTextBlocks = [];
+      const MAX_WIDTH = 800;
 
-        class PDFPage {
-            constructor(pageNum, canvas, viewport) {
-                this.pageNum = pageNum;
-                this.canvas = canvas;
-                this.viewport = viewport;
-                this.annotations = [];
-                this.ocrTextBlocks = [];
-                this.deletedRegions = [];
-                this.deletedImages = [];
-                this.drawingCanvas = null;
-                this.wrapper = null;
-                this.annotationLayer = null;
-                this.ocrLayer = null;
-                this.scale = 1;
-                this.hasDrawing = false; // FIX: Track if drawing exists
-            }
-
-            addAnnotation(annotation) {
-                this.annotations.push(annotation);
-            }
-
-            removeAnnotation(annotation) {
-                const index = this.annotations.indexOf(annotation);
-                if (index > -1) {
-                    this.annotations.splice(index, 1);
-                }
-            }
-
-            addDeletedRegion(region) {
-                this.deletedRegions.push(region);
-            }
+      class PDFPage {
+        constructor(pageNum, canvas, viewport) {
+          this.pageNum = pageNum;
+          this.canvas = canvas;
+          this.viewport = viewport;
+          this.annotations = [];
+          this.ocrTextBlocks = [];
+          this.deletedRegions = [];
+          this.deletedImages = [];
+          this.drawingCanvas = null;
+          this.wrapper = null;
+          this.annotationLayer = null;
+          this.ocrLayer = null;
+          this.scale = 1;
+          this.hasDrawing = false; // FIX: Track if drawing exists
         }
 
-        class Annotation {
-            constructor(type, page) {
-                this.type = type;
-                this.page = page;
-                this.element = null;
-                this.x = 0;
-                this.y = 0;
-                this.width = 100;
-                this.height = 50;
-                this.rotation = 0;
-            }
-
-            applyTransform() {
-                this.element.style.transform = `rotate(${this.rotation}deg)`;
-            }
-
-            createElement() {
-                const div = document.createElement('div');
-                div.className = 'annotation-item';
-                div.style.left = this.x + 'px';
-                div.style.top = this.y + 'px';
-                div.style.transformOrigin = 'center center';
-                div.style.width = this.width + 'px';
-                div.style.height = this.height + 'px';
-
-                const controls = document.createElement('div');
-                controls.className = 'annotation-controls';
-
-                const copyBtn = document.createElement('button');
-                copyBtn.className = 'control-btn copy-btn';
-                copyBtn.innerHTML = '<i class="fa fa-copy"></i>';
-                copyBtn.title = 'Copy';
-                copyBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.copy();
-                };
-                controls.appendChild(copyBtn);
-
-                const rotateBtn = document.createElement('button');
-                rotateBtn.className = 'control-btn rotate-btn';
-                rotateBtn.innerHTML = '<i class="fa fa-rotate-right"></i>';
-                rotateBtn.title = 'Rotate';
-                rotateBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.rotate(15);
-                };
-                controls.appendChild(rotateBtn);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'control-btn delete-btn';
-                deleteBtn.innerHTML = '<i class="fa fa-times"></i>';
-                deleteBtn.title = 'Delete';
-                deleteBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    this.delete();
-                };
-                controls.appendChild(deleteBtn);
-
-                div.appendChild(controls);
-
-                ['nw', 'ne', 'sw', 'se'].forEach(pos => {
-                    const handle = document.createElement('div');
-                    handle.className = `resize-handle ${pos}`;
-                    handle.dataset.handle = pos;
-                    div.appendChild(handle);
-                });
-
-                this.element = div;
-                this.attachEvents();
-                this.applyTransform();
-                return div;
-            }
-
-            rotate(deg) {
-                this.rotation = (this.rotation + deg) % 360;
-                this.applyTransform();
-            }
-
-            attachEvents() {
-                // MOUSE EVENTS
-                this.element.addEventListener('mousedown', (e) => {
-                    if (e.target.classList.contains('resize-handle')) {
-                        isResizing = true;
-                        resizeHandle = e.target.dataset.handle;
-                        e.stopPropagation();
-                        e.preventDefault();
-                    } else if (!e.target.closest('.annotation-controls')) {
-                        isDragging = true;
-                        const rect = this.page.annotationLayer.getBoundingClientRect();
-                        dragStartX = e.clientX - rect.left - this.x;
-                        dragStartY = e.clientY - rect.top - this.y;
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
-                    selectAnnotation(this);
-                });
-
-                // FIX: IMPROVED TOUCH EVENTS
-                this.element.addEventListener('touchstart', (e) => {
-                    const touch = e.touches[0];
-
-                    if (e.target.classList.contains('resize-handle')) {
-                        isResizing = true;
-                        resizeHandle = e.target.dataset.handle;
-                        e.stopPropagation();
-                        e.preventDefault();
-                    } else if (!e.target.closest('.annotation-controls')) {
-                        isDragging = true;
-                        const rect = this.page.annotationLayer.getBoundingClientRect();
-                        dragStartX = touch.clientX - rect.left - this.x;
-                        dragStartY = touch.clientY - rect.top - this.y;
-                        e.stopPropagation();
-                        e.preventDefault();
-                    }
-                    selectAnnotation(this);
-                }, { passive: false });
-
-                this.element.addEventListener('selectstart', (e) => {
-                    if (isDragging || isResizing) {
-                        e.preventDefault();
-                    }
-                });
-            }
-
-            updatePosition(x, y) {
-                this.x = x;
-                this.y = y;
-                this.element.style.left = x + 'px';
-                this.element.style.top = y + 'px';
-            }
-
-            updateSize(width, height) {
-                this.width = Math.max(20, width);
-                this.height = Math.max(20, height);
-                this.element.style.width = this.width + 'px';
-                this.element.style.height = this.height + 'px';
-            }
-
-            delete() {
-                this.element.remove();
-                this.page.removeAnnotation(this);
-                if (selectedAnnotation === this) {
-                    selectedAnnotation = null;
-                }
-            }
-
-            copy() {
-                const newAnnotation = this.clone();
-                newAnnotation.rotation = this.rotation;
-                newAnnotation.x += 20;
-                newAnnotation.y += 20;
-                const element = newAnnotation.createElement();
-                newAnnotation.applyTransform();
-                this.page.annotationLayer.appendChild(element);
-                this.page.addAnnotation(newAnnotation);
-                selectAnnotation(newAnnotation);
-            }
-
-            clone() {
-                return null;
-            }
+        addAnnotation(annotation) {
+          this.annotations.push(annotation);
         }
 
-        class TextAnnotation extends Annotation {
-            constructor(page, isOCR = false) {
-                super('text', page);
-                this.text = 'Double click to edit';
-                this.fontSize = 16;
-                this.fontFamily = 'Arial';
-                this.color = '#000000';
-                this.fontWeight = 'normal';
-                this.fontStyle = 'normal';
-                this.isOCR = isOCR;
-                this.originalData = null;
-                this.deletionMarked = false;
-            }
-
-            createElement() {
-                const wrapper = super.createElement();
-                wrapper.classList.add('text-annotation');
-                if (this.isOCR) {
-                    wrapper.classList.add('ocr-text-block');
-                }
-
-                const content = document.createElement('div');
-                content.className = 'text-content';
-                content.textContent = this.text;
-                content.contentEditable = false;
-                content.style.width = '100%';
-                content.style.height = '100%';
-                content.style.outline = 'none';
-
-                content.addEventListener('mousedown', (e) => {
-                    selectAnnotation(this);
-                    if (!content.isContentEditable) {
-                        isDragging = true;
-                        const rect = this.page.annotationLayer.getBoundingClientRect();
-                        dragStartX = e.clientX - rect.left - this.x;
-                        dragStartY = e.clientY - rect.top - this.y;
-                        e.preventDefault();
-                    }
-                });
-
-                content.addEventListener('dblclick', (e) => {
-                    e.stopPropagation();
-                    content.contentEditable = true;
-                    content.style.cursor = 'text';
-                    wrapper.classList.add('editing');
-                    content.focus();
-
-                    const range = document.createRange();
-                    range.selectNodeContents(content);
-                    range.collapse(false);
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(range);
-                });
-
-                content.addEventListener('input', () => {
-                    this.text = content.textContent;
-                });
-
-                content.addEventListener('blur', () => {
-                    content.contentEditable = false;
-                    this.text = content.textContent;
-                    content.style.cursor = 'move';
-                    wrapper.classList.remove('editing');
-
-                    // FIX: Mark original for deletion on ANY edit
-                    if (this.isOCR && this.originalData && !this.deletionMarked) {
-                        this.page.addDeletedRegion({
-                            x: this.originalData.x,
-                            y: this.originalData.y,
-                            width: this.originalData.width,
-                            height: this.originalData.height
-                        });
-                        this.deletionMarked = true;
-                    }
-                });
-                wrapper.appendChild(content);
-                this.applyStyles();
-                return wrapper;
-            }
-
-            applyStyles() {
-                this.element.style.fontSize = this.fontSize + 'px';
-                this.element.style.fontFamily = this.fontFamily;
-                this.element.style.color = this.color;
-                this.element.style.fontWeight = this.fontWeight;
-                this.element.style.fontStyle = this.fontStyle;
-            }
-
-            updateProperty(prop, value) {
-                this[prop] = value;
-                this.applyStyles();
-            }
-
-            clone() {
-                const newAnnotation = new TextAnnotation(this.page, false);
-                newAnnotation.text = this.text;
-                newAnnotation.fontSize = this.fontSize;
-                newAnnotation.fontFamily = this.fontFamily;
-                newAnnotation.color = this.color;
-                newAnnotation.fontWeight = this.fontWeight;
-                newAnnotation.fontStyle = this.fontStyle;
-                newAnnotation.width = this.width;
-                newAnnotation.height = this.height;
-                return newAnnotation;
-            }
-
-            // FIX: Mark for deletion when moved
-            updatePosition(x, y) {
-                super.updatePosition(x, y);
-
-                if (this.isOCR && this.originalData && !this.deletionMarked) {
-                    this.page.addDeletedRegion({
-                        x: this.originalData.x,
-                        y: this.originalData.y,
-                        width: this.originalData.width,
-                        height: this.originalData.height
-                    });
-                    this.deletionMarked = true;
-                }
-            }
-
-            // FIX: Mark for deletion when resized
-            updateSize(width, height) {
-                super.updateSize(width, height);
-
-                if (this.isOCR && this.originalData && !this.deletionMarked) {
-                    this.page.addDeletedRegion({
-                        x: this.originalData.x,
-                        y: this.originalData.y,
-                        width: this.originalData.width,
-                        height: this.originalData.height
-                    });
-                    this.deletionMarked = true;
-                }
-            }
+        removeAnnotation(annotation) {
+          const index = this.annotations.indexOf(annotation);
+          if (index > -1) {
+            this.annotations.splice(index, 1);
+          }
         }
 
-        class ImageAnnotation extends Annotation {
-            constructor(page, imageSrc) {
-                super('image', page);
-                this.imageSrc = imageSrc;
-                this.width = 150;
-                this.height = 150;
-                this.isOriginal = false;
-                this.originalImageData = null;
-                this.deletionMarked = false;
-            }
+        addDeletedRegion(region) {
+          this.deletedRegions.push(region);
+        }
+      }
 
-            createElement() {
-                const div = super.createElement();
-                div.classList.add('image-annotation');
-                const img = document.createElement('img');
-                img.src = this.imageSrc;
-                img.draggable = false;
-                div.appendChild(img);
-                return div;
-            }
-
-            clone() {
-                const newAnnotation = new ImageAnnotation(this.page, this.imageSrc);
-                newAnnotation.width = this.width;
-                newAnnotation.height = this.height;
-                return newAnnotation;
-            }
-
-            // FIX: Mark original for deletion when moved
-            updatePosition(x, y) {
-                super.updatePosition(x, y);
-
-                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
-                    this.deletionMarked = true;
-                    this.isOriginal = false; // FIX: Convert to regular annotation
-                }
-            }
-
-            // FIX: Mark original for deletion when resized
-            updateSize(width, height) {
-                super.updateSize(width, height);
-
-                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
-                    this.deletionMarked = true;
-                    this.isOriginal = false; // FIX: Convert to regular annotation
-                }
-            }
-
-            delete() {
-                this.element.remove();
-                this.page.removeAnnotation(this);
-
-                // If this was an original PDF image, mark it for deletion
-                if (this.isOriginal && this.originalImageData && !this.deletionMarked) {
-                    if (!this.page.deletedImages) {
-                        this.page.deletedImages = [];
-                    }
-                    this.page.deletedImages.push(this.originalImageData);
-                    this.deletionMarked = true;
-                }
-
-                if (selectedAnnotation === this) {
-                    selectedAnnotation = null;
-                }
-            }
+      class Annotation {
+        constructor(type, page) {
+          this.type = type;
+          this.page = page;
+          this.element = null;
+          this.x = 0;
+          this.y = 0;
+          this.width = 100;
+          this.height = 50;
+          this.rotation = 0;
         }
 
-        class ShapeAnnotation extends Annotation {
-            constructor(page, shapeType) {
-                super('shape', page);
-                this.shapeType = shapeType;
-                this.fillColor = '#4f46e5';
-                this.borderColor = '#1e3a8a';
-                this.borderWidth = 2;
-            }
-
-            createElement() {
-                const div = super.createElement();
-                div.classList.add('shape-annotation');
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.style.width = '100%';
-                svg.style.height = '100%';
-                svg.style.pointerEvents = 'auto';
-                svg.style.userSelect = 'none';
-
-                this.svg = svg;
-                this.updateShape();
-                div.appendChild(svg);
-                return div;
-            }
-
-            updateShape() {
-                this.svg.innerHTML = '';
-
-                if (this.shapeType === 'rectangle') {
-                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                    rect.setAttribute('width', '100%');
-                    rect.setAttribute('height', '100%');
-                    rect.setAttribute('fill', this.fillColor);
-                    rect.setAttribute('stroke', this.borderColor);
-                    rect.setAttribute('stroke-width', this.borderWidth);
-                    this.svg.appendChild(rect);
-                } else if (this.shapeType === 'circle') {
-                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                    circle.setAttribute('cx', '50%');
-                    circle.setAttribute('cy', '50%');
-                    circle.setAttribute('r', '45%');
-                    circle.setAttribute('fill', this.fillColor);
-                    circle.setAttribute('stroke', this.borderColor);
-                    circle.setAttribute('stroke-width', this.borderWidth);
-                    this.svg.appendChild(circle);
-                } else if (this.shapeType === 'line') {
-                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                    line.setAttribute('x1', '0');
-                    line.setAttribute('y1', '50%');
-                    line.setAttribute('x2', '100%');
-                    line.setAttribute('y2', '50%');
-                    line.setAttribute('stroke', this.borderColor);
-                    line.setAttribute('stroke-width', this.borderWidth);
-                    this.svg.appendChild(line);
-                }
-            }
-
-            updateProperty(prop, value) {
-                this[prop] = value;
-                this.updateShape();
-            }
-
-            clone() {
-                const newAnnotation = new ShapeAnnotation(this.page, this.shapeType);
-                newAnnotation.fillColor = this.fillColor;
-                newAnnotation.borderColor = this.borderColor;
-                newAnnotation.borderWidth = this.borderWidth;
-                newAnnotation.width = this.width;
-                newAnnotation.height = this.height;
-                return newAnnotation;
-            }
+        applyTransform() {
+          this.element.style.transform = `rotate(${this.rotation}deg)`;
         }
 
-        class DrawingAnnotation extends Annotation {
-            constructor(page, pathData, color, width) {
-                super('drawing', page);
-                this.pathData = pathData;
-                this.color = color;
-                this.strokeWidth = width;
-            }
+        createElement() {
+          const div = document.createElement("div");
+          div.className = "annotation-item";
+          div.style.left = this.x + "px";
+          div.style.top = this.y + "px";
+          div.style.transformOrigin = "center center";
+          div.style.width = this.width + "px";
+          div.style.height = this.height + "px";
 
-            createElement() {
-                const div = super.createElement();
-                div.classList.add('shape-annotation');
+          const controls = document.createElement("div");
+          controls.className = "annotation-controls";
 
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('width', '100%');
-                svg.setAttribute('height', '100%');
+          const copyBtn = document.createElement("button");
+          copyBtn.className = "control-btn copy-btn";
+          copyBtn.innerHTML = '<i class="fa fa-copy"></i>';
+          copyBtn.title = "Copy";
+          copyBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.copy();
+          };
+          controls.appendChild(copyBtn);
 
-                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                path.setAttribute('d', this.pathData);
-                path.setAttribute('fill', 'none');
-                path.setAttribute('stroke', this.color);
-                path.setAttribute('stroke-width', this.strokeWidth);
-                path.setAttribute('stroke-linecap', 'round');
-                path.setAttribute('stroke-linejoin', 'round');
+          const rotateBtn = document.createElement("button");
+          rotateBtn.className = "control-btn rotate-btn";
+          rotateBtn.innerHTML = '<i class="fa fa-rotate-right"></i>';
+          rotateBtn.title = "Rotate";
+          rotateBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.rotate(15);
+          };
+          controls.appendChild(rotateBtn);
 
-                svg.appendChild(path);
-                div.appendChild(svg);
+          const deleteBtn = document.createElement("button");
+          deleteBtn.className = "control-btn delete-btn";
+          deleteBtn.innerHTML = '<i class="fa fa-times"></i>';
+          deleteBtn.title = "Delete";
+          deleteBtn.onclick = (e) => {
+            e.stopPropagation();
+            this.delete();
+          };
+          controls.appendChild(deleteBtn);
 
-                return div;
-            }
+          div.appendChild(controls);
 
-            clone() {
-                return new DrawingAnnotation(
-                    this.page,
-                    this.pathData,
-                    this.color,
-                    this.strokeWidth
-                );
-            }
+          ["nw", "ne", "sw", "se"].forEach((pos) => {
+            const handle = document.createElement("div");
+            handle.className = `resize-handle ${pos}`;
+            handle.dataset.handle = pos;
+            div.appendChild(handle);
+          });
+
+          this.element = div;
+          this.attachEvents();
+          this.applyTransform();
+          return div;
         }
 
-        // Event Listeners
-        pdfUpload.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            pdfFile = file;
-            currentFileName.textContent = file.name;
-            const loader = document.getElementById('uploadLoader');
-            loader.style.display = 'block';
-
-            try {
-                await loadPDF(file);
-                loader.style.display = 'none';
-            } catch (err) {
-                console.error('PDF load error:', err);
-                alert('Failed to load PDF. Please try another file.');
-            } finally {
-                loader.style.display = 'none';
-            }
-        });
-
-        async function loadPDF(file) {
-    editorContainer.style.display = 'block';
-    uploadSection.style.display = 'none';
-    const arrayBuffer = await file.arrayBuffer();
-    pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
-    canvasContainer.innerHTML = '';
-    thumbnailContainer.innerHTML = '';
-    pages = [];
-
-    for (let i = 1; i <= pdfDoc.numPages; i++) {
-        const page = await pdfDoc.getPage(i);
-        
-        // Get the original viewport at scale 1
-        const baseViewport = page.getViewport({ scale: 1 });
-
-        // Calculate scale to fit container width while maintaining aspect ratio
-        const containerRect = canvasContainer.getBoundingClientRect();
-        const containerWidth = containerRect.width || MAX_WIDTH;
-        const maxWidth = Math.min(containerWidth - 40, MAX_WIDTH);
-
-        // Calculate display scale based on width
-        const displayScale = maxWidth / baseViewport.width;
-
-        // Render at HIGH resolution for crisp text
-        const renderScale = displayScale * (window.devicePixelRatio || 2);
-        const renderViewport = page.getViewport({ scale: renderScale });
-
-        const wrapper = document.createElement('div');
-        wrapper.className = 'pdf-page-wrapper';
-        wrapper.style.width = (baseViewport.width * displayScale) + 'px';
-        wrapper.style.height = (baseViewport.height * displayScale) + 'px';
-        if (i === 1) wrapper.classList.add('active');
-
-        const canvas = document.createElement('canvas');
-        canvas.className = 'pdf-canvas';
-        canvas.width = renderViewport.width;
-        canvas.height = renderViewport.height;
-
-        // Style the canvas to display at correct size
-        canvas.style.width = (baseViewport.width * displayScale) + 'px';
-        canvas.style.height = (baseViewport.height * displayScale) + 'px';
-
-        const context = canvas.getContext('2d');
-        await page.render({ canvasContext: context, viewport: renderViewport }).promise;
-
-        const annotationLayer = document.createElement('div');
-        annotationLayer.className = 'annotation-layer';
-        annotationLayer.style.width = (baseViewport.width * displayScale) + 'px';
-        annotationLayer.style.height = (baseViewport.height * displayScale) + 'px';
-
-        const ocrLayer = document.createElement('div');
-        ocrLayer.className = 'ocr-layer';
-        ocrLayer.style.width = (baseViewport.width * displayScale) + 'px';
-        ocrLayer.style.height = (baseViewport.height * displayScale) + 'px';
-        ocrLayer.style.position = 'absolute';
-        ocrLayer.style.top = '0';
-        ocrLayer.style.left = '0';
-        ocrLayer.style.pointerEvents = 'none';
-
-        const drawingCanvas = document.createElement('canvas');
-        drawingCanvas.className = 'drawing-canvas';
-        drawingCanvas.width = renderViewport.width;
-        drawingCanvas.height = renderViewport.height;
-        drawingCanvas.style.width = (baseViewport.width * displayScale) + 'px';
-        drawingCanvas.style.height = (baseViewport.height * displayScale) + 'px';
-
-        wrapper.appendChild(canvas);
-        wrapper.appendChild(ocrLayer);
-        wrapper.appendChild(annotationLayer);
-        wrapper.appendChild(drawingCanvas);
-        canvasContainer.appendChild(wrapper);
-
-        // Thumbnail - keep existing code
-        const thumbViewport = page.getViewport({ scale: 0.2 });
-        const thumbCanvas = document.createElement('canvas');
-        thumbCanvas.width = thumbViewport.width;
-        thumbCanvas.height = thumbViewport.height;
-        const thumbContext = thumbCanvas.getContext('2d');
-        await page.render({ canvasContext: thumbContext, viewport: thumbViewport }).promise;
-
-        const thumbItem = document.createElement('div');
-        thumbItem.className = 'thumbnail-item';
-        if (i === 1) thumbItem.classList.add('active');
-        thumbItem.dataset.page = i - 1;
-        thumbItem.appendChild(thumbCanvas);
-
-        const pageLabel = document.createElement('div');
-        pageLabel.className = 'page-label';
-        pageLabel.textContent = `Page ${i}`;
-        thumbItem.appendChild(pageLabel);
-
-        thumbItem.addEventListener('click', () => switchToPage(i - 1));
-        thumbnailContainer.appendChild(thumbItem);
-
-        // Store the display viewport (not render viewport)
-        const displayViewport = page.getViewport({ scale: displayScale });
-        const pdfPage = new PDFPage(i, canvas, displayViewport);
-        pdfPage.wrapper = wrapper;
-        pdfPage.annotationLayer = annotationLayer;
-        pdfPage.ocrLayer = ocrLayer;
-        pdfPage.drawingCanvas = drawingCanvas;
-        pdfPage.scale = displayScale;
-        pages.push(pdfPage);
-
-        setupDrawing(pdfPage);
-    }
-
-    editorContainer.style.display = 'block';
-    uploadSection.style.display = 'none';
-}
-
-        // Edit PDF Button - Extract text using OCR
-        editPdfBtn.addEventListener('click', async () => {
-            if (!pdfFile) {
-                await CustomModal.alert('Please upload a PDF first', 'Notice');
-                return;
-            }
-
-            // FIX: Prevent multiple clicks
-            if (isEditMode) {
-                await CustomModal.alert('Edit mode is already active', 'Notice');
-                return;
-            }
-
-            editPdfBtn.disabled = true;
-            editPdfBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Extracting Text...</span>';
-
-            try {
-                const formData = new FormData();
-                formData.append('file', pdfFile);
-
-                const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // FIX: Clear existing OCR data first
-                    pages.forEach(page => {
-                        page.ocrTextBlocks = [];
-                        page.ocrLayer.innerHTML = '';
-                    });
-
-                    // Display OCR text
-                    displayOCRText(data.pages);
-                    // Display images
-                    displayOCRImages(data.pages);
-
-                    isEditMode = true;
-                    editPdfBtn.innerHTML = '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
-                    editPdfBtn.classList.add('active');
-                } else {
-                    await CustomModal.error('Error extracting text: ' + (data.error || 'Unknown error'), 'Extraction Failed');
-                    editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-                    editPdfBtn.disabled = false;
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                await CustomModal.error('Failed to extract text from PDF. Make sure Flask server is running on port 8080.', 'Connection Error');
-                editPdfBtn.innerHTML = '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-                editPdfBtn.disabled = false;
-            }
-        });
-
-        function displayOCRText(pagesData) {
-            pagesData.forEach((pageData, index) => {
-                const page = pages[index];
-                if (!page) return;
-
-                // FIX: Clear and reset properly
-                page.ocrTextBlocks = [];
-                page.ocrLayer.innerHTML = '';
-                page.ocrLayer.style.pointerEvents = 'auto';
-
-                pageData.textBlocks.forEach(block => {
-                    const annotation = new TextAnnotation(page, true);
-                    annotation.text = block.text;
-                    annotation.x = block.x;
-                    annotation.y = block.y;
-                    annotation.width = Math.max(block.width, 30);
-                    annotation.height = Math.max(block.height, 15);
-                    annotation.fontSize = Math.round(block.fontSize);
-                    annotation.fontFamily = block.fontFamily || 'Arial';
-                    annotation.color = block.color || '#000000';
-                    annotation.deletionMarked = false;
-
-                    // Store original position for deletion
-                    annotation.originalData = {
-                        x: block.x,
-                        y: block.y,
-                        width: block.width,
-                        height: block.height
-                    };
-
-                    const element = annotation.createElement();
-                    page.ocrLayer.appendChild(element);
-                    page.ocrTextBlocks.push(annotation);
-                });
-            });
+        rotate(deg) {
+          this.rotation = (this.rotation + deg) % 360;
+          this.applyTransform();
         }
 
-        function displayOCRImages(pagesData) {
-            pagesData.forEach((pageData, index) => {
-                const page = pages[index];
-                if (!page) return;
-
-                pageData.images.forEach(img => {
-                    createEditableImage(page, img, pageData.pdfId);
-                });
-            });
-        }
-
-        async function createEditableImage(page, imgInfo, pdfId) {
-            const annotation = new ImageAnnotation(page, '');
-            annotation.x = imgInfo.x;
-            annotation.y = imgInfo.y;
-            annotation.width = imgInfo.width;
-            annotation.height = imgInfo.height;
-            annotation.xref = imgInfo.xref;
-            annotation.isOriginal = true;
-
-            // Fetch actual image
-            try {
-                const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        xref: imgInfo.xref,
-                        pageNum: imgInfo.pageNum,
-                        pdfId: pdfId
-                    })
-                });
-
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const imageUrl = URL.createObjectURL(blob);
-                    annotation.imageSrc = imageUrl;
-                    annotation.originalImageData = {
-                        xref: imgInfo.xref,
-                        x: imgInfo.x,
-                        y: imgInfo.y,
-                        width: imgInfo.width,
-                        height: imgInfo.height
-                    };
-
-                    const element = annotation.createElement();
-                    page.ocrLayer.appendChild(element);
-
-                    // FIX: Add to ocrTextBlocks for tracking (NOT annotations)
-                    page.ocrTextBlocks.push(annotation);
-                }
-            } catch (error) {
-                console.error('Error loading image:', error);
+        attachEvents() {
+          // MOUSE EVENTS
+          this.element.addEventListener("mousedown", (e) => {
+            if (e.target.classList.contains("resize-handle")) {
+              isResizing = true;
+              resizeHandle = e.target.dataset.handle;
+              e.stopPropagation();
+              e.preventDefault();
+            } else if (!e.target.closest(".annotation-controls")) {
+              isDragging = true;
+              const rect = this.page.annotationLayer.getBoundingClientRect();
+              dragStartX = e.clientX - rect.left - this.x;
+              dragStartY = e.clientY - rect.top - this.y;
+              e.stopPropagation();
+              e.preventDefault();
             }
-        }
-
-        // Save PDF with changes
-        saveBtn.addEventListener('click', async () => {
-            if (!pdfFile) {
-                alert('No PDF loaded');
-                return;
-            }
-
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> <span>Saving...</span>';
-
-            try {
-                const formData = new FormData();
-                formData.append('file', pdfFile);
-
-                const annotationsData = pages.map(page => {
-                    const pageAnnotations = [];
-
-                    // FIX: Process all regular annotations (from annotationLayer)
-                    page.annotations.forEach(ann => {
-                        const annData = {
-                            type: ann.type,
-                            x: ann.x,
-                            y: ann.y,
-                            width: ann.width,
-                            height: ann.height
-                        };
-
-                        if (ann.type === 'text') {
-                            annData.text = ann.text;
-                            annData.fontSize = ann.fontSize;
-                            annData.fontFamily = ann.fontFamily;
-                            annData.color = ann.color;
-                            annData.fontWeight = ann.fontWeight;
-                            annData.fontStyle = ann.fontStyle;
-                        } else if (ann.type === 'image') {
-                            annData.imageData = ann.imageSrc;
-                            annData.width = ann.width;
-                            annData.height = ann.height;
-                        } else if (ann.type === 'shape') {
-                            annData.shapeType = ann.shapeType;
-                            annData.fillColor = ann.fillColor;
-                            annData.borderColor = ann.borderColor;
-                            annData.borderWidth = ann.borderWidth;
-                        }
-
-                        pageAnnotations.push(annData);
-                    });
-
-                    // FIX: Process OCR layer items (edited text & images)
-                    page.ocrTextBlocks.forEach(ann => {
-                        // Skip if already deleted
-                        if (ann.element && !ann.element.parentNode) return;
-
-                        const annData = {
-                            type: ann.type,
-                            x: ann.x,
-                            y: ann.y,
-                            width: ann.width,
-                            height: ann.height
-                        };
-
-                        if (ann.type === 'text') {
-                            annData.text = ann.text;
-                            annData.fontSize = ann.fontSize;
-                            annData.fontFamily = ann.fontFamily;
-                            annData.color = ann.color;
-                            annData.fontWeight = ann.fontWeight;
-                            annData.fontStyle = ann.fontStyle;
-                        } else if (ann.type === 'image') {
-                            annData.imageData = ann.imageSrc;
-                        }
-
-                        pageAnnotations.push(annData);
-                    });
-
-                    // FIX: Check for actual drawing data
-                    let drawingData = null;
-                    if (page.hasDrawing) {
-                        const ctx = page.drawingCanvas.getContext('2d');
-                        const imageData = ctx.getImageData(0, 0, page.drawingCanvas.width, page.drawingCanvas.height);
-                        const hasDrawing = imageData.data.some(channel => channel !== 0);
-
-                        if (hasDrawing) {
-                            drawingData = page.drawingCanvas.toDataURL('image/png');
-                        }
-                    }
-
-                    return {
-                        pageNum: page.pageNum,
-                        annotations: pageAnnotations,
-                        deletedRegions: page.deletedRegions || [],
-                        deletedImages: page.deletedImages || [],
-                        drawing: drawingData
-                    };
-                });
-
-                formData.append('annotations', JSON.stringify(annotationsData));
-
-                const response = await fetch(`${API_BASE_URL}/edit-pdf`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = 'edited_' + currentFileName.textContent;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-
-                    alert('PDF saved successfully!');
-                } else {
-                    const error = await response.json();
-                    alert('Error saving PDF: ' + error.error);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to save PDF. Make sure Flask server is running on port 8080.');
-            } finally {
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
-            }
-        });
-
-        function switchToPage(index) {
-            currentPageIndex = index;
-
-            pages.forEach((page, i) => {
-                if (i === index) {
-                    page.wrapper.classList.add('active');
-                } else {
-                    page.wrapper.classList.remove('active');
-                }
-            });
-
-            document.querySelectorAll('.thumbnail-item').forEach((thumb, i) => {
-                if (i === index) {
-                    thumb.classList.add('active');
-                } else {
-                    thumb.classList.remove('active');
-                }
-            });
-
-            const activeThumb = thumbnailContainer.children[index];
-            if (activeThumb) {
-                activeThumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
-        }
-
-        function setupDrawing(page) {
-            const canvas = page.drawingCanvas;
-            const ctx = canvas.getContext('2d');
-
-            let isDrawing = false;
-            let lastX = 0;
-            let lastY = 0;
-
-            // FIX: Helper function to get coordinates
-            function getCoords(e, canvas) {
-                const rect = canvas.getBoundingClientRect();
-                const scaleX = canvas.width / rect.width;
-                const scaleY = canvas.height / rect.height;
-
-                if (e.touches && e.touches.length > 0) {
-                    return {
-                        x: (e.touches[0].clientX - rect.left) * scaleX,
-                        y: (e.touches[0].clientY - rect.top) * scaleY
-                    };
-                }
-
-                return {
-                    x: (e.clientX - rect.left) * scaleX,
-                    y: (e.clientY - rect.top) * scaleY
-                };
-            }
-
-            // Mouse events
-            canvas.addEventListener('mousedown', (e) => {
-                if (currentTool !== 'draw') return;
-                e.preventDefault();
-
-                isDrawing = true;
-
-                const coords = getCoords(e, canvas);
-                lastX = coords.x;
-                lastY = coords.y;
-
-                ctx.strokeStyle = penColor.value;
-                ctx.lineWidth = parseInt(penWidth.value);
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-            });
-
-            canvas.addEventListener('mousemove', (e) => {
-                if (!isDrawing || currentTool !== 'draw') return;
-                e.preventDefault();
-
-                const coords = getCoords(e, canvas);
-
-                ctx.lineTo(coords.x, coords.y);
-                ctx.stroke();
-
-                lastX = coords.x;
-                lastY = coords.y;
-
-                page.hasDrawing = true;
-            });
-
-            canvas.addEventListener('mouseup', (e) => {
-                if (!isDrawing) return;
-                e.preventDefault();
-                isDrawing = false;
-                ctx.closePath();
-            });
-
-            canvas.addEventListener('mouseleave', () => {
-                if (isDrawing) {
-                    isDrawing = false;
-                    ctx.closePath();
-                }
-            });
-
-            // Touch events for mobile
-            canvas.addEventListener('touchstart', (e) => {
-                if (currentTool !== 'draw') return;
-                e.preventDefault();
-
-                isDrawing = true;
-
-                const coords = getCoords(e, canvas);
-                lastX = coords.x;
-                lastY = coords.y;
-
-                ctx.strokeStyle = penColor.value;
-                ctx.lineWidth = parseInt(penWidth.value);
-                ctx.lineCap = 'round';
-                ctx.lineJoin = 'round';
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-            }, { passive: false });
-
-            canvas.addEventListener('touchmove', (e) => {
-                if (!isDrawing || currentTool !== 'draw') return;
-                e.preventDefault();
-
-                const coords = getCoords(e, canvas);
-
-                ctx.lineTo(coords.x, coords.y);
-                ctx.stroke();
-
-                lastX = coords.x;
-                lastY = coords.y;
-
-                page.hasDrawing = true;
-            }, { passive: false });
-
-            canvas.addEventListener('touchend', (e) => {
-                if (!isDrawing) return;
-                e.preventDefault();
-                isDrawing = false;
-                ctx.closePath();
-            }, { passive: false });
-        }
-
-        // Tool handlers
-        addTextBtn.addEventListener('click', (e) => {
-            setTool('text');
-            if (e.target.closest('.tool-btn') === addTextBtn) {
-                addAnnotationToCurrentPage('text');
-            }
-        });
-
-        addImageBtn.addEventListener('click', () => {
-            imageUpload.click();
-        });
-
-        imageUpload.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                setTool('image', event.target.result);
-                addAnnotationToCurrentPage('image', event.target.result);
-            };
-            reader.readAsDataURL(file);
-            imageUpload.value = '';
-        });
-
-        drawBtn.addEventListener('click', () => {
-            setTool('draw');
-        });
-
-        addShapeBtn.addEventListener('click', (e) => {
-            setTool('shape');
-            if (e.target.closest('.tool-btn') === addShapeBtn) {
-                addAnnotationToCurrentPage('shape');
-            }
-        });
-
-        function setTool(tool, data = null) {
-            currentTool = tool;
-            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
-
-            if (tool === 'text') addTextBtn.classList.add('active');
-            else if (tool === 'draw') drawBtn.classList.add('active');
-            else if (tool === 'shape') addShapeBtn.classList.add('active');
-
-            pages.forEach(page => {
-                if (tool === 'draw') {
-                    page.drawingCanvas.classList.add('active');
-                } else {
-                    page.drawingCanvas.classList.remove('active');
-                }
-            });
-        }
-
-        function addAnnotationToCurrentPage(type, data = null) {
-            const page = pages[currentPageIndex];
-            let annotation;
-
-            if (type === 'text') {
-                annotation = new TextAnnotation(page, false);
-                annotation.fontSize = parseInt(document.getElementById('fontSize').value);
-                annotation.fontFamily = document.getElementById('fontFamily').value;
-                annotation.color = document.getElementById('textColor').value;
-                annotation.fontWeight = document.getElementById('fontWeight').value;
-                annotation.fontStyle = document.getElementById('fontStyle').value;
-            } else if (type === 'image') {
-                annotation = new ImageAnnotation(page, data);
-            } else if (type === 'shape') {
-                const shapeType = document.getElementById('shapeType').value;
-                annotation = new ShapeAnnotation(page, shapeType);
-                annotation.fillColor = document.getElementById('shapeFillColor').value;
-                annotation.borderColor = document.getElementById('shapeBorderColor').value;
-                annotation.borderWidth = parseInt(document.getElementById('shapeBorderWidth').value);
-            }
-
-            if (annotation) {
-                const centerX = (page.viewport.width / 2) - (annotation.width / 2);
-                const centerY = (page.viewport.height / 2) - (annotation.height / 2);
-
-                annotation.x = centerX;
-                annotation.y = centerY;
-                const element = annotation.createElement();
-                page.annotationLayer.appendChild(element);
-                page.addAnnotation(annotation);
-                selectAnnotation(annotation);
-            }
-        }
-
-        function selectAnnotation(annotation) {
-            if (selectedAnnotation) {
-                selectedAnnotation.element.classList.remove('selected');
-            }
-            selectedAnnotation = annotation;
-            annotation.element.classList.add('selected');
-
-            if (annotation.type === 'text') {
-                document.getElementById('fontSize').value = annotation.fontSize;
-                document.getElementById('fontFamily').value = annotation.fontFamily;
-                document.getElementById('textColor').value = annotation.color;
-                document.getElementById('textColorHex').value = annotation.color;
-                document.getElementById('fontWeight').value = annotation.fontWeight;
-                document.getElementById('fontStyle').value = annotation.fontStyle;
-            } else if (annotation.type === 'shape') {
-                document.getElementById('shapeType').value = annotation.shapeType;
-                document.getElementById('shapeFillColor').value = annotation.fillColor;
-                document.getElementById('shapeFillHex').value = annotation.fillColor;
-                document.getElementById('shapeBorderColor').value = annotation.borderColor;
-                document.getElementById('shapeBorderHex').value = annotation.borderColor;
-                document.getElementById('shapeBorderWidth').value = annotation.borderWidth;
-            }
-        }
-
-        // Property change handlers
-        document.getElementById('fontSize').addEventListener('input', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                selectedAnnotation.updateProperty('fontSize', parseInt(e.target.value));
-            }
-        });
-
-        document.getElementById('fontFamily').addEventListener('change', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                selectedAnnotation.updateProperty('fontFamily', e.target.value);
-            }
-        });
-
-        document.getElementById('textColor').addEventListener('input', (e) => {
-            document.getElementById('textColorHex').value = e.target.value;
-            if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                selectedAnnotation.updateProperty('color', e.target.value);
-            }
-        });
-
-        document.getElementById('textColorHex').addEventListener('input', (e) => {
-            const color = e.target.value;
-            if (/^#[0-9A-F]{6}$/i.test(color)) {
-                document.getElementById('textColor').value = color;
-                if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                    selectedAnnotation.updateProperty('color', color);
-                }
-            }
-        });
-
-        document.getElementById('fontWeight').addEventListener('change', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                selectedAnnotation.updateProperty('fontWeight', e.target.value);
-            }
-        });
-
-        document.getElementById('fontStyle').addEventListener('change', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'text') {
-                selectedAnnotation.updateProperty('fontStyle', e.target.value);
-            }
-        });
-
-        // Shape properties
-        document.getElementById('shapeType').addEventListener('change', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                selectedAnnotation.updateProperty('shapeType', e.target.value);
-            }
-        });
-
-        document.getElementById('shapeFillColor').addEventListener('input', (e) => {
-            document.getElementById('shapeFillHex').value = e.target.value;
-            if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                selectedAnnotation.updateProperty('fillColor', e.target.value);
-            }
-        });
-
-        document.getElementById('shapeFillHex').addEventListener('input', (e) => {
-            const color = e.target.value;
-            if (/^#[0-9A-F]{6}$/i.test(color)) {
-                document.getElementById('shapeFillColor').value = color;
-                if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                    selectedAnnotation.updateProperty('fillColor', color);
-                }
-            }
-        });
-
-        document.getElementById('shapeBorderColor').addEventListener('input', (e) => {
-            document.getElementById('shapeBorderHex').value = e.target.value;
-            if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                selectedAnnotation.updateProperty('borderColor', e.target.value);
-            }
-        });
-
-        document.getElementById('shapeBorderHex').addEventListener('input', (e) => {
-            const color = e.target.value;
-            if (/^#[0-9A-F]{6}$/i.test(color)) {
-                document.getElementById('shapeBorderColor').value = color;
-                if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                    selectedAnnotation.updateProperty('borderColor', color);
-                }
-            }
-        });
-
-        document.getElementById('shapeBorderWidth').addEventListener('input', (e) => {
-            if (selectedAnnotation && selectedAnnotation.type === 'shape') {
-                selectedAnnotation.updateProperty('borderWidth', parseInt(e.target.value));
-            }
-        });
-
-        // Pen properties
-        penColor.addEventListener('input', (e) => {
-            document.getElementById('penColorHex').value = e.target.value;
-        });
-
-        document.getElementById('penColorHex').addEventListener('input', (e) => {
-            const color = e.target.value;
-            if (/^#[0-9A-F]{6}$/i.test(color)) {
-                penColor.value = color;
-            }
-        });
-
-        // FIX: IMPROVED Mouse and Touch events for dragging and resizing
-        document.addEventListener('mousemove', (e) => {
-            if (isDragging && selectedAnnotation) {
-                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-                const x = e.clientX - rect.left - dragStartX;
-                const y = e.clientY - rect.top - dragStartY;
-                selectedAnnotation.updatePosition(
-                    Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
-                    Math.max(0, Math.min(y, rect.height - selectedAnnotation.height))
-                );
-            } else if (isResizing && selectedAnnotation) {
-                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-                const mouseX = e.clientX - rect.left;
-                const mouseY = e.clientY - rect.top;
-
-                let newWidth = selectedAnnotation.width;
-                let newHeight = selectedAnnotation.height;
-                let newX = selectedAnnotation.x;
-                let newY = selectedAnnotation.y;
-
-                if (resizeHandle.includes('e')) {
-                    newWidth = mouseX - selectedAnnotation.x;
-                }
-                if (resizeHandle.includes('w')) {
-                    newWidth = selectedAnnotation.width + (selectedAnnotation.x - mouseX);
-                    newX = mouseX;
-                }
-                if (resizeHandle.includes('s')) {
-                    newHeight = mouseY - selectedAnnotation.y;
-                }
-                if (resizeHandle.includes('n')) {
-                    newHeight = selectedAnnotation.height + (selectedAnnotation.y - mouseY);
-                    newY = mouseY;
-                }
-
-                if (newWidth > 20 && newHeight > 20) {
-                    selectedAnnotation.updateSize(newWidth, newHeight);
-                    if (newX !== selectedAnnotation.x || newY !== selectedAnnotation.y) {
-                        selectedAnnotation.updatePosition(newX, newY);
-                    }
-                }
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isDragging = false;
-            isResizing = false;
-            resizeHandle = null;
-        });
-
-        // FIX: IMPROVED Touch events
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging && !isResizing) return;
-
-            e.preventDefault();
-            const touch = e.touches[0];
-
-            if (isDragging && selectedAnnotation) {
-                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-                const x = touch.clientX - rect.left - dragStartX;
-                const y = touch.clientY - rect.top - dragStartY;
-                selectedAnnotation.updatePosition(
-                    Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
-                    Math.max(0, Math.min(y, rect.height - selectedAnnotation.height))
-                );
-            } else if (isResizing && selectedAnnotation) {
-                const rect = selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-                const touchX = touch.clientX - rect.left;
-                const touchY = touch.clientY - rect.top;
-
-                let newWidth = selectedAnnotation.width;
-                let newHeight = selectedAnnotation.height;
-                let newX = selectedAnnotation.x;
-                let newY = selectedAnnotation.y;
-
-                if (resizeHandle.includes('e')) {
-                    newWidth = touchX - selectedAnnotation.x;
-                }
-                if (resizeHandle.includes('w')) {
-                    newWidth = selectedAnnotation.width + (selectedAnnotation.x - touchX);
-                    newX = touchX;
-                }
-                if (resizeHandle.includes('s')) {
-                    newHeight = touchY - selectedAnnotation.y;
-                }
-                if (resizeHandle.includes('n')) {
-                    newHeight = selectedAnnotation.height + (selectedAnnotation.y - touchY);
-                    newY = touchY;
-                }
-
-                if (newWidth > 20 && newHeight > 20) {
-                    selectedAnnotation.updateSize(newWidth, newHeight);
-                    if (newX !== selectedAnnotation.x || newY !== selectedAnnotation.y) {
-                        selectedAnnotation.updatePosition(newX, newY);
-                    }
-                }
-            }
-        }, { passive: false });
-
-        document.addEventListener('touchend', () => {
-            isDragging = false;
-            isResizing = false;
-            resizeHandle = null;
-        }, { passive: false });
-
-        // Undo functionality
-        undoBtn.addEventListener('click', () => {
-            const currentPage = pages[currentPageIndex];
-            if (currentPage.annotations.length > 0) {
-                const lastAnnotation = currentPage.annotations[currentPage.annotations.length - 1];
-                lastAnnotation.delete();
-            }
-        });
-
-        // Clear all
-        clearAllBtn.addEventListener('click', async () => {
-            const confirmed = await CustomModal.confirm('Clear all annotations on this page?', 'Confirm Action');
-            if (confirmed) {
-                const currentPage = pages[currentPageIndex];
-                [...currentPage.annotations].forEach(ann => ann.delete());
-                const ctx = currentPage.drawingCanvas.getContext('2d');
-                ctx.clearRect(0, 0, currentPage.drawingCanvas.width, currentPage.drawingCanvas.height);
-                currentPage.hasDrawing = false; // FIX: Reset drawing flag
-                selectedAnnotation = null;
-            }
-        });
-
-        // Delete file button
-        deleteFileBtn.addEventListener('click', async () => {
-            const confirmed = await CustomModal.confirm(
-                'Remove this PDF and start over? All your changes will be lost.',
-                'Confirm Deletion',
-                'danger'
-            );
-            if (confirmed) {
-                location.reload();
-            }
-        });
-
-        // Click outside to deselect
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.annotation-item') && !e.target.closest('.tool-btn') && !e.target.closest('.ocr-text-block')) {
-                if (selectedAnnotation) {
-                    selectedAnnotation.element.classList.remove('selected');
-                    selectedAnnotation = null;
-                }
-            }
-        });
-
-        document.querySelectorAll('.properties-dropdown').forEach(dropdown => {
-            dropdown.addEventListener('click', (e) => {
+            selectAnnotation(this);
+          });
+
+          // FIX: IMPROVED TOUCH EVENTS
+          this.element.addEventListener(
+            "touchstart",
+            (e) => {
+              const touch = e.touches[0];
+
+              if (e.target.classList.contains("resize-handle")) {
+                isResizing = true;
+                resizeHandle = e.target.dataset.handle;
                 e.stopPropagation();
+                e.preventDefault();
+              } else if (!e.target.closest(".annotation-controls")) {
+                isDragging = true;
+                const rect = this.page.annotationLayer.getBoundingClientRect();
+                dragStartX = touch.clientX - rect.left - this.x;
+                dragStartY = touch.clientY - rect.top - this.y;
+                e.stopPropagation();
+                e.preventDefault();
+              }
+              selectAnnotation(this);
+            },
+            { passive: false },
+          );
+
+          this.element.addEventListener("selectstart", (e) => {
+            if (isDragging || isResizing) {
+              e.preventDefault();
+            }
+          });
+        }
+
+        updatePosition(x, y) {
+          this.x = x;
+          this.y = y;
+          this.element.style.left = x + "px";
+          this.element.style.top = y + "px";
+        }
+
+        updateSize(width, height) {
+          this.width = Math.max(20, width);
+          this.height = Math.max(20, height);
+          this.element.style.width = this.width + "px";
+          this.element.style.height = this.height + "px";
+        }
+
+        delete() {
+          this.element.remove();
+          this.page.removeAnnotation(this);
+          if (selectedAnnotation === this) {
+            selectedAnnotation = null;
+          }
+        }
+
+        copy() {
+          const newAnnotation = this.clone();
+          newAnnotation.rotation = this.rotation;
+          newAnnotation.x += 20;
+          newAnnotation.y += 20;
+          const element = newAnnotation.createElement();
+          newAnnotation.applyTransform();
+          this.page.annotationLayer.appendChild(element);
+          this.page.addAnnotation(newAnnotation);
+          selectAnnotation(newAnnotation);
+        }
+
+        clone() {
+          return null;
+        }
+      }
+
+      class TextAnnotation extends Annotation {
+        constructor(page, isOCR = false) {
+          super("text", page);
+          this.text = "Double click to edit";
+          this.fontSize = 16;
+          this.fontFamily = "Arial";
+          this.color = "#000000";
+          this.fontWeight = "normal";
+          this.fontStyle = "normal";
+          this.isOCR = isOCR;
+          this.originalData = null;
+          this.deletionMarked = false;
+        }
+
+        createElement() {
+          const wrapper = super.createElement();
+          wrapper.classList.add("text-annotation");
+          if (this.isOCR) {
+            wrapper.classList.add("ocr-text-block");
+          }
+
+          const content = document.createElement("div");
+          content.className = "text-content";
+          content.textContent = this.text;
+          content.contentEditable = false;
+          content.style.width = "100%";
+          content.style.height = "100%";
+          content.style.outline = "none";
+
+          content.addEventListener("mousedown", (e) => {
+            selectAnnotation(this);
+            if (!content.isContentEditable) {
+              isDragging = true;
+              const rect = this.page.annotationLayer.getBoundingClientRect();
+              dragStartX = e.clientX - rect.left - this.x;
+              dragStartY = e.clientY - rect.top - this.y;
+              e.preventDefault();
+            }
+          });
+
+          content.addEventListener("dblclick", (e) => {
+            e.stopPropagation();
+            content.contentEditable = true;
+            content.style.cursor = "text";
+            wrapper.classList.add("editing");
+            content.focus();
+
+            const range = document.createRange();
+            range.selectNodeContents(content);
+            range.collapse(false);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+          });
+
+          content.addEventListener("input", () => {
+            this.text = content.textContent;
+          });
+
+          content.addEventListener("blur", () => {
+            content.contentEditable = false;
+            this.text = content.textContent;
+            content.style.cursor = "move";
+            wrapper.classList.remove("editing");
+
+            // FIX: Mark original for deletion on ANY edit
+            if (this.isOCR && this.originalData && !this.deletionMarked) {
+              this.page.addDeletedRegion({
+                x: this.originalData.x,
+                y: this.originalData.y,
+                width: this.originalData.width,
+                height: this.originalData.height,
+              });
+              this.deletionMarked = true;
+            }
+          });
+          wrapper.appendChild(content);
+          this.applyStyles();
+          return wrapper;
+        }
+
+        applyStyles() {
+          this.element.style.fontSize = this.fontSize + "px";
+          this.element.style.fontFamily = this.fontFamily;
+          this.element.style.color = this.color;
+          this.element.style.fontWeight = this.fontWeight;
+          this.element.style.fontStyle = this.fontStyle;
+        }
+
+        updateProperty(prop, value) {
+          this[prop] = value;
+          this.applyStyles();
+        }
+
+        clone() {
+          const newAnnotation = new TextAnnotation(this.page, false);
+          newAnnotation.text = this.text;
+          newAnnotation.fontSize = this.fontSize;
+          newAnnotation.fontFamily = this.fontFamily;
+          newAnnotation.color = this.color;
+          newAnnotation.fontWeight = this.fontWeight;
+          newAnnotation.fontStyle = this.fontStyle;
+          newAnnotation.width = this.width;
+          newAnnotation.height = this.height;
+          return newAnnotation;
+        }
+
+        // FIX: Mark for deletion when moved
+        updatePosition(x, y) {
+          super.updatePosition(x, y);
+
+          if (this.isOCR && this.originalData && !this.deletionMarked) {
+            this.page.addDeletedRegion({
+              x: this.originalData.x,
+              y: this.originalData.y,
+              width: this.originalData.width,
+              height: this.originalData.height,
             });
+            this.deletionMarked = true;
+          }
+        }
+
+        // FIX: Mark for deletion when resized
+        updateSize(width, height) {
+          super.updateSize(width, height);
+
+          if (this.isOCR && this.originalData && !this.deletionMarked) {
+            this.page.addDeletedRegion({
+              x: this.originalData.x,
+              y: this.originalData.y,
+              width: this.originalData.width,
+              height: this.originalData.height,
+            });
+            this.deletionMarked = true;
+          }
+        }
+      }
+
+      class ImageAnnotation extends Annotation {
+        constructor(page, imageSrc) {
+          super("image", page);
+          this.imageSrc = imageSrc;
+          this.width = 150;
+          this.height = 150;
+          this.isOriginal = false;
+          this.originalImageData = null;
+          this.deletionMarked = false;
+        }
+
+        createElement() {
+          const div = super.createElement();
+          div.classList.add("image-annotation");
+          const img = document.createElement("img");
+          img.src = this.imageSrc;
+          img.draggable = false;
+          div.appendChild(img);
+          return div;
+        }
+
+        clone() {
+          const newAnnotation = new ImageAnnotation(this.page, this.imageSrc);
+          newAnnotation.width = this.width;
+          newAnnotation.height = this.height;
+          return newAnnotation;
+        }
+
+        // FIX: Mark original for deletion when moved
+        updatePosition(x, y) {
+          super.updatePosition(x, y);
+
+          if (
+            this.isOriginal &&
+            this.originalImageData &&
+            !this.deletionMarked
+          ) {
+            if (!this.page.deletedImages) {
+              this.page.deletedImages = [];
+            }
+            this.page.deletedImages.push(this.originalImageData);
+            this.deletionMarked = true;
+            this.isOriginal = false; // FIX: Convert to regular annotation
+          }
+        }
+
+        // FIX: Mark original for deletion when resized
+        updateSize(width, height) {
+          super.updateSize(width, height);
+
+          if (
+            this.isOriginal &&
+            this.originalImageData &&
+            !this.deletionMarked
+          ) {
+            if (!this.page.deletedImages) {
+              this.page.deletedImages = [];
+            }
+            this.page.deletedImages.push(this.originalImageData);
+            this.deletionMarked = true;
+            this.isOriginal = false; // FIX: Convert to regular annotation
+          }
+        }
+
+        delete() {
+          this.element.remove();
+          this.page.removeAnnotation(this);
+
+          // If this was an original PDF image, mark it for deletion
+          if (
+            this.isOriginal &&
+            this.originalImageData &&
+            !this.deletionMarked
+          ) {
+            if (!this.page.deletedImages) {
+              this.page.deletedImages = [];
+            }
+            this.page.deletedImages.push(this.originalImageData);
+            this.deletionMarked = true;
+          }
+
+          if (selectedAnnotation === this) {
+            selectedAnnotation = null;
+          }
+        }
+      }
+
+      class ShapeAnnotation extends Annotation {
+        constructor(page, shapeType) {
+          super("shape", page);
+          this.shapeType = shapeType;
+          this.fillColor = "#4f46e5";
+          this.borderColor = "#1e3a8a";
+          this.borderWidth = 2;
+        }
+
+        createElement() {
+          const div = super.createElement();
+          div.classList.add("shape-annotation");
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          svg.style.width = "100%";
+          svg.style.height = "100%";
+          svg.style.pointerEvents = "auto";
+          svg.style.userSelect = "none";
+
+          this.svg = svg;
+          this.updateShape();
+          div.appendChild(svg);
+          return div;
+        }
+
+        updateShape() {
+          this.svg.innerHTML = "";
+
+          if (this.shapeType === "rectangle") {
+            const rect = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "rect",
+            );
+            rect.setAttribute("width", "100%");
+            rect.setAttribute("height", "100%");
+            rect.setAttribute("fill", this.fillColor);
+            rect.setAttribute("stroke", this.borderColor);
+            rect.setAttribute("stroke-width", this.borderWidth);
+            this.svg.appendChild(rect);
+          } else if (this.shapeType === "circle") {
+            const circle = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "circle",
+            );
+            circle.setAttribute("cx", "50%");
+            circle.setAttribute("cy", "50%");
+            circle.setAttribute("r", "45%");
+            circle.setAttribute("fill", this.fillColor);
+            circle.setAttribute("stroke", this.borderColor);
+            circle.setAttribute("stroke-width", this.borderWidth);
+            this.svg.appendChild(circle);
+          } else if (this.shapeType === "line") {
+            const line = document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "line",
+            );
+            line.setAttribute("x1", "0");
+            line.setAttribute("y1", "50%");
+            line.setAttribute("x2", "100%");
+            line.setAttribute("y2", "50%");
+            line.setAttribute("stroke", this.borderColor);
+            line.setAttribute("stroke-width", this.borderWidth);
+            this.svg.appendChild(line);
+          }
+        }
+
+        updateProperty(prop, value) {
+          this[prop] = value;
+          this.updateShape();
+        }
+
+        clone() {
+          const newAnnotation = new ShapeAnnotation(this.page, this.shapeType);
+          newAnnotation.fillColor = this.fillColor;
+          newAnnotation.borderColor = this.borderColor;
+          newAnnotation.borderWidth = this.borderWidth;
+          newAnnotation.width = this.width;
+          newAnnotation.height = this.height;
+          return newAnnotation;
+        }
+      }
+
+      class DrawingAnnotation extends Annotation {
+        constructor(page, pathData, color, width) {
+          super("drawing", page);
+          this.pathData = pathData;
+          this.color = color;
+          this.strokeWidth = width;
+        }
+
+        createElement() {
+          const div = super.createElement();
+          div.classList.add("shape-annotation");
+
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          svg.setAttribute("width", "100%");
+          svg.setAttribute("height", "100%");
+
+          const path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          path.setAttribute("d", this.pathData);
+          path.setAttribute("fill", "none");
+          path.setAttribute("stroke", this.color);
+          path.setAttribute("stroke-width", this.strokeWidth);
+          path.setAttribute("stroke-linecap", "round");
+          path.setAttribute("stroke-linejoin", "round");
+
+          svg.appendChild(path);
+          div.appendChild(svg);
+
+          return div;
+        }
+
+        clone() {
+          return new DrawingAnnotation(
+            this.page,
+            this.pathData,
+            this.color,
+            this.strokeWidth,
+          );
+        }
+      }
+
+      // Event Listeners
+      pdfUpload.addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        pdfFile = file;
+        currentFileName.textContent = file.name;
+        const loader = document.getElementById("uploadLoader");
+        loader.style.display = "block";
+
+        try {
+          await loadPDF(file);
+          loader.style.display = "none";
+        } catch (err) {
+          console.error("PDF load error:", err);
+          alert("Failed to load PDF. Please try another file.");
+        } finally {
+          loader.style.display = "none";
+        }
+      });
+
+      async function loadPDF(file) {
+        editorContainer.style.display = "block";
+        uploadSection.style.display = "none";
+        const arrayBuffer = await file.arrayBuffer();
+        pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+        canvasContainer.innerHTML = "";
+        thumbnailContainer.innerHTML = "";
+        pages = [];
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          const page = await pdfDoc.getPage(i);
+
+          // Get the original viewport at scale 1
+          const baseViewport = page.getViewport({ scale: 1 });
+
+          // Calculate scale to fit container width while maintaining aspect ratio
+          const containerRect = canvasContainer.getBoundingClientRect();
+          const containerWidth = containerRect.width || MAX_WIDTH;
+          const maxWidth = Math.min(containerWidth - 40, MAX_WIDTH);
+
+          // Calculate display scale based on width
+          const displayScale = maxWidth / baseViewport.width;
+
+          // Render at HIGH resolution for crisp text
+          const renderScale = displayScale * (window.devicePixelRatio || 2);
+          const renderViewport = page.getViewport({ scale: renderScale });
+
+          const wrapper = document.createElement("div");
+          wrapper.className = "pdf-page-wrapper";
+          wrapper.style.width = baseViewport.width * displayScale + "px";
+          wrapper.style.height = baseViewport.height * displayScale + "px";
+          if (i === 1) wrapper.classList.add("active");
+
+          const canvas = document.createElement("canvas");
+          canvas.className = "pdf-canvas";
+          canvas.width = renderViewport.width;
+          canvas.height = renderViewport.height;
+
+          // Style the canvas to display at correct size
+          canvas.style.width = baseViewport.width * displayScale + "px";
+          canvas.style.height = baseViewport.height * displayScale + "px";
+
+          const context = canvas.getContext("2d");
+          await page.render({
+            canvasContext: context,
+            viewport: renderViewport,
+          }).promise;
+
+          const annotationLayer = document.createElement("div");
+          annotationLayer.className = "annotation-layer";
+          annotationLayer.style.width =
+            baseViewport.width * displayScale + "px";
+          annotationLayer.style.height =
+            baseViewport.height * displayScale + "px";
+
+          const ocrLayer = document.createElement("div");
+          ocrLayer.className = "ocr-layer";
+          ocrLayer.style.width = baseViewport.width * displayScale + "px";
+          ocrLayer.style.height = baseViewport.height * displayScale + "px";
+          ocrLayer.style.position = "absolute";
+          ocrLayer.style.top = "0";
+          ocrLayer.style.left = "0";
+          ocrLayer.style.pointerEvents = "none";
+
+          const drawingCanvas = document.createElement("canvas");
+          drawingCanvas.className = "drawing-canvas";
+          drawingCanvas.width = renderViewport.width;
+          drawingCanvas.height = renderViewport.height;
+          drawingCanvas.style.width = baseViewport.width * displayScale + "px";
+          drawingCanvas.style.height =
+            baseViewport.height * displayScale + "px";
+
+          wrapper.appendChild(canvas);
+          wrapper.appendChild(ocrLayer);
+          wrapper.appendChild(annotationLayer);
+          wrapper.appendChild(drawingCanvas);
+          canvasContainer.appendChild(wrapper);
+
+          // Thumbnail - keep existing code
+          const thumbViewport = page.getViewport({ scale: 0.2 });
+          const thumbCanvas = document.createElement("canvas");
+          thumbCanvas.width = thumbViewport.width;
+          thumbCanvas.height = thumbViewport.height;
+          const thumbContext = thumbCanvas.getContext("2d");
+          await page.render({
+            canvasContext: thumbContext,
+            viewport: thumbViewport,
+          }).promise;
+
+          const thumbItem = document.createElement("div");
+          thumbItem.className = "thumbnail-item";
+          if (i === 1) thumbItem.classList.add("active");
+          thumbItem.dataset.page = i - 1;
+          thumbItem.appendChild(thumbCanvas);
+
+          const pageLabel = document.createElement("div");
+          pageLabel.className = "page-label";
+          pageLabel.textContent = `Page ${i}`;
+          thumbItem.appendChild(pageLabel);
+
+          thumbItem.addEventListener("click", () => switchToPage(i - 1));
+          thumbnailContainer.appendChild(thumbItem);
+
+          // Store the display viewport (not render viewport)
+          const displayViewport = page.getViewport({ scale: displayScale });
+          const pdfPage = new PDFPage(i, canvas, displayViewport);
+          pdfPage.wrapper = wrapper;
+          pdfPage.annotationLayer = annotationLayer;
+          pdfPage.ocrLayer = ocrLayer;
+          pdfPage.drawingCanvas = drawingCanvas;
+          pdfPage.scale = displayScale;
+          pages.push(pdfPage);
+
+          setupDrawing(pdfPage);
+        }
+
+        editorContainer.style.display = "block";
+        uploadSection.style.display = "none";
+      }
+
+      // Edit PDF Button - Extract text using OCR
+      editPdfBtn.addEventListener("click", async () => {
+        if (!pdfFile) {
+          await CustomModal.alert("Please upload a PDF first", "Notice");
+          return;
+        }
+
+        // FIX: Prevent multiple clicks
+        if (isEditMode) {
+          await CustomModal.alert("Edit mode is already active", "Notice");
+          return;
+        }
+
+        editPdfBtn.disabled = true;
+        editPdfBtn.innerHTML =
+          '<i class="fa fa-spinner fa-spin"></i> <span>Extracting Text...</span>';
+
+        try {
+          const formData = new FormData();
+          formData.append("file", pdfFile);
+
+          const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.success) {
+            // FIX: Clear existing OCR data first
+            pages.forEach((page) => {
+              page.ocrTextBlocks = [];
+              page.ocrLayer.innerHTML = "";
+            });
+
+            // Display OCR text
+            displayOCRText(data.pages);
+            // Display images
+            displayOCRImages(data.pages);
+
+            isEditMode = true;
+            editPdfBtn.innerHTML =
+              '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
+            editPdfBtn.classList.add("active");
+          } else {
+            await CustomModal.error(
+              "Error extracting text: " + (data.error || "Unknown error"),
+              "Extraction Failed",
+            );
+            editPdfBtn.innerHTML =
+              '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+            editPdfBtn.disabled = false;
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          await CustomModal.error(
+            "Failed to extract text from PDF. Make sure Flask server is running on port 8080.",
+            "Connection Error",
+          );
+          editPdfBtn.innerHTML =
+            '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+          editPdfBtn.disabled = false;
+        }
+      });
+
+      function displayOCRText(pagesData) {
+        pagesData.forEach((pageData, index) => {
+          const page = pages[index];
+          if (!page) return;
+
+          // FIX: Clear and reset properly
+          page.ocrTextBlocks = [];
+          page.ocrLayer.innerHTML = "";
+          page.ocrLayer.style.pointerEvents = "auto";
+
+          pageData.textBlocks.forEach((block) => {
+            const annotation = new TextAnnotation(page, true);
+            annotation.text = block.text;
+            annotation.x = block.x;
+            annotation.y = block.y;
+            annotation.width = Math.max(block.width, 30);
+            annotation.height = Math.max(block.height, 15);
+            annotation.fontSize = Math.round(block.fontSize);
+            annotation.fontFamily = block.fontFamily || "Arial";
+            annotation.color = block.color || "#000000";
+            annotation.deletionMarked = false;
+
+            // Store original position for deletion
+            annotation.originalData = {
+              x: block.x,
+              y: block.y,
+              width: block.width,
+              height: block.height,
+            };
+
+            const element = annotation.createElement();
+            page.ocrLayer.appendChild(element);
+            page.ocrTextBlocks.push(annotation);
+          });
         });
+      }
+
+      function displayOCRImages(pagesData) {
+        pagesData.forEach((pageData, index) => {
+          const page = pages[index];
+          if (!page) return;
+
+          pageData.images.forEach((img) => {
+            createEditableImage(page, img, pageData.pdfId);
+          });
+        });
+      }
+
+      async function createEditableImage(page, imgInfo, pdfId) {
+        const annotation = new ImageAnnotation(page, "");
+        annotation.x = imgInfo.x;
+        annotation.y = imgInfo.y;
+        annotation.width = imgInfo.width;
+        annotation.height = imgInfo.height;
+        annotation.xref = imgInfo.xref;
+        annotation.isOriginal = true;
+
+        // Fetch actual image
+        try {
+          const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              xref: imgInfo.xref,
+              pageNum: imgInfo.pageNum,
+              pdfId: pdfId,
+            }),
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const imageUrl = URL.createObjectURL(blob);
+            annotation.imageSrc = imageUrl;
+            annotation.originalImageData = {
+              xref: imgInfo.xref,
+              x: imgInfo.x,
+              y: imgInfo.y,
+              width: imgInfo.width,
+              height: imgInfo.height,
+            };
+
+            const element = annotation.createElement();
+            page.ocrLayer.appendChild(element);
+
+            // FIX: Add to ocrTextBlocks for tracking (NOT annotations)
+            page.ocrTextBlocks.push(annotation);
+          }
+        } catch (error) {
+          console.error("Error loading image:", error);
+        }
+      }
+
+      // Save PDF with changes
+      saveBtn.addEventListener("click", async () => {
+        if (!pdfFile) {
+          alert("No PDF loaded");
+          return;
+        }
+
+        saveBtn.disabled = true;
+        saveBtn.innerHTML =
+          '<i class="fa fa-spinner fa-spin"></i> <span>Saving...</span>';
+
+        try {
+          const formData = new FormData();
+          formData.append("file", pdfFile);
+
+          const annotationsData = pages.map((page) => {
+            const pageAnnotations = [];
+
+            // FIX: Process all regular annotations (from annotationLayer)
+            page.annotations.forEach((ann) => {
+              const annData = {
+                type: ann.type,
+                x: ann.x,
+                y: ann.y,
+                width: ann.width,
+                height: ann.height,
+              };
+
+              if (ann.type === "text") {
+                annData.text = ann.text;
+                annData.fontSize = ann.fontSize;
+                annData.fontFamily = ann.fontFamily;
+                annData.color = ann.color;
+                annData.fontWeight = ann.fontWeight;
+                annData.fontStyle = ann.fontStyle;
+              } else if (ann.type === "image") {
+                annData.imageData = ann.imageSrc;
+                annData.width = ann.width;
+                annData.height = ann.height;
+              } else if (ann.type === "shape") {
+                annData.shapeType = ann.shapeType;
+                annData.fillColor = ann.fillColor;
+                annData.borderColor = ann.borderColor;
+                annData.borderWidth = ann.borderWidth;
+              }
+
+              pageAnnotations.push(annData);
+            });
+
+            // FIX: Process OCR layer items (edited text & images)
+            page.ocrTextBlocks.forEach((ann) => {
+              // Skip if already deleted
+              if (ann.element && !ann.element.parentNode) return;
+
+              const annData = {
+                type: ann.type,
+                x: ann.x,
+                y: ann.y,
+                width: ann.width,
+                height: ann.height,
+              };
+
+              if (ann.type === "text") {
+                annData.text = ann.text;
+                annData.fontSize = ann.fontSize;
+                annData.fontFamily = ann.fontFamily;
+                annData.color = ann.color;
+                annData.fontWeight = ann.fontWeight;
+                annData.fontStyle = ann.fontStyle;
+              } else if (ann.type === "image") {
+                annData.imageData = ann.imageSrc;
+              }
+
+              pageAnnotations.push(annData);
+            });
+
+            // FIX: Check for actual drawing data
+            let drawingData = null;
+            if (page.hasDrawing) {
+              const ctx = page.drawingCanvas.getContext("2d");
+              const imageData = ctx.getImageData(
+                0,
+                0,
+                page.drawingCanvas.width,
+                page.drawingCanvas.height,
+              );
+              const hasDrawing = imageData.data.some(
+                (channel) => channel !== 0,
+              );
+
+              if (hasDrawing) {
+                drawingData = page.drawingCanvas.toDataURL("image/png");
+              }
+            }
+
+            return {
+              pageNum: page.pageNum,
+              annotations: pageAnnotations,
+              deletedRegions: page.deletedRegions || [],
+              deletedImages: page.deletedImages || [],
+              drawing: drawingData,
+            };
+          });
+
+          formData.append("annotations", JSON.stringify(annotationsData));
+
+          const response = await fetch(`${API_BASE_URL}/edit-pdf`, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "edited_" + currentFileName.textContent;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+
+            alert("PDF saved successfully!");
+          } else {
+            const error = await response.json();
+            alert("Error saving PDF: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert(
+            "Failed to save PDF. Make sure Flask server is running on port 8080.",
+          );
+        } finally {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML =
+            '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
+        }
+      });
+
+      function switchToPage(index) {
+        currentPageIndex = index;
+
+        pages.forEach((page, i) => {
+          if (i === index) {
+            page.wrapper.classList.add("active");
+          } else {
+            page.wrapper.classList.remove("active");
+          }
+        });
+
+        document.querySelectorAll(".thumbnail-item").forEach((thumb, i) => {
+          if (i === index) {
+            thumb.classList.add("active");
+          } else {
+            thumb.classList.remove("active");
+          }
+        });
+
+        const activeThumb = thumbnailContainer.children[index];
+        if (activeThumb) {
+          activeThumb.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+          });
+        }
+      }
+
+      function setupDrawing(page) {
+        const canvas = page.drawingCanvas;
+        const ctx = canvas.getContext("2d");
+
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // FIX: Helper function to get coordinates
+        function getCoords(e, canvas) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+
+          if (e.touches && e.touches.length > 0) {
+            return {
+              x: (e.touches[0].clientX - rect.left) * scaleX,
+              y: (e.touches[0].clientY - rect.top) * scaleY,
+            };
+          }
+
+          return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY,
+          };
+        }
+
+        // Mouse events
+        canvas.addEventListener("mousedown", (e) => {
+          if (currentTool !== "draw") return;
+          e.preventDefault();
+
+          isDrawing = true;
+
+          const coords = getCoords(e, canvas);
+          lastX = coords.x;
+          lastY = coords.y;
+
+          ctx.strokeStyle = penColor.value;
+          ctx.lineWidth = parseInt(penWidth.value);
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          ctx.moveTo(lastX, lastY);
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+          if (!isDrawing || currentTool !== "draw") return;
+          e.preventDefault();
+
+          const coords = getCoords(e, canvas);
+
+          ctx.lineTo(coords.x, coords.y);
+          ctx.stroke();
+
+          lastX = coords.x;
+          lastY = coords.y;
+
+          page.hasDrawing = true;
+        });
+
+        canvas.addEventListener("mouseup", (e) => {
+          if (!isDrawing) return;
+          e.preventDefault();
+          isDrawing = false;
+          ctx.closePath();
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+          if (isDrawing) {
+            isDrawing = false;
+            ctx.closePath();
+          }
+        });
+
+        // Touch events for mobile
+        canvas.addEventListener(
+          "touchstart",
+          (e) => {
+            if (currentTool !== "draw") return;
+            e.preventDefault();
+
+            isDrawing = true;
+
+            const coords = getCoords(e, canvas);
+            lastX = coords.x;
+            lastY = coords.y;
+
+            ctx.strokeStyle = penColor.value;
+            ctx.lineWidth = parseInt(penWidth.value);
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+          },
+          { passive: false },
+        );
+
+        canvas.addEventListener(
+          "touchmove",
+          (e) => {
+            if (!isDrawing || currentTool !== "draw") return;
+            e.preventDefault();
+
+            const coords = getCoords(e, canvas);
+
+            ctx.lineTo(coords.x, coords.y);
+            ctx.stroke();
+
+            lastX = coords.x;
+            lastY = coords.y;
+
+            page.hasDrawing = true;
+          },
+          { passive: false },
+        );
+
+        canvas.addEventListener(
+          "touchend",
+          (e) => {
+            if (!isDrawing) return;
+            e.preventDefault();
+            isDrawing = false;
+            ctx.closePath();
+          },
+          { passive: false },
+        );
+      }
+
+      // Tool handlers
+      addTextBtn.addEventListener("click", (e) => {
+        setTool("text");
+        if (e.target.closest(".tool-btn") === addTextBtn) {
+          addAnnotationToCurrentPage("text");
+        }
+      });
+
+      addImageBtn.addEventListener("click", () => {
+        imageUpload.click();
+      });
+
+      imageUpload.addEventListener("change", (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setTool("image", event.target.result);
+          addAnnotationToCurrentPage("image", event.target.result);
+        };
+        reader.readAsDataURL(file);
+        imageUpload.value = "";
+      });
+
+      drawBtn.addEventListener("click", () => {
+        setTool("draw");
+      });
+
+      addShapeBtn.addEventListener("click", (e) => {
+        setTool("shape");
+        if (e.target.closest(".tool-btn") === addShapeBtn) {
+          addAnnotationToCurrentPage("shape");
+        }
+      });
+
+      function setTool(tool, data = null) {
+        currentTool = tool;
+        document
+          .querySelectorAll(".tool-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+
+        if (tool === "text") addTextBtn.classList.add("active");
+        else if (tool === "draw") drawBtn.classList.add("active");
+        else if (tool === "shape") addShapeBtn.classList.add("active");
+
+        pages.forEach((page) => {
+          if (tool === "draw") {
+            page.drawingCanvas.classList.add("active");
+          } else {
+            page.drawingCanvas.classList.remove("active");
+          }
+        });
+      }
+
+      function addAnnotationToCurrentPage(type, data = null) {
+        const page = pages[currentPageIndex];
+        let annotation;
+
+        if (type === "text") {
+          annotation = new TextAnnotation(page, false);
+          annotation.fontSize = parseInt(
+            document.getElementById("fontSize").value,
+          );
+          annotation.fontFamily = document.getElementById("fontFamily").value;
+          annotation.color = document.getElementById("textColor").value;
+          annotation.fontWeight = document.getElementById("fontWeight").value;
+          annotation.fontStyle = document.getElementById("fontStyle").value;
+        } else if (type === "image") {
+          annotation = new ImageAnnotation(page, data);
+        } else if (type === "shape") {
+          const shapeType = document.getElementById("shapeType").value;
+          annotation = new ShapeAnnotation(page, shapeType);
+          annotation.fillColor =
+            document.getElementById("shapeFillColor").value;
+          annotation.borderColor =
+            document.getElementById("shapeBorderColor").value;
+          annotation.borderWidth = parseInt(
+            document.getElementById("shapeBorderWidth").value,
+          );
+        }
+
+        if (annotation) {
+          const centerX = page.viewport.width / 2 - annotation.width / 2;
+          const centerY = page.viewport.height / 2 - annotation.height / 2;
+
+          annotation.x = centerX;
+          annotation.y = centerY;
+          const element = annotation.createElement();
+          page.annotationLayer.appendChild(element);
+          page.addAnnotation(annotation);
+          selectAnnotation(annotation);
+        }
+      }
+
+      function selectAnnotation(annotation) {
+        if (selectedAnnotation) {
+          selectedAnnotation.element.classList.remove("selected");
+        }
+        selectedAnnotation = annotation;
+        annotation.element.classList.add("selected");
+
+        if (annotation.type === "text") {
+          document.getElementById("fontSize").value = annotation.fontSize;
+          document.getElementById("fontFamily").value = annotation.fontFamily;
+          document.getElementById("textColor").value = annotation.color;
+          document.getElementById("textColorHex").value = annotation.color;
+          document.getElementById("fontWeight").value = annotation.fontWeight;
+          document.getElementById("fontStyle").value = annotation.fontStyle;
+        } else if (annotation.type === "shape") {
+          document.getElementById("shapeType").value = annotation.shapeType;
+          document.getElementById("shapeFillColor").value =
+            annotation.fillColor;
+          document.getElementById("shapeFillHex").value = annotation.fillColor;
+          document.getElementById("shapeBorderColor").value =
+            annotation.borderColor;
+          document.getElementById("shapeBorderHex").value =
+            annotation.borderColor;
+          document.getElementById("shapeBorderWidth").value =
+            annotation.borderWidth;
+        }
+      }
+
+      // Property change handlers
+      document.getElementById("fontSize").addEventListener("input", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.updateProperty(
+            "fontSize",
+            parseInt(e.target.value),
+          );
+        }
+      });
+
+      document.getElementById("fontFamily").addEventListener("change", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.updateProperty("fontFamily", e.target.value);
+        }
+      });
+
+      document.getElementById("textColor").addEventListener("input", (e) => {
+        document.getElementById("textColorHex").value = e.target.value;
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.updateProperty("color", e.target.value);
+        }
+      });
+
+      document.getElementById("textColorHex").addEventListener("input", (e) => {
+        const color = e.target.value;
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          document.getElementById("textColor").value = color;
+          if (selectedAnnotation && selectedAnnotation.type === "text") {
+            selectedAnnotation.updateProperty("color", color);
+          }
+        }
+      });
+
+      document.getElementById("fontWeight").addEventListener("change", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.updateProperty("fontWeight", e.target.value);
+        }
+      });
+
+      document.getElementById("fontStyle").addEventListener("change", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.updateProperty("fontStyle", e.target.value);
+        }
+      });
+
+      // Shape properties
+      document.getElementById("shapeType").addEventListener("change", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "shape") {
+          selectedAnnotation.updateProperty("shapeType", e.target.value);
+        }
+      });
+
+      document
+        .getElementById("shapeFillColor")
+        .addEventListener("input", (e) => {
+          document.getElementById("shapeFillHex").value = e.target.value;
+          if (selectedAnnotation && selectedAnnotation.type === "shape") {
+            selectedAnnotation.updateProperty("fillColor", e.target.value);
+          }
+        });
+
+      document.getElementById("shapeFillHex").addEventListener("input", (e) => {
+        const color = e.target.value;
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          document.getElementById("shapeFillColor").value = color;
+          if (selectedAnnotation && selectedAnnotation.type === "shape") {
+            selectedAnnotation.updateProperty("fillColor", color);
+          }
+        }
+      });
+
+      document
+        .getElementById("shapeBorderColor")
+        .addEventListener("input", (e) => {
+          document.getElementById("shapeBorderHex").value = e.target.value;
+          if (selectedAnnotation && selectedAnnotation.type === "shape") {
+            selectedAnnotation.updateProperty("borderColor", e.target.value);
+          }
+        });
+
+      document
+        .getElementById("shapeBorderHex")
+        .addEventListener("input", (e) => {
+          const color = e.target.value;
+          if (/^#[0-9A-F]{6}$/i.test(color)) {
+            document.getElementById("shapeBorderColor").value = color;
+            if (selectedAnnotation && selectedAnnotation.type === "shape") {
+              selectedAnnotation.updateProperty("borderColor", color);
+            }
+          }
+        });
+
+      document
+        .getElementById("shapeBorderWidth")
+        .addEventListener("input", (e) => {
+          if (selectedAnnotation && selectedAnnotation.type === "shape") {
+            selectedAnnotation.updateProperty(
+              "borderWidth",
+              parseInt(e.target.value),
+            );
+          }
+        });
+
+      // Pen properties
+      penColor.addEventListener("input", (e) => {
+        document.getElementById("penColorHex").value = e.target.value;
+      });
+
+      document.getElementById("penColorHex").addEventListener("input", (e) => {
+        const color = e.target.value;
+        if (/^#[0-9A-F]{6}$/i.test(color)) {
+          penColor.value = color;
+        }
+      });
+
+      // FIX: IMPROVED Mouse and Touch events for dragging and resizing
+      document.addEventListener("mousemove", (e) => {
+        if (isDragging && selectedAnnotation) {
+          const rect =
+            selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+          const x = e.clientX - rect.left - dragStartX;
+          const y = e.clientY - rect.top - dragStartY;
+          selectedAnnotation.updatePosition(
+            Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
+            Math.max(0, Math.min(y, rect.height - selectedAnnotation.height)),
+          );
+        } else if (isResizing && selectedAnnotation) {
+          const rect =
+            selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+          const mouseX = e.clientX - rect.left;
+          const mouseY = e.clientY - rect.top;
+
+          let newWidth = selectedAnnotation.width;
+          let newHeight = selectedAnnotation.height;
+          let newX = selectedAnnotation.x;
+          let newY = selectedAnnotation.y;
+
+          if (resizeHandle.includes("e")) {
+            newWidth = mouseX - selectedAnnotation.x;
+          }
+          if (resizeHandle.includes("w")) {
+            newWidth =
+              selectedAnnotation.width + (selectedAnnotation.x - mouseX);
+            newX = mouseX;
+          }
+          if (resizeHandle.includes("s")) {
+            newHeight = mouseY - selectedAnnotation.y;
+          }
+          if (resizeHandle.includes("n")) {
+            newHeight =
+              selectedAnnotation.height + (selectedAnnotation.y - mouseY);
+            newY = mouseY;
+          }
+
+          if (newWidth > 20 && newHeight > 20) {
+            selectedAnnotation.updateSize(newWidth, newHeight);
+            if (
+              newX !== selectedAnnotation.x ||
+              newY !== selectedAnnotation.y
+            ) {
+              selectedAnnotation.updatePosition(newX, newY);
+            }
+          }
+        }
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        isResizing = false;
+        resizeHandle = null;
+      });
+
+      // FIX: IMPROVED Touch events
+      document.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!isDragging && !isResizing) return;
+
+          e.preventDefault();
+          const touch = e.touches[0];
+
+          if (isDragging && selectedAnnotation) {
+            const rect =
+              selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+            const x = touch.clientX - rect.left - dragStartX;
+            const y = touch.clientY - rect.top - dragStartY;
+            selectedAnnotation.updatePosition(
+              Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
+              Math.max(0, Math.min(y, rect.height - selectedAnnotation.height)),
+            );
+          } else if (isResizing && selectedAnnotation) {
+            const rect =
+              selectedAnnotation.page.annotationLayer.getBoundingClientRect();
+            const touchX = touch.clientX - rect.left;
+            const touchY = touch.clientY - rect.top;
+
+            let newWidth = selectedAnnotation.width;
+            let newHeight = selectedAnnotation.height;
+            let newX = selectedAnnotation.x;
+            let newY = selectedAnnotation.y;
+
+            if (resizeHandle.includes("e")) {
+              newWidth = touchX - selectedAnnotation.x;
+            }
+            if (resizeHandle.includes("w")) {
+              newWidth =
+                selectedAnnotation.width + (selectedAnnotation.x - touchX);
+              newX = touchX;
+            }
+            if (resizeHandle.includes("s")) {
+              newHeight = touchY - selectedAnnotation.y;
+            }
+            if (resizeHandle.includes("n")) {
+              newHeight =
+                selectedAnnotation.height + (selectedAnnotation.y - touchY);
+              newY = touchY;
+            }
+
+            if (newWidth > 20 && newHeight > 20) {
+              selectedAnnotation.updateSize(newWidth, newHeight);
+              if (
+                newX !== selectedAnnotation.x ||
+                newY !== selectedAnnotation.y
+              ) {
+                selectedAnnotation.updatePosition(newX, newY);
+              }
+            }
+          }
+        },
+        { passive: false },
+      );
+
+      document.addEventListener(
+        "touchend",
+        () => {
+          isDragging = false;
+          isResizing = false;
+          resizeHandle = null;
+        },
+        { passive: false },
+      );
+
+      // Undo functionality
+      undoBtn.addEventListener("click", () => {
+        const currentPage = pages[currentPageIndex];
+        if (currentPage.annotations.length > 0) {
+          const lastAnnotation =
+            currentPage.annotations[currentPage.annotations.length - 1];
+          lastAnnotation.delete();
+        }
+      });
+
+      // Clear all
+      clearAllBtn.addEventListener("click", async () => {
+        const confirmed = await CustomModal.confirm(
+          "Clear all annotations on this page?",
+          "Confirm Action",
+        );
+        if (confirmed) {
+          const currentPage = pages[currentPageIndex];
+          [...currentPage.annotations].forEach((ann) => ann.delete());
+          const ctx = currentPage.drawingCanvas.getContext("2d");
+          ctx.clearRect(
+            0,
+            0,
+            currentPage.drawingCanvas.width,
+            currentPage.drawingCanvas.height,
+          );
+          currentPage.hasDrawing = false; // FIX: Reset drawing flag
+          selectedAnnotation = null;
+        }
+      });
+
+      // Delete file button
+      deleteFileBtn.addEventListener("click", async () => {
+        const confirmed = await CustomModal.confirm(
+          "Remove this PDF and start over? All your changes will be lost.",
+          "Confirm Deletion",
+          "danger",
+        );
+        if (confirmed) {
+          location.reload();
+        }
+      });
+
+      // Click outside to deselect
+      document.addEventListener("click", (e) => {
+        if (
+          !e.target.closest(".annotation-item") &&
+          !e.target.closest(".tool-btn") &&
+          !e.target.closest(".ocr-text-block")
+        ) {
+          if (selectedAnnotation) {
+            selectedAnnotation.element.classList.remove("selected");
+            selectedAnnotation = null;
+          }
+        }
+      });
+
+      document.querySelectorAll(".properties-dropdown").forEach((dropdown) => {
+        dropdown.addEventListener("click", (e) => {
+          e.stopPropagation();
+        });
+      });
     </script>
-
-</body>
-
+  </body>
 </html>

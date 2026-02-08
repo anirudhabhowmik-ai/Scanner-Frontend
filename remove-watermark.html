@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Remove Watermark from PDF - Fixed</title>
+    <title>Remove Watermark from PDF Online Free | NextoPDF</title>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -19,927 +19,648 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
     <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: "Inter", sans-serif;
-        background: #f3f4f6;
-        padding: 20px;
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background: white;
-        padding: 40px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      }
-
-      h1 {
-        color: #1e3a8a;
-        margin-bottom: 10px;
-        font-family: "Montserrat", sans-serif;
-      }
-
-      .upload-section {
-        margin-top: 30px;
-      }
-
-      .upload-label {
-        display: inline-block;
-        padding: 12px 24px;
-        background: #4f46e5;
-        color: white;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s;
-      }
-
-      .upload-label:hover {
-        background: #4338ca;
-      }
-
-      input[type="file"] {
-        display: none;
-      }
-
-      .file-list {
-        list-style: none;
-        margin: 20px 0;
-        padding: 15px;
-        background: #f9fafb;
-        border-radius: 8px;
-      }
-
-      .file-list li {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-        background: white;
-        border-radius: 6px;
-        margin-bottom: 10px;
-      }
-
-      .delete-file {
-        margin-left: auto;
-        cursor: pointer;
-        color: #ef4444;
-        transition: color 0.2s;
-      }
-
-      .delete-file:hover {
-        color: #dc2626;
-      }
-
-      .preview-container {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        margin: 25px 0 20px;
-        border: 2px dashed #e5e7eb;
-        min-height: 200px;
-        display: none;
-      }
-
-      .preview-container h3 {
-        color: #1e3a8a;
-        margin-bottom: 15px;
-        font-size: 18px;
-      }
-
-      .preview-help {
-        background: #dbeafe;
-        border: 1px solid #3b82f6;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        color: #1e40af;
-        font-size: 14px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .preview-grid {
+      .pages-grid {
         display: flex;
         flex-direction: column;
-        align-items: center;
         gap: 30px;
-      }
-
-      .preview-page {
-        background: #f9fafb;
-        border-radius: 8px;
-        padding: 15px;
-        border: 2px solid #e5e7eb;
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-      }
-
-      .preview-page-header {
-        display: flex;
-        justify-content: space-between;
+        margin-top: 20px;
         align-items: center;
-        margin-bottom: 12px;
       }
 
-      .preview-page-number {
-        font-size: 14px;
-        color: #1e3a8a;
-        font-weight: 700;
-      }
-
-      .page-canvas-wrapper {
+      .page-card {
         position: relative;
         background: white;
-        border-radius: 6px;
-        overflow: hidden;
-        margin: 0 auto;
-      }
-
-      .page-canvas-wrapper canvas {
-        display: block;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: fit-content;
         max-width: 100%;
-        height: auto;
+        transition: all 0.3s ease;
       }
 
-      .text-element,
-      .image-element {
+      .page-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      .page-canvas-container {
+        position: relative;
+        display: inline-block;
+      }
+
+      .page-card canvas {
+        display: block;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        max-width: min(100%, 800px) !important;
+      }
+
+      .page-number-badge {
+        position: absolute;
+        top: -8px;
+        left: 8px;
+        background: #4f46e5;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        z-index: 5;
+      }
+
+      .watermark-overlay {
         position: absolute;
         cursor: pointer;
-        transition: all 0.2s;
-        border: 2px solid transparent;
+        user-select: none;
         z-index: 10;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
       }
 
-      .text-element:hover,
-      .image-element:hover {
-        border-color: #3b82f6;
-        background: rgba(59, 130, 246, 0.1);
+      .watermark-overlay.type-text {
+        background: rgba(239, 68, 68, 0.1);
       }
 
-      .text-element.selected,
-      .image-element.selected {
+      .watermark-overlay.type-text:hover {
         border-color: #ef4444;
-        background: rgba(239, 68, 68, 0.15);
+        background: rgba(239, 68, 68, 0.2);
       }
 
-      .image-element {
-        background: rgba(59, 130, 246, 0.15);
-        border: 2px dashed #3b82f6;
+      .watermark-overlay.type-image {
+        background: rgba(59, 130, 246, 0.1);
+        border: 2px dashed transparent;
       }
 
-      .image-element:hover {
-        background: rgba(59, 130, 246, 0.25);
+      .watermark-overlay.type-image:hover {
+        border-color: #3b82f6;
+        background: rgba(59, 130, 246, 0.2);
       }
 
-      .image-element.selected {
-        background: rgba(239, 68, 68, 0.25);
-        border: 2px solid #ef4444;
+      .watermark-overlay.selected {
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.3) !important;
+        border-style: solid !important;
       }
 
-      .delete-badge {
+      .watermark-overlay.deleted {
+        display: none;
+      }
+
+      .overlay-label {
         position: absolute;
-        top: -12px;
-        right: -12px;
+        top: -22px;
+        left: 0;
+        background: #1e40af;
+        color: white;
+        padding: 2px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        white-space: nowrap;
+        display: none;
+        z-index: 30;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .watermark-overlay:hover .overlay-label {
+        display: block;
+      }
+
+      .delete-icon {
+        position: absolute;
+        top: -10px;
+        right: -10px;
         background: #ef4444;
         color: white;
+        border-radius: 50%;
         width: 24px;
         height: 24px;
-        border-radius: 50%;
         display: none;
         align-items: center;
         justify-content: center;
         font-size: 12px;
-        cursor: pointer;
         z-index: 20;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
       }
 
-      .text-element.selected .delete-badge,
-      .image-element.selected .delete-badge {
+      .watermark-overlay.selected .delete-icon {
         display: flex;
       }
 
-      .delete-badge:hover {
+      .delete-icon:hover {
         background: #dc2626;
         transform: scale(1.1);
       }
 
-      .delete-modal {
-        display: none;
+      #controlPanel {
         position: fixed;
-        top: 0;
+        bottom: 0;
         left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .delete-modal.show {
-        display: flex;
-      }
-
-      .modal-content {
+        right: 0;
         background: white;
-        border-radius: 12px;
-        padding: 30px;
-        max-width: 500px;
-        width: 90%;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      }
-
-      .modal-header {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-      }
-
-      .modal-header i {
-        color: #ef4444;
-        font-size: 24px;
-      }
-
-      .modal-header h3 {
-        color: #1e3a8a;
-        margin: 0;
-        font-size: 20px;
-      }
-
-      .modal-body p {
-        color: #4b5563;
-        line-height: 1.6;
-        margin-bottom: 20px;
-      }
-
-      .radio-group {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-
-      .radio-option {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px;
-        border: 2px solid #e5e7eb;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-
-      .radio-option:hover {
-        border-color: #4f46e5;
-        background: #f0f4ff;
-      }
-
-      .radio-option input[type="radio"] {
-        width: 18px;
-        height: 18px;
-        cursor: pointer;
-      }
-
-      .modal-actions {
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-        margin-top: 20px;
-      }
-
-      .modal-btn {
-        padding: 10px 20px;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        transition: all 0.2s;
-      }
-
-      .modal-btn-cancel {
-        background: #f3f4f6;
-        color: #4b5563;
-      }
-
-      .modal-btn-cancel:hover {
-        background: #e5e7eb;
-      }
-
-      .modal-btn-delete {
-        background: #ef4444;
-        color: white;
-      }
-
-      .modal-btn-delete:hover {
-        background: #dc2626;
-      }
-
-      .cta-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        background: #10b981;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-
-      .cta-button:hover {
-        background: #059669;
-        transform: translateY(-2px);
-      }
-
-      .cta-button:disabled {
-        background: #9ca3af;
-        cursor: not-allowed;
-        transform: none;
-      }
-
-      .btn-loading .btn-spinner {
-        display: inline-block;
-      }
-
-      .btn-loading .btn-text {
+        border-top: 3px solid #ef4444;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+        z-index: 1000;
+        padding: 15px;
         display: none;
       }
 
-      .btn-spinner {
-        display: none;
+      #controlPanel.show {
+        display: block;
+      }
+
+      .control-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
       }
 
       .selection-info {
-        background: #fef3c7;
-        border: 1px solid #f59e0b;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-top: 15px;
-        color: #92400e;
         font-size: 14px;
-        display: none;
-        align-items: center;
-        gap: 10px;
+        color: #1e3a8a;
+        margin-bottom: 12px;
+        font-weight: 600;
       }
 
-      .selection-info.show {
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .action-buttons button {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: none;
+      }
+
+      .note-box {
+        background: #f0f9ff;
+        border-left: 4px solid #3b82f6;
+        padding: 12px 16px;
+        margin-top: 15px;
+        font-size: 14px;
+        border-radius: 4px;
+      }
+
+      .success-message {
+        background: #d1fae5;
+        border-left: 4px solid #059669;
+        padding: 12px 16px;
+        margin-top: 15px;
+        font-size: 14px;
+        border-radius: 4px;
+        color: #065f46;
+        display: none;
+      }
+
+      .success-message.show {
+        display: block;
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .loading-overlay.show {
         display: flex;
       }
 
-      .error-text {
-        color: #ef4444;
-        margin-top: 15px;
-        padding: 10px;
-        background: #fee;
-        border-radius: 6px;
-        display: none;
+      .loading-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        text-align: center;
       }
 
-      .note {
-        color: #6b7280;
-        font-size: 14px;
-        margin-top: 15px;
+      .spinner {
+        border: 4px solid #f3f4f6;
+        border-top: 4px solid #4f46e5;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 15px;
       }
 
-      @media (max-width: 768px) {
-        .container {
-          padding: 20px;
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-
-        .preview-page {
-          padding: 10px;
-        }
-
-        .modal-content {
-          padding: 20px;
+        100% {
+          transform: rotate(360deg);
         }
       }
     </style>
   </head>
 
   <body>
-    <div class="container">
-      <h1>Remove Watermark from PDF - Fixed Version</h1>
-      <p>
-        Upload your PDF and click on any text or image to mark it as a
-        watermark.
-      </p>
+    <section id="header-placeholder"></section>
 
-      <div class="upload-section">
-        <div id="uploadSection">
-          <label class="upload-label" for="pdfUpload">
-            <i class="fa fa-upload"></i> Choose PDF file
-          </label>
-          <input type="file" id="pdfUpload" accept=".pdf" />
-        </div>
-
-        <ul id="fileList" class="file-list" style="display: none"></ul>
-
-        <!-- Preview Container -->
-        <div id="previewContainer" class="preview-container">
-          <h3>Select Watermarks to Remove</h3>
-          <div class="preview-help">
-            <i class="fas fa-info-circle" style="font-size: 18px"></i>
-            <span
-              >Click on any text or image in the preview below to mark it as a
-              watermark. Then click the delete icon to choose removal
-              options.</span
-            >
-          </div>
-
-          <div id="previewGrid" class="preview-grid"></div>
-          <div id="selectionInfo" class="selection-info">
-            <i class="fas fa-check-circle"></i>
-            <span id="selectionText">0 watermarks selected for removal</span>
-          </div>
-        </div>
-
-        <button id="saveBtn" class="cta-button">
-          <span class="btn-spinner">
-            <i class="fa fa-spinner fa-spin"></i>
-          </span>
-          <span class="btn-text"> <i class="fa fa-save"></i> Save PDF </span>
-        </button>
-
-        <p class="error-text" id="errorMsg"></p>
-        <p class="note" id="noteText">
-          Supported format: PDF. Click on text or images in the preview to mark
-          them as watermarks.
-        </p>
-      </div>
-    </div>
-
-    <!-- Delete Modal -->
-    <div id="deleteModal" class="delete-modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <i class="fas fa-trash-alt"></i>
-          <h3>Remove Watermark</h3>
-        </div>
-        <div class="modal-body">
-          <p id="modalMessage">
-            Do you want to remove this watermark from current page only or from
-            all pages?
+    <main>
+      <section class="merge-tool">
+        <div class="container">
+          <h1>Remove Watermark from PDF Online</h1>
+          <p>
+            Upload your PDF and click on any text or image to select watermarks
+            for removal. Uses PyMuPDF for accurate detection and permanent
+            deletion.
           </p>
-          <div class="radio-group">
-            <div class="radio-option">
-              <input
-                type="radio"
-                id="currentPage"
-                name="deleteScope"
-                value="current"
-                checked
-              />
-              <label for="currentPage">Current page only</label>
+
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label class="upload-label" for="pdfUpload">
+                <i class="fa fa-upload"></i> Choose PDF file
+              </label>
+              <input type="file" id="pdfUpload" accept=".pdf" />
             </div>
-            <div class="radio-option">
-              <input
-                type="radio"
-                id="allPages"
-                name="deleteScope"
-                value="all"
-              />
-              <label for="allPages"
-                >All pages (remove same text/image from entire PDF)</label
-              >
+
+            <div class="success-message" id="successMsg"></div>
+            <p class="error-text" id="errorMsg" style="display: none"></p>
+
+            <div id="pagesGrid" class="pages-grid" style="display: none"></div>
+
+            <div id="controlPanel">
+              <div class="control-content">
+                <div class="selection-info" id="selectionInfo">
+                  No items selected
+                </div>
+                <div class="action-buttons">
+                  <button id="clearBtn" class="secondary-btn">
+                    <i class="fa fa-times"></i> Clear Selection
+                  </button>
+                  <button
+                    id="deleteBtn"
+                    class="cta-button"
+                    style="background: #f59e0b"
+                  >
+                    <i class="fa fa-trash"></i> Delete Selected
+                  </button>
+                  <button id="removeBtn" class="cta-button">
+                    <i class="fa fa-eraser"></i> Remove Watermarks
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="note-box">
+              💡 <strong>How it works:</strong> Click on text or images to
+              select them (red border appears). Selected items can be deleted
+              individually or in batch. Then click "Remove Watermarks" to
+              permanently delete them from your PDF.
+            </div>
+
+            <div id="resultBtns" style="display: none; margin-top: 30px">
+              <div class="result-card">
+                <i class="fa fa-file-pdf"></i>
+              </div>
+              <p class="file-name">
+                <a href="#" id="fileNameLink">cleaned.pdf</a>
+              </p>
+              <div class="result-btns-container">
+                <a id="downloadBtn" href="#" class="cta-button" download>
+                  <i class="fa fa-download"></i> Download
+                </a>
+                <button id="resetBtn" class="secondary-btn">
+                  <i class="fa fa-rotate-right"></i> Remove Another
+                </button>
+              </div>
             </div>
           </div>
         </div>
-        <div class="modal-actions">
-          <button class="modal-btn modal-btn-cancel" id="modalCancel">
-            Cancel
-          </button>
-          <button class="modal-btn modal-btn-delete" id="modalDelete">
-            Delete
-          </button>
-        </div>
+      </section>
+    </main>
+
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Processing PDF...</p>
       </div>
     </div>
 
-    <!-- PDF.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <section id="footer-placeholder"></section>
 
+    <script src="./js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const BACKEND_REMOVE_WATERMARK_URL = `http://127.0.0.1:8080/remove-watermark`;
+      const DETECT_URL = `http://127.0.0.1:8080/detect-watermarks`;
+      const REMOVE_URL = `http://127.0.0.1:8080/remove-watermark`;
 
       const pdfUpload = document.getElementById("pdfUpload");
-      const fileList = document.getElementById("fileList");
-      const previewContainer = document.getElementById("previewContainer");
-      const previewGrid = document.getElementById("previewGrid");
-      const saveBtn = document.getElementById("saveBtn");
-      const errorMsg = document.getElementById("errorMsg");
+      const pagesGrid = document.getElementById("pagesGrid");
+      const controlPanel = document.getElementById("controlPanel");
       const selectionInfo = document.getElementById("selectionInfo");
-      const selectionText = document.getElementById("selectionText");
-      const deleteModal = document.getElementById("deleteModal");
-      const modalMessage = document.getElementById("modalMessage");
-      const modalCancel = document.getElementById("modalCancel");
-      const modalDelete = document.getElementById("modalDelete");
+      const clearBtn = document.getElementById("clearBtn");
+      const deleteBtn = document.getElementById("deleteBtn");
+      const removeBtn = document.getElementById("removeBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const successMsg = document.getElementById("successMsg");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const resultBtns = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const uploadSection = document.getElementById("uploadSection");
 
-      let uploadedFile = null;
-      let pdfDocument = null;
-      let watermarksToRemove = [];
-      let currentDeletingItem = null;
-      let allPagesData = [];
+      let currentFile = null;
+      let detectedItems = [];
+      let selectedItems = new Set();
+      let deletedItems = new Set();
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = "block";
+        successMsg.classList.remove("show");
+      }
+
       function clearError() {
-        errorMsg.textContent = "";
         errorMsg.style.display = "none";
       }
 
-      pdfUpload.addEventListener("change", async (e) => {
+      function showSuccess(msg) {
+        successMsg.textContent = msg;
+        successMsg.classList.add("show");
         clearError();
-        const file = e.target.files[0];
-
-        if (!file) return;
-
-        if (!file.name.toLowerCase().endsWith(".pdf")) {
-          errorMsg.textContent = "Please upload a valid PDF file";
-          errorMsg.style.display = "block";
-          return;
-        }
-
-        uploadedFile = file;
-
-        fileList.style.display = "block";
-        fileList.innerHTML = `<li><i class="fa fa-file-pdf"></i> <span>${file.name}</span> <i class="fa fa-times delete-file"></i></li>`;
-
-        // Add delete file handler
-        fileList.querySelector(".delete-file").addEventListener("click", () => {
-          uploadedFile = null;
-          pdfDocument = null;
-          pdfUpload.value = "";
-          fileList.style.display = "none";
-          previewContainer.style.display = "none";
-          watermarksToRemove = [];
-          allPagesData = [];
-          clearError();
-        });
-
-        try {
-          await loadAllPages(file);
-          previewContainer.style.display = "block";
-        } catch (error) {
-          console.error("Preview error:", error);
-          errorMsg.textContent = "Error loading PDF: " + error.message;
-          errorMsg.style.display = "block";
-        }
-      });
-
-      async function loadAllPages(file) {
-        previewGrid.innerHTML = "";
-        watermarksToRemove = [];
-        allPagesData = [];
-
-        pdfDocument = await pdfjsLib.getDocument(URL.createObjectURL(file))
-          .promise;
-
-        // Load and render all pages
-        for (let pageNum = 1; pageNum <= pdfDocument.numPages; pageNum++) {
-          const pageData = await extractPageData(pageNum);
-          allPagesData.push(pageData);
-          renderPage(pageData, pageNum);
-        }
+        setTimeout(() => successMsg.classList.remove("show"), 3000);
       }
 
-      async function extractPageData(pageNum) {
-        const page = await pdfDocument.getPage(pageNum);
-
-        // Use consistent scale for rendering
-        const scale = 1.5;
-        const viewport = page.getViewport({ scale });
-
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-
-        // Set canvas size based on viewport
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-
-        // Render PDF page to canvas
-        await page.render({ canvasContext: context, viewport }).promise;
-
-        // Extract text with positions
-        const textContent = await page.getTextContent();
-        const textItems = textContent.items.map((item, index) => {
-          const tx = pdfjsLib.Util.transform(
-            viewport.transform,
-            item.transform,
-          );
-
-          return {
-            text: item.str,
-            index,
-            left: tx[4],
-            top: tx[5],
-            width: item.width * scale,
-            height: item.height * scale,
-            // Store original transform for backend
-            transform: item.transform,
-          };
-        });
-
-        // Extract images with actual positions
-        const images = [];
-        const ops = await page.getOperatorList();
-
-        let imgIndex = 0;
-        for (let i = 0; i < ops.fnArray.length; i++) {
-          if (
-            ops.fnArray[i] === pdfjsLib.OPS.paintImageXObject ||
-            ops.fnArray[i] === pdfjsLib.OPS.paintJpegXObject
-          ) {
-            const transform = ops.argsArray[i - 1] || [1, 0, 0, 1, 0, 0];
-
-            // Transform matrix: [a, b, c, d, e, f]
-            // where (e, f) is position, (a, d) is scale
-            const imgTransform = pdfjsLib.Util.transform(
-              viewport.transform,
-              transform,
-            );
-
-            const left = imgTransform[4];
-            const top = imgTransform[5];
-            const width = Math.abs(imgTransform[0]);
-            const height = Math.abs(imgTransform[3]);
-
-            images.push({
-              index: imgIndex,
-              left: left,
-              top: top - height, // Adjust for PDF coordinate system
-              width: width,
-              height: height,
-              name: `image_${imgIndex}`,
-              transform: transform,
-            });
-
-            imgIndex++;
-          }
-        }
-
-        return { pageNum, canvas, viewport, textItems, images };
+      function showLoading() {
+        loadingOverlay.classList.add("show");
       }
 
-      function renderPage(pageData, pageNum) {
-        const pageDiv = document.createElement("div");
-        pageDiv.className = "preview-page";
-        pageDiv.dataset.page = pageNum;
-        pageDiv.id = `page-${pageNum}`;
-
-        const header = document.createElement("div");
-        header.className = "preview-page-header";
-        header.innerHTML = `<div class="preview-page-number">Page ${pageNum}</div>`;
-        pageDiv.appendChild(header);
-
-        const wrapper = document.createElement("div");
-        wrapper.className = "page-canvas-wrapper";
-        wrapper.style.position = "relative";
-        wrapper.style.width = pageData.viewport.width + "px";
-        wrapper.style.height = pageData.viewport.height + "px";
-
-        // Add canvas
-        wrapper.appendChild(pageData.canvas);
-
-        // Add text elements
-        pageData.textItems.forEach((item) => {
-          const textDiv = document.createElement("div");
-          textDiv.className = "text-element";
-          textDiv.dataset.type = "text";
-          textDiv.dataset.page = pageNum;
-          textDiv.dataset.text = item.text;
-          textDiv.dataset.index = item.index;
-          textDiv.style.left = item.left + "px";
-          textDiv.style.top = item.top + "px";
-          textDiv.style.width = item.width + "px";
-          textDiv.style.height = item.height + "px";
-
-          const badge = document.createElement("div");
-          badge.className = "delete-badge";
-          badge.innerHTML = "✕";
-          textDiv.appendChild(badge);
-
-          textDiv.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (!textDiv.classList.contains("selected")) {
-              textDiv.classList.add("selected");
-            }
-          });
-
-          badge.addEventListener("click", (e) => {
-            e.stopPropagation();
-            currentDeletingItem = {
-              type: "text",
-              text: item.text,
-              index: item.index,
-              pageNum: pageNum,
-              element: textDiv,
-            };
-            showDeleteModal();
-          });
-
-          wrapper.appendChild(textDiv);
-        });
-
-        // Add image elements with proper positioning
-        pageData.images.forEach((img) => {
-          const imageDiv = document.createElement("div");
-          imageDiv.className = "image-element";
-          imageDiv.dataset.type = "image";
-          imageDiv.dataset.page = pageNum;
-          imageDiv.dataset.imageName = img.name;
-          imageDiv.dataset.index = img.index;
-          imageDiv.style.left = img.left + "px";
-          imageDiv.style.top = img.top + "px";
-          imageDiv.style.width = img.width + "px";
-          imageDiv.style.height = img.height + "px";
-
-          const badge = document.createElement("div");
-          badge.className = "delete-badge";
-          badge.innerHTML = "✕";
-          imageDiv.appendChild(badge);
-
-          imageDiv.addEventListener("click", (e) => {
-            e.stopPropagation();
-            if (!imageDiv.classList.contains("selected")) {
-              imageDiv.classList.add("selected");
-            }
-          });
-
-          badge.addEventListener("click", (e) => {
-            e.stopPropagation();
-            currentDeletingItem = {
-              type: "image",
-              imageName: img.name,
-              index: img.index,
-              pageNum: pageNum,
-              element: imageDiv,
-            };
-            showDeleteModal();
-          });
-
-          wrapper.appendChild(imageDiv);
-        });
-
-        pageDiv.appendChild(wrapper);
-        previewGrid.appendChild(pageDiv);
+      function hideLoading() {
+        loadingOverlay.classList.remove("show");
       }
-
-      function showDeleteModal() {
-        const type = currentDeletingItem.type === "text" ? "text" : "image";
-        modalMessage.textContent = `Do you want to remove this ${type} from current page only or from all pages?`;
-        deleteModal.classList.add("show");
-      }
-
-      modalCancel.addEventListener("click", () => {
-        deleteModal.classList.remove("show");
-        currentDeletingItem = null;
-      });
-
-      modalDelete.addEventListener("click", () => {
-        const scope = document.querySelector(
-          'input[name="deleteScope"]:checked',
-        ).value;
-
-        if (currentDeletingItem) {
-          if (scope === "all") {
-            // Remove from all pages
-            if (currentDeletingItem.type === "text") {
-              const selector = `.text-element[data-text="${CSS.escape(currentDeletingItem.text)}"]`;
-              document.querySelectorAll(selector).forEach((el) => {
-                watermarksToRemove.push({
-                  type: "text",
-                  page: parseInt(el.dataset.page),
-                  text: el.dataset.text,
-                  index: parseInt(el.dataset.index),
-                });
-                // Hide from preview immediately
-                el.style.display = "none";
-              });
-            } else {
-              const selector = `.image-element[data-imageName="${CSS.escape(currentDeletingItem.imageName)}"]`;
-              document.querySelectorAll(selector).forEach((el) => {
-                watermarksToRemove.push({
-                  type: "image",
-                  page: parseInt(el.dataset.page),
-                  imageName: el.dataset.imageName,
-                  index: parseInt(el.dataset.index),
-                });
-                // Hide from preview immediately
-                el.style.display = "none";
-              });
-            }
-          } else {
-            // Remove from current page only
-            watermarksToRemove.push({
-              type: currentDeletingItem.type,
-              page: currentDeletingItem.pageNum,
-              text: currentDeletingItem.element.dataset.text || null,
-              imageName: currentDeletingItem.element.dataset.imageName || null,
-              index: parseInt(currentDeletingItem.element.dataset.index),
-            });
-            // Hide from preview immediately
-            currentDeletingItem.element.style.display = "none";
-          }
-
-          updateSelectionInfo();
-        }
-
-        deleteModal.classList.remove("show");
-        currentDeletingItem = null;
-      });
 
       function updateSelectionInfo() {
-        const count = watermarksToRemove.length;
-        selectionText.textContent = `${count} watermark${count !== 1 ? "s" : ""} selected for removal`;
-        if (count > 0) {
-          selectionInfo.classList.add("show");
+        const selectedCount = selectedItems.size;
+        const deletedCount = deletedItems.size;
+
+        if (selectedCount === 0 && deletedCount === 0) {
+          selectionInfo.textContent = "No items selected";
+          controlPanel.classList.remove("show");
         } else {
-          selectionInfo.classList.remove("show");
+          const parts = [];
+          if (selectedCount > 0) parts.push(`${selectedCount} selected`);
+          if (deletedCount > 0)
+            parts.push(`${deletedCount} marked for deletion`);
+          selectionInfo.textContent = parts.join(", ");
+          controlPanel.classList.add("show");
         }
       }
 
-      saveBtn.addEventListener("click", async () => {
+      pdfUpload.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
         clearError();
+        currentFile = file;
+        selectedItems.clear();
+        deletedItems.clear();
+        detectedItems = [];
 
-        if (!uploadedFile) {
-          errorMsg.textContent = "Please upload a PDF file";
-          errorMsg.style.display = "block";
-          return;
-        }
-
-        if (watermarksToRemove.length === 0) {
-          errorMsg.textContent =
-            "Please select at least one watermark to remove";
-          errorMsg.style.display = "block";
-          return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", uploadedFile);
-        formData.append("watermarks", JSON.stringify(watermarksToRemove));
-
-        saveBtn.disabled = true;
-        saveBtn.classList.add("btn-loading");
+        showLoading();
 
         try {
-          const res = await fetch(BACKEND_REMOVE_WATERMARK_URL, {
+          // Step 1: Detect watermarks using backend PyMuPDF
+          const formData = new FormData();
+          formData.append("file", file);
+
+          const detectRes = await fetch(DETECT_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!detectRes.ok) {
+            throw new Error("Failed to detect watermarks");
+          }
+
+          const detectData = await detectRes.json();
+          detectedItems = detectData.items || [];
+
+          // Step 2: Render PDF pages with PDF.js
+          await renderPDFWithOverlays(file, detectedItems);
+
+          hideLoading();
+          showSuccess(
+            `✓ Detected ${detectedItems.length} items (text and images)`,
+          );
+          pagesGrid.style.display = "flex";
+        } catch (error) {
+          hideLoading();
+          showError("Error: " + error.message);
+        }
+      };
+
+      async function renderPDFWithOverlays(file, items) {
+        pagesGrid.innerHTML = "";
+
+        const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
+          .promise;
+
+        // Group items by page
+        const itemsByPage = {};
+        items.forEach((item, idx) => {
+          item.id = idx;
+          const page = item.page;
+          if (!itemsByPage[page]) itemsByPage[page] = [];
+          itemsByPage[page].push(item);
+        });
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const viewport = page.getViewport({ scale: 1 });
+
+          const maxWidth = Math.min(800, window.innerWidth - 40);
+          const scale = Math.min(maxWidth / viewport.width, 1.5);
+          const scaledViewport = page.getViewport({ scale });
+
+          const canvas = document.createElement("canvas");
+          canvas.width = scaledViewport.width;
+          canvas.height = scaledViewport.height;
+
+          await page.render({
+            canvasContext: canvas.getContext("2d"),
+            viewport: scaledViewport,
+          }).promise;
+
+          const card = document.createElement("div");
+          card.className = "page-card";
+
+          const badge = document.createElement("div");
+          badge.className = "page-number-badge";
+          badge.textContent = `Page ${pageNum}`;
+          card.appendChild(badge);
+
+          const container = document.createElement("div");
+          container.className = "page-canvas-container";
+          container.appendChild(canvas);
+
+          // Add overlays for items on this page
+          const pageItems = itemsByPage[pageNum] || [];
+          pageItems.forEach((item) => {
+            const overlay = createOverlay(item, scale);
+            container.appendChild(overlay);
+          });
+
+          card.appendChild(container);
+          pagesGrid.appendChild(card);
+        }
+      }
+
+      function createOverlay(item, scale) {
+        const bbox = item.bbox;
+        const [x0, y0, x1, y1] = bbox;
+
+        const overlay = document.createElement("div");
+        overlay.className = `watermark-overlay type-${item.type}`;
+        overlay.dataset.itemId = item.id;
+
+        overlay.style.left = x0 * scale + "px";
+        overlay.style.top = y0 * scale + "px";
+        overlay.style.width = (x1 - x0) * scale + "px";
+        overlay.style.height = (y1 - y0) * scale + "px";
+
+        const label = document.createElement("div");
+        label.className = "overlay-label";
+        if (item.type === "text") {
+          label.textContent = `Text: ${item.text.substring(0, 30)}`;
+        } else {
+          label.textContent = `Image`;
+        }
+        overlay.appendChild(label);
+
+        const deleteIcon = document.createElement("div");
+        deleteIcon.className = "delete-icon";
+        deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
+        overlay.appendChild(deleteIcon);
+
+        overlay.onclick = (e) => {
+          if (e.target.closest(".delete-icon")) return;
+          toggleSelection(item.id, overlay);
+        };
+
+        deleteIcon.onclick = (e) => {
+          e.stopPropagation();
+          markForDeletion(item.id, overlay);
+        };
+
+        return overlay;
+      }
+
+      function toggleSelection(itemId, overlay) {
+        if (deletedItems.has(itemId)) return;
+
+        if (selectedItems.has(itemId)) {
+          selectedItems.delete(itemId);
+          overlay.classList.remove("selected");
+        } else {
+          selectedItems.add(itemId);
+          overlay.classList.add("selected");
+        }
+        updateSelectionInfo();
+      }
+
+      function markForDeletion(itemId, overlay) {
+        selectedItems.delete(itemId);
+        deletedItems.add(itemId);
+        overlay.classList.add("deleted");
+        updateSelectionInfo();
+      }
+
+      clearBtn.onclick = () => {
+        selectedItems.clear();
+        document.querySelectorAll(".watermark-overlay").forEach((el) => {
+          el.classList.remove("selected");
+        });
+        updateSelectionInfo();
+      };
+
+      deleteBtn.onclick = () => {
+        const count = selectedItems.size;
+        selectedItems.forEach((id) => {
+          deletedItems.add(id);
+          const overlay = document.querySelector(`[data-item-id="${id}"]`);
+          if (overlay) overlay.classList.add("deleted");
+        });
+        selectedItems.clear();
+        updateSelectionInfo();
+        showSuccess(`✓ Marked ${count} item(s) for deletion`);
+      };
+
+      removeBtn.onclick = async () => {
+        if (deletedItems.size === 0) {
+          showError("Please select items to delete first!");
+          return;
+        }
+
+        clearError();
+        showLoading();
+
+        try {
+          const itemsToRemove = Array.from(deletedItems)
+            .map((id) => {
+              return detectedItems.find((item) => item.id === id);
+            })
+            .filter(Boolean);
+
+          const formData = new FormData();
+          formData.append("files", currentFile);
+          formData.append("watermarks", JSON.stringify(itemsToRemove));
+
+          const res = await fetch(REMOVE_URL, {
             method: "POST",
             body: formData,
           });
 
           if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || "Failed to remove watermark");
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to remove watermarks");
           }
 
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
 
-          // Download the file
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "watermark_removed.pdf";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          downloadBtn.href = url;
+          downloadBtn.download = "cleaned.pdf";
 
-          alert("✓ Watermarks removed successfully! File downloaded.");
-
-          // Reset
-          uploadedFile = null;
-          pdfDocument = null;
-          pdfUpload.value = "";
-          fileList.style.display = "none";
-          previewContainer.style.display = "none";
-          watermarksToRemove = [];
-          allPagesData = [];
-          selectionInfo.classList.remove("show");
+          hideLoading();
+          uploadSection.style.display = "none";
+          pagesGrid.style.display = "none";
+          controlPanel.style.display = "none";
+          document.querySelector(".note-box").style.display = "none";
+          resultBtns.style.display = "block";
         } catch (error) {
-          errorMsg.textContent = "Error: " + error.message;
-          errorMsg.style.display = "block";
-        } finally {
-          saveBtn.disabled = false;
-          saveBtn.classList.remove("btn-loading");
+          hideLoading();
+          showError("Error: " + error.message);
         }
-      });
+      };
+
+      resetBtn.onclick = () => {
+        location.reload();
+      };
     </script>
   </body>
 </html>

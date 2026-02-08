@@ -46,7 +46,11 @@
       <priority>0.7</priority>
    </url>
    <url>
-      <loc>https://nextopdf.com/watermark</loc>
+      <loc>https://nextopdf.com/add-watermark</loc>
+      <priority>0.7</priority>
+   </url>
+   <url>
+      <loc>https://nextopdf.com/remove-watermark</loc>
       <priority>0.7</priority>
    </url>
    <url>

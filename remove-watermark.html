@@ -86,18 +86,20 @@
       }
 
       .watermark-overlay.type-text:hover {
-        border-color: #ef4444;
-        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.2) !important;
+        z-index: 999;
       }
 
       .watermark-overlay.type-image {
-        background: rgba(59, 130, 246, 0.1);
+        background: rgba(239, 68, 68, 0.1);
         border: 2px dashed transparent;
       }
 
       .watermark-overlay.type-image:hover {
-        border-color: #3b82f6;
-        background: rgba(59, 130, 246, 0.2);
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.2);
+        z-index: 999;
       }
 
       .watermark-overlay.selected {
@@ -271,6 +273,63 @@
           transform: rotate(360deg);
         }
       }
+
+      /* File list styling - borrowed from merge.html */
+      .file-list {
+        display: none;
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .file-list li {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        transition: all 0.2s ease;
+      }
+
+      .file-list li:hover {
+        border-color: #4f46e5;
+        transform: translateX(4px);
+      }
+
+      .pdf-icon {
+        color: #ef4444;
+        font-size: 20px;
+      }
+
+      .file-list li span {
+        flex: 1;
+        color: #1f2937;
+        font-weight: 500;
+      }
+
+      .delete-file {
+        background: #ef4444;
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.3s ease;
+      }
+
+      .delete-file:hover {
+        background: #dc2626;
+      }
     </style>
   </head>
 
@@ -295,13 +354,19 @@
               <input type="file" id="pdfUpload" accept=".pdf" />
             </div>
 
-            <div class="success-message" id="successMsg"></div>
-            <p class="error-text" id="errorMsg" style="display: none"></p>
+            <!-- File list similar to merge.html -->
+            <ul id="fileList" class="file-list"></ul>
 
+            <div class="success-message" id="successMsg"></div>
             <div id="pagesGrid" class="pages-grid" style="display: none"></div>
 
             <div id="controlPanel">
               <div class="control-content">
+                <p
+                  class="error-text"
+                  id="errorMsg"
+                  style="display: none; margin-bottom: 10px"
+                ></p>
                 <div class="selection-info" id="selectionInfo">
                   No items selected
                 </div>
@@ -317,17 +382,17 @@
                     <i class="fa fa-trash"></i> Delete Selected
                   </button>
                   <button id="removeBtn" class="cta-button">
-                    <i class="fa fa-eraser"></i> Remove Watermarks
+                    <i class="fa fa-save"></i> Save Changes
                   </button>
                 </div>
               </div>
             </div>
 
-            <div class="note-box">
+            <div class="note-box" id="noteBox">
               💡 <strong>How it works:</strong> Click on text or images to
               select them (red border appears). Selected items can be deleted
-              individually or in batch. Then click "Remove Watermarks" to
-              permanently delete them from your PDF.
+              individually or in batch. Then click "Save Changes" to
+              download your cleaned PDF.
             </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
@@ -341,11 +406,26 @@
                 <a id="downloadBtn" href="#" class="cta-button" download>
                   <i class="fa fa-download"></i> Download
                 </a>
+                <a id="shareBtn" href="#" class="cta-button">
+                  <i class="fa fa-share-alt"></i> Share
+                </a>
                 <button id="resetBtn" class="secondary-btn">
                   <i class="fa fa-rotate-right"></i> Remove Another
                 </button>
               </div>
             </div>
+          </div>
+
+          <!-- PDF Preview -->
+          <div id="pdfPreview" style="display: none; margin-top: 30px">
+            <h2>Preview Cleaned PDF</h2>
+            <iframe
+              id="pdfFrame"
+              width="100%"
+              height="600"
+              title="Cleaned PDF preview"
+              style="border-radius: 12px; border: 1px solid #e5e7eb"
+            ></iframe>
           </div>
         </div>
       </section>
@@ -363,10 +443,12 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const DETECT_URL = `http://127.0.0.1:8080/detect-watermarks`;
-      const REMOVE_URL = `http://127.0.0.1:8080/remove-watermark`;
+      const DETECT_URL = `${BACKEND_BASE_URL}/detect-watermarks`;
+      const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
 
       const pdfUpload = document.getElementById("pdfUpload");
+      const uploadSection = document.getElementById("uploadSection");
+      const fileList = document.getElementById("fileList");
       const pagesGrid = document.getElementById("pagesGrid");
       const controlPanel = document.getElementById("controlPanel");
       const selectionInfo = document.getElementById("selectionInfo");
@@ -378,20 +460,23 @@
       const loadingOverlay = document.getElementById("loadingOverlay");
       const resultBtns = document.getElementById("resultBtns");
       const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
       const resetBtn = document.getElementById("resetBtn");
-      const uploadSection = document.getElementById("uploadSection");
+      const noteBox = document.getElementById("noteBox");
+      const pdfPreview = document.getElementById("pdfPreview");
+      const pdfFrame = document.getElementById("pdfFrame");
+      const fileNameLink = document.getElementById("fileNameLink");
 
       let currentFile = null;
       let detectedItems = [];
       let selectedItems = new Set();
-      let deletedItems = new Set();
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
       function showError(msg) {
         errorMsg.textContent = msg;
-        errorMsg.style.display = "block";
+        errorMsg.style.display = "inline-block";
         successMsg.classList.remove("show");
       }
 
@@ -416,21 +501,42 @@
 
       function updateSelectionInfo() {
         const selectedCount = selectedItems.size;
-        const deletedCount = deletedItems.size;
-
-        if (selectedCount === 0 && deletedCount === 0) {
+        if (selectedCount === 0) {
           selectionInfo.textContent = "No items selected";
-          controlPanel.classList.remove("show");
         } else {
-          const parts = [];
-          if (selectedCount > 0) parts.push(`${selectedCount} selected`);
-          if (deletedCount > 0)
-            parts.push(`${deletedCount} marked for deletion`);
-          selectionInfo.textContent = parts.join(", ");
-          controlPanel.classList.add("show");
+          selectionInfo.textContent = `${selectedCount} selected`;
         }
       }
 
+      // Render file list (like merge.html)
+      function renderFileList() {
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
+        
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${currentFile.name}</span> <button class="delete-file" id="deleteFileBtn"><i class="fa fa-times"></i></button>`;
+        fileList.appendChild(li);
+      }
+
+      // Handle file deletion
+      fileList.addEventListener("click", (e) => {
+        const deleteBtn = e.target.closest(".delete-file");
+        if (deleteBtn) {
+          currentFile = null;
+          detectedItems = [];
+          selectedItems.clear();
+          fileList.style.display = "none";
+          fileList.innerHTML = "";
+          uploadSection.style.display = "block";
+          pagesGrid.style.display = "none";
+          pagesGrid.innerHTML = "";
+          controlPanel.style.display = "none";
+          clearError();
+          successMsg.classList.remove("show");
+        }
+      });
+
+      // Upload PDF and detect watermarks
       pdfUpload.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -438,13 +544,16 @@
         clearError();
         currentFile = file;
         selectedItems.clear();
-        deletedItems.clear();
         detectedItems = [];
+
+        // Hide upload button and show file list
+        uploadSection.style.display = "none";
+        renderFileList();
 
         showLoading();
 
         try {
-          // Step 1: Detect watermarks using backend PyMuPDF
+          // Detect watermarks from backend
           const formData = new FormData();
           formData.append("file", file);
 
@@ -453,20 +562,18 @@
             body: formData,
           });
 
-          if (!detectRes.ok) {
-            throw new Error("Failed to detect watermarks");
-          }
+          if (!detectRes.ok) throw new Error("Failed to detect watermarks");
 
           const detectData = await detectRes.json();
           detectedItems = detectData.items || [];
 
-          // Step 2: Render PDF pages with PDF.js
           await renderPDFWithOverlays(file, detectedItems);
 
           hideLoading();
           showSuccess(
             `✓ Detected ${detectedItems.length} items (text and images)`,
           );
+          controlPanel.style.display = "block";
           pagesGrid.style.display = "flex";
         } catch (error) {
           hideLoading();
@@ -474,11 +581,17 @@
         }
       };
 
+      // Render PDF pages with overlays
       async function renderPDFWithOverlays(file, items) {
         pagesGrid.innerHTML = "";
 
-        const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
-          .promise;
+        // Create object URL and ensure it's ready
+        const fileURL = URL.createObjectURL(file);
+        const pdf = await pdfjsLib.getDocument({
+          url: fileURL,
+          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+          cMapPacked: true,
+        }).promise;
 
         // Group items by page
         const itemsByPage = {};
@@ -489,6 +602,7 @@
           itemsByPage[page].push(item);
         });
 
+        // Render all pages sequentially and wait for completion
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
           const page = await pdf.getPage(pageNum);
           const viewport = page.getViewport({ scale: 1 });
@@ -498,13 +612,18 @@
           const scaledViewport = page.getViewport({ scale });
 
           const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d", { willReadFrequently: false });
           canvas.width = scaledViewport.width;
           canvas.height = scaledViewport.height;
 
-          await page.render({
-            canvasContext: canvas.getContext("2d"),
+          // Wait for render to fully complete
+          const renderTask = page.render({
+            canvasContext: context,
             viewport: scaledViewport,
-          }).promise;
+            intent: 'display',
+          });
+
+          await renderTask.promise;
 
           const card = document.createElement("div");
           card.className = "page-card";
@@ -518,7 +637,7 @@
           container.className = "page-canvas-container";
           container.appendChild(canvas);
 
-          // Add overlays for items on this page
+          // Add overlays
           const pageItems = itemsByPage[pageNum] || [];
           pageItems.forEach((item) => {
             const overlay = createOverlay(item, scale);
@@ -528,6 +647,9 @@
           card.appendChild(container);
           pagesGrid.appendChild(card);
         }
+
+        // Clean up the object URL after rendering
+        URL.revokeObjectURL(fileURL);
       }
 
       function createOverlay(item, scale) {
@@ -545,11 +667,10 @@
 
         const label = document.createElement("div");
         label.className = "overlay-label";
-        if (item.type === "text") {
-          label.textContent = `Text: ${item.text.substring(0, 30)}`;
-        } else {
-          label.textContent = `Image`;
-        }
+        label.textContent =
+          item.type === "text"
+            ? `Text: ${item.text?.substring(0, 30)}`
+            : "Image";
         overlay.appendChild(label);
 
         const deleteIcon = document.createElement("div");
@@ -564,66 +685,177 @@
 
         deleteIcon.onclick = (e) => {
           e.stopPropagation();
-          markForDeletion(item.id, overlay);
+          deleteWatermark(item.id, overlay);
         };
 
         return overlay;
       }
 
       function toggleSelection(itemId, overlay) {
-        if (deletedItems.has(itemId)) return;
-
         if (selectedItems.has(itemId)) {
           selectedItems.delete(itemId);
           overlay.classList.remove("selected");
         } else {
           selectedItems.add(itemId);
           overlay.classList.add("selected");
+          clearError();
         }
         updateSelectionInfo();
       }
 
-      function markForDeletion(itemId, overlay) {
-        selectedItems.delete(itemId);
-        deletedItems.add(itemId);
-        overlay.classList.add("deleted");
-        updateSelectionInfo();
+      // Delete single watermark immediately and update preview
+      async function deleteWatermark(itemId, overlay) {
+        const item = detectedItems.find((i) => i.id === itemId);
+        if (!item) return;
+
+        showLoading();
+        clearError();
+
+        try {
+          // Send request to remove this single watermark
+          const formData = new FormData();
+          formData.append("files", currentFile);
+          formData.append("watermarks", JSON.stringify([item]));
+
+          const res = await fetch(REMOVE_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to remove watermark");
+          }
+
+          const blob = await res.blob();
+          currentFile = new File([blob], currentFile.name, {
+            type: "application/pdf",
+          });
+
+          // Store the page number of deleted item
+          const deletedPageNum = item.page;
+
+          // Update detectedItems array - remove deleted item
+          detectedItems = detectedItems.filter((i) => i.id !== itemId);
+          selectedItems.delete(itemId);
+
+          // Re-assign IDs to remaining items
+          detectedItems.forEach((item, idx) => {
+            item.id = idx;
+          });
+
+          // Only re-render the affected page
+          await reRenderSinglePage(deletedPageNum, currentFile, detectedItems);
+          
+          updateSelectionInfo();
+          hideLoading(); // Hide after render completes
+
+          showSuccess("✓ Watermark removed successfully");
+        } catch (error) {
+          hideLoading();
+          showError("Error: " + error.message);
+        }
       }
 
+      // Re-render only a single page
+      async function reRenderSinglePage(pageNumber, file, items) {
+        // Create object URL and ensure it's ready
+        const fileURL = URL.createObjectURL(file);
+        const pdf = await pdfjsLib.getDocument({
+          url: fileURL,
+          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
+          cMapPacked: true,
+        }).promise;
+
+        // Get items for this page
+        const pageItems = items.filter(item => item.page === pageNumber);
+
+        // Get the page
+        const page = await pdf.getPage(pageNumber);
+        const viewport = page.getViewport({ scale: 1 });
+
+        const maxWidth = Math.min(800, window.innerWidth - 40);
+        const scale = Math.min(maxWidth / viewport.width, 1.5);
+        const scaledViewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d", { willReadFrequently: false });
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+
+        // Wait for render to fully complete
+        const renderTask = page.render({
+          canvasContext: context,
+          viewport: scaledViewport,
+          intent: 'display',
+        });
+
+        await renderTask.promise;
+
+        // Find the existing page card
+        const pageCards = pagesGrid.querySelectorAll('.page-card');
+        const targetCard = pageCards[pageNumber - 1]; // 0-indexed
+
+        if (targetCard) {
+          // Create new card content
+          const badge = document.createElement("div");
+          badge.className = "page-number-badge";
+          badge.textContent = `Page ${pageNumber}`;
+
+          const container = document.createElement("div");
+          container.className = "page-canvas-container";
+          container.appendChild(canvas);
+
+          // Add overlays for remaining items on this page
+          pageItems.forEach((item) => {
+            const overlay = createOverlay(item, scale);
+            container.appendChild(overlay);
+          });
+
+          // Replace the card content
+          targetCard.innerHTML = '';
+          targetCard.appendChild(badge);
+          targetCard.appendChild(container);
+        }
+
+        // Clean up the object URL after rendering
+        URL.revokeObjectURL(fileURL);
+      }
+
+      // Clear selection
       clearBtn.onclick = () => {
+        const selectedOverlays = document.querySelectorAll(
+          ".watermark-overlay.selected",
+        );
+
+        // ❌ Nothing selected
+        if (selectedOverlays.length === 0) {
+          showError("You haven't selected any item to clear");
+          return;
+        }
+
+        // ✅ Clear only selected
         selectedItems.clear();
-        document.querySelectorAll(".watermark-overlay").forEach((el) => {
+
+        selectedOverlays.forEach((el) => {
           el.classList.remove("selected");
         });
+
         updateSelectionInfo();
       };
 
-      deleteBtn.onclick = () => {
-        const count = selectedItems.size;
-        selectedItems.forEach((id) => {
-          deletedItems.add(id);
-          const overlay = document.querySelector(`[data-item-id="${id}"]`);
-          if (overlay) overlay.classList.add("deleted");
-        });
-        selectedItems.clear();
-        updateSelectionInfo();
-        showSuccess(`✓ Marked ${count} item(s) for deletion`);
-      };
-
-      removeBtn.onclick = async () => {
-        if (deletedItems.size === 0) {
+      // Delete selected items in batch
+      deleteBtn.onclick = async () => {
+        if (selectedItems.size === 0) {
           showError("Please select items to delete first!");
           return;
         }
 
-        clearError();
         showLoading();
+        clearError();
 
         try {
-          const itemsToRemove = Array.from(deletedItems)
-            .map((id) => {
-              return detectedItems.find((item) => item.id === id);
-            })
+          const itemsToRemove = Array.from(selectedItems)
+            .map((id) => detectedItems.find((i) => i.id === id))
             .filter(Boolean);
 
           const formData = new FormData();
@@ -634,30 +866,70 @@
             method: "POST",
             body: formData,
           });
-
-          if (!res.ok) {
-            const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.error || "Failed to remove watermarks");
-          }
+          if (!res.ok) throw new Error("Failed to delete selected watermarks");
 
           const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
+          currentFile = new File([blob], currentFile.name, {
+            type: "application/pdf",
+          });
 
-          downloadBtn.href = url;
-          downloadBtn.download = "cleaned.pdf";
+          // Re-render PDF with remaining items
+          detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
+          
+          // Re-assign IDs to remaining items
+          detectedItems.forEach((item, idx) => {
+            item.id = idx;
+          });
+          
+          // Keep loading visible during re-render
+          await renderPDFWithOverlays(currentFile, detectedItems);
+          selectedItems.clear();
+          updateSelectionInfo();
+          hideLoading(); // Hide after render completes
 
-          hideLoading();
-          uploadSection.style.display = "none";
-          pagesGrid.style.display = "none";
-          controlPanel.style.display = "none";
-          document.querySelector(".note-box").style.display = "none";
-          resultBtns.style.display = "block";
+          showSuccess(`✓ Deleted ${itemsToRemove.length} watermark(s)`);
         } catch (error) {
           hideLoading();
           showError("Error: " + error.message);
         }
       };
 
+      // Save Changes button → show preview and download
+      removeBtn.onclick = () => {
+        const url = URL.createObjectURL(currentFile);
+        downloadBtn.href = url;
+        downloadBtn.download = "cleaned.pdf";
+        shareBtn.href = url;
+
+        // Hide working sections
+        uploadSection.style.display = "none";
+        fileList.style.display = "none";
+        pagesGrid.style.display = "none";
+        controlPanel.style.display = "none";
+        noteBox.style.display = "none";
+        
+        // Show result section
+        resultBtns.style.display = "block";
+
+        // Show PDF preview (similar to merge.html)
+        const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+        
+        if (!isSmallDevice) {
+          pdfFrame.src = url;
+          pdfPreview.style.display = "block";
+        }
+
+        fileNameLink.onclick = (e) => {
+          e.preventDefault();
+          if (isSmallDevice) {
+            window.open(url, "_blank");
+          } else {
+            pdfPreview.scrollIntoView({ behavior: "smooth" });
+          }
+        };
+      };
+
+      // Reset page
       resetBtn.onclick = () => {
         location.reload();
       };

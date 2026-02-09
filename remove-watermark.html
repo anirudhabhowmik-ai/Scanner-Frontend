@@ -117,24 +117,16 @@
         pointer-events: auto;
       }
 
-      .watermark-overlay.type-text {
-        background: rgba(239, 68, 68, 0.1);
-      }
-
-      .watermark-overlay.type-text:hover {
-        border-color: #ef4444 !important;
-        background: rgba(239, 68, 68, 0.2) !important;
-        z-index: 999;
-      }
-
+      .watermark-overlay.type-text,
       .watermark-overlay.type-image {
-        background: rgba(239, 68, 68, 0.1);
-        border: 2px dashed transparent;
+        background: rgba(239, 68, 68, 0.15);
+        border: 2px solid rgba(239, 68, 68, 0.3);
       }
 
+      .watermark-overlay.type-text:hover,
       .watermark-overlay.type-image:hover {
-        border-color: #ef4444;
-        background: rgba(239, 68, 68, 0.2);
+        border-color: #ef4444 !important;
+        background: rgba(239, 68, 68, 0.25) !important;
         z-index: 999;
       }
 
@@ -154,13 +146,13 @@
         left: 0;
         background: #1e40af;
         color: white;
-        padding: 8px 8px;
-        font-size: 11px;
+        padding: 8px;
+        font-size: 12px;
         border-radius: 4px;
         white-space: nowrap;
         display: none;
         z-index: 30;
-        max-width: 200px;
+        max-width: 250px;
         overflow: hidden;
         text-overflow: ellipsis;
         font-weight: 500;
@@ -168,7 +160,8 @@
 
       @media (max-width: 768px) {
         .overlay-label {
-          font-size: 10px;
+          font-size: 11px;
+          padding: 3px 8px;
           max-width: 200px;
           top: -22px;
         }
@@ -293,7 +286,7 @@
           padding: 10px 16px;
           font-size: 12px;
         }
-        
+
         .action-buttons button i {
           font-size: 11px;
         }
@@ -375,7 +368,7 @@
         .loading-content {
           padding: 24px;
         }
-        
+
         .loading-content p {
           font-size: 14px;
         }
@@ -585,9 +578,9 @@
 
             <div class="note-box" id="noteBox">
               💡 <strong>How it works:</strong> Click on text or images to
-              select them (red border appears). Selected items can be deleted
-              individually or in batch. Then click "Save Changes" to download
-              your cleaned PDF.
+              select them (red/blue border appears). Selected items can be
+              deleted individually or in batch. Then click "Save Changes" to
+              download your cleaned PDF.
             </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
@@ -666,6 +659,7 @@
       let currentFile = null;
       let detectedItems = [];
       let selectedItems = new Set();
+      let pageScales = {}; // Store scale for each page
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -728,6 +722,7 @@
         currentFile = null;
         detectedItems = [];
         selectedItems.clear();
+        pageScales = {};
 
         // Reset UI elements
         fileList.style.display = "none";
@@ -773,6 +768,7 @@
         currentFile = file;
         selectedItems.clear();
         detectedItems = [];
+        pageScales = {};
 
         // Hide upload button and show file list
         uploadSection.style.display = "none";
@@ -815,19 +811,33 @@
         }
       };
 
+      // Calculate optimal scale for container width
+      function calculateScale(viewport) {
+        const container = pagesGrid.closest(".container");
+        let containerWidth = 800; // Default
+
+        if (container) {
+          const containerRect = container.getBoundingClientRect();
+          containerWidth = containerRect.width - 80; // Account for padding
+        } else {
+          containerWidth = Math.min(800, window.innerWidth - 80);
+        }
+
+        return containerWidth / viewport.width;
+      }
+
       // Render PDF pages with overlays
       async function renderPDFWithOverlays(file, items) {
         pagesGrid.innerHTML = "";
 
         try {
-          // Create object URL and ensure it's ready
           const fileURL = URL.createObjectURL(file);
 
           const loadingTask = pdfjsLib.getDocument({
             url: fileURL,
             cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
             cMapPacked: true,
-            verbosity: 0, // Suppress console warnings
+            verbosity: 0,
           });
 
           const pdf = await loadingTask.promise;
@@ -841,31 +851,32 @@
             itemsByPage[page].push(item);
           });
 
-          // Render all pages sequentially and wait for completion
+          // Render all pages sequentially
           for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
             try {
               const page = await pdf.getPage(pageNum);
               const viewport = page.getViewport({ scale: 1 });
 
-              // Calculate responsive scale
-              const maxWidth = Math.min(800, window.innerWidth - 80); // Account for padding
-              const scale = maxWidth / viewport.width;
+              // Calculate and store scale for this page
+              const scale = calculateScale(viewport);
+              pageScales[pageNum] = scale;
+
               const scaledViewport = page.getViewport({ scale });
 
               const canvas = document.createElement("canvas");
               const context = canvas.getContext("2d", {
                 willReadFrequently: false,
-                alpha: false, // Better performance on mobile
+                alpha: false,
               });
+
               canvas.width = scaledViewport.width;
               canvas.height = scaledViewport.height;
 
-              // Wait for render to fully complete
               const renderTask = page.render({
                 canvasContext: context,
                 viewport: scaledViewport,
                 intent: "display",
-                enableWebGL: false, // Better compatibility
+                enableWebGL: false,
                 renderInteractiveForms: false,
               });
 
@@ -873,6 +884,7 @@
 
               const card = document.createElement("div");
               card.className = "page-card";
+              card.dataset.pageNum = pageNum;
 
               const badge = document.createElement("div");
               badge.className = "page-number-badge";
@@ -881,29 +893,24 @@
 
               const container = document.createElement("div");
               container.className = "page-canvas-container";
-              container.style.position = "relative";
-              container.style.display = "inline-block";
-              container.style.lineHeight = "0";
               container.appendChild(canvas);
 
-              // Add overlays
+              // Add overlays with correct scale
               const pageItems = itemsByPage[pageNum] || [];
               pageItems.forEach((item) => {
-                const overlay = createOverlay(item, scale);
+                const overlay = createOverlay(item, scale, pageNum);
                 container.appendChild(overlay);
               });
 
               card.appendChild(container);
               pagesGrid.appendChild(card);
 
-              // Cleanup page after rendering
               page.cleanup();
             } catch (pageError) {
               console.error(`Error rendering page ${pageNum}:`, pageError);
             }
           }
 
-          // Clean up the object URL after rendering
           URL.revokeObjectURL(fileURL);
         } catch (error) {
           console.error("Error in renderPDFWithOverlays:", error);
@@ -911,16 +918,16 @@
         }
       }
 
-      function createOverlay(item, scale) {
+      function createOverlay(item, scale, pageNum) {
         const bbox = item.bbox;
         const [x0, y0, x1, y1] = bbox;
 
         const overlay = document.createElement("div");
         overlay.className = `watermark-overlay type-${item.type}`;
         overlay.dataset.itemId = item.id;
+        overlay.dataset.pageNum = pageNum;
 
-        // Use exact scaled positions
-        overlay.style.position = "absolute";
+        // Apply exact scaled coordinates
         overlay.style.left = x0 * scale + "px";
         overlay.style.top = y0 * scale + "px";
         overlay.style.width = (x1 - x0) * scale + "px";
@@ -930,7 +937,7 @@
         label.className = "overlay-label";
         label.textContent =
           item.type === "text"
-            ? `Text: ${item.text?.substring(0, 30)}`
+            ? `Text: ${item.text?.substring(0, 30) || "N/A"}`
             : "Image";
         overlay.appendChild(label);
 
@@ -973,7 +980,6 @@
         clearError();
 
         try {
-          // Send request to remove this single watermark
           const formData = new FormData();
           formData.append("files", currentFile);
           formData.append("watermarks", JSON.stringify([item]));
@@ -992,23 +998,19 @@
             type: "application/pdf",
           });
 
-          // Store the page number of deleted item
           const deletedPageNum = item.page;
 
-          // Update detectedItems array - remove deleted item
           detectedItems = detectedItems.filter((i) => i.id !== itemId);
           selectedItems.delete(itemId);
 
-          // Re-assign IDs to remaining items
           detectedItems.forEach((item, idx) => {
             item.id = idx;
           });
 
-          // Only re-render the affected page
           await reRenderSinglePage(deletedPageNum, currentFile, detectedItems);
 
           updateSelectionInfo();
-          hideLoading(); // Hide after render completes
+          hideLoading();
 
           showSuccess("✓ Watermark removed successfully");
         } catch (error) {
@@ -1020,7 +1022,6 @@
       // Re-render only a single page
       async function reRenderSinglePage(pageNumber, file, items) {
         try {
-          // Create object URL and ensure it's ready
           const fileURL = URL.createObjectURL(file);
 
           const loadingTask = pdfjsLib.getDocument({
@@ -1031,17 +1032,15 @@
           });
 
           const pdf = await loadingTask.promise;
-
-          // Get items for this page
           const pageItems = items.filter((item) => item.page === pageNumber);
 
-          // Get the page
           const page = await pdf.getPage(pageNumber);
           const viewport = page.getViewport({ scale: 1 });
 
-          // Calculate responsive scale
-          const maxWidth = Math.min(800, window.innerWidth - 80); // Account for padding
-          const scale = maxWidth / viewport.width;
+          // Use stored scale or recalculate
+          const scale = pageScales[pageNumber] || calculateScale(viewport);
+          pageScales[pageNumber] = scale;
+
           const scaledViewport = page.getViewport({ scale });
 
           const canvas = document.createElement("canvas");
@@ -1052,7 +1051,6 @@
           canvas.width = scaledViewport.width;
           canvas.height = scaledViewport.height;
 
-          // Wait for render to fully complete
           const renderTask = page.render({
             canvasContext: context,
             viewport: scaledViewport,
@@ -1063,36 +1061,28 @@
 
           await renderTask.promise;
 
-          // Find the existing page card
           const pageCards = pagesGrid.querySelectorAll(".page-card");
-          const targetCard = pageCards[pageNumber - 1]; // 0-indexed
+          const targetCard = pageCards[pageNumber - 1];
 
           if (targetCard) {
-            // Create new card content
             const badge = document.createElement("div");
             badge.className = "page-number-badge";
             badge.textContent = `Page ${pageNumber}`;
 
             const container = document.createElement("div");
             container.className = "page-canvas-container";
-            container.style.position = "relative";
-            container.style.display = "inline-block";
-            container.style.lineHeight = "0";
             container.appendChild(canvas);
 
-            // Add overlays for remaining items on this page
             pageItems.forEach((item) => {
-              const overlay = createOverlay(item, scale);
+              const overlay = createOverlay(item, scale, pageNumber);
               container.appendChild(overlay);
             });
 
-            // Replace the card content
             targetCard.innerHTML = "";
             targetCard.appendChild(badge);
             targetCard.appendChild(container);
           }
 
-          // Cleanup
           page.cleanup();
           URL.revokeObjectURL(fileURL);
         } catch (error) {
@@ -1107,13 +1097,11 @@
           ".watermark-overlay.selected",
         );
 
-        // ❌ Nothing selected
         if (selectedOverlays.length === 0) {
           showError("You haven't selected any item to clear");
           return;
         }
 
-        // ✅ Clear only selected
         selectedItems.clear();
 
         selectedOverlays.forEach((el) => {
@@ -1138,7 +1126,6 @@
             .map((id) => detectedItems.find((i) => i.id === id))
             .filter(Boolean);
 
-          // Get affected page numbers before deletion
           const affectedPages = [
             ...new Set(itemsToRemove.map((item) => item.page)),
           ];
@@ -1153,7 +1140,9 @@
           });
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.error || "Failed to delete selected watermarks");
+            throw new Error(
+              errorData.error || "Failed to delete selected watermarks",
+            );
           }
 
           const blob = await res.blob();
@@ -1161,22 +1150,19 @@
             type: "application/pdf",
           });
 
-          // Re-render PDF with remaining items
           detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
 
-          // Re-assign IDs to remaining items
           detectedItems.forEach((item, idx) => {
             item.id = idx;
           });
 
-          // Re-render only affected pages
           for (const pageNum of affectedPages) {
             await reRenderSinglePage(pageNum, currentFile, detectedItems);
           }
 
           selectedItems.clear();
           updateSelectionInfo();
-          hideLoading(); // Hide after render completes
+          hideLoading();
 
           showSuccess(`✓ Deleted ${itemsToRemove.length} watermark(s)`);
         } catch (error) {
@@ -1185,24 +1171,21 @@
         }
       };
 
-      // Save Changes button → show preview and download
+      // Save Changes button
       removeBtn.onclick = () => {
         const url = URL.createObjectURL(currentFile);
         downloadBtn.href = url;
         downloadBtn.download = "cleaned.pdf";
         shareBtn.href = url;
 
-        // Hide working sections
         uploadSection.style.display = "none";
         fileList.style.display = "none";
         pagesGrid.style.display = "none";
         controlPanel.style.display = "none";
         noteBox.style.display = "none";
 
-        // Show result section
         resultBtns.style.display = "block";
 
-        // Show PDF preview (similar to merge.html)
         const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
 
         if (!isSmallDevice) {
@@ -1224,6 +1207,27 @@
       resetBtn.onclick = () => {
         resetApplication();
       };
+
+      // Handle window resize to maintain proper overlay positioning
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          if (currentFile && detectedItems.length > 0) {
+            // Recalculate scales and re-render if needed
+            const pageCards = pagesGrid.querySelectorAll(".page-card");
+            pageCards.forEach((card) => {
+              const pageNum = parseInt(card.dataset.pageNum);
+              if (
+                pageNum &&
+                detectedItems.some((item) => item.page === pageNum)
+              ) {
+                reRenderSinglePage(pageNum, currentFile, detectedItems);
+              }
+            });
+          }
+        }, 300);
+      });
     </script>
   </body>
 </html>

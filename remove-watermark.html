@@ -61,6 +61,12 @@
         transition: all 0.3s ease;
       }
 
+      @media (max-width: 768px) {
+        .page-card {
+          padding: 15px;
+        }
+      }
+
       .page-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -69,13 +75,15 @@
       .page-canvas-container {
         position: relative;
         display: inline-block;
+        line-height: 0;
       }
 
       .page-card canvas {
         display: block;
         border-radius: 8px;
         border: 1px solid #e5e7eb;
-        max-width: min(100%, 800px) !important;
+        max-width: 100% !important;
+        height: auto !important;
       }
 
       .page-number-badge {
@@ -84,11 +92,18 @@
         left: 8px;
         background: #4f46e5;
         color: white;
-        padding: 4px 10px;
+        padding: 6px 12px;
         border-radius: 12px;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 600;
         z-index: 5;
+      }
+
+      @media (max-width: 768px) {
+        .page-number-badge {
+          font-size: 12px;
+          padding: 5px 10px;
+        }
       }
 
       .watermark-overlay {
@@ -98,6 +113,8 @@
         z-index: 10;
         transition: all 0.2s ease;
         border: 2px solid transparent;
+        box-sizing: border-box;
+        pointer-events: auto;
       }
 
       .watermark-overlay.type-text {
@@ -137,7 +154,7 @@
         left: 0;
         background: #1e40af;
         color: white;
-        padding: 2px 8px;
+        padding: 8px 8px;
         font-size: 11px;
         border-radius: 4px;
         white-space: nowrap;
@@ -146,6 +163,15 @@
         max-width: 200px;
         overflow: hidden;
         text-overflow: ellipsis;
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .overlay-label {
+          font-size: 10px;
+          max-width: 200px;
+          top: -22px;
+        }
       }
 
       .watermark-overlay:hover .overlay-label {
@@ -159,15 +185,25 @@
         background: #ef4444;
         color: white;
         border-radius: 50%;
-        width: 24px;
-        height: 24px;
+        width: 28px;
+        height: 28px;
         display: none;
         align-items: center;
         justify-content: center;
-        font-size: 12px;
+        font-size: 13px;
         z-index: 20;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .delete-icon {
+          width: 26px;
+          height: 26px;
+          font-size: 12px;
+          top: -8px;
+          right: -8px;
+        }
       }
 
       .watermark-overlay.selected .delete-icon {
@@ -192,6 +228,12 @@
         display: none;
       }
 
+      @media (max-width: 768px) {
+        #controlPanel {
+          padding: 12px 10px;
+        }
+      }
+
       #controlPanel.show {
         display: block;
       }
@@ -203,10 +245,17 @@
       }
 
       .selection-info {
-        font-size: 14px;
+        font-size: 15px;
         color: #1e3a8a;
         margin-bottom: 12px;
         font-weight: 600;
+      }
+
+      @media (max-width: 768px) {
+        .selection-info {
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
       }
 
       .action-buttons {
@@ -216,8 +265,14 @@
         flex-wrap: wrap;
       }
 
+      @media (max-width: 768px) {
+        .action-buttons {
+          gap: 8px;
+        }
+      }
+
       .action-buttons button {
-        padding: 10px 20px;
+        padding: 12px 24px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 14px;
@@ -226,24 +281,65 @@
         border: none;
       }
 
+      @media (max-width: 768px) {
+        .action-buttons button {
+          padding: 10px 18px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .action-buttons button {
+          padding: 10px 16px;
+          font-size: 12px;
+        }
+        
+        .action-buttons button i {
+          font-size: 11px;
+        }
+      }
+
       .note-box {
         background: #f0f9ff;
         border-left: 4px solid #3b82f6;
-        padding: 12px 16px;
+        padding: 14px 18px;
         margin-top: 15px;
         font-size: 14px;
         border-radius: 4px;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 768px) {
+        .note-box {
+          font-size: 13px;
+          padding: 12px 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .note-box {
+          font-size: 12px;
+          padding: 10px 12px;
+        }
       }
 
       .success-message {
         background: #d1fae5;
         border-left: 4px solid #059669;
-        padding: 12px 16px;
+        padding: 14px 18px;
         margin-top: 15px;
         font-size: 14px;
         border-radius: 4px;
         color: #065f46;
         display: none;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 768px) {
+        .success-message {
+          font-size: 13px;
+          padding: 12px 14px;
+        }
       }
 
       .success-message.show {
@@ -272,6 +368,17 @@
         padding: 30px;
         border-radius: 12px;
         text-align: center;
+        max-width: 90%;
+      }
+
+      @media (max-width: 768px) {
+        .loading-content {
+          padding: 24px;
+        }
+        
+        .loading-content p {
+          font-size: 14px;
+        }
       }
 
       .spinner {
@@ -316,6 +423,13 @@
         transition: all 0.2s ease;
       }
 
+      @media (max-width: 768px) {
+        .file-list li {
+          padding: 10px 12px;
+          gap: 10px;
+        }
+      }
+
       .file-list li:hover {
         border-color: #4f46e5;
         transform: translateX(4px);
@@ -326,10 +440,24 @@
         font-size: 20px;
       }
 
+      @media (max-width: 768px) {
+        .pdf-icon {
+          font-size: 18px;
+        }
+      }
+
       .file-list li span {
         flex: 1;
         color: #1f2937;
         font-weight: 500;
+        font-size: 14px;
+        word-break: break-word;
+      }
+
+      @media (max-width: 768px) {
+        .file-list li span {
+          font-size: 13px;
+        }
       }
 
       .delete-file {
@@ -344,12 +472,58 @@
         align-items: center;
         justify-content: center;
         transition: background 0.3s ease;
+        flex-shrink: 0;
       }
       .delete-file i {
         color: #fff;
       }
       .delete-file:hover {
         background: #dc2626;
+      }
+
+      /* Responsive container adjustments */
+      .merge-tool h1 {
+        font-size: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .merge-tool h1 {
+          font-size: 1.5rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .merge-tool h1 {
+          font-size: 1.3rem;
+        }
+      }
+
+      .merge-tool p {
+        font-size: 1rem;
+      }
+
+      @media (max-width: 768px) {
+        .merge-tool p {
+          font-size: 0.9rem;
+        }
+      }
+
+      /* Error message styling */
+      .error-text {
+        background: #fee2e2;
+        border-left: 4px solid #ef4444;
+        padding: 12px 16px;
+        font-size: 14px;
+        border-radius: 4px;
+        color: #991b1b;
+        line-height: 1.6;
+      }
+
+      @media (max-width: 768px) {
+        .error-text {
+          font-size: 13px;
+          padding: 10px 14px;
+        }
       }
     </style>
   </head>
@@ -616,7 +790,10 @@
             body: formData,
           });
 
-          if (!detectRes.ok) throw new Error("Failed to detect watermarks");
+          if (!detectRes.ok) {
+            const errorData = await detectRes.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to detect watermarks");
+          }
 
           const detectData = await detectRes.json();
           detectedItems = detectData.items || [];
@@ -633,6 +810,8 @@
           hideLoading();
           showError("Error: " + error.message);
           console.error("PDF Upload Error:", error);
+          // Reset UI on error
+          resetApplication();
         }
       };
 
@@ -668,8 +847,9 @@
               const page = await pdf.getPage(pageNum);
               const viewport = page.getViewport({ scale: 1 });
 
-              const maxWidth = Math.min(800, window.innerWidth - 40);
-              const scale = Math.min(maxWidth / viewport.width, 1.5);
+              // Calculate responsive scale
+              const maxWidth = Math.min(800, window.innerWidth - 80); // Account for padding
+              const scale = maxWidth / viewport.width;
               const scaledViewport = page.getViewport({ scale });
 
               const canvas = document.createElement("canvas");
@@ -701,6 +881,9 @@
 
               const container = document.createElement("div");
               container.className = "page-canvas-container";
+              container.style.position = "relative";
+              container.style.display = "inline-block";
+              container.style.lineHeight = "0";
               container.appendChild(canvas);
 
               // Add overlays
@@ -736,6 +919,8 @@
         overlay.className = `watermark-overlay type-${item.type}`;
         overlay.dataset.itemId = item.id;
 
+        // Use exact scaled positions
+        overlay.style.position = "absolute";
         overlay.style.left = x0 * scale + "px";
         overlay.style.top = y0 * scale + "px";
         overlay.style.width = (x1 - x0) * scale + "px";
@@ -854,8 +1039,9 @@
           const page = await pdf.getPage(pageNumber);
           const viewport = page.getViewport({ scale: 1 });
 
-          const maxWidth = Math.min(800, window.innerWidth - 40);
-          const scale = Math.min(maxWidth / viewport.width, 1.5);
+          // Calculate responsive scale
+          const maxWidth = Math.min(800, window.innerWidth - 80); // Account for padding
+          const scale = maxWidth / viewport.width;
           const scaledViewport = page.getViewport({ scale });
 
           const canvas = document.createElement("canvas");
@@ -889,6 +1075,9 @@
 
             const container = document.createElement("div");
             container.className = "page-canvas-container";
+            container.style.position = "relative";
+            container.style.display = "inline-block";
+            container.style.lineHeight = "0";
             container.appendChild(canvas);
 
             // Add overlays for remaining items on this page
@@ -962,7 +1151,10 @@
             method: "POST",
             body: formData,
           });
-          if (!res.ok) throw new Error("Failed to delete selected watermarks");
+          if (!res.ok) {
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(errorData.error || "Failed to delete selected watermarks");
+          }
 
           const blob = await res.blob();
           currentFile = new File([blob], currentFile.name, {

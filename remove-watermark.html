@@ -160,9 +160,18 @@
 
       @media (max-width: 768px) {
         .overlay-label {
-          font-size: 6px;
-          padding: 6px 6px;
+          font-size: 10px;
+          padding: 6px 8px;
           max-width: 200px;
+          top: -18px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .overlay-label {
+          font-size: 9px;
+          padding: 5px 7px;
+          max-width: 150px;
           top: -16px;
         }
       }
@@ -251,6 +260,12 @@
         }
       }
 
+      @media (max-width: 480px) {
+        .selection-info {
+          font-size: 13px;
+        }
+      }
+
       .action-buttons {
         display: flex;
         gap: 10px;
@@ -335,6 +350,13 @@
         }
       }
 
+      @media (max-width: 480px) {
+        .success-message {
+          font-size: 12px;
+          padding: 10px 12px;
+        }
+      }
+
       .success-message.show {
         display: block;
       }
@@ -371,6 +393,16 @@
 
         .loading-content p {
           font-size: 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .loading-content {
+          padding: 20px;
+        }
+
+        .loading-content p {
+          font-size: 13px;
         }
       }
 
@@ -453,6 +485,12 @@
         }
       }
 
+      @media (max-width: 480px) {
+        .file-list li span {
+          font-size: 12px;
+        }
+      }
+
       .delete-file {
         background: #ef4444;
         border: none;
@@ -501,6 +539,12 @@
         }
       }
 
+      @media (max-width: 480px) {
+        .merge-tool p {
+          font-size: 0.85rem;
+        }
+      }
+
       /* Error message styling */
       .error-text {
         background: #fee2e2;
@@ -516,6 +560,13 @@
         .error-text {
           font-size: 13px;
           padding: 10px 14px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .error-text {
+          font-size: 12px;
+          padding: 10px 12px;
         }
       }
     </style>

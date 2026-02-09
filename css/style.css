@@ -556,6 +556,11 @@ footer::before {
   margin: 20px 0;
 }
 
+.file-list span {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 .file-list li {
   display: flex;
   align-items: center;

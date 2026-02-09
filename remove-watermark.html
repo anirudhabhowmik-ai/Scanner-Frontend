@@ -326,7 +326,9 @@
         justify-content: center;
         transition: background 0.3s ease;
       }
-
+      .delete-file i {
+        color: #fff;
+      }
       .delete-file:hover {
         background: #dc2626;
       }
@@ -391,8 +393,8 @@
             <div class="note-box" id="noteBox">
               💡 <strong>How it works:</strong> Click on text or images to
               select them (red border appears). Selected items can be deleted
-              individually or in batch. Then click "Save Changes" to
-              download your cleaned PDF.
+              individually or in batch. Then click "Save Changes" to download
+              your cleaned PDF.
             </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
@@ -443,6 +445,7 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
+      // Use BACKEND_BASE_URL from app.js or fallback to localhost
       const DETECT_URL = `${BACKEND_BASE_URL}/detect-watermarks`;
       const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
 
@@ -512,7 +515,7 @@
       function renderFileList() {
         fileList.style.display = "block";
         fileList.innerHTML = "";
-        
+
         const li = document.createElement("li");
         li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${currentFile.name}</span> <button class="delete-file" id="deleteFileBtn"><i class="fa fa-times"></i></button>`;
         fileList.appendChild(li);
@@ -522,19 +525,51 @@
       fileList.addEventListener("click", (e) => {
         const deleteBtn = e.target.closest(".delete-file");
         if (deleteBtn) {
-          currentFile = null;
-          detectedItems = [];
-          selectedItems.clear();
-          fileList.style.display = "none";
-          fileList.innerHTML = "";
-          uploadSection.style.display = "block";
-          pagesGrid.style.display = "none";
-          pagesGrid.innerHTML = "";
-          controlPanel.style.display = "none";
-          clearError();
-          successMsg.classList.remove("show");
+          resetApplication();
         }
       });
+
+      // Proper reset function without page reload
+      function resetApplication() {
+        // Clear all data
+        currentFile = null;
+        detectedItems = [];
+        selectedItems.clear();
+
+        // Reset UI elements
+        fileList.style.display = "none";
+        fileList.innerHTML = "";
+        uploadSection.style.display = "block";
+        pagesGrid.style.display = "none";
+        pagesGrid.innerHTML = "";
+        controlPanel.style.display = "none";
+        resultBtns.style.display = "none";
+        pdfPreview.style.display = "none";
+        noteBox.style.display = "block";
+
+        // Reset file input
+        pdfUpload.value = "";
+
+        // Clear messages
+        clearError();
+        successMsg.classList.remove("show");
+
+        // Reset iframe
+        pdfFrame.src = "";
+
+        // Reset download links
+        if (downloadBtn.href && downloadBtn.href.startsWith("blob:")) {
+          URL.revokeObjectURL(downloadBtn.href);
+        }
+        if (shareBtn.href && shareBtn.href.startsWith("blob:")) {
+          URL.revokeObjectURL(shareBtn.href);
+        }
+        downloadBtn.href = "#";
+        shareBtn.href = "#";
+
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
 
       // Upload PDF and detect watermarks
       pdfUpload.onchange = async (e) => {
@@ -578,6 +613,7 @@
         } catch (error) {
           hideLoading();
           showError("Error: " + error.message);
+          console.error("PDF Upload Error:", error);
         }
       };
 
@@ -585,71 +621,92 @@
       async function renderPDFWithOverlays(file, items) {
         pagesGrid.innerHTML = "";
 
-        // Create object URL and ensure it's ready
-        const fileURL = URL.createObjectURL(file);
-        const pdf = await pdfjsLib.getDocument({
-          url: fileURL,
-          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-          cMapPacked: true,
-        }).promise;
+        try {
+          // Create object URL and ensure it's ready
+          const fileURL = URL.createObjectURL(file);
 
-        // Group items by page
-        const itemsByPage = {};
-        items.forEach((item, idx) => {
-          item.id = idx;
-          const page = item.page;
-          if (!itemsByPage[page]) itemsByPage[page] = [];
-          itemsByPage[page].push(item);
-        });
-
-        // Render all pages sequentially and wait for completion
-        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-          const page = await pdf.getPage(pageNum);
-          const viewport = page.getViewport({ scale: 1 });
-
-          const maxWidth = Math.min(800, window.innerWidth - 40);
-          const scale = Math.min(maxWidth / viewport.width, 1.5);
-          const scaledViewport = page.getViewport({ scale });
-
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d", { willReadFrequently: false });
-          canvas.width = scaledViewport.width;
-          canvas.height = scaledViewport.height;
-
-          // Wait for render to fully complete
-          const renderTask = page.render({
-            canvasContext: context,
-            viewport: scaledViewport,
-            intent: 'display',
+          const loadingTask = pdfjsLib.getDocument({
+            url: fileURL,
+            cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+            cMapPacked: true,
+            verbosity: 0, // Suppress console warnings
           });
 
-          await renderTask.promise;
+          const pdf = await loadingTask.promise;
 
-          const card = document.createElement("div");
-          card.className = "page-card";
-
-          const badge = document.createElement("div");
-          badge.className = "page-number-badge";
-          badge.textContent = `Page ${pageNum}`;
-          card.appendChild(badge);
-
-          const container = document.createElement("div");
-          container.className = "page-canvas-container";
-          container.appendChild(canvas);
-
-          // Add overlays
-          const pageItems = itemsByPage[pageNum] || [];
-          pageItems.forEach((item) => {
-            const overlay = createOverlay(item, scale);
-            container.appendChild(overlay);
+          // Group items by page
+          const itemsByPage = {};
+          items.forEach((item, idx) => {
+            item.id = idx;
+            const page = item.page;
+            if (!itemsByPage[page]) itemsByPage[page] = [];
+            itemsByPage[page].push(item);
           });
 
-          card.appendChild(container);
-          pagesGrid.appendChild(card);
+          // Render all pages sequentially and wait for completion
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            try {
+              const page = await pdf.getPage(pageNum);
+              const viewport = page.getViewport({ scale: 1 });
+
+              const maxWidth = Math.min(800, window.innerWidth - 40);
+              const scale = Math.min(maxWidth / viewport.width, 1.5);
+              const scaledViewport = page.getViewport({ scale });
+
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d", {
+                willReadFrequently: false,
+                alpha: false, // Better performance on mobile
+              });
+              canvas.width = scaledViewport.width;
+              canvas.height = scaledViewport.height;
+
+              // Wait for render to fully complete
+              const renderTask = page.render({
+                canvasContext: context,
+                viewport: scaledViewport,
+                intent: "display",
+                enableWebGL: false, // Better compatibility
+                renderInteractiveForms: false,
+              });
+
+              await renderTask.promise;
+
+              const card = document.createElement("div");
+              card.className = "page-card";
+
+              const badge = document.createElement("div");
+              badge.className = "page-number-badge";
+              badge.textContent = `Page ${pageNum}`;
+              card.appendChild(badge);
+
+              const container = document.createElement("div");
+              container.className = "page-canvas-container";
+              container.appendChild(canvas);
+
+              // Add overlays
+              const pageItems = itemsByPage[pageNum] || [];
+              pageItems.forEach((item) => {
+                const overlay = createOverlay(item, scale);
+                container.appendChild(overlay);
+              });
+
+              card.appendChild(container);
+              pagesGrid.appendChild(card);
+
+              // Cleanup page after rendering
+              page.cleanup();
+            } catch (pageError) {
+              console.error(`Error rendering page ${pageNum}:`, pageError);
+            }
+          }
+
+          // Clean up the object URL after rendering
+          URL.revokeObjectURL(fileURL);
+        } catch (error) {
+          console.error("Error in renderPDFWithOverlays:", error);
+          throw error;
         }
-
-        // Clean up the object URL after rendering
-        URL.revokeObjectURL(fileURL);
       }
 
       function createOverlay(item, scale) {
@@ -745,7 +802,7 @@
 
           // Only re-render the affected page
           await reRenderSinglePage(deletedPageNum, currentFile, detectedItems);
-          
+
           updateSelectionInfo();
           hideLoading(); // Hide after render completes
 
@@ -758,67 +815,82 @@
 
       // Re-render only a single page
       async function reRenderSinglePage(pageNumber, file, items) {
-        // Create object URL and ensure it's ready
-        const fileURL = URL.createObjectURL(file);
-        const pdf = await pdfjsLib.getDocument({
-          url: fileURL,
-          cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/',
-          cMapPacked: true,
-        }).promise;
+        try {
+          // Create object URL and ensure it's ready
+          const fileURL = URL.createObjectURL(file);
 
-        // Get items for this page
-        const pageItems = items.filter(item => item.page === pageNumber);
-
-        // Get the page
-        const page = await pdf.getPage(pageNumber);
-        const viewport = page.getViewport({ scale: 1 });
-
-        const maxWidth = Math.min(800, window.innerWidth - 40);
-        const scale = Math.min(maxWidth / viewport.width, 1.5);
-        const scaledViewport = page.getViewport({ scale });
-
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d", { willReadFrequently: false });
-        canvas.width = scaledViewport.width;
-        canvas.height = scaledViewport.height;
-
-        // Wait for render to fully complete
-        const renderTask = page.render({
-          canvasContext: context,
-          viewport: scaledViewport,
-          intent: 'display',
-        });
-
-        await renderTask.promise;
-
-        // Find the existing page card
-        const pageCards = pagesGrid.querySelectorAll('.page-card');
-        const targetCard = pageCards[pageNumber - 1]; // 0-indexed
-
-        if (targetCard) {
-          // Create new card content
-          const badge = document.createElement("div");
-          badge.className = "page-number-badge";
-          badge.textContent = `Page ${pageNumber}`;
-
-          const container = document.createElement("div");
-          container.className = "page-canvas-container";
-          container.appendChild(canvas);
-
-          // Add overlays for remaining items on this page
-          pageItems.forEach((item) => {
-            const overlay = createOverlay(item, scale);
-            container.appendChild(overlay);
+          const loadingTask = pdfjsLib.getDocument({
+            url: fileURL,
+            cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+            cMapPacked: true,
+            verbosity: 0,
           });
 
-          // Replace the card content
-          targetCard.innerHTML = '';
-          targetCard.appendChild(badge);
-          targetCard.appendChild(container);
-        }
+          const pdf = await loadingTask.promise;
 
-        // Clean up the object URL after rendering
-        URL.revokeObjectURL(fileURL);
+          // Get items for this page
+          const pageItems = items.filter((item) => item.page === pageNumber);
+
+          // Get the page
+          const page = await pdf.getPage(pageNumber);
+          const viewport = page.getViewport({ scale: 1 });
+
+          const maxWidth = Math.min(800, window.innerWidth - 40);
+          const scale = Math.min(maxWidth / viewport.width, 1.5);
+          const scaledViewport = page.getViewport({ scale });
+
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d", {
+            willReadFrequently: false,
+            alpha: false,
+          });
+          canvas.width = scaledViewport.width;
+          canvas.height = scaledViewport.height;
+
+          // Wait for render to fully complete
+          const renderTask = page.render({
+            canvasContext: context,
+            viewport: scaledViewport,
+            intent: "display",
+            enableWebGL: false,
+            renderInteractiveForms: false,
+          });
+
+          await renderTask.promise;
+
+          // Find the existing page card
+          const pageCards = pagesGrid.querySelectorAll(".page-card");
+          const targetCard = pageCards[pageNumber - 1]; // 0-indexed
+
+          if (targetCard) {
+            // Create new card content
+            const badge = document.createElement("div");
+            badge.className = "page-number-badge";
+            badge.textContent = `Page ${pageNumber}`;
+
+            const container = document.createElement("div");
+            container.className = "page-canvas-container";
+            container.appendChild(canvas);
+
+            // Add overlays for remaining items on this page
+            pageItems.forEach((item) => {
+              const overlay = createOverlay(item, scale);
+              container.appendChild(overlay);
+            });
+
+            // Replace the card content
+            targetCard.innerHTML = "";
+            targetCard.appendChild(badge);
+            targetCard.appendChild(container);
+          }
+
+          // Cleanup
+          page.cleanup();
+          URL.revokeObjectURL(fileURL);
+        } catch (error) {
+          console.error(`Error re-rendering page ${pageNumber}:`, error);
+          throw error;
+        }
       }
 
       // Clear selection
@@ -858,6 +930,11 @@
             .map((id) => detectedItems.find((i) => i.id === id))
             .filter(Boolean);
 
+          // Get affected page numbers before deletion
+          const affectedPages = [
+            ...new Set(itemsToRemove.map((item) => item.page)),
+          ];
+
           const formData = new FormData();
           formData.append("files", currentFile);
           formData.append("watermarks", JSON.stringify(itemsToRemove));
@@ -875,14 +952,17 @@
 
           // Re-render PDF with remaining items
           detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
-          
+
           // Re-assign IDs to remaining items
           detectedItems.forEach((item, idx) => {
             item.id = idx;
           });
-          
-          // Keep loading visible during re-render
-          await renderPDFWithOverlays(currentFile, detectedItems);
+
+          // Re-render only affected pages
+          for (const pageNum of affectedPages) {
+            await reRenderSinglePage(pageNum, currentFile, detectedItems);
+          }
+
           selectedItems.clear();
           updateSelectionInfo();
           hideLoading(); // Hide after render completes
@@ -907,13 +987,13 @@
         pagesGrid.style.display = "none";
         controlPanel.style.display = "none";
         noteBox.style.display = "none";
-        
+
         // Show result section
         resultBtns.style.display = "block";
 
         // Show PDF preview (similar to merge.html)
         const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-        
+
         if (!isSmallDevice) {
           pdfFrame.src = url;
           pdfPreview.style.display = "block";
@@ -931,7 +1011,7 @@
 
       // Reset page
       resetBtn.onclick = () => {
-        location.reload();
+        resetApplication();
       };
     </script>
   </body>

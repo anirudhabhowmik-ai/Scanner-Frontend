@@ -466,6 +466,21 @@
         font-size: 14px;
         line-height: 1.6;
       }
+
+      .cropBtn-container {
+        position: fixed;
+        bottom: 0;
+        background: #fff;
+        border-top: 4px solid #1d0cff;
+        width: 100%;
+        padding: 20px 0;
+        z-index: 999;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.15);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
 
     <!-- Google AdSense (Replace with your AdSense ID) -->
@@ -560,29 +575,31 @@
               ></div>
             </div>
 
-            <button
-              id="cropBtn"
-              class="cta-button"
-              aria-label="Crop and merge PDF files"
-            >
-              <i
-                class="fa fa-spinner fa-spin"
-                style="display: none"
-                id="loaderIcon"
-                aria-hidden="true"
-              ></i>
-              <span class="btn-text"
-                ><i class="fas fa-crop" aria-hidden="true"></i
-              ></span>
-              Crop & Merge PDFs
-            </button>
+            <div class="cropBtn-container" id="cropBtn-container">
+              <button
+                id="cropBtn"
+                class="cta-button"
+                aria-label="Crop and merge PDF files"
+              >
+                <i
+                  class="fa fa-spinner fa-spin"
+                  style="display: none"
+                  id="loaderIcon"
+                  aria-hidden="true"
+                ></i>
+                <span class="btn-text"
+                  ><i class="fas fa-crop" aria-hidden="true"></i
+                ></span>
+                Crop & Merge PDFs
+              </button>
 
-            <p
-              class="error-text"
-              id="errorMsg"
-              role="alert"
-              aria-live="assertive"
-            ></p>
+              <p
+                class="error-text"
+                id="errorMsg"
+                role="alert"
+                aria-live="assertive"
+              ></p>
+            </div>
 
             <p class="note" id="noteText">
               Supported format: PDF. You can upload multiple PDFs to crop and
@@ -1207,6 +1224,7 @@
           } else {
             pagesGrid.innerHTML = "";
             cropArea.classList.remove("show");
+            document.getElementById("cropBtn-container").style.display = "none";
           }
         }
       });
@@ -1227,6 +1245,7 @@
 
         // Load all pages from all PDFs
         await loadAllPagesFromAllPDFs();
+        document.getElementById("cropBtn-container").style.display = "flex";
 
         // Clear error when PDF is uploaded
         errorMsg.style.display = "none";
@@ -1569,6 +1588,8 @@
               ? window.open(url, "_blank")
               : pdfPreview.scrollIntoView({ behavior: "smooth" });
           };
+          document.getElementById("cropBtn-container").style.display = "none";
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
           showError("Failed to crop PDFs: " + err.message);
         } finally {

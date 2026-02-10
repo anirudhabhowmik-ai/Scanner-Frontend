@@ -318,6 +318,21 @@
           min-height: 250px;
         }
       }
+
+      .btn-container {
+        position: fixed;
+        bottom: 0;
+        background: #fff;
+        border-top: 4px solid #1d0cff;
+        width: 100%;
+        padding: 20px 0;
+        z-index: 999;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.15);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
 
     <!-- Google AdSense (Replace with your AdSense ID) -->
@@ -370,7 +385,8 @@
               aria-label="PDF pages organizer"
             ></div>
 
-            <button
+            <div class="btn-container" id="btn-container">
+              <button
               id="organizeBtn"
               class="cta-button"
               aria-label="Organize PDF pages"
@@ -390,6 +406,7 @@
               style="display: none"
               role="alert"
             ></p>
+            </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
               <div class="result-card">
@@ -1333,6 +1350,7 @@
       const pdfFrame = document.getElementById("pdfFrame");
       const fileNameLink = document.getElementById("fileNameLink");
       const loaderIcon = organizeBtn.querySelector(".btn-spinner");
+      const btnContainer = document.getElementById("btn-container");
 
       let files = [];
       let draggedElement = null;
@@ -1386,6 +1404,7 @@
               allPages.push({ fileIndex, pageIndex: i - 1 });
             }
           }
+          btnContainer.style.display = "flex";
         } catch (error) {
           errorMsg.textContent = "Error loading PDF: " + error.message;
           errorMsg.style.display = "block";
@@ -1418,6 +1437,7 @@
               }
             }
           }
+          btnContainer.style.display = "none";
           clearError();
         }
       });
@@ -1720,6 +1740,8 @@
               ? window.open(url, "_blank")
               : pdfPreview.scrollIntoView({ behavior: "smooth" });
           };
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          btnContainer.style.display = "none";
         } catch (error) {
           errorMsg.textContent = "Error: " + error.message;
           errorMsg.style.display = "block";

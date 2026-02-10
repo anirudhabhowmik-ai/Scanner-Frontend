@@ -264,6 +264,21 @@
           flex-direction: column;
         }
       }
+
+      .btn-container {
+        position: fixed;
+        bottom: 0;
+        background: #fff;
+        border-top: 4px solid #1d0cff;
+        width: 100%;
+        padding: 20px 0;
+        z-index: 999;
+        box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.15);
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
 
     <!-- Google AdSense (Replace with your AdSense ID) -->
@@ -315,26 +330,28 @@
               aria-label="PDF pages preview"
             ></div>
 
-            <button
-              id="rotateBtn"
-              class="cta-button"
-              aria-label="Apply rotation to PDF"
-            >
-              <span class="btn-spinner" aria-hidden="true">
-                <i class="fa fa-spinner fa-spin"></i>
-              </span>
-              <span class="btn-text"
-                ><i class="fa fa-rotate-right" aria-hidden="true"></i
-              ></span>
-              Rotate PDF
-            </button>
+            <div class="btn-container" id="btn-container">
+              <button
+                id="rotateBtn"
+                class="cta-button"
+                aria-label="Apply rotation to PDF"
+              >
+                <span class="btn-spinner" aria-hidden="true">
+                  <i class="fa fa-spinner fa-spin"></i>
+                </span>
+                <span class="btn-text"
+                  ><i class="fa fa-rotate-right" aria-hidden="true"></i
+                ></span>
+                Rotate PDF
+              </button>
 
-            <p
-              id="errorMsg"
-              class="error-text"
-              style="display: none"
-              role="alert"
-            ></p>
+              <p
+                id="errorMsg"
+                class="error-text"
+                style="display: none"
+                role="alert"
+              ></p>
+            </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
               <div class="result-card">
@@ -1193,7 +1210,7 @@
       </section>
 
       <!-- CTA Section -->
-      <section class="hero" >
+      <section class="hero">
         <div class="container">
           <h2 style="font-size: 32px; margin-bottom: 15px">
             Ready to Fix Your PDF Orientation?
@@ -1239,6 +1256,7 @@
       const shareBtn = document.getElementById("shareBtn");
       const resetBtn = document.getElementById("resetBtn");
       const noteText = document.getElementById("noteText");
+      const btnContainer = document.getElementById("btn-container");
 
       let files = [];
 
@@ -1363,6 +1381,7 @@
         pdfUpload.value = "";
         renderFileList();
         await loadPDFs();
+        btnContainer.style.display = "flex";
       });
 
       fileList.addEventListener("click", async (e) => {
@@ -1373,6 +1392,7 @@
 
         renderFileList();
         await loadPDFs();
+        btnContainer.style.display = "none";
       });
 
       rotateBtn.onclick = async () => {
@@ -1428,6 +1448,8 @@
               ? window.open(url, "_blank")
               : pdfPreview.scrollIntoView({ behavior: "smooth" });
           };
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          btnContainer.style.display = "none";
         } catch (e) {
           showError(e.message);
         } finally {

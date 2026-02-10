@@ -2121,6 +2121,7 @@
               ? window.open(url, "_blank")
               : pdfPreview.scrollIntoView({ behavior: "smooth" });
           };
+          window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (error) {
           showError("Error: " + error.message);
         } finally {

@@ -112,7 +112,6 @@
         user-select: none;
         z-index: 10;
         transition: all 0.2s ease;
-        border: 2px solid transparent;
         box-sizing: border-box;
         pointer-events: auto;
       }
@@ -120,20 +119,22 @@
       .watermark-overlay.type-text,
       .watermark-overlay.type-image {
         background: rgba(239, 68, 68, 0.15);
-        border: 2px solid rgba(239, 68, 68, 0.3);
+        outline: 2px solid rgba(239, 68, 68, 0.3);
+        outline-offset: -2px;
       }
 
       .watermark-overlay.type-text:hover,
       .watermark-overlay.type-image:hover {
-        border-color: #ef4444 !important;
+        outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.25) !important;
         z-index: 999;
       }
 
       .watermark-overlay.selected {
-        border-color: #ef4444 !important;
+        outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.3) !important;
-        border-style: solid !important;
+        outline-style: solid !important;
+        outline-width: 3px !important;
       }
 
       .watermark-overlay.deleted {
@@ -146,7 +147,7 @@
         left: 0;
         background: #1e40af;
         color: white;
-        padding: 4px 8px;
+        padding: 9px 4px;
         font-size: 11px;
         border-radius: 4px;
         white-space: nowrap;
@@ -204,8 +205,8 @@
           width: 20px;
           height: 20px;
           font-size: 10px;
-          top: -6px;
-          right: -6px;
+          top: -8px;
+          right: -8px;
         }
       }
 
@@ -214,8 +215,8 @@
           width: 18px;
           height: 18px;
           font-size: 9px;
-          top: -5px;
-          right: -5px;
+          top: -6px;
+          right: -6px;
         }
       }
 
@@ -229,7 +230,7 @@
 
       .delete-icon:hover {
         background: #dc2626;
-        transform: scale(1);
+        transform: scale(1.1);
       }
 
       #controlPanel {
@@ -644,9 +645,9 @@
 
             <div class="note-box" id="noteBox">
               💡 <strong>How it works:</strong> Click on text or images to
-              select them (red/blue border appears). Selected items can be
-              deleted individually or in batch. Then click "Save Changes" to
-              download your cleaned PDF.
+              select them (red border appears). Selected items can be deleted
+              individually or in batch. Then click "Save Changes" to download
+              your cleaned PDF.
             </div>
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
@@ -725,7 +726,7 @@
       let currentFile = null;
       let detectedItems = [];
       let selectedItems = new Set();
-      let pageScales = {}; // Store scale for each page
+      let pageRenderScales = {}; // Store the actual render scale for each page
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -760,7 +761,7 @@
         if (selectedCount === 0) {
           selectionInfo.textContent = "No items selected";
         } else {
-          selectionInfo.textContent = `${selectedCount} selected`;
+          selectionInfo.textContent = `${selectedCount} item${selectedCount > 1 ? "s" : ""} selected`;
         }
       }
 
@@ -788,7 +789,7 @@
         currentFile = null;
         detectedItems = [];
         selectedItems.clear();
-        pageScales = {};
+        pageRenderScales = {};
 
         // Reset UI elements
         fileList.style.display = "none";
@@ -834,7 +835,7 @@
         currentFile = file;
         selectedItems.clear();
         detectedItems = [];
-        pageScales = {};
+        pageRenderScales = {};
 
         // Hide upload button and show file list
         uploadSection.style.display = "none";
@@ -864,7 +865,7 @@
 
           hideLoading();
           showSuccess(
-            `✓ Detected ${detectedItems.length} items (text and images)`,
+            `✓ Detected ${detectedItems.length} item${detectedItems.length !== 1 ? "s" : ""} (text and images)`,
           );
           controlPanel.style.display = "block";
           pagesGrid.style.display = "flex";
@@ -877,24 +878,38 @@
         }
       };
 
-      // Calculate optimal scale for container width
-      function calculateScale(viewport) {
+      // Calculate display scale based on viewport
+      function calculateDisplayScale(pdfPageWidth) {
         const container = pagesGrid.closest(".container");
-        let containerWidth = 800; // Default
+        const containerWidth = container
+          ? container.clientWidth
+          : window.innerWidth;
 
-        if (container) {
-          const containerRect = container.getBoundingClientRect();
-          containerWidth = containerRect.width - 80; // Account for padding
+        // Account for padding and margins
+        let maxWidth;
+
+        if (window.innerWidth < 480) {
+          // Very small screens - use container width minus padding
+          maxWidth = Math.min(containerWidth - 40, 320); // Cap at 320px
+        } else if (window.innerWidth < 768) {
+          // Mobile - use container width
+          maxWidth = Math.min(containerWidth - 60, 480); // Cap at 480px
         } else {
-          containerWidth = Math.min(800, window.innerWidth - 80);
+          // Desktop - fixed width
+          maxWidth = 800;
         }
 
-        return containerWidth / viewport.width;
+        // Ensure we don't scale below a minimum width
+        maxWidth = Math.max(maxWidth, 200);
+
+        // Calculate scale to fit the PDF page width to display width
+        return maxWidth / pdfPageWidth;
       }
 
       // Render PDF pages with overlays
       async function renderPDFWithOverlays(file, items) {
         pagesGrid.innerHTML = "";
+        pageRenderScales = {};
 
         try {
           const fileURL = URL.createObjectURL(file);
@@ -923,12 +938,13 @@
               const page = await pdf.getPage(pageNum);
               const viewport = page.getViewport({ scale: 1 });
 
-              // Calculate responsive scale (same as add watermark code)
-              const maxWidth =
-                window.innerWidth < 768 ? window.innerWidth - 40 : 800;
-              const displayScale = Math.min(maxWidth / viewport.width, 1);
+              // Calculate display scale based on viewport width
+              const displayScale = calculateDisplayScale(viewport.width);
 
-              // Use higher render scale for sharp text
+              // Store the display scale for this page
+              pageRenderScales[pageNum] = displayScale;
+
+              // Use higher render scale for sharp rendering
               const renderScale = displayScale * (window.devicePixelRatio || 2);
               const scaledViewport = page.getViewport({ scale: renderScale });
 
@@ -952,8 +968,11 @@
               await renderTask.promise;
 
               // Apply CSS scaling to match display size
-              canvas.style.width = viewport.width * displayScale + "px";
-              canvas.style.height = viewport.height * displayScale + "px";
+              const displayWidth = viewport.width * displayScale;
+              const displayHeight = viewport.height * displayScale;
+
+              canvas.style.width = displayWidth + "px";
+              canvas.style.height = displayHeight + "px";
 
               const card = document.createElement("div");
               card.className = "page-card";
@@ -969,15 +988,9 @@
               container.appendChild(canvas);
 
               // Add overlays with correct scale
-              // Store viewport dimensions for overlay positioning
               const pageItems = itemsByPage[pageNum] || [];
               pageItems.forEach((item) => {
-                const overlay = createOverlay(
-                  item,
-                  displayScale,
-                  viewport.width,
-                  viewport.height,
-                );
+                const overlay = createOverlay(item, displayScale, canvas);
                 container.appendChild(overlay);
               });
 
@@ -997,21 +1010,21 @@
         }
       }
 
-      function createOverlay(item, displayScale, pageWidth, pageHeight) {
-        const bbox = item.bbox;
-        const [x0, y0, x1, y1] = bbox;
+      function createOverlay(item, displayScale, canvas) {
+        const [x0, y0, x1, y1] = item.bbox;
 
         const overlay = document.createElement("div");
         overlay.className = `watermark-overlay type-${item.type}`;
         overlay.dataset.itemId = item.id;
         overlay.dataset.pageNum = item.page;
 
-        // Direct scaling - no border offset needed with box-shadow
+        // Use displayScale directly
         overlay.style.left = x0 * displayScale + "px";
         overlay.style.top = y0 * displayScale + "px";
         overlay.style.width = (x1 - x0) * displayScale + "px";
         overlay.style.height = (y1 - y0) * displayScale + "px";
 
+        // Label
         const label = document.createElement("div");
         label.className = "overlay-label";
         label.textContent =
@@ -1020,6 +1033,7 @@
             : "Image";
         overlay.appendChild(label);
 
+        // Delete icon
         const deleteIcon = document.createElement("div");
         deleteIcon.className = "delete-icon";
         deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
@@ -1029,7 +1043,6 @@
           if (e.target.closest(".delete-icon")) return;
           toggleSelection(item.id, overlay);
         };
-
         deleteIcon.onclick = (e) => {
           e.stopPropagation();
           deleteWatermark(item.id, overlay);
@@ -1116,10 +1129,11 @@
           const page = await pdf.getPage(pageNumber);
           const viewport = page.getViewport({ scale: 1 });
 
-          // Calculate responsive scale
-          const maxWidth =
-            window.innerWidth < 768 ? window.innerWidth - 40 : 800;
-          const displayScale = Math.min(maxWidth / viewport.width, 1);
+          // Calculate display scale
+          const displayScale = calculateDisplayScale(viewport.width);
+
+          // Update stored scale
+          pageRenderScales[pageNumber] = displayScale;
 
           // Use higher render scale for sharp text
           const renderScale = displayScale * (window.devicePixelRatio || 2);
@@ -1145,8 +1159,11 @@
           await renderTask.promise;
 
           // Apply CSS scaling
-          canvas.style.width = viewport.width * displayScale + "px";
-          canvas.style.height = viewport.height * displayScale + "px";
+          const displayWidth = viewport.width * displayScale;
+          const displayHeight = viewport.height * displayScale;
+
+          canvas.style.width = displayWidth + "px";
+          canvas.style.height = displayHeight + "px";
 
           const pageCards = pagesGrid.querySelectorAll(".page-card");
           const targetCard = pageCards[pageNumber - 1];
@@ -1161,12 +1178,7 @@
             container.appendChild(canvas);
 
             pageItems.forEach((item) => {
-              const overlay = createOverlay(
-                item,
-                displayScale,
-                viewport.width,
-                viewport.height,
-              );
+              const overlay = createOverlay(item, displayScale, canvas);
               container.appendChild(overlay);
             });
 
@@ -1190,7 +1202,7 @@
         );
 
         if (selectedOverlays.length === 0) {
-          showError("You haven't selected any item to clear");
+          showError("You haven't selected any items to clear");
           return;
         }
 
@@ -1201,6 +1213,7 @@
         });
 
         updateSelectionInfo();
+        clearError();
       };
 
       // Delete selected items in batch
@@ -1256,7 +1269,9 @@
           updateSelectionInfo();
           hideLoading();
 
-          showSuccess(`✓ Deleted ${itemsToRemove.length} watermark(s)`);
+          showSuccess(
+            `✓ Deleted ${itemsToRemove.length} watermark${itemsToRemove.length !== 1 ? "s" : ""}`,
+          );
         } catch (error) {
           hideLoading();
           showError("Error: " + error.message);

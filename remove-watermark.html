@@ -878,7 +878,7 @@
         }
       };
 
-      // Calculate display scale based on viewport
+      // Calculate display scale based on viewport - FIXED FOR ALL SCREEN SIZES
       function calculateDisplayScale(pdfPageWidth) {
         const container = pagesGrid.closest(".container");
         const containerWidth = container
@@ -889,14 +889,17 @@
         let maxWidth;
 
         if (window.innerWidth < 480) {
-          // Very small screens - use container width minus padding
-          maxWidth = Math.min(containerWidth - 40, 320); // Cap at 320px
+          // Very small screens
+          maxWidth = Math.min(containerWidth - 40, 320);
         } else if (window.innerWidth < 768) {
-          // Mobile - use container width
-          maxWidth = Math.min(containerWidth - 60, 480); // Cap at 480px
+          // Mobile
+          maxWidth = Math.min(containerWidth - 60, 480);
+        } else if (window.innerWidth < 970) {
+          // Medium screens (768-970px)
+          maxWidth = Math.min(containerWidth - 80, 700);
         } else {
-          // Desktop - fixed width
-          maxWidth = 800;
+          // Desktop
+          maxWidth = Math.min(containerWidth - 100, 800);
         }
 
         // Ensure we don't scale below a minimum width

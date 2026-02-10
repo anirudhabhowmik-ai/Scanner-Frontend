@@ -224,8 +224,24 @@
         border-top: 3px solid #4f46e5;
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
         max-height: 220px;
-        padding: 12px 16px 14px;
+        padding: 28px 16px 14px;
         transition: max-height 0.3s ease;
+      }
+
+      .btn-conainer {
+        position: fixed;
+        bottom: 179px;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #errorMsg {
+        position: absolute;
+        top: -25px;
       }
 
       .options-panel.show {
@@ -493,6 +509,9 @@
         .panel-flex {
           grid-template-columns: repeat(5, 1fr);
         }
+        .btn-conainer{
+          bottom: 114px;
+        }
       }
 
       @media (min-width: 1200px) and (max-width: 1399px) {
@@ -518,12 +537,15 @@
 
         .options-panel {
           max-height: 260px;
-          padding: 10px 14px 12px;
+          padding: 28px 14px 12px;
         }
 
         .pages-grid {
           gap: 25px;
           padding: 15px;
+        }
+        .btn-conainer{
+          bottom: 250px;
         }
       }
 
@@ -535,7 +557,11 @@
 
         .options-panel {
           max-height: 280px;
-          padding: 8px 12px 10px;
+          padding: 28px 12px 10px;
+        }
+
+        .btn-conainer{
+          bottom: 267px;
         }
 
         .option-group label {
@@ -578,7 +604,11 @@
 
         .options-panel {
           max-height: 300px;
-          padding: 8px 10px;
+          padding: 28px 10px;
+        }
+
+        .btn-conainer{
+          bottom: 277px;
         }
 
         .option-group label {
@@ -709,6 +739,29 @@
               role="region"
               aria-label="Page numbering options"
             >
+              <div class="btn-conainer">
+                <p
+                  id="errorMsg"
+                  class="error-text"
+                  style="display: none"
+                  role="alert"
+                  aria-live="polite"
+                ></p>
+                <button
+                  id="addNumbersBtn"
+                  class="cta-button"
+                  style="margin-top: 15px"
+                  aria-label="Add page numbers to selected PDFs"
+                >
+                  <span class="btn-spinner"
+                    ><i class="fa fa-spinner fa-spin" aria-hidden="true"></i
+                  ></span>
+                  <span class="btn-text"
+                    ><i class="fa fa-list-ol" aria-hidden="true"></i
+                  ></span>
+                  Add Page Numbers
+                </button>
+              </div>
               <div class="panel-flex">
                 <div class="option-group">
                   <label for="position"
@@ -879,29 +932,6 @@
               role="region"
               aria-label="PDF preview with page numbers"
             ></div>
-
-            <button
-              id="addNumbersBtn"
-              class="cta-button"
-              style="margin-top: 15px"
-              aria-label="Add page numbers to selected PDFs"
-            >
-              <span class="btn-spinner"
-                ><i class="fa fa-spinner fa-spin" aria-hidden="true"></i
-              ></span>
-              <span class="btn-text"
-                ><i class="fa fa-list-ol" aria-hidden="true"></i
-              ></span>
-              Add Page Numbers
-            </button>
-
-            <p
-              id="errorMsg"
-              class="error-text"
-              style="display: none"
-              role="alert"
-              aria-live="polite"
-            ></p>
 
             <div
               id="resultBtns"

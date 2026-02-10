@@ -826,7 +826,7 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      // Upload PDF and detect watermarks
+      // Upload PDF and detect watermarks - OPTIMIZED FOR MOBILE
       pdfUpload.onchange = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -842,6 +842,26 @@
         renderFileList();
 
         showLoading();
+
+        // Check file size for mobile
+        const isMobile = window.innerWidth <= 768;
+        const maxFileSizeMobile = 20 * 1024 * 1024; // 20MB for mobile
+
+        if (isMobile && file.size > maxFileSizeMobile) {
+          hideLoading();
+          showError(
+            "File too large for mobile. Please use a smaller PDF (under 20MB) or try on desktop.",
+          );
+          // Keep the file but warn user
+          successMsg.textContent =
+            "Warning: Large file on mobile. Some features may be limited.";
+          successMsg.style.background = "#fef3c7";
+          successMsg.style.borderLeftColor = "#f59e0b";
+          successMsg.style.color = "#92400e";
+          successMsg.classList.add("show");
+
+          // Still try to process but with optimizations
+        }
 
         try {
           // Detect watermarks from backend
@@ -861,14 +881,33 @@
           const detectData = await detectRes.json();
           detectedItems = detectData.items || [];
 
+          // Optimize for mobile - limit items if too many
+          if (isMobile && detectedItems.length > 100) {
+            console.warn(
+              `Too many items (${detectedItems.length}) for mobile, showing first 100`,
+            );
+            detectedItems = detectedItems.slice(0, 100);
+            showSuccess(
+              `✓ Detected ${detectedItems.length} items (limited for mobile performance)`,
+            );
+          } else {
+            showSuccess(
+              `✓ Detected ${detectedItems.length} item${detectedItems.length !== 1 ? "s" : ""} (text and images)`,
+            );
+          }
+
           await renderPDFWithOverlays(file, detectedItems);
 
           hideLoading();
-          showSuccess(
-            `✓ Detected ${detectedItems.length} item${detectedItems.length !== 1 ? "s" : ""} (text and images)`,
-          );
           controlPanel.style.display = "block";
           pagesGrid.style.display = "flex";
+
+          // Scroll to first page on mobile
+          if (isMobile) {
+            setTimeout(() => {
+              pagesGrid.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 500);
+          }
         } catch (error) {
           hideLoading();
           showError("Error: " + error.message);
@@ -878,7 +917,7 @@
         }
       };
 
-      // Calculate display scale based on viewport - FIXED FOR ALL SCREEN SIZES
+      // Calculate display scale based on viewport - OPTIMIZED FOR ALL SCREEN SIZES
       function calculateDisplayScale(pdfPageWidth) {
         const container = pagesGrid.closest(".container");
         const containerWidth = container
@@ -889,14 +928,14 @@
         let maxWidth;
 
         if (window.innerWidth < 480) {
-          // Very small screens
-          maxWidth = Math.min(containerWidth - 40, 320);
+          // Very small screens - optimize for performance
+          maxWidth = Math.min(containerWidth - 20, 320);
         } else if (window.innerWidth < 768) {
-          // Mobile
-          maxWidth = Math.min(containerWidth - 60, 480);
+          // Mobile - balance quality and performance
+          maxWidth = Math.min(containerWidth - 40, 450);
         } else if (window.innerWidth < 970) {
           // Medium screens (768-970px)
-          maxWidth = Math.min(containerWidth - 80, 700);
+          maxWidth = Math.min(containerWidth - 60, 650);
         } else {
           // Desktop
           maxWidth = Math.min(containerWidth - 100, 800);
@@ -909,7 +948,22 @@
         return maxWidth / pdfPageWidth;
       }
 
-      // Render PDF pages with overlays
+      // Get pixel ratio with fallback for optimal rendering
+      function getPixelRatio() {
+        // For mobile, use lower pixel ratio to prevent blurry text
+        const isMobile = window.innerWidth <= 768;
+        const devicePixelRatio = window.devicePixelRatio || 1;
+
+        if (isMobile) {
+          // On mobile, use devicePixelRatio but cap it to prevent blur
+          return Math.min(devicePixelRatio, 2);
+        } else {
+          // On desktop, use full devicePixelRatio
+          return Math.min(devicePixelRatio, 2.5);
+        }
+      }
+
+      // Render PDF pages with overlays - OPTIMIZED FOR CRISP TEXT
       async function renderPDFWithOverlays(file, items) {
         pagesGrid.innerHTML = "";
         pageRenderScales = {};
@@ -922,6 +976,10 @@
             cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
             cMapPacked: true,
             verbosity: 0,
+            // Optimize for mobile
+            disableFontFace: false, // Keep font face enabled for crisp text
+            disableRange: false,
+            disableStream: false,
           });
 
           const pdf = await loadingTask.promise;
@@ -935,8 +993,20 @@
             itemsByPage[page].push(item);
           });
 
-          // Render all pages sequentially
-          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          // Limit number of pages rendered at once on mobile
+          const isMobile = window.innerWidth <= 768;
+          const maxPagesToRender = isMobile ? 5 : pdf.numPages;
+
+          console.log(
+            `Rendering ${Math.min(maxPagesToRender, pdf.numPages)} of ${pdf.numPages} pages`,
+          );
+
+          // Render pages sequentially
+          for (
+            let pageNum = 1;
+            pageNum <= Math.min(maxPagesToRender, pdf.numPages);
+            pageNum++
+          ) {
             try {
               const page = await pdf.getPage(pageNum);
               const viewport = page.getViewport({ scale: 1 });
@@ -947,8 +1017,28 @@
               // Store the display scale for this page
               pageRenderScales[pageNum] = displayScale;
 
-              // Use higher render scale for sharp rendering
-              const renderScale = displayScale * (window.devicePixelRatio || 2);
+              // Get pixel ratio for crisp rendering
+              const pixelRatio = getPixelRatio();
+
+              // Calculate render scale - ensure it's a multiple of displayScale for crisp text
+              let renderScale;
+              if (window.innerWidth < 480) {
+                // Small screens: use 1.5x for readability
+                renderScale = displayScale * Math.max(1.5, pixelRatio * 0.8);
+              } else if (window.innerWidth < 768) {
+                // Mobile: use balanced scale
+                renderScale = displayScale * Math.max(1.8, pixelRatio * 0.9);
+              } else if (window.innerWidth < 970) {
+                // Medium screens
+                renderScale = displayScale * Math.max(2.0, pixelRatio);
+              } else {
+                // Desktop: full quality
+                renderScale = displayScale * pixelRatio;
+              }
+
+              // Round to nearest 0.25 to prevent sub-pixel rendering issues
+              renderScale = Math.round(renderScale * 4) / 4;
+
               const scaledViewport = page.getViewport({ scale: renderScale });
 
               const canvas = document.createElement("canvas");
@@ -957,8 +1047,30 @@
                 alpha: false,
               });
 
-              canvas.width = scaledViewport.width;
-              canvas.height = scaledViewport.height;
+              // Set canvas dimensions with proper pixel ratio
+              canvas.width = Math.floor(scaledViewport.width);
+              canvas.height = Math.floor(scaledViewport.height);
+
+              // Set display dimensions
+              const displayWidth = viewport.width * displayScale;
+              const displayHeight = viewport.height * displayScale;
+
+              canvas.style.width = displayWidth + "px";
+              canvas.style.height = displayHeight + "px";
+
+              // Set CSS image rendering for crisp text
+              canvas.style.imageRendering = "-webkit-optimize-contrast";
+              canvas.style.imageRendering = "crisp-edges";
+              canvas.style.imageRendering = "pixelated";
+
+              // Clear canvas with white background
+              context.fillStyle = "white";
+              context.fillRect(0, 0, canvas.width, canvas.height);
+
+              // Set rendering hints for better text quality
+              context.imageSmoothingEnabled = false;
+              context.textDrawingMode = "glyph"; // Use glyph mode for better text rendering
+              context.fontKerning = "normal";
 
               const renderTask = page.render({
                 canvasContext: context,
@@ -966,20 +1078,22 @@
                 intent: "display",
                 enableWebGL: false,
                 renderInteractiveForms: false,
+                // Optimize for text quality
+                imageLayer: true,
+                annotationLayer: false,
+                renderer: "canvas",
+                useWorkerFetch: false,
+                isEvalSupported: false,
+                enableXfa: false,
               });
 
               await renderTask.promise;
 
-              // Apply CSS scaling to match display size
-              const displayWidth = viewport.width * displayScale;
-              const displayHeight = viewport.height * displayScale;
-
-              canvas.style.width = displayWidth + "px";
-              canvas.style.height = displayHeight + "px";
-
               const card = document.createElement("div");
               card.className = "page-card";
               card.dataset.pageNum = pageNum;
+              card.style.maxWidth = displayWidth + "px";
+              card.style.width = displayWidth + "px";
 
               const badge = document.createElement("div");
               badge.className = "page-number-badge";
@@ -988,32 +1102,64 @@
 
               const container = document.createElement("div");
               container.className = "page-canvas-container";
+              container.style.position = "relative";
+              container.style.width = displayWidth + "px";
+              container.style.height = displayHeight + "px";
+              container.style.margin = "0 auto";
+              container.style.overflow = "hidden"; // Prevent canvas bleeding
               container.appendChild(canvas);
 
               // Add overlays with correct scale
               const pageItems = itemsByPage[pageNum] || [];
               pageItems.forEach((item) => {
-                const overlay = createOverlay(item, displayScale, canvas);
+                const overlay = createOverlay(item, displayScale);
                 container.appendChild(overlay);
               });
 
               card.appendChild(container);
               pagesGrid.appendChild(card);
 
+              // Clean up page to free memory (important for mobile)
               page.cleanup();
+
+              // Small delay to prevent UI blocking on mobile
+              if (isMobile && pageNum % 2 === 0) {
+                await new Promise((resolve) => setTimeout(resolve, 50));
+              }
             } catch (pageError) {
               console.error(`Error rendering page ${pageNum}:`, pageError);
+              // Continue with other pages even if one fails
             }
           }
 
           URL.revokeObjectURL(fileURL);
+
+          // Show message if we limited pages
+          if (isMobile && maxPagesToRender < pdf.numPages) {
+            const remainingPages = pdf.numPages - maxPagesToRender;
+            const infoDiv = document.createElement("div");
+            infoDiv.className = "note-box";
+            infoDiv.style.marginTop = "10px";
+            infoDiv.innerHTML = `📱 <strong>Mobile View:</strong> Showing first ${maxPagesToRender} pages. Watermark removal will still work on all pages.`;
+            pagesGrid.appendChild(infoDiv);
+          }
+
+          // Check file size and show warning for mobile
+          if (isMobile && file.size > 10 * 1024 * 1024) {
+            // 10MB threshold
+            setTimeout(() => {
+              showMemoryWarning();
+            }, 1000);
+          }
+
+          pdf.destroy();
         } catch (error) {
           console.error("Error in renderPDFWithOverlays:", error);
           throw error;
         }
       }
 
-      function createOverlay(item, displayScale, canvas) {
+      function createOverlay(item, displayScale) {
         const [x0, y0, x1, y1] = item.bbox;
 
         const overlay = document.createElement("div");
@@ -1021,11 +1167,20 @@
         overlay.dataset.itemId = item.id;
         overlay.dataset.pageNum = item.page;
 
-        // Use displayScale directly
-        overlay.style.left = x0 * displayScale + "px";
-        overlay.style.top = y0 * displayScale + "px";
-        overlay.style.width = (x1 - x0) * displayScale + "px";
-        overlay.style.height = (y1 - y0) * displayScale + "px";
+        // Use displayScale directly with proper positioning
+        const left = x0 * displayScale;
+        const top = y0 * displayScale;
+        const width = (x1 - x0) * displayScale;
+        const height = (y1 - y0) * displayScale;
+
+        overlay.style.position = "absolute";
+        overlay.style.left = left + "px";
+        overlay.style.top = top + "px";
+        overlay.style.width = width + "px";
+        overlay.style.height = height + "px";
+        overlay.style.boxSizing = "border-box";
+        overlay.style.backfaceVisibility = "hidden"; // Prevent blurriness
+        overlay.style.transform = "translateZ(0)"; // Force GPU rendering for crisp edges
 
         // Label
         const label = document.createElement("div");
@@ -1034,12 +1189,16 @@
           item.type === "text"
             ? `Text: ${item.text?.substring(0, 30) || "N/A"}`
             : "Image";
+        label.style.backfaceVisibility = "hidden";
+        label.style.transform = "translateZ(0)";
         overlay.appendChild(label);
 
         // Delete icon
         const deleteIcon = document.createElement("div");
         deleteIcon.className = "delete-icon";
         deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
+        deleteIcon.style.backfaceVisibility = "hidden";
+        deleteIcon.style.transform = "translateZ(0)";
         overlay.appendChild(deleteIcon);
 
         overlay.onclick = (e) => {
@@ -1066,13 +1225,25 @@
         updateSelectionInfo();
       }
 
-      // Delete single watermark immediately and update preview
+      // Delete single watermark immediately and update preview - WITH MOBILE OPTIMIZATION
       async function deleteWatermark(itemId, overlay) {
         const item = detectedItems.find((i) => i.id === itemId);
         if (!item) return;
 
         showLoading();
         clearError();
+
+        // Show processing message for mobile
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile) {
+          const processingMsg = document.createElement("div");
+          processingMsg.className = "success-message";
+          processingMsg.style.background = "#f0f9ff";
+          processingMsg.style.borderLeftColor = "#3b82f6";
+          processingMsg.style.color = "#1e40af";
+          processingMsg.textContent = "Processing... Please wait";
+          pagesGrid.insertBefore(processingMsg, pagesGrid.firstChild);
+        }
 
         try {
           const formData = new FormData();
@@ -1083,9 +1254,18 @@
             method: "POST",
             body: formData,
           });
+
           if (!res.ok) {
             const errorData = await res.json().catch(() => ({}));
-            throw new Error(errorData.error || "Failed to remove watermark");
+            let errorMessage = errorData.error || "Failed to remove watermark";
+
+            // Mobile-specific error messages
+            if (isMobile && errorMessage.includes("too large")) {
+              errorMessage =
+                "File too large for mobile processing. Please try on desktop or with a smaller PDF.";
+            }
+
+            throw new Error(errorMessage);
           }
 
           const blob = await res.blob();
@@ -1102,19 +1282,48 @@
             item.id = idx;
           });
 
+          // Re-render only the affected page (optimized for mobile)
           await reRenderSinglePage(deletedPageNum, currentFile, detectedItems);
 
           updateSelectionInfo();
           hideLoading();
 
           showSuccess("✓ Watermark removed successfully");
+
+          // Remove processing message if it exists
+          const processingMsg = pagesGrid.querySelector(
+            ".success-message[style*='f0f9ff']",
+          );
+          if (processingMsg) {
+            processingMsg.remove();
+          }
         } catch (error) {
           hideLoading();
+
+          // Remove processing message if it exists
+          const processingMsg = pagesGrid.querySelector(
+            ".success-message[style*='f0f9ff']",
+          );
+          if (processingMsg) {
+            processingMsg.remove();
+          }
+
+          // Show mobile-friendly error
+          if (isMobile) {
+            errorMsg.classList.add("mobile-error");
+          }
           showError("Error: " + error.message);
+
+          // Remove mobile error class after 5 seconds
+          if (isMobile) {
+            setTimeout(() => {
+              errorMsg.classList.remove("mobile-error");
+            }, 5000);
+          }
         }
       }
 
-      // Re-render only a single page
+      // Re-render only a single page - OPTIMIZED FOR CRISP TEXT
       async function reRenderSinglePage(pageNumber, file, items) {
         try {
           const fileURL = URL.createObjectURL(file);
@@ -1138,8 +1347,24 @@
           // Update stored scale
           pageRenderScales[pageNumber] = displayScale;
 
-          // Use higher render scale for sharp text
-          const renderScale = displayScale * (window.devicePixelRatio || 2);
+          // Get pixel ratio for crisp rendering
+          const pixelRatio = getPixelRatio();
+
+          // Calculate render scale
+          let renderScale;
+          if (window.innerWidth < 480) {
+            renderScale = displayScale * Math.max(1.5, pixelRatio * 0.8);
+          } else if (window.innerWidth < 768) {
+            renderScale = displayScale * Math.max(1.8, pixelRatio * 0.9);
+          } else if (window.innerWidth < 970) {
+            renderScale = displayScale * Math.max(2.0, pixelRatio);
+          } else {
+            renderScale = displayScale * pixelRatio;
+          }
+
+          // Round to nearest 0.25 to prevent sub-pixel rendering issues
+          renderScale = Math.round(renderScale * 4) / 4;
+
           const scaledViewport = page.getViewport({ scale: renderScale });
 
           const canvas = document.createElement("canvas");
@@ -1148,8 +1373,30 @@
             alpha: false,
           });
 
-          canvas.width = scaledViewport.width;
-          canvas.height = scaledViewport.height;
+          // Set canvas dimensions with proper pixel ratio
+          canvas.width = Math.floor(scaledViewport.width);
+          canvas.height = Math.floor(scaledViewport.height);
+
+          // Set display dimensions
+          const displayWidth = viewport.width * displayScale;
+          const displayHeight = viewport.height * displayScale;
+
+          canvas.style.width = displayWidth + "px";
+          canvas.style.height = displayHeight + "px";
+
+          // Set CSS image rendering for crisp text
+          canvas.style.imageRendering = "-webkit-optimize-contrast";
+          canvas.style.imageRendering = "crisp-edges";
+          canvas.style.imageRendering = "pixelated";
+
+          // Clear canvas with white background
+          context.fillStyle = "white";
+          context.fillRect(0, 0, canvas.width, canvas.height);
+
+          // Set rendering hints for better text quality
+          context.imageSmoothingEnabled = false;
+          context.textDrawingMode = "glyph";
+          context.fontKerning = "normal";
 
           const renderTask = page.render({
             canvasContext: context,
@@ -1157,16 +1404,15 @@
             intent: "display",
             enableWebGL: false,
             renderInteractiveForms: false,
+            imageLayer: true,
+            annotationLayer: false,
+            renderer: "canvas",
+            useWorkerFetch: false,
+            isEvalSupported: false,
+            enableXfa: false,
           });
 
           await renderTask.promise;
-
-          // Apply CSS scaling
-          const displayWidth = viewport.width * displayScale;
-          const displayHeight = viewport.height * displayScale;
-
-          canvas.style.width = displayWidth + "px";
-          canvas.style.height = displayHeight + "px";
 
           const pageCards = pagesGrid.querySelectorAll(".page-card");
           const targetCard = pageCards[pageNumber - 1];
@@ -1178,24 +1424,51 @@
 
             const container = document.createElement("div");
             container.className = "page-canvas-container";
+            container.style.position = "relative";
+            container.style.width = displayWidth + "px";
+            container.style.height = displayHeight + "px";
+            container.style.margin = "0 auto";
+            container.style.overflow = "hidden";
             container.appendChild(canvas);
 
             pageItems.forEach((item) => {
-              const overlay = createOverlay(item, displayScale, canvas);
+              const overlay = createOverlay(item, displayScale);
               container.appendChild(overlay);
             });
 
             targetCard.innerHTML = "";
             targetCard.appendChild(badge);
             targetCard.appendChild(container);
+            targetCard.style.maxWidth = displayWidth + "px";
+            targetCard.style.width = displayWidth + "px";
           }
 
           page.cleanup();
           URL.revokeObjectURL(fileURL);
+          pdf.destroy();
         } catch (error) {
           console.error(`Error re-rendering page ${pageNumber}:`, error);
           throw error;
         }
+      }
+
+      // Add this function to show memory warning
+      function showMemoryWarning() {
+        const warningDiv = document.createElement("div");
+        warningDiv.className = "note-box";
+        warningDiv.style.background = "#fef3c7";
+        warningDiv.style.borderLeftColor = "#f59e0b";
+        warningDiv.style.color = "#92400e";
+        warningDiv.innerHTML = `
+      ⚠️ <strong>Performance Notice:</strong> Large PDF on mobile device.
+      <br>For best results:
+      <ul style="margin: 5px 0 0 15px; padding-left: 10px;">
+        <li>Try on desktop for faster processing</li>
+        <li>Select fewer items at once</li>
+        <li>Close other browser tabs</li>
+      </ul>
+    `;
+        pagesGrid.insertBefore(warningDiv, pagesGrid.firstChild);
       }
 
       // Clear selection
@@ -1228,6 +1501,19 @@
 
         showLoading();
         clearError();
+
+        // Mobile optimization - warn if deleting many items
+        const isMobile = window.innerWidth <= 768;
+        if (isMobile && selectedItems.size > 10) {
+          if (
+            !confirm(
+              `Deleting ${selectedItems.size} items on mobile may be slow. Continue?`,
+            )
+          ) {
+            hideLoading();
+            return;
+          }
+        }
 
         try {
           const itemsToRemove = Array.from(selectedItems)
@@ -1264,8 +1550,13 @@
             item.id = idx;
           });
 
+          // Re-render affected pages one by one (better for mobile)
           for (const pageNum of affectedPages) {
             await reRenderSinglePage(pageNum, currentFile, detectedItems);
+            // Small delay between pages on mobile
+            if (isMobile) {
+              await new Promise((resolve) => setTimeout(resolve, 100));
+            }
           }
 
           selectedItems.clear();
@@ -1328,7 +1619,7 @@
             await renderPDFWithOverlays(currentFile, detectedItems);
             updateSelectionInfo();
           }
-        }, 300);
+        }, 500);
       });
     </script>
   </body>

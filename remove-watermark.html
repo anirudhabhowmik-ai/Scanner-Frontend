@@ -146,8 +146,8 @@
         left: 0;
         background: #1e40af;
         color: white;
-        padding: 8px;
-        font-size: 12px;
+        padding: 4px 8px;
+        font-size: 11px;
         border-radius: 4px;
         white-space: nowrap;
         display: none;
@@ -161,18 +161,18 @@
       @media (max-width: 768px) {
         .overlay-label {
           font-size: 10px;
-          padding: 6px 8px;
+          padding: 3px 6px;
           max-width: 200px;
-          top: -18px;
+          top: -20px;
         }
       }
 
       @media (max-width: 480px) {
         .overlay-label {
           font-size: 9px;
-          padding: 5px 7px;
+          padding: 2px 5px;
           max-width: 150px;
-          top: -16px;
+          top: -18px;
         }
       }
 
@@ -187,25 +187,40 @@
         background: #ef4444;
         color: white;
         border-radius: 50%;
-        width: 28px;
-        height: 28px;
+        width: 24px;
+        height: 24px;
         display: none;
         align-items: center;
         justify-content: center;
-        font-size: 13px;
+        font-size: 11px;
         z-index: 20;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         cursor: pointer;
+        flex-shrink: 0;
       }
 
       @media (max-width: 768px) {
         .delete-icon {
-          width: 26px;
-          height: 26px;
-          font-size: 12px;
-          top: -8px;
-          right: -8px;
+          width: 20px;
+          height: 20px;
+          font-size: 10px;
+          top: -6px;
+          right: -6px;
         }
+      }
+
+      @media (max-width: 480px) {
+        .delete-icon {
+          width: 18px;
+          height: 18px;
+          font-size: 9px;
+          top: -5px;
+          right: -5px;
+        }
+      }
+
+      .delete-icon i {
+        font-size: inherit;
       }
 
       .watermark-overlay.selected .delete-icon {
@@ -214,7 +229,7 @@
 
       .delete-icon:hover {
         background: #dc2626;
-        transform: scale(1.1);
+        transform: scale(1);
       }
 
       #controlPanel {
@@ -908,11 +923,14 @@
               const page = await pdf.getPage(pageNum);
               const viewport = page.getViewport({ scale: 1 });
 
-              // Calculate and store scale for this page
-              const scale = calculateScale(viewport);
-              pageScales[pageNum] = scale;
+              // Calculate responsive scale (same as add watermark code)
+              const maxWidth =
+                window.innerWidth < 768 ? window.innerWidth - 40 : 800;
+              const displayScale = Math.min(maxWidth / viewport.width, 1);
 
-              const scaledViewport = page.getViewport({ scale });
+              // Use higher render scale for sharp text
+              const renderScale = displayScale * (window.devicePixelRatio || 2);
+              const scaledViewport = page.getViewport({ scale: renderScale });
 
               const canvas = document.createElement("canvas");
               const context = canvas.getContext("2d", {
@@ -933,6 +951,10 @@
 
               await renderTask.promise;
 
+              // Apply CSS scaling to match display size
+              canvas.style.width = viewport.width * displayScale + "px";
+              canvas.style.height = viewport.height * displayScale + "px";
+
               const card = document.createElement("div");
               card.className = "page-card";
               card.dataset.pageNum = pageNum;
@@ -947,9 +969,15 @@
               container.appendChild(canvas);
 
               // Add overlays with correct scale
+              // Store viewport dimensions for overlay positioning
               const pageItems = itemsByPage[pageNum] || [];
               pageItems.forEach((item) => {
-                const overlay = createOverlay(item, scale, pageNum);
+                const overlay = createOverlay(
+                  item,
+                  displayScale,
+                  viewport.width,
+                  viewport.height,
+                );
                 container.appendChild(overlay);
               });
 
@@ -969,20 +997,20 @@
         }
       }
 
-      function createOverlay(item, scale, pageNum) {
+      function createOverlay(item, displayScale, pageWidth, pageHeight) {
         const bbox = item.bbox;
         const [x0, y0, x1, y1] = bbox;
 
         const overlay = document.createElement("div");
         overlay.className = `watermark-overlay type-${item.type}`;
         overlay.dataset.itemId = item.id;
-        overlay.dataset.pageNum = pageNum;
+        overlay.dataset.pageNum = item.page;
 
-        // Apply exact scaled coordinates
-        overlay.style.left = x0 * scale + "px";
-        overlay.style.top = y0 * scale + "px";
-        overlay.style.width = (x1 - x0) * scale + "px";
-        overlay.style.height = (y1 - y0) * scale + "px";
+        // Direct scaling - no border offset needed with box-shadow
+        overlay.style.left = x0 * displayScale + "px";
+        overlay.style.top = y0 * displayScale + "px";
+        overlay.style.width = (x1 - x0) * displayScale + "px";
+        overlay.style.height = (y1 - y0) * displayScale + "px";
 
         const label = document.createElement("div");
         label.className = "overlay-label";
@@ -1088,17 +1116,21 @@
           const page = await pdf.getPage(pageNumber);
           const viewport = page.getViewport({ scale: 1 });
 
-          // Use stored scale or recalculate
-          const scale = pageScales[pageNumber] || calculateScale(viewport);
-          pageScales[pageNumber] = scale;
+          // Calculate responsive scale
+          const maxWidth =
+            window.innerWidth < 768 ? window.innerWidth - 40 : 800;
+          const displayScale = Math.min(maxWidth / viewport.width, 1);
 
-          const scaledViewport = page.getViewport({ scale });
+          // Use higher render scale for sharp text
+          const renderScale = displayScale * (window.devicePixelRatio || 2);
+          const scaledViewport = page.getViewport({ scale: renderScale });
 
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d", {
             willReadFrequently: false,
             alpha: false,
           });
+
           canvas.width = scaledViewport.width;
           canvas.height = scaledViewport.height;
 
@@ -1111,6 +1143,10 @@
           });
 
           await renderTask.promise;
+
+          // Apply CSS scaling
+          canvas.style.width = viewport.width * displayScale + "px";
+          canvas.style.height = viewport.height * displayScale + "px";
 
           const pageCards = pagesGrid.querySelectorAll(".page-card");
           const targetCard = pageCards[pageNumber - 1];
@@ -1125,7 +1161,12 @@
             container.appendChild(canvas);
 
             pageItems.forEach((item) => {
-              const overlay = createOverlay(item, scale, pageNumber);
+              const overlay = createOverlay(
+                item,
+                displayScale,
+                viewport.width,
+                viewport.height,
+              );
               container.appendChild(overlay);
             });
 
@@ -1263,19 +1304,11 @@
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
+        resizeTimeout = setTimeout(async () => {
           if (currentFile && detectedItems.length > 0) {
-            // Recalculate scales and re-render if needed
-            const pageCards = pagesGrid.querySelectorAll(".page-card");
-            pageCards.forEach((card) => {
-              const pageNum = parseInt(card.dataset.pageNum);
-              if (
-                pageNum &&
-                detectedItems.some((item) => item.page === pageNum)
-              ) {
-                reRenderSinglePage(pageNum, currentFile, detectedItems);
-              }
-            });
+            // Re-render all pages with new scale
+            await renderPDFWithOverlays(currentFile, detectedItems);
+            updateSelectionInfo();
           }
         }, 300);
       });

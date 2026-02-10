@@ -18,7 +18,7 @@
     />
     <meta
       name="keywords"
-      content="PDF OCR, searchable PDF, PDF/A converter, OCR online, scan to searchable PDF, image to text PDF, multilingual OCR, extract text from PDF"
+      content="PDF OCR, searchable PDF, PDF/A converter, OCR online, scan to searchable PDF, image to text PDF, multilingual OCR, extract text from PDF, PDF archival, PDF/A-1b, PDF/A-2b, long-term archival"
     />
     <meta name="author" content="NextoPDF" />
     <meta
@@ -28,6 +28,60 @@
 
     <!-- Canonical URL -->
     <link rel="canonical" href="https://nextopdf.com/pdfa-ocr" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/pdfa-ocr" />
+    <meta
+      property="og:title"
+      content="PDF to Searchable PDF/A Converter with OCR - Free Online Tool"
+    />
+    <meta
+      property="og:description"
+      content="Convert scanned PDFs to searchable PDF/A format with OCR. Extract text from images in 14+ languages. Free, secure, and instant."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/og-image-pdfa.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/pdfa-ocr" />
+    <meta
+      name="twitter:title"
+      content="PDF to Searchable PDF/A Converter with OCR - Free Online Tool"
+    />
+    <meta
+      name="twitter:description"
+      content="Convert scanned PDFs to searchable PDF/A format with OCR in 14+ languages."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/twitter-card-pdfa.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - PDF to Searchable PDF/A with OCR",
+        "url": "https://nextopdf.com/pdfa-ocr",
+        "description": "Free online tool to convert scanned PDFs and images to searchable PDF/A format using OCR technology. Supports 14+ languages for text recognition.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "OCR text recognition, PDF/A conversion, Multilingual support (14+ languages), Batch processing, Searchable PDF creation, Image to text extraction, Archive-compliant PDFs",
+        "screenshot": "https://nextopdf.com/images/pdfa-ocr-screenshot.png"
+      }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -55,6 +109,17 @@
       type="image/png"
       sizes="32x32"
       href="./images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./images/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./images/apple-touch-icon.png"
     />
 
     <style>
@@ -489,6 +554,37 @@
       #options::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
       }
+
+      /* Result card */
+      .result-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 16px;
+        padding: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin: 20px auto;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+      }
+
+      /* Result buttons container */
+      .result-btns-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        .result-btns-container {
+          flex-direction: column;
+        }
+
+        .result-btns-container .cta-button,
+        .result-btns-container .secondary-btn {
+          width: 100%;
+        }
+      }
     </style>
 
     <!-- Google AdSense -->
@@ -520,7 +616,13 @@
 
           <div class="upload-section">
             <div id="uploadSection">
-              <label for="pdfUpload" class="upload-label" tabindex="0">
+              <label
+                for="pdfUpload"
+                class="upload-label"
+                tabindex="0"
+                role="button"
+                aria-label="Choose PDF files to upload"
+              >
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 <span>Choose PDF Files</span>
               </label>
@@ -542,7 +644,7 @@
             ></ul>
 
             <!-- Language Selection -->
-            <label class="select-label" for="selectBox">
+            <label class="select-label" for="selectBox" id="languageLabel">
               OCR Languages
               <span style="font-weight: 400; color: #6b7280; font-size: 14px">
                 (Select one or more)
@@ -554,13 +656,13 @@
                 id="selectBox"
                 role="button"
                 tabindex="0"
-                aria-label="Select OCR languages"
+                aria-labelledby="languageLabel"
                 aria-expanded="false"
                 aria-haspopup="listbox"
               >
                 <span class="tag">English</span>
               </div>
-              <div id="dropdown" role="listbox">
+              <div id="dropdown" role="listbox" aria-labelledby="languageLabel">
                 <input
                   type="text"
                   id="searchLang"
@@ -576,8 +678,8 @@
               class="cta-button"
               aria-label="Convert PDFs to searchable PDF/A format"
             >
-              <span class="btn-spinner">
-                <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+              <span class="btn-spinner" aria-hidden="true">
+                <i class="fa fa-spinner fa-spin"></i>
                 Processing...
               </span>
               <span class="btn-text">
@@ -600,17 +702,7 @@
               role="region"
               aria-label="Conversion results"
             >
-              <div
-                id="resultCard"
-                class="result-card"
-                style="
-                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                  padding: 40px;
-                  border-radius: 12px;
-                  text-align: center;
-                  margin-bottom: 20px;
-                "
-              >
+              <div id="resultCard" class="result-card">
                 <i
                   class="fa fa-file-pdf"
                   aria-hidden="true"
@@ -623,24 +715,32 @@
                 >
               </p>
 
-              <a
-                id="downloadBtn"
-                href="#"
-                class="cta-button"
-                download="searchable.pdf"
-                aria-label="Download searchable PDF"
-                style="margin-right: 10px"
-              >
-                <i class="fa fa-download" aria-hidden="true"></i> Download
-              </a>
-              <button
-                id="resetBtn"
-                class="secondary-btn"
-                aria-label="Convert another PDF"
-              >
-                <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert
-                Another PDF
-              </button>
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  download="searchable.pdf"
+                  aria-label="Download searchable PDF"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
+                </a>
+                <button
+                  id="shareBtn"
+                  class="cta-button"
+                  aria-label="Share searchable PDF"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </button>
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Convert another PDF"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert
+                  Another PDF
+                </button>
+              </div>
             </div>
 
             <p class="note">
@@ -665,8 +765,1077 @@
         </div>
       </section>
 
-      <!-- Rest of your sections remain the same -->
-      <!-- I'm omitting them for brevity, but they should all be included -->
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white">
+        <div class="container">
+          <h2>How to Convert PDF to Searchable PDF/A with OCR</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                1
+              </div>
+              <h3>Upload Scanned PDFs</h3>
+              <p>
+                Select one or multiple PDF files containing scanned images or
+                photos. Our tool supports batch processing for converting
+                multiple documents simultaneously.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                2
+              </div>
+              <h3>Select OCR Languages</h3>
+              <p>
+                Choose one or more languages for text recognition. Support for
+                14+ languages including English, Hindi, Bengali, Spanish,
+                French, German, Chinese, Arabic, and more.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                3
+              </div>
+              <h3>Download Searchable PDF/A</h3>
+              <p>
+                Get your searchable, archive-compliant PDF/A file instantly. All
+                text is now searchable, copyable, and ready for long-term
+                archival storage.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- What is PDF/A Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>What is PDF/A and Why Use It?</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              PDF/A is an ISO-standardized version of PDF specifically designed
+              for long-term archival and preservation of electronic documents.
+              Unlike regular PDFs, PDF/A files are self-contained and include
+              all necessary information for display, making them ideal for legal
+              documents, academic research, government records, and business
+              archives.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Understanding PDF/A Standards
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDF/A comes in several conformance levels, each designed for
+              specific archival needs:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>PDF/A-1:</strong> Based on PDF 1.4, introduced in 2005
+                as the first archival standard. Ensures documents can be
+                reproduced exactly the same way years later, regardless of
+                software or hardware changes.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>PDF/A-2:</strong> Based on PDF 1.7 (ISO 32000-1), added
+                support for JPEG 2000 compression, transparency, and embedded
+                PDF/A files. More efficient for modern documents while
+                maintaining archival integrity.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>PDF/A-3:</strong> Allows embedding of non-PDF/A files
+                (like Excel spreadsheets or CAD drawings) while maintaining
+                PDF/A compliance for the container document. Useful for
+                comprehensive record-keeping.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Key Requirements of PDF/A Format
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDF/A has strict requirements to ensure long-term accessibility:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Font Embedding:</strong> All fonts must be embedded in
+                the file so the document displays identically regardless of what
+                fonts are installed on the viewing system.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Color Independence:</strong> Color spaces must be
+                specified in a device-independent manner to ensure consistent
+                appearance across different displays and printers.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>No External Dependencies:</strong> PDF/A files cannot
+                rely on external resources like linked images, fonts, or
+                multimedia. Everything needed for display must be contained
+                within the file.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>No Encryption:</strong> Content cannot be encrypted,
+                ensuring long-term accessibility. However, this doesn't mean the
+                files are insecure—they're stored in secure archives with access
+                controls.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Metadata Requirements:</strong> Must include XMP
+                metadata for document identification and management in archival
+                systems.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Benefits of Using PDF/A for Archives
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              PDF/A provides numerous advantages for document preservation:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Long-term Readability:</strong> PDF/A files created today
+              will be readable decades from now, regardless of software
+              evolution. This makes them ideal for legal documents, historical
+              records, academic research, and business archives that need to
+              remain accessible for years or decades.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Legal Compliance:</strong> Many government agencies and
+              regulatory bodies require PDF/A for official submissions. Courts,
+              patent offices, tax authorities, and healthcare organizations
+              often mandate PDF/A for records retention and legal proceedings.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Consistent Display:</strong> Because all resources are
+              embedded, PDF/A documents look identical on any system. There are
+              no missing fonts, broken links, or formatting issues that can
+              plague regular PDFs.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              <strong>Searchability:</strong> When combined with OCR (as our
+              tool does), PDF/A files make scanned documents fully searchable.
+              This transforms image-based PDFs into text-accessible archives,
+              dramatically improving document retrieval and research
+              capabilities.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Who Needs PDF/A Files?
+            </h3>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Government Agencies:</strong> For official records,
+                policy documents, and public archives that must remain
+                accessible indefinitely.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Legal Professionals:</strong> Court filings, contracts,
+                evidence documents, and case files requiring long-term
+                preservation and legal admissibility.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Healthcare Organizations:</strong> Medical records,
+                research data, and patient documentation requiring HIPAA
+                compliance and long-term retention.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Financial Institutions:</strong> Regulatory compliance
+                documents, transaction records, and audit trails that must be
+                preserved for regulatory periods.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Academic Institutions:</strong> Research papers,
+                dissertations, historical documents, and institutional records
+                for academic archives.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Libraries and Museums:</strong> Digital preservation of
+                historical documents, rare manuscripts, and cultural heritage
+                materials.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- OCR Technology Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Understanding OCR Technology</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              Optical Character Recognition (OCR) is the technology that
+              converts images of text into actual, machine-readable text. When
+              you scan a document or photograph text, the result is just an
+              image—your computer can't search, edit, or process that text. OCR
+              analyzes the visual patterns in the image and converts them into
+              digital characters that computers can understand and manipulate.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              How OCR Works
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Modern OCR technology uses sophisticated algorithms and machine
+              learning to recognize text:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Image Preprocessing:</strong> The OCR engine first
+                enhances the image by adjusting contrast, removing noise,
+                correcting skew, and optimizing for text recognition.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Text Detection:</strong> The system identifies areas of
+                the image that contain text versus graphics, photos, or blank
+                space.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Character Recognition:</strong> Individual characters
+                are analyzed and matched against known patterns. Modern OCR uses
+                neural networks trained on millions of character samples.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Language Processing:</strong> The recognized characters
+                are validated using language-specific dictionaries and
+                contextual analysis to improve accuracy.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Layout Analysis:</strong> The system preserves document
+                structure, including columns, paragraphs, tables, and
+                formatting.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Multilingual OCR Capabilities
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Our tool supports OCR in 14+ languages, making it ideal for
+              international documents and multilingual archives:
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Latin Script Languages:</strong> English, Spanish, French,
+              German, Italian, Portuguese, and other European languages that use
+              the Latin alphabet.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Asian Languages:</strong> Chinese (Simplified and
+              Traditional), Japanese, and Korean, which require specialized
+              character recognition for thousands of unique characters.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Indic Languages:</strong> Hindi and Bengali, supporting
+              the Devanagari and Bengali scripts used across South Asia.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+              <strong>Arabic Script:</strong> Arabic and other right-to-left
+              languages, with specialized processing for connected characters
+              and diacritical marks.
+            </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              <strong>Mixed Language Documents:</strong> You can select multiple
+              languages simultaneously for documents that contain text in
+              several languages, ensuring accurate recognition across the entire
+              document.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Benefits of Searchable PDFs
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Converting scanned PDFs to searchable format provides significant
+              advantages:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Full-text Search:</strong> Find any word or phrase
+                instantly across hundreds or thousands of pages. Essential for
+                legal discovery, research, and document management.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Text Selection and Copying:</strong> Extract quotes,
+                data, or information without manual retyping. Dramatically
+                reduces data entry time and eliminates transcription errors.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Accessibility:</strong> Screen readers can convert text
+                to speech for visually impaired users, making documents
+                accessible to all.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Translation:</strong> Copy text directly into
+                translation tools or use built-in PDF translation features.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Data Extraction:</strong> Automatically extract
+                structured data from forms, invoices, receipts, and other
+                business documents.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Smaller File Sizes:</strong> Text is much more compact
+                than image data, often resulting in significantly smaller file
+                sizes.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              OCR Accuracy and Quality Factors
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Several factors affect OCR accuracy. Understanding these helps you
+              prepare documents for optimal results:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Image Resolution:</strong> Minimum 300 DPI recommended.
+                Higher resolution (600 DPI) improves accuracy for small text or
+                poor quality originals.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Image Quality:</strong> Clear, high-contrast images with
+                minimal noise or artifacts produce better results. Avoid
+                shadows, blurring, and uneven lighting.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Text Size:</strong> Standard text sizes (10-12 point)
+                work best. Very small or very large text may require resolution
+                adjustments.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Font Clarity:</strong> Standard fonts (Times, Arial,
+                etc.) are recognized more accurately than decorative or
+                handwritten text.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Document Condition:</strong> Clean, unwrinkled documents
+                without fading, stains, or damage produce optimal results.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Page Alignment:</strong> Straight, properly oriented
+                pages improve accuracy. Our system can handle slight skewing,
+                but severely tilted pages may need pre-correction.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Use Cases Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Common Use Cases for Searchable PDF/A Files</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-balance-scale"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Legal Document Management</h3>
+              <p>
+                Convert scanned contracts, court filings, depositions, and legal
+                correspondence to searchable PDF/A format. Enable full-text
+                search across case files and meet court requirements for
+                electronic filing.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-university"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Academic Research Archives</h3>
+              <p>
+                Digitize historical documents, research papers, and
+                institutional records. Create searchable archives of
+                dissertations, theses, and scholarly publications for long-term
+                preservation and easy retrieval.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-hospital"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Medical Records</h3>
+              <p>
+                Convert patient charts, test results, and medical imaging
+                reports to searchable, HIPAA-compliant PDF/A format. Improve
+                patient care with quick access to medical history across
+                healthcare systems.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-building"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Business Archives</h3>
+              <p>
+                Digitize invoices, receipts, contracts, and business
+                correspondence. Create searchable archives for accounting,
+                compliance, and records management. Streamline document
+                retrieval and audit preparation.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-landmark"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Government Records</h3>
+              <p>
+                Convert public records, policy documents, and administrative
+                files to archive-compliant format. Meet regulatory requirements
+                for electronic records management and public access.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-book"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Library Digitization</h3>
+              <p>
+                Preserve rare books, manuscripts, and historical documents in
+                searchable digital format. Create accessible digital collections
+                while protecting fragile originals from handling damage.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Powerful Features for PDF/A Conversion</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-language"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>14+ Language Support</h3>
+              <p>
+                Recognize text in English, Hindi, Bengali, Spanish, French,
+                German, Italian, Portuguese, Russian, Japanese, Korean, Chinese
+                (Simplified & Traditional), Arabic, and more. Select multiple
+                languages for mixed-language documents.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-layer-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Batch Processing</h3>
+              <p>
+                Convert multiple PDFs simultaneously with consistent OCR
+                settings. Process entire document collections efficiently,
+                saving hours of manual conversion time.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-archive"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Archive Compliance</h3>
+              <p>
+                Generates PDF/A-1b and PDF/A-2b compliant files meeting ISO
+                19005 standards. Perfect for legal, government, and
+                institutional archival requirements.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-search"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Full-text Search</h3>
+              <p>
+                Makes every word in scanned documents searchable. Find
+                information instantly across hundreds of pages. Essential for
+                research, legal discovery, and document management.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-copy"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Text Selection</h3>
+              <p>
+                Select and copy text directly from scanned documents. Extract
+                quotes, data, and information without retyping. Dramatically
+                reduces data entry time and errors.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-shield-alt"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Privacy & Security</h3>
+              <p>
+                All processing happens securely in the cloud. Files are
+                automatically deleted after conversion. No registration
+                required. Your documents remain completely private.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Best Practices Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>Best Practices for OCR and PDF/A Conversion</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Preparing Documents for OCR
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Proper document preparation significantly improves OCR accuracy
+              and results:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Scan at Optimal Resolution:</strong> Use 300 DPI for
+                standard documents, 400-600 DPI for small text or poor quality
+                originals. Higher DPI improves accuracy but increases file size.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Ensure Proper Lighting:</strong> Scan with even lighting
+                to avoid shadows and glare. Use a document scanner rather than a
+                phone camera when possible for consistent quality.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Keep Documents Flat:</strong> Remove staples and
+                straighten pages before scanning. Curved or wrinkled pages
+                reduce OCR accuracy.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Clean Source Documents:</strong> Remove dirt, smudges,
+                and sticky notes that might interfere with text recognition.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Use Appropriate Color Mode:</strong> Grayscale or
+                black-and-white mode works well for text-only documents and
+                creates smaller files. Use color only when necessary for forms
+                or images.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Selecting the Right Languages
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Language selection is crucial for OCR accuracy:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Single Language Documents:</strong> If your document is
+                entirely in one language, select only that language for optimal
+                results. Fewer language options improve processing speed and
+                accuracy.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Multilingual Documents:</strong> Select all languages
+                present in the document. For example, business documents with
+                English and Chinese sections should have both languages
+                selected.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Related Language Pairs:</strong> When uncertain, it's
+                safe to select related languages (like English and Spanish)
+                without significantly impacting accuracy.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Common Combinations:</strong> Academic papers often mix
+                English with specialized terminology in other languages.
+                Scientific documents may include Latin terms alongside modern
+                languages.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Verifying OCR Results
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              After conversion, verify the quality of OCR results:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Test Searchability:</strong> Open the converted PDF and
+                use Ctrl+F (Cmd+F on Mac) to search for known words from the
+                document. This confirms text extraction worked properly.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Check Text Selection:</strong> Try selecting text from
+                different parts of the document to ensure all areas were
+                processed correctly.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Review Critical Content:</strong> For important
+                documents, manually review key sections to ensure accuracy,
+                especially numbers, names, and technical terminology.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Validate Special Characters:</strong> Check that
+                symbols, mathematical notation, and special characters were
+                recognized correctly.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Organizing Converted Archives
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Proper organization maximizes the value of searchable PDF/A
+              archives:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Consistent Naming:</strong> Use descriptive, consistent
+                file names with dates in YYYY-MM-DD format for proper sorting.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Folder Structure:</strong> Create a logical hierarchy by
+                category, date, or project. This complements full-text search
+                capabilities.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Metadata Enrichment:</strong> Add document properties
+                (title, author, subject, keywords) to improve searchability and
+                organization.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Backup Strategy:</strong> Maintain multiple backups of
+                important archives using the 3-2-1 rule: 3 copies, 2 different
+                media types, 1 off-site.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What is the difference between PDF and PDF/A?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                PDF is a general-purpose document format, while PDF/A is
+                specifically designed for long-term archival. PDF/A files are
+                self-contained (all fonts and resources embedded), cannot rely
+                on external links, and cannot be encrypted. This ensures
+                documents remain readable decades into the future regardless of
+                software changes.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How accurate is the OCR text recognition?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                OCR accuracy typically ranges from 95-99% for clean,
+                well-scanned documents at 300+ DPI. Accuracy depends on image
+                quality, resolution, font clarity, and language. Poor quality
+                scans, handwritten text, or heavily degraded documents may have
+                lower accuracy. Our tool uses advanced Tesseract OCR technology
+                for optimal results.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert multiple languages in one document?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! You can select multiple languages simultaneously. This is
+                essential for multilingual documents like international
+                contracts, academic papers with foreign language quotes, or
+                business documents mixing languages. The OCR engine will process
+                all selected languages across the entire document.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What file size limits apply?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our tool can process PDFs up to 50MB per file with batch
+                processing for multiple files. For larger documents or extensive
+                archives, consider splitting into smaller batches. Processing
+                time increases with file size and number of pages.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will the visual appearance of my PDF change?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. The OCR process adds an invisible text layer beneath the
+                scanned image, preserving the exact visual appearance of your
+                document. Users see the original scan but can search and select
+                text as if it were a native digital document.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is my data secure during processing?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. All files are processed securely using encrypted
+                connections (HTTPS). Files are automatically deleted from our
+                servers after conversion. We never store, share, or access your
+                documents. No registration or account creation is required,
+                ensuring complete privacy.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can this tool recognize handwriting?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                OCR is optimized for printed text and may have limited success
+                with handwriting. Clear, legible handwriting in supported
+                languages can sometimes be recognized, but accuracy varies
+                significantly. For best results, use typed or printed documents.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What if my document has tables or complex layouts?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Modern OCR engines can handle tables, columns, and complex
+                layouts. The text layer will follow the reading order of the
+                document. For documents with extremely complex layouts, some
+                manual verification may be needed to ensure proper text
+                sequence.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I edit the text after OCR conversion?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                The searchable PDF/A format allows text selection and copying
+                but not direct editing within the PDF. To edit recognized text,
+                copy it to a word processor. For editable PDFs, consider using
+                our PDF editing tools after OCR conversion.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does OCR processing take?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Processing time depends on file size, page count, resolution,
+                and number of languages selected. A typical 10-page document at
+                300 DPI processes in 30-60 seconds. Larger documents or higher
+                resolutions take proportionally longer.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is there a limit on how many files I can convert?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our free tool allows unlimited conversions. You can process as
+                many documents as needed without registration, payment, or usage
+                limits. For enterprise-scale processing, contact us about
+                dedicated solutions.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will PDF/A files work with all PDF readers?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. PDF/A is a subset of PDF, so PDF/A files open in any
+                standard PDF reader including Adobe Acrobat, web browsers, and
+                mobile apps. The archival features are transparent to users—they
+                simply see a normal, searchable PDF.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px">
+        <div class="container">
+          <h2>Related PDF Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-file-pdf"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>PDF to PDF/A</h3>
+              <p>
+                Convert regular PDFs to archival PDF/A format without OCR. Ideal
+                for digital-born documents that need long-term preservation
+                compliance.
+              </p>
+              <a
+                href="/pdf-to-pdfa"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Convert PDF to PDF/A"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce file size of searchable PDFs for easier sharing and
+                storage while maintaining text searchability and readability.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Compress PDF files"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple searchable PDF/A files into a single archive
+                document. Perfect for creating comprehensive case files or
+                project archives.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Merge PDF files"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-scissors"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Split PDF</h3>
+              <p>
+                Separate searchable PDF archives into individual documents or
+                page ranges while maintaining OCR text layer.
+              </p>
+              <a
+                href="/split"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Split PDF files"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-lock"
+                style="font-size: 40px; color: #ef4444; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Protect PDF</h3>
+              <p>
+                Add password protection to searchable PDFs for confidential
+                archives. Combine text recognition with security.
+              </p>
+              <a
+                href="/protect-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Protect PDF with password"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-stamp"
+                style="font-size: 40px; color: #8b5cf6; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Add Watermark</h3>
+              <p>
+                Apply watermarks to searchable PDF/A archives for copyright
+                protection and document tracking.
+              </p>
+              <a
+                href="/watermark"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                aria-label="Add watermark to PDF"
+                >Use Tool</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px">
+            Ready to Make Your PDFs Searchable?
+          </h2>
+          <p style="margin-bottom: 25px">
+            Convert scanned documents to searchable PDF/A format instantly.
+            Free, secure, and supporting 14+ languages.
+          </p>
+          <a
+            href="#main-content"
+            class="cta-button"
+            onclick="
+              document
+                .getElementById('main-content')
+                .scrollIntoView({ behavior: 'smooth' });
+              return false;
+            "
+            aria-label="Scroll to top to convert PDFs"
+          >
+            <i class="fa fa-file-pdf" aria-hidden="true"></i> Start Converting
+            Now
+          </a>
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
@@ -684,6 +1853,7 @@
       const errorMsg = document.getElementById("errorMsg");
       const resultBtns = document.getElementById("resultBtns");
       const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
       const resetBtn = document.getElementById("resetBtn");
       const pdfPreview = document.getElementById("pdfPreview");
       const pdfFrame = document.getElementById("pdfFrame");
@@ -691,6 +1861,8 @@
       const uploadSection = document.getElementById("uploadSection");
 
       let selectedFiles = [];
+      let convertedFileUrl = null;
+      let convertedFileName = "searchable.pdf";
 
       // Language options [code, name]
       const languages = [
@@ -769,7 +1941,7 @@
           const name = languages.find((l) => l[0] === code)[1];
           const tag = document.createElement("span");
           tag.className = "tag";
-          tag.innerHTML = `${name} <span class="remove-tag" data-code="${code}">×</span>`;
+          tag.innerHTML = `${name} <span class="remove-tag" data-code="${code}" role="button" aria-label="Remove ${name}" tabindex="0">×</span>`;
           selectBox.appendChild(tag);
         });
 
@@ -781,6 +1953,18 @@
             selectedLangs = selectedLangs.filter((x) => x !== code);
             updateTags();
             renderOptions(searchInput.value);
+          };
+
+          // Keyboard support for remove buttons
+          btn.onkeypress = (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
+              const code = e.target.dataset.code;
+              selectedLangs = selectedLangs.filter((x) => x !== code);
+              updateTags();
+              renderOptions(searchInput.value);
+            }
           };
         });
       }
@@ -949,6 +2133,7 @@
 
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
+          convertedFileUrl = url;
 
           // Determine filename
           let filename;
@@ -958,6 +2143,7 @@
           } else {
             filename = "merged_searchable.pdf";
           }
+          convertedFileName = filename;
 
           // Update UI
           fileList.style.display = "none";
@@ -995,10 +2181,66 @@
         }
       });
 
+      // Share button functionality
+      shareBtn.addEventListener("click", async () => {
+        if (!convertedFileUrl) return;
+
+        try {
+          // Check if Web Share API is supported
+          if (navigator.share && navigator.canShare) {
+            // Convert blob URL to File object for sharing
+            const response = await fetch(convertedFileUrl);
+            const blob = await response.blob();
+            const file = new File([blob], convertedFileName, {
+              type: "application/pdf",
+            });
+
+            const shareData = {
+              title: "Searchable PDF/A",
+              text: "Check out this searchable PDF/A file",
+              files: [file],
+            };
+
+            if (navigator.canShare(shareData)) {
+              await navigator.share(shareData);
+            } else {
+              // Fallback: share without file
+              await navigator.share({
+                title: "Searchable PDF/A",
+                text: `I converted a PDF to searchable PDF/A format using NextoPDF`,
+                url: window.location.href,
+              });
+            }
+          } else {
+            // Fallback for browsers that don't support Web Share API
+            // Copy download link to clipboard
+            const tempInput = document.createElement("input");
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Show temporary notification
+            const originalText = shareBtn.innerHTML;
+            shareBtn.innerHTML =
+              '<i class="fa fa-check" aria-hidden="true"></i> Link Copied!';
+            setTimeout(() => {
+              shareBtn.innerHTML = originalText;
+            }, 2000);
+          }
+        } catch (error) {
+          // User cancelled share or error occurred
+          console.log("Share failed:", error);
+        }
+      });
+
       // Reset button
       resetBtn.addEventListener("click", () => {
         selectedFiles = [];
         selectedLangs = ["eng"];
+        convertedFileUrl = null;
+        convertedFileName = "searchable.pdf";
         fileList.innerHTML = "";
         fileList.style.display = "none";
         uploadSection.style.display = "block";

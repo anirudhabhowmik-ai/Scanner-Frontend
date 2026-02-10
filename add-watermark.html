@@ -180,6 +180,28 @@
 
             <!-- OPTIONS -->
             <div id="wmOptions" style="display: none; text-align: left">
+              <div class="watermarkBtn-container">
+                <p
+                  class="error-text"
+                  id="errorMsg"
+                  style="display: none"
+                  role="alert"
+                ></p>
+                <button
+                  id="watermarkBtn"
+                  class="cta-button"
+                  aria-label="Add watermark to PDF"
+                >
+                  <span class="btn-spinner" aria-hidden="true">
+                    <i class="fa fa-spinner fa-spin"></i>
+                  </span>
+                  <span class="btn-text"
+                    ><i class="fa fa-stamp" aria-hidden="true"></i
+                  ></span>
+                  Add Watermark
+                </button>
+                
+              </div>
               <label>Watermark Type</label>
               <div
                 class="radio-group"
@@ -371,26 +393,6 @@
               </div>
             </div>
 
-            <button
-              id="watermarkBtn"
-              class="cta-button"
-              aria-label="Add watermark to PDF"
-            >
-              <span class="btn-spinner" aria-hidden="true">
-                <i class="fa fa-spinner fa-spin"></i>
-              </span>
-              <span class="btn-text"
-                ><i class="fa fa-stamp" aria-hidden="true"></i
-              ></span>
-              Add Watermark
-            </button>
-
-            <p
-              class="error-text"
-              id="errorMsg"
-              style="display: none"
-              role="alert"
-            ></p>
             <div class="note-box">
               💡 Drag watermarks to reposition and resize images. Each modified
               page will show an "Apply to All" button.
@@ -1270,7 +1272,7 @@
       </section>
 
       <!-- CTA Section -->
-      <section class="hero" >
+      <section class="hero">
         <div class="container">
           <h2 style="font-size: 32px; margin-bottom: 15px">
             Ready to Protect Your PDFs?

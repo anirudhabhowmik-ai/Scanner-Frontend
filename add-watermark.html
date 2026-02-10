@@ -1462,6 +1462,7 @@
           li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${f.name}</span> <i class="fa fa-times delete-file" role="button" aria-label="Remove ${f.name}" tabindex="0"></i>`;
           li.querySelector(".delete-file").onclick = () => {
             files.splice(i, 1);
+            pdfUpload.value = "";
             renderFileList();
             loadAllPDFs();
           };

@@ -3,7 +3,84 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Remove Watermark from PDF Online Free | NextoPDF</title>
+
+    <!-- Primary Meta Tags -->
+    <title>
+      Remove Watermark from PDF Online Free - Fast & Easy | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="Remove Watermark from PDF Online Free - Fast & Easy | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Remove watermarks from PDF files online for free. Click and select text or image watermarks to delete permanently. Uses PyMuPDF for accurate detection and removal."
+    />
+    <meta
+      name="keywords"
+      content="remove watermark from PDF, delete watermark PDF, PDF watermark remover free, remove text watermark, remove image watermark, clean PDF, unwatermark PDF"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/remove-watermark" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/remove-watermark" />
+    <meta
+      property="og:title"
+      content="Remove Watermark from PDF Online Free - Fast & Easy | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Remove watermarks from PDF files online for free. Click and select text or image watermarks to delete permanently."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/og-image.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/remove-watermark" />
+    <meta
+      name="twitter:title"
+      content="Remove Watermark from PDF Online Free - Fast & Easy | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Remove watermarks from PDF files online for free. Click and select text or image watermarks to delete permanently."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/twitter-card.png"
+    />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - Remove Watermark from PDF",
+        "url": "https://nextopdf.com/remove-watermark",
+        "description": "Free online tool to remove text and image watermarks from PDF documents with accurate detection and permanent deletion",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "Remove text watermarks, Remove image watermarks, Batch processing, Visual selection, Permanent deletion, PyMuPDF powered"
+      }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,6 +94,9 @@
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
 
     <!-- Main CSS -->
@@ -40,6 +120,13 @@
       sizes="180x180"
       href="./images/apple-touch-icon.png"
     />
+
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+      crossorigin="anonymous"
+    ></script>
 
     <style>
       .pages-grid {
@@ -135,6 +222,7 @@
         background: rgba(239, 68, 68, 0.3) !important;
         outline-style: solid !important;
         outline-width: 3px !important;
+        z-index: 9999;
       }
 
       .watermark-overlay.deleted {
@@ -244,6 +332,7 @@
         z-index: 1000;
         padding: 15px;
         display: none;
+        z-index: 99999;
       }
 
       @media (max-width: 768px) {
@@ -441,7 +530,6 @@
         }
       }
 
-      /* File list styling - borrowed from merge.html */
       .file-list {
         display: none;
         list-style: none;
@@ -528,7 +616,6 @@
         background: #dc2626;
       }
 
-      /* Responsive container adjustments */
       .merge-tool h1 {
         font-size: 2rem;
       }
@@ -561,7 +648,6 @@
         }
       }
 
-      /* Error message styling */
       .error-text {
         background: #fee2e2;
         border-left: 4px solid #ef4444;
@@ -591,10 +677,10 @@
   <body>
     <section id="header-placeholder"></section>
 
-    <main>
+    <main role="main">
       <section class="merge-tool">
         <div class="container">
-          <h1>Remove Watermark from PDF Online</h1>
+          <h1>Remove Watermark from PDF Online Free</h1>
           <p>
             Upload your PDF and click on any text or image to select watermarks
             for removal. Uses PyMuPDF for accurate detection and permanent
@@ -604,40 +690,76 @@
           <div class="upload-section">
             <div id="uploadSection">
               <label class="upload-label" for="pdfUpload">
-                <i class="fa fa-upload"></i> Choose PDF file
+                <i class="fa fa-upload" aria-hidden="true"></i> Choose PDF file
               </label>
-              <input type="file" id="pdfUpload" accept=".pdf" />
+              <input
+                type="file"
+                id="pdfUpload"
+                accept=".pdf"
+                aria-label="Upload PDF file to remove watermarks"
+              />
             </div>
 
-            <!-- File list similar to merge.html -->
-            <ul id="fileList" class="file-list"></ul>
+            <ul id="fileList" class="file-list" role="list"></ul>
 
-            <div class="success-message" id="successMsg"></div>
-            <div id="pagesGrid" class="pages-grid" style="display: none"></div>
+            <div
+              class="success-message"
+              id="successMsg"
+              role="status"
+              aria-live="polite"
+            ></div>
+            <div
+              id="pagesGrid"
+              class="pages-grid"
+              style="display: none"
+              role="region"
+              aria-label="PDF pages with selectable watermarks"
+            ></div>
 
-            <div id="controlPanel">
+            <div
+              id="controlPanel"
+              role="region"
+              aria-label="Watermark removal controls"
+            >
               <div class="control-content">
                 <p
                   class="error-text"
                   id="errorMsg"
                   style="display: none; margin-bottom: 10px"
+                  role="alert"
+                  aria-live="assertive"
                 ></p>
-                <div class="selection-info" id="selectionInfo">
+                <div
+                  class="selection-info"
+                  id="selectionInfo"
+                  aria-live="polite"
+                >
                   No items selected
                 </div>
                 <div class="action-buttons">
-                  <button id="clearBtn" class="secondary-btn">
-                    <i class="fa fa-times"></i> Clear Selection
+                  <button
+                    id="clearBtn"
+                    class="secondary-btn"
+                    aria-label="Clear all selected watermarks"
+                  >
+                    <i class="fa fa-times" aria-hidden="true"></i> Clear
+                    Selection
                   </button>
                   <button
                     id="deleteBtn"
                     class="cta-button"
                     style="background: #f59e0b"
+                    aria-label="Delete selected watermarks"
                   >
-                    <i class="fa fa-trash"></i> Delete Selected
+                    <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                    Selected
                   </button>
-                  <button id="removeBtn" class="cta-button">
-                    <i class="fa fa-save"></i> Save Changes
+                  <button
+                    id="removeBtn"
+                    class="cta-button"
+                    aria-label="Save changes and download cleaned PDF"
+                  >
+                    <i class="fa fa-save" aria-hidden="true"></i> Save Changes
                   </button>
                 </div>
               </div>
@@ -652,26 +774,41 @@
 
             <div id="resultBtns" style="display: none; margin-top: 30px">
               <div class="result-card">
-                <i class="fa fa-file-pdf"></i>
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
               </div>
               <p class="file-name">
                 <a href="#" id="fileNameLink">cleaned.pdf</a>
               </p>
               <div class="result-btns-container">
-                <a id="downloadBtn" href="#" class="cta-button" download>
-                  <i class="fa fa-download"></i> Download
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  download
+                  aria-label="Download cleaned PDF file"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
                 </a>
-                <a id="shareBtn" href="#" class="cta-button">
-                  <i class="fa fa-share-alt"></i> Share
+                <a
+                  id="shareBtn"
+                  href="#"
+                  class="cta-button"
+                  aria-label="Share cleaned PDF file"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
                 </a>
-                <button id="resetBtn" class="secondary-btn">
-                  <i class="fa fa-rotate-right"></i> Remove Another
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Remove watermark from another PDF"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Remove
+                  Another
                 </button>
               </div>
             </div>
           </div>
 
-          <!-- PDF Preview -->
           <div id="pdfPreview" style="display: none; margin-top: 30px">
             <h2>Preview Cleaned PDF</h2>
             <iframe
@@ -684,9 +821,849 @@
           </div>
         </div>
       </section>
+
+      <!-- How It Works Section -->
+      <section class="benefits" style="background: white">
+        <div class="container">
+          <h2>How to Remove Watermark from PDF</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                1
+              </div>
+              <h3>Upload Your PDF</h3>
+              <p>
+                Select your PDF file. Our PyMuPDF-powered detector automatically
+                identifies all text and image watermarks on every page.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                2
+              </div>
+              <h3>Select Watermarks</h3>
+              <p>
+                Click on any watermark to select it (red border appears). Select
+                multiple items or delete them individually with the X button.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #fbbf24;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+                aria-hidden="true"
+              >
+                3
+              </div>
+              <h3>Download Clean PDF</h3>
+              <p>
+                Click "Save Changes" to permanently remove selected watermarks
+                and download your cleaned PDF file instantly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Remove Watermarks Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Why Remove Watermarks from PDF Files?</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              Watermarks serve various purposes, but there are many legitimate
+              reasons to remove them from PDFs. Whether you own the document and
+              want a clean version, need to replace outdated watermarks, or have
+              permission to use unwatermarked content, our tool makes the
+              process simple and efficient.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Legitimate Reasons to Remove Watermarks
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              There are many valid scenarios where watermark removal is
+              necessary and appropriate:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Your Own Documents:</strong> You created the document
+                and added watermarks for draft or review purposes, but now need
+                a clean final version for distribution or archival.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Outdated Watermarks:</strong> Company rebranding or
+                policy changes make existing watermarks obsolete. Remove old
+                watermarks to update documents with current branding.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Draft to Final Conversion:</strong> Documents marked as
+                "DRAFT" or "CONFIDENTIAL" need watermark removal when approved
+                for final release or public distribution.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Licensed Content:</strong> You've purchased or licensed
+                content that includes sample watermarks, and you have permission
+                to use the unwatermarked version.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Document Cleanup:</strong> Scanned documents or PDFs
+                from various sources may have accumulated unwanted watermarks
+                that need removal for professional presentation.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Professional Document Cleanup
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Organizations frequently need to remove watermarks from their own
+              documents. Marketing materials may have "DRAFT" watermarks during
+              review cycles that must be removed before final publication. Legal
+              documents often carry "CONFIDENTIAL" markers during internal
+              review but require clean versions for filing or public release.
+              Training materials may include "INTERNAL USE ONLY" watermarks that
+              need removal when content is approved for external distribution.
+              Financial reports might have "PRELIMINARY" watermarks during
+              preparation that must be deleted before submission to stakeholders
+              or regulatory bodies. In all these cases, you're working with
+              content you own or have full rights to modify.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Rebranding and Document Updates
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Company acquisitions, mergers, or rebranding initiatives often
+              create the need to update watermarks across entire document
+              libraries. Rather than recreating documents from scratch, removing
+              old watermarks and applying new ones saves significant time and
+              resources. This is particularly important for technical
+              documentation, training materials, and product catalogs where
+              content accuracy matters more than watermark aesthetics.
+              Organizations with thousands of documents can't realistically
+              recreate everything, making watermark removal and replacement a
+              practical necessity during brand transitions.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Archival and Historical Documents
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Historical documents and archival materials often carry watermarks
+              from previous digitization efforts, old scanning equipment, or
+              outdated institutional branding. Museums, libraries, and research
+              institutions frequently need to remove these watermarks to create
+              clean versions for publication, academic research, or public
+              access. The content itself may be in the public domain or owned by
+              the institution, but watermarks from old scanning processes or
+              defunct organizations need removal to present documents properly.
+              This helps preserve historical accuracy and improves document
+              usability for researchers and the public.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Sample to Purchased Content Transition
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Many digital content providers offer watermarked samples or
+              previews. After purchasing full access or licensing rights, buyers
+              need to remove sample watermarks to use content professionally.
+              This applies to stock templates, design resources, educational
+              materials, and business documents. The watermark served its
+              purpose during the preview phase—preventing unauthorized use—but
+              becomes unnecessary once you've paid for legitimate access.
+              Content creators and sellers recognize this transition, which is
+              why removal tools exist for properly licensed content.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Scan Artifact Removal
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Document scanning processes sometimes introduce unintended
+              watermark-like artifacts. Old copiers or scanners may add
+              timestamps, device IDs, or institutional headers that appear as
+              watermarks in PDFs. Government agencies, hospitals, and
+              educational institutions often need to remove these scanning
+              artifacts from their own documents to create clean, professional
+              versions. These aren't deliberate copyright watermarks but rather
+              technical byproducts of document digitization that reduce
+              readability and professional appearance. Removing them improves
+              document quality without affecting content ownership or copyright
+              status.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Multi-Source Document Consolidation
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              When combining PDFs from multiple sources into unified
+              documents—such as assembling reports, compiling research, or
+              merging departmental contributions—inconsistent watermarks create
+              visual chaos. Each source might have different watermarking
+              schemes, fonts, or positions that clash when merged. Removing
+              watermarks before consolidation creates cohesive, professional
+              final documents. This is common in academic publishing, business
+              reporting, and collaborative projects where multiple parties
+              contribute content but need unified presentation.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Improving Document Accessibility
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Watermarks can interfere with screen readers and accessibility
+              tools used by people with visual impairments. Text watermarks may
+              be read aloud by screen readers, creating confusion and disrupting
+              document flow. Image watermarks can obscure important content or
+              make text recognition difficult. For organizations committed to
+              accessibility compliance (WCAG, ADA, Section 508), removing
+              unnecessary watermarks from public-facing documents improves
+              usability for all readers. This is especially important for
+              government documents, educational materials, and consumer
+              information that must be universally accessible.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features Section -->
+      <section class="benefits" style="padding-top: 60px">
+        <div class="container">
+          <h2>Powerful Watermark Removal Features</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-magic"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Automatic Detection</h3>
+              <p>
+                PyMuPDF-powered technology automatically detects all text and
+                image watermarks on every page with high accuracy.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-mouse-pointer"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Click to Select</h3>
+              <p>
+                Simple click interface to select watermarks. Red borders
+                highlight selections. Delete individually or in batches.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-eye"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Visual Preview</h3>
+              <p>
+                See exactly what will be removed before downloading. Live
+                preview shows your PDF with watermarks highlighted.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-trash-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Permanent Deletion</h3>
+              <p>
+                Watermarks are permanently removed from the PDF structure, not
+                just visually hidden. Clean, professional results.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-layer-group"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Batch Selection</h3>
+              <p>
+                Select multiple watermarks across multiple pages and delete them
+                all at once. Saves time on multi-page documents.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-undo"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Clear & Reset</h3>
+              <p>
+                Clear selections if you change your mind. Original file is never
+                modified—only the downloaded version reflects changes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tips Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>Watermark Removal Tips and Best Practices</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Understanding Detection Accuracy
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Our PyMuPDF-based detection engine is highly accurate but works
+                best under certain conditions:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  <strong>Text Watermarks:</strong> Standard text watermarks
+                  added via PDF editing tools are detected with near-perfect
+                  accuracy. The system identifies text objects based on PDF
+                  structure.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Image Watermarks:</strong> Logo watermarks and graphic
+                  overlays are detected as image objects. Detection works
+                  regardless of transparency or positioning.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Layered PDFs:</strong> Watermarks on separate layers
+                  are identified correctly. The tool distinguishes watermark
+                  layers from content layers.
+                </li>
+                <li style="margin-bottom: 10px">
+                  <strong>Embedded Watermarks:</strong> Some watermarks are
+                  embedded in page backgrounds during PDF creation. These may
+                  require manual selection if not automatically detected.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Selection Strategy for Best Results
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Strategic selection ensures you remove the right elements:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Preview First:</strong> Always review detected
+                watermarks before deletion. Hover over each highlighted area to
+                see what content will be removed. Text watermarks show a preview
+                of the text content.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Test on Single Page:</strong> If unsure, try removing
+                watermarks from one page first. Download and check the result
+                before processing the entire document.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Batch Carefully:</strong> When selecting multiple
+                watermarks, ensure they're all intended for removal. Use the
+                "Clear Selection" button if you accidentally select content you
+                want to keep.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                <strong>Individual vs Batch:</strong> The X button on each
+                watermark allows immediate deletion of single items. Use "Delete
+                Selected" for batch removal of multiple watermarks at once.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Handling Complex Watermarks
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Some watermarks are more challenging to remove than others:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Multi-Component Watermarks:</strong> Watermarks
+                consisting of both text and images may be detected as separate
+                elements. Select and delete each component individually or
+                select all components before batch deletion.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Repeated Watermarks:</strong> Documents with the same
+                watermark on every page benefit from batch selection. Select all
+                instances across pages and delete in one operation.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Overlapping Content:</strong> If watermarks overlap
+                important document content, removal will affect the underlying
+                content as well. Check preview carefully before deletion.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                <strong>Background Watermarks:</strong> Watermarks merged into
+                page backgrounds during scanning may not be detected as separate
+                objects. These may require alternative approaches like image
+                editing before PDF conversion.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Quality Preservation Tips
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Maintain document quality after watermark removal:
+              </p>
+              <ul
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  padding-left: 25px;
+                "
+              >
+                <li style="margin-bottom: 10px">
+                  Keep a backup of your original file before making changes.
+                  While our tool doesn't modify originals, having a backup
+                  ensures you can always start over.
+                </li>
+                <li style="margin-bottom: 10px">
+                  Compare the cleaned PDF to the original to verify all intended
+                  watermarks were removed and no unintended content was deleted.
+                </li>
+                <li style="margin-bottom: 10px">
+                  Check file size after removal. Significant size reduction
+                  indicates successful removal of image-based watermarks.
+                </li>
+                <li style="margin-bottom: 10px">
+                  Test the cleaned PDF in multiple viewers (Adobe Acrobat,
+                  browser PDF viewers, mobile apps) to ensure consistent
+                  results.
+                </li>
+                <li style="margin-bottom: 10px">
+                  If the PDF will be printed, print a test page to verify
+                  watermark removal is complete and doesn't affect print
+                  quality.
+                </li>
+              </ul>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                When to Use Alternative Methods
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Some situations may require different approaches:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Scanned Documents:</strong> PDFs created from scanned
+                paper documents may have watermarks as part of the image itself
+                rather than as separate PDF objects. These require OCR and image
+                editing rather than object-based removal.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Encrypted PDFs:</strong> Password-protected or encrypted
+                PDFs must be unlocked before watermark removal can proceed.
+                Remove security first, then process watermarks.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Form Fields:</strong> Interactive PDF forms with
+                watermarks in form fields may require disabling the fields or
+                converting to static PDF before watermark removal.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                <strong>Artistic Watermarks:</strong> Highly stylized or
+                artistic watermarks that are integral to page design may need
+                professional PDF editing tools for precise removal without
+                affecting surrounding content.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 40px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Workflow Integration
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Incorporate watermark removal into document workflows:
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Draft to Final Process:</strong> Make watermark removal
+                the final step before document publication. This ensures all
+                edits are complete before removing draft markers.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Batch Processing:</strong> For large document sets,
+                establish a systematic approach: sort documents by watermark
+                type, process similar watermarks together, verify results in
+                batches.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
+                <strong>Version Control:</strong> Maintain clear naming
+                conventions for watermarked vs. cleaned versions. Consider using
+                suffixes like "_watermarked" and "_clean" in filenames.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                <strong>Archive Strategy:</strong> Decide whether to keep
+                watermarked versions for audit trails or completely replace them
+                with cleaned versions. Document your decision for compliance
+                purposes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About PDF Watermark Removal</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is it legal to remove watermarks from PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, when you own the document or have permission to modify it.
+                It's legal to remove watermarks from your own documents, drafts
+                you've created, licensed content you've purchased, or any PDF
+                where you have explicit permission. However, removing watermarks
+                to use copyrighted material without permission is illegal.
+                Always respect intellectual property rights and only remove
+                watermarks from documents you own or are authorized to modify.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What types of watermarks can be removed?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our tool removes text watermarks (copyright notices, DRAFT
+                markers, company names) and image watermarks (logos, signatures,
+                graphics) that are added as PDF objects. Watermarks embedded in
+                the page background during PDF creation or scanning may not be
+                detected as separate objects and could require different removal
+                methods.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How does watermark detection work?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                We use PyMuPDF, a professional PDF processing library, to
+                analyze PDF structure and identify text and image objects that
+                function as watermarks. The system examines object properties,
+                positioning, transparency, and layer structure to distinguish
+                watermarks from regular content. Detection accuracy depends on
+                how watermarks were added to the PDF.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will watermark removal affect document quality?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. Watermark removal is a clean process that deletes only the
+                selected watermark objects from the PDF structure. The
+                underlying content, formatting, fonts, images, and layout remain
+                unchanged. You'll get the same quality PDF without the
+                watermarks.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I remove watermarks from scanned PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Scanned PDFs are images, not structured PDF objects. If the
+                watermark is part of the scanned image, it won't be detected as
+                a separate object. For scanned documents, you may need image
+                editing tools or OCR conversion before watermark removal. Our
+                tool works best with PDFs where watermarks were added digitally
+                as text or image layers.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What if I accidentally select the wrong watermark?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Use the "Clear Selection" button to deselect all items and start
+                over. Individual watermarks can be deselected by clicking them
+                again. Your original file is never modified—only the downloaded
+                version reflects changes. You can always re-upload and try
+                again.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I remove watermarks from password-protected PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Password-protected or encrypted PDFs must be unlocked first. Use
+                our PDF unlock tool to remove security restrictions, then
+                process watermarks. You'll need the password to unlock the PDF
+                before watermark removal can proceed.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How many watermarks can I remove at once?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                There's no limit. Select as many watermarks as needed across all
+                pages and delete them in batch. This is particularly useful for
+                documents with repeated watermarks on every page—select all
+                instances and remove them simultaneously.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will the tool remove all watermarks automatically?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. The tool detects and highlights potential watermarks, but
+                you manually select which ones to remove. This prevents
+                accidental deletion of important content and gives you full
+                control over what gets removed. This selective approach ensures
+                precision and safety.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Does watermark removal work on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes. Our tool is fully responsive and works on smartphones and
+                tablets. The interface adapts to smaller screens while
+                maintaining full functionality. Upload, select, and download
+                cleaned PDFs directly from your mobile device.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What happens to my files after processing?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                All processing happens in your browser or on our secure servers
+                with automatic deletion after download. We don't store, share,
+                or keep your files. Your original file remains on your device
+                and is never modified. Only the cleaned version you download
+                contains the changes.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I undo watermark removal after downloading?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No. Watermark removal is permanent in the downloaded file.
+                However, your original file with watermarks is never changed.
+                Keep your original file if you think you might need the
+                watermarked version later. You can always re-process the
+                original if needed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: white; padding-top: 60px">
+        <div class="container">
+          <h2>Related PDF Tools</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-stamp"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Add Watermark</h3>
+              <p>
+                Add custom text or image watermarks to PDFs with full control
+                over position, opacity, and rotation. Protect your documents.
+              </p>
+              <a
+                href="/watermark"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-unlock"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Unlock PDF</h3>
+              <p>
+                Remove password protection and security restrictions from PDFs.
+                Unlock documents before watermark removal.
+              </p>
+              <a
+                href="/unlock-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-edit"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Edit PDF</h3>
+              <p>
+                Edit text, images, and content in PDFs. Make content changes
+                before or after watermark removal.
+              </p>
+              <a
+                href="/edit"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple cleaned PDFs into single documents. Merge files
+                after watermark removal.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce file size of cleaned PDFs for easier sharing and storage.
+                Optimize without quality loss.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-file-pdf"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>PDF to PDF/A</h3>
+              <p>
+                Convert cleaned PDFs to archival format for long-term storage
+                and compliance.
+              </p>
+              <a
+                href="/pdf-to-pdfa"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="hero">
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px">
+            Ready to Clean Your PDFs?
+          </h2>
+          <p style="margin-bottom: 25px">
+            Remove unwanted watermarks from PDF files instantly. Click to
+            select, delete, and download clean professional documents.
+          </p>
+          <a
+            href="#"
+            class="cta-button"
+            onclick="
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+              return false;
+            "
+            aria-label="Scroll to top to remove watermarks"
+          >
+            <i class="fa fa-eraser" aria-hidden="true"></i> Start Removing
+            Watermarks
+          </a>
+        </div>
+      </section>
     </main>
 
-    <div class="loading-overlay" id="loadingOverlay">
+    <div
+      class="loading-overlay"
+      id="loadingOverlay"
+      role="alert"
+      aria-live="assertive"
+    >
       <div class="loading-content">
         <div class="spinner"></div>
         <p>Processing PDF...</p>
@@ -771,7 +1748,7 @@
         fileList.innerHTML = "";
 
         const li = document.createElement("li");
-        li.innerHTML = `<i class="fa fa-file-pdf pdf-icon"></i> <span>${currentFile.name}</span> <button class="delete-file" id="deleteFileBtn"><i class="fa fa-times"></i></button>`;
+        li.innerHTML = `<i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i> <span>${currentFile.name}</span> <button class="delete-file" id="deleteFileBtn" aria-label="Remove ${currentFile.name}"><i class="fa fa-times" aria-hidden="true"></i></button>`;
         fileList.appendChild(li);
       }
 
@@ -980,10 +1957,13 @@
               const card = document.createElement("div");
               card.className = "page-card";
               card.dataset.pageNum = pageNum;
+              card.setAttribute("role", "article");
+              card.setAttribute("aria-label", `Page ${pageNum}`);
 
               const badge = document.createElement("div");
               badge.className = "page-number-badge";
               badge.textContent = `Page ${pageNum}`;
+              badge.setAttribute("aria-hidden", "true");
               card.appendChild(badge);
 
               const container = document.createElement("div");
@@ -1020,6 +2000,12 @@
         overlay.className = `watermark-overlay type-${item.type}`;
         overlay.dataset.itemId = item.id;
         overlay.dataset.pageNum = item.page;
+        overlay.setAttribute("role", "button");
+        overlay.setAttribute("tabindex", "0");
+        overlay.setAttribute(
+          "aria-label",
+          `${item.type === "text" ? "Text watermark: " + (item.text?.substring(0, 30) || "N/A") : "Image watermark"}. Click to select for removal.`,
+        );
 
         // Use displayScale directly
         overlay.style.left = x0 * displayScale + "px";
@@ -1034,21 +2020,43 @@
           item.type === "text"
             ? `Text: ${item.text?.substring(0, 30) || "N/A"}`
             : "Image";
+        label.setAttribute("aria-hidden", "true");
         overlay.appendChild(label);
 
         // Delete icon
         const deleteIcon = document.createElement("div");
         deleteIcon.className = "delete-icon";
-        deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
+        deleteIcon.innerHTML = '<i class="fa fa-times" aria-hidden="true"></i>';
+        deleteIcon.setAttribute("role", "button");
+        deleteIcon.setAttribute("aria-label", "Delete this watermark");
+        deleteIcon.setAttribute("tabindex", "0");
         overlay.appendChild(deleteIcon);
 
         overlay.onclick = (e) => {
           if (e.target.closest(".delete-icon")) return;
           toggleSelection(item.id, overlay);
         };
+
+        overlay.onkeydown = (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (!e.target.closest(".delete-icon")) {
+              toggleSelection(item.id, overlay);
+            }
+          }
+        };
+
         deleteIcon.onclick = (e) => {
           e.stopPropagation();
           deleteWatermark(item.id, overlay);
+        };
+
+        deleteIcon.onkeydown = (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteWatermark(item.id, overlay);
+          }
         };
 
         return overlay;
@@ -1058,9 +2066,11 @@
         if (selectedItems.has(itemId)) {
           selectedItems.delete(itemId);
           overlay.classList.remove("selected");
+          overlay.setAttribute("aria-pressed", "false");
         } else {
           selectedItems.add(itemId);
           overlay.classList.add("selected");
+          overlay.setAttribute("aria-pressed", "true");
           clearError();
         }
         updateSelectionInfo();
@@ -1175,6 +2185,7 @@
             const badge = document.createElement("div");
             badge.className = "page-number-badge";
             badge.textContent = `Page ${pageNumber}`;
+            badge.setAttribute("aria-hidden", "true");
 
             const container = document.createElement("div");
             container.className = "page-canvas-container";
@@ -1213,6 +2224,7 @@
 
         selectedOverlays.forEach((el) => {
           el.classList.remove("selected");
+          el.setAttribute("aria-pressed", "false");
         });
 
         updateSelectionInfo();

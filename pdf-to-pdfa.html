@@ -2033,21 +2033,20 @@
         selectedFiles.forEach((file, i) => {
           const li = document.createElement("li");
           li.innerHTML = `
-            <div class="file-info">
-              <i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
-              <span class="file-name-text">${file.name}</span>
-            </div>
-            <button class="delete-file" data-i="${i}" aria-label="Remove ${file.name}">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-          `;
+        <div class="file-info">
+          <i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
+          <span class="file-name-text">${file.name}</span>
+        </div>
+        <button class="delete-file" data-i="${i}" aria-label="Remove ${file.name}">
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      `;
           fileList.appendChild(li);
         });
       }
 
-      // File input change handler - CLEARS ERROR
+      // File input change handler
       pdfInput.addEventListener("change", () => {
-        // Hide error when user selects files
         hideError();
 
         Array.from(pdfInput.files).forEach((f) => {
@@ -2099,6 +2098,7 @@
         convertBtn.classList.add("btn-loading");
 
         const formData = new FormData();
+        // CRITICAL: Backend expects "files" (plural)
         selectedFiles.forEach((f) => formData.append("files", f));
         formData.append("lang", selectedLangs.join("+"));
 
@@ -2110,25 +2110,7 @@
 
           if (!res.ok) {
             const errorData = await res.json();
-
-            // Handle specific error types with better messages
-            let errorMessage = errorData.error || "OCR conversion failed";
-
-            if (
-              errorMessage.includes("password") ||
-              errorMessage.includes("encrypted")
-            ) {
-              errorMessage =
-                "⚠️ This PDF is password-protected. Please remove the password and try again.";
-            } else if (errorMessage.includes("too large")) {
-              errorMessage = "⚠️ " + errorMessage;
-            } else if (errorMessage.includes("pages")) {
-              errorMessage = "⚠️ " + errorMessage;
-            } else if (errorMessage.includes("language")) {
-              errorMessage = "⚠️ " + errorMessage;
-            }
-
-            throw new Error(errorMessage);
+            throw new Error(errorData.error || "OCR conversion failed");
           }
 
           const blob = await res.blob();

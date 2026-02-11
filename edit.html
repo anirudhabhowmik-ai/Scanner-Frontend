@@ -870,15 +870,7 @@
           svg.setAttribute("width", "100%");
           svg.setAttribute("height", "100%");
 
-          // Don't set viewBox - let SVG scale naturally
-          // svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
-
-          const path = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path",
-          );
-
-          // Transform the path coordinates to fit within the annotation bounds
+          // Calculate bounds for this specific path
           const points =
             this.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
           let minX = Infinity,
@@ -898,27 +890,28 @@
             }
           });
 
-          // Scale and translate the path to fit the annotation bounds
-          const scaleX = this.width / (maxX - minX || 1);
-          const scaleY = this.height / (maxY - minY || 1);
-          const scale = Math.min(scaleX, scaleY) * 0.9; // 90% to leave some padding
+          // Add a very small margin to prevent stroke clipping
+          const margin = 2;
+          const viewBoxWidth = maxX - minX + margin * 2;
+          const viewBoxHeight = maxY - minY + margin * 2;
+          const viewBoxX = minX - margin;
+          const viewBoxY = minY - margin;
 
-          const translateX =
-            (this.width - (maxX - minX) * scale) / 2 - minX * scale;
-          const translateY =
-            (this.height - (maxY - minY) * scale) / 2 - minY * scale;
-
-          // Transform the path data
-          let transformedPathData = this.pathData.replace(
-            /([ML])\s*([\d.]+)\s*([\d.]+)/g,
-            (match, cmd, x, y) => {
-              const newX = parseFloat(x) * scale + translateX;
-              const newY = parseFloat(y) * scale + translateY;
-              return `${cmd} ${newX} ${newY}`;
-            },
+          svg.setAttribute(
+            "viewBox",
+            `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`,
           );
 
-          path.setAttribute("d", transformedPathData);
+          // Use "none" to force exact scaling without aspect ratio preservation
+          svg.setAttribute("preserveAspectRatio", "none");
+
+          const path = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+
+          // Use the original path data
+          path.setAttribute("d", this.pathData);
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
           path.setAttribute("stroke-width", this.strokeWidth);
@@ -938,13 +931,19 @@
         }
 
         clone() {
-          return new DrawingAnnotation(
+          const clone = new DrawingAnnotation(
             this.page,
             this.pathData,
             this.color,
             this.strokeWidth,
             this.brushStyle,
           );
+          clone.x = this.x;
+          clone.y = this.y;
+          clone.width = this.width;
+          clone.height = this.height;
+          clone.rotation = this.rotation;
+          return clone;
         }
       }
 
@@ -1523,57 +1522,57 @@
           page.currentDrawingPaths.length > 0
         ) {
           // Create an annotation for each drawing path
-page.currentDrawingPaths.forEach((drawingPath) => {
-  const { pathData, color, width, brushStyle } = drawingPath;
+          page.currentDrawingPaths.forEach((drawingPath) => {
+            const { pathData, color, width, brushStyle } = drawingPath;
 
-  const drawingAnn = new DrawingAnnotation(
-    page,
-    pathData,
-    color,
-    width,
-    brushStyle,
-  );
+            const drawingAnn = new DrawingAnnotation(
+              page,
+              pathData,
+              color,
+              width,
+              brushStyle,
+            );
 
-  // Calculate bounds for this specific path
-  const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
+            // Calculate bounds for this specific path
+            const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+            let minX = Infinity,
+              minY = Infinity,
+              maxX = -Infinity,
+              maxY = -Infinity;
 
-  points.forEach((p) => {
-    const parts = p.match(/[\d.]+/g);
-    if (parts && parts.length >= 2) {
-      const x = parseFloat(parts[0]);
-      const y = parseFloat(parts[1]);
-      minX = Math.min(minX, x);
-      minY = Math.min(minY, y);
-      maxX = Math.max(maxX, x);
-      maxY = Math.max(maxY, y);
-    }
-  });
+            points.forEach((p) => {
+              const parts = p.match(/[\d.]+/g);
+              if (parts && parts.length >= 2) {
+                const x = parseFloat(parts[0]);
+                const y = parseFloat(parts[1]);
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                maxX = Math.max(maxX, x);
+                maxY = Math.max(maxY, y);
+              }
+            });
 
-  // Convert drawing canvas coordinates to page coordinates
-  const scaleX = page.viewport.width / page.drawingCanvas.width;
-  const scaleY = page.viewport.height / page.drawingCanvas.height;
-  
-  // Add some padding
-  const padding = 10;
-  
-  drawingAnn.x = (minX * scaleX) - padding;
-  drawingAnn.y = (minY * scaleY) - padding;
-  drawingAnn.width = ((maxX - minX) * scaleX) + (padding * 2);
-  drawingAnn.height = ((maxY - minY) * scaleY) + (padding * 2);
+            // Convert drawing canvas coordinates to page coordinates
+            const scaleX = page.viewport.width / page.drawingCanvas.width;
+            const scaleY = page.viewport.height / page.drawingCanvas.height;
 
-  if (drawingAnn.width < 40) drawingAnn.width = 40;
-  if (drawingAnn.height < 40) drawingAnn.height = 40;
+            // Minimal padding to prevent stroke clipping
+            const padding = 2;
 
-  // Create and add the drawing annotation
-  const element = drawingAnn.createElement();
-  page.annotationLayer.appendChild(element);
-  page.addAnnotation(drawingAnn);
-});
-          
+            drawingAnn.x = minX * scaleX - padding;
+            drawingAnn.y = minY * scaleY - padding;
+            drawingAnn.width = (maxX - minX) * scaleX + padding * 2;
+            drawingAnn.height = (maxY - minY) * scaleY + padding * 2;
+
+            // Ensure minimum size
+            if (drawingAnn.width < 15) drawingAnn.width = 15;
+            if (drawingAnn.height < 15) drawingAnn.height = 15;
+
+            // Create and add the drawing annotation
+            const element = drawingAnn.createElement();
+            page.annotationLayer.appendChild(element);
+            page.addAnnotation(drawingAnn);
+          });
           // Select the last created annotation
           if (page.annotations.length > 0) {
             selectAnnotation(page.annotations[page.annotations.length - 1]);
@@ -1630,6 +1629,10 @@ page.currentDrawingPaths.forEach((drawingPath) => {
       });
 
       drawBtn.addEventListener("click", () => {
+        if (selectedAnnotation) {
+          selectedAnnotation.element.classList.remove("selected");
+          selectedAnnotation = null;
+        }
         setTool("draw");
       });
 

@@ -25,9 +25,7 @@
       name="robots"
       content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
     />
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://pdfmaster.com/add-page-numbers" />
+    <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -62,6 +60,9 @@
       name="twitter:image"
       content="https://pdfmaster.com/images/add-page-numbers-twitter.png"
     />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://pdfmaster.com/add-page-numbers" />
 
     <!-- Structured Data / Schema.org -->
     <script type="application/ld+json">
@@ -509,7 +510,7 @@
         .panel-flex {
           grid-template-columns: repeat(5, 1fr);
         }
-        .btn-conainer{
+        .btn-conainer {
           bottom: 114px;
         }
       }
@@ -544,7 +545,7 @@
           gap: 25px;
           padding: 15px;
         }
-        .btn-conainer{
+        .btn-conainer {
           bottom: 250px;
         }
       }
@@ -560,7 +561,7 @@
           padding: 28px 12px 10px;
         }
 
-        .btn-conainer{
+        .btn-conainer {
           bottom: 267px;
         }
 
@@ -607,7 +608,7 @@
           padding: 28px 10px;
         }
 
-        .btn-conainer{
+        .btn-conainer {
           bottom: 277px;
         }
 
@@ -678,6 +679,162 @@
 
         .format-btn {
           padding: 5px;
+        }
+      }
+
+      /* ===== DRAGGABLE PAGE NUMBER STYLES ===== */
+      .page-number-preview {
+        pointer-events: auto !important;
+        cursor: move !important;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease,
+          border 0.1s ease;
+        border-radius: 4px;
+        padding: 2px 4px;
+        background: transparent;
+        border: 1px solid transparent;
+        user-select: none !important;
+        z-index: 5 !important;
+      }
+
+      .page-number-preview:hover {
+        border: 1px dashed #4f46e5 !important;
+        background: rgba(79, 70, 229, 0.05) !important;
+        box-shadow: 0 0 8px rgba(79, 70, 229, 0.2) !important;
+      }
+
+      .page-number-preview:active,
+      .page-number-preview.dragging {
+        cursor: grabbing !important;
+        border: 1px solid #4f46e5 !important;
+        box-shadow: 0 0 15px rgba(79, 70, 229, 0.4) !important;
+        background: rgba(79, 70, 229, 0.1) !important;
+        z-index: 100 !important;
+        transform: scale(1.02);
+      }
+
+      .page-number-preview:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 2px;
+      }
+
+      /* Apply to All Button */
+      .page-apply-btn {
+        position: absolute;
+        bottom: -25px;
+        right: 10px;
+        background: #4f46e5;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        display: none;
+        z-index: 20;
+        box-shadow: 0 2px 10px rgba(79, 70, 229, 0.3);
+        transition: all 0.3s ease;
+        white-space: nowrap;
+      }
+
+      .page-apply-btn:hover {
+        background: #4338ca !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4) !important;
+      }
+
+      .page-apply-btn:active {
+        transform: translateY(0) !important;
+      }
+
+      .page-apply-btn:focus {
+        outline: 2px solid #4338ca;
+        outline-offset: 2px;
+      }
+
+      .page-apply-btn i {
+        margin-right: 6px;
+        font-size: 12px;
+      }
+
+      /* Success Toast */
+      .success-toast {
+        position: fixed !important;
+        top: 70px !important;
+        right: 20px !important;
+        background: #10b981 !important;
+        color: white !important;
+        padding: 12px 20px !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        z-index: 9999 !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3) !important;
+        animation: slideIn 0.3s ease !important;
+      }
+
+      /* Animation Keyframes */
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideOut {
+        from {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+      }
+
+      /* Responsive adjustments for draggable elements */
+      @media (max-width: 768px) {
+        .page-apply-btn {
+          bottom: -25px;
+          padding: 6px 12px;
+          font-size: 12px;
+        }
+
+        .page-apply-btn i {
+          margin-right: 4px;
+          font-size: 11px;
+        }
+
+        .page-number-preview {
+          padding: 1px 3px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .page-apply-btn {
+          bottom: -25px;
+          padding: 5px 10px;
+          font-size: 11px;
+        }
+
+        .page-apply-btn i {
+          margin-right: 3px;
+        }
+
+        .page-number-preview {
+          font-size: 90% !important;
+        }
+        .btn-conainer {
+          bottom: 206px;
+        }
+        #addNumbersBtn {
+          padding: 12px 14px;
+          font-size: 14px;
         }
       }
     </style>
@@ -868,8 +1025,8 @@
 
                 <div class="option-group">
                   <label for="customText"
-                    ><i class="fas fa-edit" aria-hidden="true"></i> Custom
-                    Text</label
+                    ><i class="fas fa-edit" aria-hidden="true"></i> Custom Text
+                    (e.g., Page {n} of {total})</label
                   >
                   <input
                     type="text"
@@ -1790,425 +1947,1017 @@
     <script src="./js/app.js"></script>
 
     <script>
-      const BACKEND_URL = `${BACKEND_BASE_URL}/add-page-numbers`;
+  const BACKEND_URL = `http://127.0.0.1:8080/add-page-numbers`;
 
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-      const pdfUpload = document.getElementById("pdfUpload");
-      const fileList = document.getElementById("fileList");
-      const addNumbersBtn = document.getElementById("addNumbersBtn");
-      const errorMsg = document.getElementById("errorMsg");
-      const resultBtns = document.getElementById("resultBtns");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const pdfPreview = document.getElementById("pdfPreview");
-      const pdfFrame = document.getElementById("pdfFrame");
-      const uploadSection = document.getElementById("uploadSection");
-      const pagesGrid = document.getElementById("pagesGrid");
-      const fileNameLink = document.getElementById("fileNameLink");
-      const shareBtn = document.getElementById("shareBtn");
+  const pdfUpload = document.getElementById("pdfUpload");
+  const fileList = document.getElementById("fileList");
+  const addNumbersBtn = document.getElementById("addNumbersBtn");
+  const errorMsg = document.getElementById("errorMsg");
+  const resultBtns = document.getElementById("resultBtns");
+  const downloadBtn = document.getElementById("downloadBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const pdfPreview = document.getElementById("pdfPreview");
+  const pdfFrame = document.getElementById("pdfFrame");
+  const uploadSection = document.getElementById("uploadSection");
+  const pagesGrid = document.getElementById("pagesGrid");
+  const fileNameLink = document.getElementById("fileNameLink");
+  const shareBtn = document.getElementById("shareBtn");
 
-      const optionsContainer = document.getElementById("optionsContainer");
-      const position = document.getElementById("position");
-      const fontFamily = document.getElementById("fontFamily");
-      const fontSize = document.getElementById("fontSize");
-      const fontColor = document.getElementById("fontColor");
-      const boldBtn = document.getElementById("boldBtn");
-      const italicBtn = document.getElementById("italicBtn");
-      const underlineBtn = document.getElementById("underlineBtn");
-      const customText = document.getElementById("customText");
-      const startPage = document.getElementById("startPage");
-      const endPage = document.getElementById("endPage");
-      const startNumber = document.getElementById("startNumber");
+  const optionsContainer = document.getElementById("optionsContainer");
+  const position = document.getElementById("position");
+  const fontFamily = document.getElementById("fontFamily");
+  const fontSize = document.getElementById("fontSize");
+  const fontColor = document.getElementById("fontColor");
+  const boldBtn = document.getElementById("boldBtn");
+  const italicBtn = document.getElementById("italicBtn");
+  const underlineBtn = document.getElementById("underlineBtn");
+  const customText = document.getElementById("customText");
+  const startPage = document.getElementById("startPage");
+  const endPage = document.getElementById("endPage");
+  const startNumber = document.getElementById("startNumber");
 
-      let files = [];
-      let totalPages = 0;
+  let files = [];
+  let totalPages = 0;
+  let pageNumberInstances = []; // Store page number positions for each page
+  let isDraggingGlobal = false;
 
-      function clearError() {
-        errorMsg.textContent = "";
-        errorMsg.style.display = "none";
+  function clearError() {
+    errorMsg.textContent = "";
+    errorMsg.style.display = "none";
+  }
+
+  function showError(msg) {
+    errorMsg.textContent = msg;
+    errorMsg.style.display = "block";
+  }
+
+  function showSuccess(msg) {
+    // Remove any existing success messages
+    const existingSuccess = document.querySelector(".success-toast");
+    if (existingSuccess) existingSuccess.remove();
+
+    const toast = document.createElement("div");
+    toast.className = "success-toast";
+    toast.textContent = msg;
+
+    document.body.appendChild(toast);
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      toast.style.animation = "slideOut 0.3s ease";
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 300);
+    }, 3000);
+  }
+
+  // Format button toggles with ARIA updates
+  [boldBtn, italicBtn, underlineBtn].forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const isActive = btn.classList.toggle("active");
+      btn.setAttribute("aria-pressed", isActive);
+      updateAllPreviews();
+    });
+  });
+
+  // File upload handler
+  pdfUpload.addEventListener("change", async () => {
+    const newFiles = Array.from(pdfUpload.files);
+    newFiles.forEach((file) => {
+      if (
+        !files.some((f) => f.name === file.name && f.size === file.size)
+      ) {
+        files.push(file);
       }
+    });
+    pdfUpload.value = "";
+    renderFileList();
+    await loadPDFs();
+  });
 
-      function showError(msg) {
-        errorMsg.textContent = msg;
-        errorMsg.style.display = "block";
-      }
+  function renderFileList() {
+    if (!files.length) {
+      fileList.style.display = "none";
+      return;
+    }
+    fileList.style.display = "block";
+    fileList.innerHTML = "";
+    files.forEach((f, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `
+      <span><i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i> ${f.name}</span>
+      <button class="delete-file" data-i="${i}" aria-label="Remove ${f.name}"><i class="fa fa-times" aria-hidden="true"></i></button>
+    `;
+      fileList.appendChild(li);
+    });
+  }
 
-      // Format button toggles with ARIA updates
-      [boldBtn, italicBtn, underlineBtn].forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const isActive = btn.classList.toggle("active");
-          btn.setAttribute("aria-pressed", isActive);
-          updateAllPreviews();
-        });
-      });
+  fileList.addEventListener("click", async (e) => {
+    const deleteBtn = e.target.closest(".delete-file");
+    if (deleteBtn) {
+      files.splice(deleteBtn.dataset.i, 1);
+      renderFileList();
+      await loadPDFs();
+    }
+  });
 
-      // File upload handler
-      pdfUpload.addEventListener("change", async () => {
-        const newFiles = Array.from(pdfUpload.files);
-        newFiles.forEach((file) => {
-          if (
-            !files.some((f) => f.name === file.name && f.size === file.size)
-          ) {
-            files.push(file);
-          }
-        });
-        pdfUpload.value = "";
-        renderFileList();
-        await loadPDFs();
-      });
+  async function loadPDFs() {
+    clearError();
+    pagesGrid.innerHTML = "";
+    totalPages = 0;
+    pageNumberInstances = [];
 
-      function renderFileList() {
-        if (!files.length) {
-          fileList.style.display = "none";
-          return;
-        }
-        fileList.style.display = "block";
-        fileList.innerHTML = "";
-        files.forEach((f, i) => {
-          const li = document.createElement("li");
-          li.innerHTML = `
-                    <span><i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i> ${f.name}</span>
-                    <button class="delete-file" data-i="${i}" aria-label="Remove ${f.name}"><i class="fa fa-times" aria-hidden="true"></i></button>
-                `;
-          fileList.appendChild(li);
-        });
-      }
+    if (!files.length) {
+      pagesGrid.style.display = "none";
+      optionsContainer.style.display = "none";
+      return;
+    }
 
-      fileList.addEventListener("click", async (e) => {
-        const deleteBtn = e.target.closest(".delete-file");
-        if (deleteBtn) {
-          files.splice(deleteBtn.dataset.i, 1);
-          renderFileList();
-          await loadPDFs();
-        }
-      });
+    pagesGrid.style.display = "flex";
+    optionsContainer.style.display = "block";
 
-      async function loadPDFs() {
-        clearError();
-        pagesGrid.innerHTML = "";
-        totalPages = 0;
+    let pageNo = 1;
 
-        if (!files.length) {
-          pagesGrid.style.display = "none";
-          optionsContainer.style.display = "none";
-          return;
-        }
+    for (const file of files) {
+      const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
+        .promise;
+      totalPages += pdf.numPages;
 
-        pagesGrid.style.display = "flex";
-        optionsContainer.style.display = "block";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
 
-        let pageNo = 1;
+        const maxWidth =
+          window.innerWidth < 768 ? window.innerWidth - 40 : 800;
+        const viewport = page.getViewport({ scale: 1 });
+        const displayScale = Math.min(maxWidth / viewport.width, 1);
 
-        for (const file of files) {
-          const pdf = await pdfjsLib.getDocument(URL.createObjectURL(file))
-            .promise;
-          totalPages += pdf.numPages;
+        const renderScale = displayScale * (window.devicePixelRatio || 2);
+        const scaledViewport = page.getViewport({ scale: renderScale });
 
-          for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
+        const canvas = document.createElement("canvas");
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
 
-            const maxWidth =
-              window.innerWidth < 768 ? window.innerWidth - 40 : 800;
-            const viewport = page.getViewport({ scale: 1 });
-            const displayScale = Math.min(maxWidth / viewport.width, 1);
+        await page.render({
+          canvasContext: canvas.getContext("2d"),
+          viewport: scaledViewport,
+        }).promise;
 
-            const renderScale = displayScale * (window.devicePixelRatio || 2);
-            const scaledViewport = page.getViewport({ scale: renderScale });
+        canvas.style.width = viewport.width * displayScale + "px";
+        canvas.style.height = viewport.height * displayScale + "px";
 
-            const canvas = document.createElement("canvas");
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
+        const card = document.createElement("div");
+        card.className = "page-card";
+        card.dataset.pageNum = pageNo;
+        card.dataset.scale = displayScale;
+        card.dataset.baseWidth = viewport.width;
+        card.dataset.baseHeight = viewport.height;
 
-            await page.render({
-              canvasContext: canvas.getContext("2d"),
-              viewport: scaledViewport,
-            }).promise;
+        const badge = document.createElement("div");
+        badge.className = "page-number-badge";
+        badge.textContent = `Page ${pageNo}`;
+        badge.setAttribute("aria-hidden", "true");
+        card.appendChild(badge);
 
-            canvas.style.width = viewport.width * displayScale + "px";
-            canvas.style.height = viewport.height * displayScale + "px";
+        card.appendChild(canvas);
 
-            const card = document.createElement("div");
-            card.className = "page-card";
-            card.dataset.pageNum = pageNo;
-            card.dataset.scale = displayScale;
-            card.dataset.baseWidth = viewport.width;
-            card.dataset.baseHeight = viewport.height;
+        pagesGrid.appendChild(card);
 
-            const badge = document.createElement("div");
-            badge.className = "page-number-badge";
-            badge.textContent = `Page ${pageNo}`;
-            card.appendChild(badge);
-
-            card.appendChild(canvas);
-            pagesGrid.appendChild(card);
-            pageNo++;
-          }
-        }
-
-        updatePageRangeDisplay();
-        updateAllPreviews();
-      }
-
-      function updatePreview(card) {
-        const canvas = card.querySelector("canvas");
-        const pageNum = parseInt(card.dataset.pageNum);
-
-        const oldPreview = card.querySelector(".page-number-preview");
-        if (oldPreview) oldPreview.remove();
-
-        const startPageNum = parseInt(startPage.value) || 1;
-        const endPageNum = parseInt(endPage.value) || totalPages;
-
-        if (pageNum < startPageNum || pageNum > endPageNum) {
-          return;
-        }
-
-        const startNumValue = parseInt(startNumber.value) || 1;
-        const displayNum = startNumValue + (pageNum - startPageNum);
-
-        let text = customText.value || "{n}";
-        text = text.replace(/\{n\}/g, displayNum);
-        text = text.replace(/\{1\}/g, displayNum);
-        text = text.replace(/\{total\}/g, totalPages);
-
-        const preview = document.createElement("div");
-        preview.className = "page-number-preview";
-        preview.textContent = text;
-
-        const visualScale =
-          canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
-        preview.style.fontSize = fontSize.value * visualScale + "px";
-        preview.style.color = fontColor.value;
-        preview.style.fontWeight = boldBtn.classList.contains("active")
-          ? "bold"
-          : "normal";
-        preview.style.fontStyle = italicBtn.classList.contains("active")
-          ? "italic"
-          : "normal";
-        preview.style.textDecoration = underlineBtn.classList.contains("active")
-          ? "underline"
-          : "none";
-
-        const fonts = {
-          helvetica: "Arial, sans-serif",
-          times: "Times New Roman, serif",
-          courier: "Courier New, monospace",
-          symbol: "Symbol, serif",
-          zapfdingbats: "Zapf Dingbats, serif",
+        // Initialize page number position data
+        pageNumberInstances[pageNo - 1] = {
+          pageNum: pageNo,
+          left: null,
+          top: null,
+          customLeft: null,
+          customTop: null,
+          dragged: false,
+          scale: displayScale,
+          baseWidth: viewport.width,
+          baseHeight: viewport.height,
+          isCustomPosition: false,
+          dropdownPosition: position.value,
         };
-        preview.style.fontFamily = fonts[fontFamily.value] || fonts.helvetica;
 
-        preview.style.position = "absolute";
-        preview.style.left = "-9999px";
-        preview.style.top = "-9999px";
-        card.appendChild(preview);
+        pageNo++;
+      }
+    }
 
-        const ctx = canvas.getContext("2d");
-        ctx.font = `${fontSize.value * visualScale}px ${preview.style.fontFamily}`;
-        const previewWidth = ctx.measureText(text).width;
-        const previewHeight = fontSize.value * visualScale;
+    updatePageRangeDisplay();
+    updateAllPreviews();
+  }
 
-        const margin = 10 * visualScale;
-        const pos = position.value;
-        const canvasLeft = canvas.offsetLeft;
-        const canvasTop = canvas.offsetTop;
+  function makeDraggable(preview, card) {
+    let isDragging = false;
+    let startX, startY;
+    let initialLeft, initialTop;
+    const canvas = card.querySelector("canvas");
+    const pageNum = parseInt(card.dataset.pageNum);
+    const pageData = pageNumberInstances[pageNum - 1];
 
-        let left, top;
+    const startDrag = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isDragging = true;
+      isDraggingGlobal = true;
 
-        if (pos.startsWith("top")) {
-          top = canvasTop + margin;
-        } else {
-          top = canvasTop + canvas.offsetHeight - margin - previewHeight;
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      startX = clientX;
+      startY = clientY;
+      initialLeft = parseFloat(preview.style.left) || 0;
+      initialTop = parseFloat(preview.style.top) || 0;
+
+      preview.classList.add("dragging");
+      preview.style.zIndex = "100";
+      preview.style.cursor = "grabbing";
+
+      document.addEventListener("mousemove", drag);
+      document.addEventListener("mouseup", stopDrag);
+      document.addEventListener("touchmove", dragTouch, { passive: false });
+      document.addEventListener("touchend", stopDrag);
+    };
+
+    const drag = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+
+      if (!clientX || !clientY) return;
+
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
+
+      // Get preview dimensions
+      const previewRect = preview.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+
+      // Constrain within canvas bounds
+      const minX = canvasRect.left - cardRect.left;
+      const maxX = minX + canvasRect.width - previewRect.width;
+      const minY = canvasRect.top - cardRect.top;
+      const maxY = minY + canvasRect.height - previewRect.height;
+
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      newTop = Math.max(minY, Math.min(newTop, maxY));
+
+      preview.style.left = newLeft + "px";
+      preview.style.top = newTop + "px";
+
+      // Update page number instance data
+      if (pageNum && pageNumberInstances[pageNum - 1]) {
+        pageNumberInstances[pageNum - 1].customLeft = newLeft;
+        pageNumberInstances[pageNum - 1].customTop = newTop;
+        pageNumberInstances[pageNum - 1].dragged = true;
+        pageNumberInstances[pageNum - 1].isCustomPosition = true;
+
+        // Show "Apply to All" button for this page
+        const applyBtn = card.querySelector(".page-apply-btn");
+        if (applyBtn) {
+          applyBtn.style.display = "block";
         }
+      }
+    };
 
-        if (pos.includes("left")) {
-          left = canvasLeft + margin;
-        } else if (pos.includes("right")) {
-          left = canvasLeft + canvas.offsetWidth - margin - previewWidth;
-        } else {
-          left = canvasLeft + (canvas.offsetWidth - previewWidth) / 2;
+    const dragTouch = (e) => {
+      if (!isDragging) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
+
+      // Get preview dimensions
+      const previewRect = preview.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+
+      // Constrain within canvas bounds
+      const minX = canvasRect.left - cardRect.left;
+      const maxX = minX + canvasRect.width - previewRect.width;
+      const minY = canvasRect.top - cardRect.top;
+      const maxY = minY + canvasRect.height - previewRect.height;
+
+      newLeft = Math.max(minX, Math.min(newLeft, maxX));
+      newTop = Math.max(minY, Math.min(newTop, maxY));
+
+      preview.style.left = newLeft + "px";
+      preview.style.top = newTop + "px";
+
+      // Update page number instance data
+      if (pageNum && pageNumberInstances[pageNum - 1]) {
+        pageNumberInstances[pageNum - 1].customLeft = newLeft;
+        pageNumberInstances[pageNum - 1].customTop = newTop;
+        pageNumberInstances[pageNum - 1].dragged = true;
+        pageNumberInstances[pageNum - 1].isCustomPosition = true;
+
+        // Show "Apply to All" button for this page
+        const applyBtn = card.querySelector(".page-apply-btn");
+        if (applyBtn) {
+          applyBtn.style.display = "block";
         }
+      }
+    };
 
-        preview.style.left = left + "px";
-        preview.style.top = top + "px";
+    const stopDrag = () => {
+      if (!isDragging) return;
+
+      isDragging = false;
+      isDraggingGlobal = false;
+      preview.classList.remove("dragging");
+      preview.style.zIndex = "5";
+      preview.style.cursor = "move";
+
+      document.removeEventListener("mousemove", drag);
+      document.removeEventListener("mouseup", stopDrag);
+      document.removeEventListener("touchmove", dragTouch);
+      document.removeEventListener("touchend", stopDrag);
+    };
+
+    // Mouse events
+    preview.addEventListener("mousedown", startDrag);
+
+    // Touch events
+    preview.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length === 1) {
+          startDrag(e);
+        }
+      },
+      { passive: false }
+    );
+
+    // Prevent default drag behavior
+    preview.addEventListener("dragstart", (e) => {
+      e.preventDefault();
+    });
+  }
+
+  function createPageNumberPreview(card) {
+    const canvas = card.querySelector("canvas");
+    const pageNum = parseInt(card.dataset.pageNum);
+
+    const startPageNum = parseInt(startPage.value) || 1;
+    const endPageNum = parseInt(endPage.value) || totalPages;
+
+    if (pageNum < startPageNum || pageNum > endPageNum) {
+      return null;
+    }
+
+    const startNumValue = parseInt(startNumber.value) || 1;
+    const displayNum = startNumValue + (pageNum - startPageNum);
+
+    let text = customText.value || "{n}";
+    text = text.replace(/\{n\}/g, displayNum);
+    text = text.replace(/\{total\}/g, totalPages);
+
+    const preview = document.createElement("div");
+    preview.className = "page-number-preview";
+    preview.textContent = text;
+    preview.dataset.pageNum = pageNum;
+    preview.setAttribute("draggable", "true");
+    preview.setAttribute("role", "button");
+    preview.setAttribute(
+      "aria-label",
+      `Page number ${displayNum} - drag to reposition`
+    );
+    preview.setAttribute("tabindex", "0");
+
+    const visualScale =
+      canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+    preview.style.fontSize =
+      (parseInt(fontSize.value) || 12) * visualScale + "px";
+    preview.style.color = fontColor.value;
+    preview.style.fontWeight = boldBtn.classList.contains("active")
+      ? "bold"
+      : "normal";
+    preview.style.fontStyle = italicBtn.classList.contains("active")
+      ? "italic"
+      : "normal";
+    preview.style.textDecoration = underlineBtn.classList.contains("active")
+      ? "underline"
+      : "none";
+
+    const fonts = {
+      helvetica: "Arial, sans-serif",
+      times: "Times New Roman, serif",
+      courier: "Courier New, monospace",
+      symbol: "Symbol, serif",
+      zapfdingbats: "Zapf Dingbats, serif",
+    };
+    preview.style.fontFamily = fonts[fontFamily.value] || fonts.helvetica;
+
+    preview.style.position = "absolute";
+    preview.style.cursor = "move";
+    preview.style.userSelect = "none";
+    preview.style.zIndex = "5";
+    preview.style.pointerEvents = "auto";
+
+    // Get page number instance data
+    const pageData = pageNumberInstances[pageNum - 1];
+
+    let left, top;
+
+    // Check if page has a custom position that should be used
+    if (
+      pageData &&
+      pageData.dragged &&
+      pageData.customLeft !== null &&
+      pageData.customTop !== null &&
+      pageData.isCustomPosition
+    ) {
+      // Use saved custom position
+      left = pageData.customLeft;
+      top = pageData.customTop;
+    } else {
+      // Calculate default position based on selected option
+      const ctx = canvas.getContext("2d");
+      ctx.font = `${(parseInt(fontSize.value) || 12) * visualScale}px ${preview.style.fontFamily}`;
+      const previewWidth = ctx.measureText(text).width;
+      const previewHeight = (parseInt(fontSize.value) || 12) * visualScale;
+
+      const margin = 20 * visualScale;
+      const pos = position.value;
+      const canvasLeft = canvas.offsetLeft || 0;
+      const canvasTop = canvas.offsetTop || 0;
+
+      if (pos.startsWith("top")) {
+        top = canvasTop + margin;
+      } else {
+        top = canvasTop + canvas.offsetHeight - margin - previewHeight;
       }
 
-      function updateAllPreviews() {
-        document.querySelectorAll(".page-card").forEach((card) => {
-          updatePreview(card);
-        });
+      if (pos.includes("left")) {
+        left = canvasLeft + margin;
+      } else if (pos.includes("right")) {
+        left = canvasLeft + canvas.offsetWidth - margin - previewWidth;
+      } else {
+        left = canvasLeft + (canvas.offsetWidth - previewWidth) / 2;
       }
 
-      function updatePageRangeDisplay() {
-        const start = parseInt(startPage.value) || 1;
-        const end = parseInt(endPage.value) || totalPages;
-        const effectiveEnd = end === 0 ? totalPages : Math.min(end, totalPages);
+      // Update page number instance data
+      if (!pageNumberInstances[pageNum - 1]) {
+        pageNumberInstances[pageNum - 1] = {
+          pageNum: pageNum,
+          left: left,
+          top: top,
+          customLeft: null,
+          customTop: null,
+          dragged: false,
+          scale: visualScale,
+          baseWidth: parseFloat(card.dataset.baseWidth),
+          baseHeight: parseFloat(card.dataset.baseHeight),
+          isCustomPosition: false,
+          dropdownPosition: pos,
+        };
+      } else {
+        pageNumberInstances[pageNum - 1].left = left;
+        pageNumberInstances[pageNum - 1].top = top;
+        pageNumberInstances[pageNum - 1].dropdownPosition = pos;
+      }
+    }
 
-        document.querySelectorAll(".page-card").forEach((card) => {
-          const pageNum = parseInt(card.dataset.pageNum);
-          if (pageNum < start || pageNum > effectiveEnd) {
-            card.classList.add("out-of-range");
-          } else {
-            card.classList.remove("out-of-range");
-          }
-        });
+    preview.style.left = left + "px";
+    preview.style.top = top + "px";
 
-        updateAllPreviews();
+    return preview;
+  }
+
+  function updatePreview(card) {
+    const pageNum = parseInt(card.dataset.pageNum);
+
+    // Remove existing preview
+    const oldPreview = card.querySelector(".page-number-preview");
+    if (oldPreview) oldPreview.remove();
+
+    // Create new preview
+    const preview = createPageNumberPreview(card);
+    if (!preview) return;
+
+    card.appendChild(preview);
+
+    // Initialize dragging
+    makeDraggable(preview, card);
+
+    // Check if we need to create or update the Apply button
+    let applyBtn = card.querySelector(".page-apply-btn");
+    if (!applyBtn) {
+      // Create "Apply to All" button if it doesn't exist
+      applyBtn = document.createElement("button");
+      applyBtn.className = "page-apply-btn";
+      applyBtn.innerHTML =
+        '<i class="fa fa-clone" aria-hidden="true"></i> Apply to All';
+      applyBtn.setAttribute(
+        "aria-label",
+        "Apply this page number position to all pages"
+      );
+      applyBtn.setAttribute("title", "Apply this position to all pages");
+      applyBtn.onclick = (e) => {
+        e.stopPropagation();
+        applyThisPageToAll(card);
+      };
+      card.appendChild(applyBtn);
+    }
+
+    // Show/hide Apply button based on whether this page has a custom position
+    const pageData = pageNumberInstances[pageNum - 1];
+    if (pageData && pageData.dragged && pageData.isCustomPosition) {
+      applyBtn.style.display = "block";
+    } else {
+      applyBtn.style.display = "none"; // Hide when using dropdown position
+    }
+
+    // Keyboard navigation
+    preview.addEventListener("keydown", (e) => {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        preview.focus();
+      } else if (e.key.startsWith("Arrow")) {
+        e.preventDefault();
+        movePreviewWithArrow(e.key, preview, card);
+      }
+    });
+
+    // Focus styling
+    preview.addEventListener("focus", () => {
+      preview.style.outline = "2px solid #4f46e5";
+      preview.style.outlineOffset = "2px";
+    });
+
+    preview.addEventListener("blur", () => {
+      preview.style.outline = "";
+      preview.style.outlineOffset = "";
+    });
+  }
+
+  function movePreviewWithArrow(key, preview, card) {
+    if (isDraggingGlobal) return;
+
+    const step = 5;
+    let left = parseFloat(preview.style.left) || 0;
+    let top = parseFloat(preview.style.top) || 0;
+    const canvas = card.querySelector("canvas");
+    const canvasRect = canvas.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const previewRect = preview.getBoundingClientRect();
+    const pageNum = parseInt(preview.dataset.pageNum);
+
+    // Constrain movement within canvas
+    const minX = canvasRect.left - cardRect.left;
+    const maxX = minX + canvasRect.width - previewRect.width;
+    const minY = canvasRect.top - cardRect.top;
+    const maxY = minY + canvasRect.height - previewRect.height;
+
+    switch (key) {
+      case "ArrowLeft":
+        left = Math.max(minX, left - step);
+        break;
+      case "ArrowRight":
+        left = Math.min(maxX, left + step);
+        break;
+      case "ArrowUp":
+        top = Math.max(minY, top - step);
+        break;
+      case "ArrowDown":
+        top = Math.min(maxY, top + step);
+        break;
+    }
+
+    preview.style.left = left + "px";
+    preview.style.top = top + "px";
+
+    // Update page number instance data
+    if (pageNum && pageNumberInstances[pageNum - 1]) {
+      pageNumberInstances[pageNum - 1].customLeft = left;
+      pageNumberInstances[pageNum - 1].customTop = top;
+      pageNumberInstances[pageNum - 1].dragged = true;
+      pageNumberInstances[pageNum - 1].isCustomPosition = true;
+
+      // Show "Apply to All" button
+      const applyBtn = card.querySelector(".page-apply-btn");
+      if (applyBtn) {
+        applyBtn.style.display = "block";
+      }
+    }
+  }
+
+  function applyThisPageToAll(sourceCard) {
+    const sourcePreview = sourceCard.querySelector(".page-number-preview");
+    if (!sourcePreview) {
+      showError("No page number found on this page");
+      return;
+    }
+
+    const sourcePageNum = parseInt(sourcePreview.dataset.pageNum);
+    const sourceData = pageNumberInstances[sourcePageNum - 1];
+
+    if (
+      !sourceData ||
+      !sourceData.dragged ||
+      !sourceData.isCustomPosition
+    ) {
+      showError(
+        "Please drag the page number to a position first before applying to all"
+      );
+      return;
+    }
+
+    const sourceLeft = parseFloat(sourcePreview.style.left);
+    const sourceTop = parseFloat(sourcePreview.style.top);
+    const sourceCanvas = sourceCard.querySelector("canvas");
+
+    if (!sourceCanvas) {
+      showError("Canvas not found");
+      return;
+    }
+
+    // Get relative position within the canvas
+    const canvasOffsetLeft = sourceCanvas.offsetLeft || 0;
+    const canvasOffsetTop = sourceCanvas.offsetTop || 0;
+
+    const relativeX = sourceLeft - canvasOffsetLeft;
+    const relativeY = sourceTop - canvasOffsetTop;
+
+    // Get all page cards
+    const allCards = document.querySelectorAll(".page-card");
+    let appliedCount = 0;
+
+    allCards.forEach((card) => {
+      if (card === sourceCard) return;
+      if (card.classList.contains("out-of-range")) return;
+
+      const canvas = card.querySelector("canvas");
+      if (!canvas) return;
+
+      const pageNum = parseInt(card.dataset.pageNum);
+      if (!pageNum) return;
+
+      // Calculate new position for this page
+      const newLeft = (canvas.offsetLeft || 0) + relativeX;
+      const newTop = (canvas.offsetTop || 0) + relativeY;
+
+      // Constrain within canvas bounds
+      const canvasRect = canvas.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
+      const previewWidth = sourcePreview.offsetWidth;
+      const previewHeight = sourcePreview.offsetHeight;
+
+      const minX = canvasRect.left - cardRect.left;
+      const maxX = minX + canvasRect.width - previewWidth;
+      const minY = canvasRect.top - cardRect.top;
+      const maxY = minY + canvasRect.height - previewHeight;
+
+      const constrainedLeft = Math.max(minX, Math.min(newLeft, maxX));
+      const constrainedTop = Math.max(minY, Math.min(newTop, maxY));
+
+      // Update page number instance
+      if (!pageNumberInstances[pageNum - 1]) {
+        pageNumberInstances[pageNum - 1] = {
+          pageNum: pageNum,
+          customLeft: null,
+          customTop: null,
+          dragged: false,
+          isCustomPosition: false,
+        };
       }
 
-      [
-        position,
-        fontFamily,
-        fontSize,
-        fontColor,
-        customText,
-        startPage,
-        endPage,
-        startNumber,
-      ].forEach((el) => {
-        el.addEventListener("change", updateAllPreviews);
-        el.addEventListener("input", updateAllPreviews);
+      pageNumberInstances[pageNum - 1].customLeft = constrainedLeft;
+      pageNumberInstances[pageNum - 1].customTop = constrainedTop;
+      pageNumberInstances[pageNum - 1].dragged = false; // Set to false so button doesn't show
+      pageNumberInstances[pageNum - 1].isCustomPosition = false; // Set to false so button doesn't show
+
+      // Update preview position if it exists
+      const preview = card.querySelector(".page-number-preview");
+      if (preview) {
+        preview.style.left = constrainedLeft + "px";
+        preview.style.top = constrainedTop + "px";
+      }
+
+      // Hide "Apply to All" button on this card
+      const applyBtn = card.querySelector(".page-apply-btn");
+      if (applyBtn) {
+        applyBtn.style.display = "none";
+      }
+
+      appliedCount++;
+    });
+
+    // Also hide "Apply to All" button on source card
+    const sourceApplyBtn = sourceCard.querySelector(".page-apply-btn");
+    if (sourceApplyBtn) {
+      sourceApplyBtn.style.display = "none";
+    }
+
+    // Reset source page's dragged state too
+    if (sourceData) {
+      sourceData.dragged = false;
+      sourceData.isCustomPosition = false;
+    }
+
+    showSuccess(
+      `✓ Page number position applied to ${appliedCount + 1} pages!`
+    );
+  }
+
+  function updateAllPreviews() {
+    if (isDraggingGlobal) return;
+
+    document.querySelectorAll(".page-card").forEach((card) => {
+      updatePreview(card);
+    });
+  }
+
+  function updatePageRangeDisplay() {
+    const start = parseInt(startPage.value) || 1;
+    const end = parseInt(endPage.value) || totalPages;
+    const effectiveEnd = end === 0 ? totalPages : Math.min(end, totalPages);
+
+    document.querySelectorAll(".page-card").forEach((card) => {
+      const pageNum = parseInt(card.dataset.pageNum);
+      if (pageNum < start || pageNum > effectiveEnd) {
+        card.classList.add("out-of-range");
+      } else {
+        card.classList.remove("out-of-range");
+      }
+    });
+
+    updateAllPreviews();
+  }
+
+  // Position dropdown change handler
+  position.addEventListener("change", () => {
+    const selectedPosition = position.value;
+
+    // When dropdown changes, reset ALL pages to dropdown position
+    document.querySelectorAll(".page-card").forEach((card) => {
+      const pageNum = parseInt(card.dataset.pageNum);
+      if (pageNumberInstances[pageNum - 1]) {
+        // Reset to dropdown position
+        pageNumberInstances[pageNum - 1].dragged = false;
+        pageNumberInstances[pageNum - 1].isCustomPosition = false;
+        pageNumberInstances[pageNum - 1].customLeft = null;
+        pageNumberInstances[pageNum - 1].customTop = null;
+        pageNumberInstances[pageNum - 1].dropdownPosition =
+          selectedPosition;
+      }
+    });
+
+    updateAllPreviews();
+  });
+
+  // Add event listeners for other options changes
+  [
+    fontFamily,
+    fontSize,
+    fontColor,
+    customText,
+    startPage,
+    endPage,
+    startNumber,
+  ].forEach((el) => {
+    if (el) {
+      el.addEventListener("change", updateAllPreviews);
+      el.addEventListener("input", updateAllPreviews);
+    }
+  });
+
+// COMPLETELY REWRITTEN to match watermark code EXACTLY
+function calculatePagePositions() {
+  const pagePositions = [];
+  
+  document.querySelectorAll(".page-card").forEach((card) => {
+    if (card.classList.contains("out-of-range")) return;
+
+    const preview = card.querySelector(".page-number-preview");
+    if (!preview) return;
+
+    const canvas = card.querySelector("canvas");
+    const pageNum = parseInt(card.dataset.pageNum);
+    const pageData = pageNumberInstances[pageNum - 1];
+
+    // Get positions
+    const canvasRect = canvas.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const previewRect = preview.getBoundingClientRect();
+
+    // Calculate canvas offset relative to card
+    const canvasOffsetLeft = canvasRect.left - cardRect.left;
+    const canvasOffsetTop = canvasRect.top - cardRect.top;
+
+    // Get preview position relative to card
+    const previewLeft = parseFloat(preview.style.left) || 0;
+    const previewTop = parseFloat(preview.style.top) || 0;
+
+    // Calculate position relative to canvas
+    let canvasRelativeX, canvasRelativeY;
+
+    // Check if text is centered (transform has translate(-50%, -50%))
+    const isCenterTransform = preview.style.transform.includes('translate(-50%, -50%)');
+    
+    if (isCenterTransform) {
+      // For centered text, the left/top is already at the center
+      canvasRelativeX = previewLeft - canvasOffsetLeft;
+      canvasRelativeY = previewTop - canvasOffsetTop;
+    } else {
+      // For left/right aligned, we need to add half width/height to get center
+      canvasRelativeX = (previewLeft - canvasOffsetLeft) + (previewRect.width / 2);
+      canvasRelativeY = (previewTop - canvasOffsetTop) + (previewRect.height / 2);
+    }
+
+    // Convert to percentages (CENTER position, like watermark)
+    const leftPercent = (canvasRelativeX / canvasRect.width) * 100;
+    const topPercent = ((canvasRect.height - canvasRelativeY) / canvasRect.height) * 100;
+
+    // Determine alignment
+    let alignment = "center";
+    if (pageData && pageData.isCustomPosition) {
+      // For custom dragged positions, check the transform
+      if (preview.style.transform.includes('translate(-50%, -50%)')) {
+        alignment = "center";
+      } else {
+        // Check if near left or right edge
+        const textWidth = previewRect.width;
+        const textLeft = previewLeft - canvasOffsetLeft;
+        
+        if (textLeft < 20) alignment = "left";
+        else if (textLeft > canvasRect.width - textWidth - 20) alignment = "right";
+        else alignment = "center";
+      }
+    } else {
+      // Use dropdown position
+      const pos = position.value;
+      if (pos.includes("left")) alignment = "left";
+      else if (pos.includes("right")) alignment = "right";
+      else alignment = "center";
+    }
+
+    pagePositions.push({
+      pageNum: pageNum,
+      left: leftPercent.toFixed(2) + "%",
+      top: topPercent.toFixed(2) + "%",
+      position: alignment,  // 'left', 'center', 'right'
+      isCustomPosition: pageData ? pageData.isCustomPosition : false,
+    });
+    
+    console.log(`Page ${pageNum}:`, {
+      center: `${leftPercent.toFixed(2)}%, ${topPercent.toFixed(2)}%`,
+      alignment: alignment
+    });
+  });
+  
+  return pagePositions;
+}
+
+  addNumbersBtn.addEventListener("click", async () => {
+    clearError();
+    if (!files.length) {
+      showError("Please select at least one PDF file");
+      return;
+    }
+
+    // Calculate positions using the corrected function
+    const pagePositions = calculatePagePositions();
+
+    console.log("Sending page positions to backend:", pagePositions);
+
+    const fd = new FormData();
+    files.forEach((f) => fd.append("files", f));
+    fd.append(
+      "options",
+      JSON.stringify({
+        position: position.value,
+        fontFamily: fontFamily.value,
+        fontSize: parseInt(fontSize.value),
+        fontColor: fontColor.value,
+        bold: boldBtn.classList.contains("active"),
+        italic: italicBtn.classList.contains("active"),
+        underline: underlineBtn.classList.contains("active"),
+        customText: customText.value,
+        startPage: parseInt(startPage.value),
+        endPage: parseInt(endPage.value) || totalPages,
+        startNumber: parseInt(startNumber.value),
+        positions: pagePositions,
+      }),
+    );
+
+    addNumbersBtn.disabled = true;
+    addNumbersBtn.classList.add("btn-loading");
+
+    try {
+      console.log("Sending request to backend...");
+      const res = await fetch(BACKEND_URL, {
+        method: "POST",
+        body: fd,
       });
 
-      addNumbersBtn.addEventListener("click", async () => {
-        clearError();
-        if (!files.length) {
-          showError("Please select at least one PDF file");
-          return;
-        }
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Backend error:", errorText);
+        throw new Error(errorText || "Failed to add page numbers");
+      }
 
-        const pagePositions = [];
-        document.querySelectorAll(".page-card").forEach((card) => {
-          if (card.classList.contains("out-of-range")) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
 
-          const preview = card.querySelector(".page-number-preview");
-          if (!preview) return;
+      downloadBtn.href = url;
+      downloadBtn.download = "page-numbered.pdf";
+      shareBtn.href = url;
 
-          const canvas = card.querySelector("canvas");
-          const scale = canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
-          const baseWidth = parseFloat(card.dataset.baseWidth);
-          const baseHeight = parseFloat(card.dataset.baseHeight);
+      resultBtns.style.display = "block";
+      uploadSection.style.display = "none";
+      addNumbersBtn.style.display = "none";
+      fileList.style.display = "none";
+      pagesGrid.style.display = "none";
+      optionsContainer.style.display = "none";
 
-          const previewRect = preview.getBoundingClientRect();
-          const canvasRect = canvas.getBoundingClientRect();
+      const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
 
-          const scaledX =
-            previewRect.left + previewRect.width / 2 - canvasRect.left;
-          const scaledY =
-            previewRect.top + previewRect.height / 2 - canvasRect.top;
+      if (!isSmallDevice) {
+        pdfFrame.src = url;
+        pdfPreview.style.display = "block";
+      }
 
-          const realX = scaledX / scale;
-          const realY = scaledY / scale;
+      fileNameLink.onclick = (e) => {
+        e.preventDefault();
+        isSmallDevice
+          ? window.open(url, "_blank")
+          : pdfPreview.scrollIntoView({ behavior: "smooth" });
+      };
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      console.error("Error:", err);
+      showError(err.message || "Error adding page numbers");
+    } finally {
+      addNumbersBtn.disabled = false;
+      addNumbersBtn.classList.remove("btn-loading");
+    }
+  });
 
-          const leftPercent = (realX / baseWidth) * 100;
-          const topPercent = (realY / baseHeight) * 100;
+  resetBtn.addEventListener("click", () => {
+    files = [];
+    totalPages = 0;
+    pageNumberInstances = [];
+    pdfUpload.value = "";
+    fileList.innerHTML = "";
+    fileList.style.display = "none";
+    pagesGrid.innerHTML = "";
+    pagesGrid.style.display = "none";
+    resultBtns.style.display = "none";
+    pdfPreview.style.display = "none";
+    uploadSection.style.display = "block";
+    optionsContainer.style.display = "none";
+    addNumbersBtn.style.display = "block";
+    clearError();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
 
-          let alignment = "center";
-          const pos = position.value;
-          if (pos.includes("left")) {
-            alignment = "left";
-          } else if (pos.includes("right")) {
-            alignment = "right";
-          }
+  // Keyboard accessibility for upload label
+  document
+    .querySelector(".upload-label")
+    .addEventListener("keypress", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        pdfUpload.click();
+      }
+    });
 
-          pagePositions.push({
-            pageNum: parseInt(card.dataset.pageNum),
-            left: leftPercent + "%",
-            top: topPercent + "%",
-            position: alignment,
-          });
-        });
+  // Prevent text selection while dragging
+  document.addEventListener("selectstart", (e) => {
+    if (isDraggingGlobal) {
+      e.preventDefault();
+    }
+  });
 
-        const fd = new FormData();
-        files.forEach((f) => fd.append("files", f));
-        fd.append(
-          "options",
-          JSON.stringify({
-            position: position.value,
-            fontFamily: fontFamily.value,
-            fontSize: parseInt(fontSize.value),
-            fontColor: fontColor.value,
-            bold: boldBtn.classList.contains("active"),
-            italic: italicBtn.classList.contains("active"),
-            underline: underlineBtn.classList.contains("active"),
-            customText: customText.value,
-            startPage: parseInt(startPage.value),
-            endPage: parseInt(endPage.value) || totalPages,
-            startNumber: parseInt(startNumber.value),
-            positions: pagePositions,
-          }),
-        );
+  // Handle window resize
+  let resizeTimeout;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      updateAllPreviews();
+    }, 250);
+  });
 
-        addNumbersBtn.disabled = true;
-        addNumbersBtn.classList.add("btn-loading");
-
-        try {
-          const res = await fetch(BACKEND_URL, { method: "POST", body: fd });
-          if (!res.ok) throw new Error(await res.text());
-
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-
-          downloadBtn.href = url;
-          downloadBtn.download = "page_numbered.pdf";
-          shareBtn.href = url;
-
-          resultBtns.style.display = "block";
-          uploadSection.style.display = "none";
-          addNumbersBtn.style.display = "none";
-          fileList.style.display = "none";
-          pagesGrid.style.display = "none";
-          optionsContainer.style.display = "none";
-
-          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-
-          if (!isSmallDevice) {
-            pdfFrame.src = url;
-            pdfPreview.style.display = "block";
-          }
-
-          fileNameLink.onclick = (e) => {
-            e.preventDefault();
-            isSmallDevice
-              ? window.open(url, "_blank")
-              : pdfPreview.scrollIntoView({ behavior: "smooth" });
-          };
-        } catch (err) {
-          showError(err.message);
-        } finally {
-          addNumbersBtn.disabled = false;
-          addNumbersBtn.classList.remove("btn-loading");
-        }
-      });
-
-      resetBtn.addEventListener("click", () => {
-        files = [];
-        totalPages = 0;
-        pdfUpload.value = "";
-        fileList.innerHTML = "";
-        fileList.style.display = "none";
-        pagesGrid.innerHTML = "";
-        pagesGrid.style.display = "none";
-        resultBtns.style.display = "none";
-        pdfPreview.style.display = "none";
-        uploadSection.style.display = "block";
-        optionsContainer.style.display = "none";
-        addNumbersBtn.style.display = "block";
-        clearError();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-
-      // Keyboard accessibility for upload label
-      document
-        .querySelector(".upload-label")
-        .addEventListener("keypress", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            pdfUpload.click();
-          }
-        });
-    </script>
+  // Initialize if there are any files on page load (for page refresh)
+  window.addEventListener("load", () => {
+    if (files.length > 0) {
+      loadPDFs();
+    }
+  });
+</script>
   </body>
 </html>

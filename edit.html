@@ -145,8 +145,10 @@
               <i class="fa fa-image"></i> <span>Add Image</span>
             </button>
 
+            <!-- DRAW BUTTON + BRUSH OPTION + APPLY DRAWING BUTTON (UI) -->
             <button class="tool-btn" id="drawBtn">
               <i class="fa fa-pencil"></i> <span>Draw</span>
+              <!-- BRUSH OPTIONS IN DRAWING PROPERTY (dropdown) -->
               <div class="properties-dropdown" id="drawProperties">
                 <div class="property-row">
                   <div class="property-item">
@@ -170,6 +172,41 @@
                       max="20"
                       value="3"
                     />
+                  </div>
+                  <!-- BRUSH OPTION: additional style (solid/dotted) -->
+                  <div class="property-item">
+                    <label>Brush:</label>
+                    <select id="brushStyle">
+                      <option value="solid">Solid</option>
+                      <option value="dotted">Dotted</option>
+                      <option value="dashed">Dashed</option>
+                    </select>
+                  </div>
+                  <!-- BRUSH SIZE: dropdown select -->
+                  <div class="property-item">
+                    <label>Brush Size:</label>
+                    <select id="brushSize">
+                      <option value="1">1px (Extra Thin)</option>
+                      <option value="2">2px (Thin)</option>
+                      <option value="3" selected>3px (Medium)</option>
+                      <option value="4">4px</option>
+                      <option value="5">5px</option>
+                      <option value="6">6px (Thick)</option>
+                      <option value="8">8px (Extra Thick)</option>
+                      <option value="10">10px</option>
+                      <option value="12">12px</option>
+                      <option value="14">14px</option>
+                      <option value="16">16px</option>
+                      <option value="18">18px</option>
+                      <option value="20">20px</option>
+                    </select>
+                  </div>
+                  <!-- NEW: APPLY DRAWING BUTTON (commits drawing as annotation) -->
+                  <div class="property-item">
+                    <div class="cta-button" id="applyDrawingBtn">
+                      <i class="fa fa-check-circle"></i>
+                      <span>Apply Drawing</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -272,9 +309,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
       // DOM Elements
       const pdfUpload = document.getElementById("pdfUpload");
       const editorContainer = document.getElementById("editorContainer");
@@ -289,6 +323,7 @@
       const addTextBtn = document.getElementById("addTextBtn");
       const addImageBtn = document.getElementById("addImageBtn");
       const drawBtn = document.getElementById("drawBtn");
+      const applyDrawingBtn = document.getElementById("applyDrawingBtn");
       const addShapeBtn = document.getElementById("addShapeBtn");
       const undoBtn = document.getElementById("undoBtn");
       const clearAllBtn = document.getElementById("clearAllBtn");
@@ -296,6 +331,8 @@
       const imageUpload = document.getElementById("imageUpload");
       const penColor = document.getElementById("penColor");
       const penWidth = document.getElementById("penWidth");
+      const brushStyle = document.getElementById("brushStyle");
+      const brushSize = document.getElementById("brushSize");
       const API_BASE_URL = "http://127.0.0.1:8080";
 
       // State
@@ -329,7 +366,8 @@
           this.annotationLayer = null;
           this.ocrLayer = null;
           this.scale = 1;
-          this.hasDrawing = false; // FIX: Track if drawing exists
+          this.hasDrawing = false;
+          this.currentDrawingPath = null;
         }
 
         addAnnotation(annotation) {
@@ -427,7 +465,6 @@
         }
 
         attachEvents() {
-          // MOUSE EVENTS
           this.element.addEventListener("mousedown", (e) => {
             if (e.target.classList.contains("resize-handle")) {
               isResizing = true;
@@ -445,7 +482,6 @@
             selectAnnotation(this);
           });
 
-          // FIX: IMPROVED TOUCH EVENTS
           this.element.addEventListener(
             "touchstart",
             (e) => {
@@ -580,7 +616,6 @@
             content.style.cursor = "move";
             wrapper.classList.remove("editing");
 
-            // FIX: Mark original for deletion on ANY edit
             if (this.isOCR && this.originalData && !this.deletionMarked) {
               this.page.addDeletedRegion({
                 x: this.originalData.x,
@@ -622,10 +657,8 @@
           return newAnnotation;
         }
 
-        // FIX: Mark for deletion when moved
         updatePosition(x, y) {
           super.updatePosition(x, y);
-
           if (this.isOCR && this.originalData && !this.deletionMarked) {
             this.page.addDeletedRegion({
               x: this.originalData.x,
@@ -637,10 +670,8 @@
           }
         }
 
-        // FIX: Mark for deletion when resized
         updateSize(width, height) {
           super.updateSize(width, height);
-
           if (this.isOCR && this.originalData && !this.deletionMarked) {
             this.page.addDeletedRegion({
               x: this.originalData.x,
@@ -681,10 +712,8 @@
           return newAnnotation;
         }
 
-        // FIX: Mark original for deletion when moved
         updatePosition(x, y) {
           super.updatePosition(x, y);
-
           if (
             this.isOriginal &&
             this.originalImageData &&
@@ -695,14 +724,12 @@
             }
             this.page.deletedImages.push(this.originalImageData);
             this.deletionMarked = true;
-            this.isOriginal = false; // FIX: Convert to regular annotation
+            this.isOriginal = false;
           }
         }
 
-        // FIX: Mark original for deletion when resized
         updateSize(width, height) {
           super.updateSize(width, height);
-
           if (
             this.isOriginal &&
             this.originalImageData &&
@@ -713,7 +740,7 @@
             }
             this.page.deletedImages.push(this.originalImageData);
             this.deletionMarked = true;
-            this.isOriginal = false; // FIX: Convert to regular annotation
+            this.isOriginal = false;
           }
         }
 
@@ -721,7 +748,6 @@
           this.element.remove();
           this.page.removeAnnotation(this);
 
-          // If this was an original PDF image, mark it for deletion
           if (
             this.isOriginal &&
             this.originalImageData &&
@@ -825,11 +851,12 @@
       }
 
       class DrawingAnnotation extends Annotation {
-        constructor(page, pathData, color, width) {
+        constructor(page, pathData, color, width, brushStyle = "solid") {
           super("drawing", page);
           this.pathData = pathData;
           this.color = color;
           this.strokeWidth = width;
+          this.brushStyle = brushStyle;
         }
 
         createElement() {
@@ -842,6 +869,7 @@
           );
           svg.setAttribute("width", "100%");
           svg.setAttribute("height", "100%");
+          svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
 
           const path = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -853,6 +881,12 @@
           path.setAttribute("stroke-width", this.strokeWidth);
           path.setAttribute("stroke-linecap", "round");
           path.setAttribute("stroke-linejoin", "round");
+
+          if (this.brushStyle === "dotted") {
+            path.setAttribute("stroke-dasharray", "2 4");
+          } else if (this.brushStyle === "dashed") {
+            path.setAttribute("stroke-dasharray", "9 5");
+          }
 
           svg.appendChild(path);
           div.appendChild(svg);
@@ -866,6 +900,7 @@
             this.pathData,
             this.color,
             this.strokeWidth,
+            this.brushStyle,
           );
         }
       }
@@ -904,18 +939,14 @@
         for (let i = 1; i <= pdfDoc.numPages; i++) {
           const page = await pdfDoc.getPage(i);
 
-          // Get the original viewport at scale 1
           const baseViewport = page.getViewport({ scale: 1 });
 
-          // Calculate scale to fit container width while maintaining aspect ratio
           const containerRect = canvasContainer.getBoundingClientRect();
           const containerWidth = containerRect.width || MAX_WIDTH;
           const maxWidth = Math.min(containerWidth - 40, MAX_WIDTH);
 
-          // Calculate display scale based on width
           const displayScale = maxWidth / baseViewport.width;
 
-          // Render at HIGH resolution for crisp text
           const renderScale = displayScale * (window.devicePixelRatio || 2);
           const renderViewport = page.getViewport({ scale: renderScale });
 
@@ -930,7 +961,6 @@
           canvas.width = renderViewport.width;
           canvas.height = renderViewport.height;
 
-          // Style the canvas to display at correct size
           canvas.style.width = baseViewport.width * displayScale + "px";
           canvas.style.height = baseViewport.height * displayScale + "px";
 
@@ -970,7 +1000,6 @@
           wrapper.appendChild(drawingCanvas);
           canvasContainer.appendChild(wrapper);
 
-          // Thumbnail - keep existing code
           const thumbViewport = page.getViewport({ scale: 0.2 });
           const thumbCanvas = document.createElement("canvas");
           thumbCanvas.width = thumbViewport.width;
@@ -995,7 +1024,6 @@
           thumbItem.addEventListener("click", () => switchToPage(i - 1));
           thumbnailContainer.appendChild(thumbItem);
 
-          // Store the display viewport (not render viewport)
           const displayViewport = page.getViewport({ scale: displayScale });
           const pdfPage = new PDFPage(i, canvas, displayViewport);
           pdfPage.wrapper = wrapper;
@@ -1019,7 +1047,6 @@
           return;
         }
 
-        // FIX: Prevent multiple clicks
         if (isEditMode) {
           await CustomModal.alert("Edit mode is already active", "Notice");
           return;
@@ -1045,15 +1072,12 @@
           const data = await response.json();
 
           if (data.success) {
-            // FIX: Clear existing OCR data first
             pages.forEach((page) => {
               page.ocrTextBlocks = [];
               page.ocrLayer.innerHTML = "";
             });
 
-            // Display OCR text
             displayOCRText(data.pages);
-            // Display images
             displayOCRImages(data.pages);
 
             isEditMode = true;
@@ -1086,7 +1110,6 @@
           const page = pages[index];
           if (!page) return;
 
-          // FIX: Clear and reset properly
           page.ocrTextBlocks = [];
           page.ocrLayer.innerHTML = "";
           page.ocrLayer.style.pointerEvents = "auto";
@@ -1103,7 +1126,6 @@
             annotation.color = block.color || "#000000";
             annotation.deletionMarked = false;
 
-            // Store original position for deletion
             annotation.originalData = {
               x: block.x,
               y: block.y,
@@ -1138,7 +1160,6 @@
         annotation.xref = imgInfo.xref;
         annotation.isOriginal = true;
 
-        // Fetch actual image
         try {
           const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
             method: "POST",
@@ -1165,7 +1186,6 @@
             const element = annotation.createElement();
             page.ocrLayer.appendChild(element);
 
-            // FIX: Add to ocrTextBlocks for tracking (NOT annotations)
             page.ocrTextBlocks.push(annotation);
           }
         } catch (error) {
@@ -1191,7 +1211,6 @@
           const annotationsData = pages.map((page) => {
             const pageAnnotations = [];
 
-            // FIX: Process all regular annotations (from annotationLayer)
             page.annotations.forEach((ann) => {
               const annData = {
                 type: ann.type,
@@ -1217,14 +1236,17 @@
                 annData.fillColor = ann.fillColor;
                 annData.borderColor = ann.borderColor;
                 annData.borderWidth = ann.borderWidth;
+              } else if (ann.type === "drawing") {
+                annData.pathData = ann.pathData;
+                annData.color = ann.color;
+                annData.strokeWidth = ann.strokeWidth;
+                annData.brushStyle = ann.brushStyle;
               }
 
               pageAnnotations.push(annData);
             });
 
-            // FIX: Process OCR layer items (edited text & images)
             page.ocrTextBlocks.forEach((ann) => {
-              // Skip if already deleted
               if (ann.element && !ann.element.parentNode) return;
 
               const annData = {
@@ -1249,7 +1271,6 @@
               pageAnnotations.push(annData);
             });
 
-            // FIX: Check for actual drawing data
             let drawingData = null;
             if (page.hasDrawing) {
               const ctx = page.drawingCanvas.getContext("2d");
@@ -1346,10 +1367,8 @@
         const ctx = canvas.getContext("2d");
 
         let isDrawing = false;
-        let lastX = 0;
-        let lastY = 0;
+        let points = [];
 
-        // FIX: Helper function to get coordinates
         function getCoords(e, canvas) {
           const rect = canvas.getBoundingClientRect();
           const scaleX = canvas.width / rect.width;
@@ -1368,107 +1387,145 @@
           };
         }
 
-        // Mouse events
-        canvas.addEventListener("mousedown", (e) => {
+        function startStroke(e) {
           if (currentTool !== "draw") return;
           e.preventDefault();
 
           isDrawing = true;
+          points = [];
 
           const coords = getCoords(e, canvas);
-          lastX = coords.x;
-          lastY = coords.y;
+          points.push({ x: coords.x, y: coords.y });
 
           ctx.strokeStyle = penColor.value;
-          ctx.lineWidth = parseInt(penWidth.value);
+          ctx.lineWidth = parseInt(brushSize.value);
           ctx.lineCap = "round";
           ctx.lineJoin = "round";
-          ctx.beginPath();
-          ctx.moveTo(lastX, lastY);
-        });
 
-        canvas.addEventListener("mousemove", (e) => {
+          const brush = brushStyle.value;
+          if (brush === "dotted") {
+            ctx.setLineDash([2, 4]);
+          } else if (brush === "dashed") {
+            ctx.setLineDash([8, 6]);
+          } else {
+            ctx.setLineDash([]);
+          }
+
+          ctx.beginPath();
+          ctx.moveTo(coords.x, coords.y);
+        }
+
+        function drawStroke(e) {
           if (!isDrawing || currentTool !== "draw") return;
           e.preventDefault();
 
           const coords = getCoords(e, canvas);
+          points.push({ x: coords.x, y: coords.y });
 
           ctx.lineTo(coords.x, coords.y);
           ctx.stroke();
 
-          lastX = coords.x;
-          lastY = coords.y;
-
           page.hasDrawing = true;
-        });
+        }
 
-        canvas.addEventListener("mouseup", (e) => {
+        function endStroke(e) {
           if (!isDrawing) return;
           e.preventDefault();
           isDrawing = false;
           ctx.closePath();
-        });
+          ctx.setLineDash([]);
 
-        canvas.addEventListener("mouseleave", () => {
-          if (isDrawing) {
-            isDrawing = false;
-            ctx.closePath();
+          if (points.length > 1) {
+            let pathData = `M ${points[0].x} ${points[0].y}`;
+            for (let i = 1; i < points.length; i++) {
+              pathData += ` L ${points[i].x} ${points[i].y}`;
+            }
+
+            page.currentDrawingPath = {
+              pathData: pathData,
+              color: penColor.value,
+              width: parseInt(brushSize.value),
+              brushStyle: brushStyle.value,
+            };
+          } else {
+            page.currentDrawingPath = null;
+          }
+        }
+
+        canvas.addEventListener("mousedown", startStroke);
+        canvas.addEventListener("mousemove", drawStroke);
+        canvas.addEventListener("mouseup", endStroke);
+        canvas.addEventListener("mouseleave", endStroke);
+
+        canvas.addEventListener("touchstart", startStroke, { passive: false });
+        canvas.addEventListener("touchmove", drawStroke, { passive: false });
+        canvas.addEventListener("touchend", endStroke, { passive: false });
+        canvas.addEventListener("touchcancel", endStroke, { passive: false });
+      }
+
+      // APPLY DRAWING BUTTON: converts drawing canvas strokes to annotation
+      applyDrawingBtn.addEventListener("click", () => {
+        const page = pages[currentPageIndex];
+        if (!page.hasDrawing || !page.currentDrawingPath) {
+          CustomModal.alert(
+            "No drawing to apply. Draw something first.",
+            "Notice",
+          );
+          return;
+        }
+
+        const pathData = page.currentDrawingPath.pathData;
+        const color = page.currentDrawingPath.color;
+        const width = page.currentDrawingPath.width;
+        const brush = page.currentDrawingPath.brushStyle;
+
+        const drawingAnn = new DrawingAnnotation(
+          page,
+          pathData,
+          color,
+          width,
+          brush,
+        );
+
+        const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+        let minX = Infinity,
+          minY = Infinity,
+          maxX = -Infinity,
+          maxY = -Infinity;
+        points.forEach((p) => {
+          const parts = p.match(/[\d.]+/g);
+          if (parts && parts.length >= 2) {
+            const x = parseFloat(parts[0]);
+            const y = parseFloat(parts[1]);
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
           }
         });
 
-        // Touch events for mobile
-        canvas.addEventListener(
-          "touchstart",
-          (e) => {
-            if (currentTool !== "draw") return;
-            e.preventDefault();
+        if (minX === Infinity) {
+          drawingAnn.x = 20;
+          drawingAnn.y = 20;
+          drawingAnn.width = 200;
+          drawingAnn.height = 100;
+        } else {
+          const scaleX = page.viewport.width / page.drawingCanvas.width;
+          const scaleY = page.viewport.height / page.drawingCanvas.height;
+          drawingAnn.x = minX * scaleX;
+          drawingAnn.y = minY * scaleY;
+          drawingAnn.width = (maxX - minX) * scaleX;
+          drawingAnn.height = (maxY - minY) * scaleY;
+        }
+        if (drawingAnn.width < 20) drawingAnn.width = 50;
+        if (drawingAnn.height < 20) drawingAnn.height = 50;
 
-            isDrawing = true;
-
-            const coords = getCoords(e, canvas);
-            lastX = coords.x;
-            lastY = coords.y;
-
-            ctx.strokeStyle = penColor.value;
-            ctx.lineWidth = parseInt(penWidth.value);
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
-            ctx.beginPath();
-            ctx.moveTo(lastX, lastY);
-          },
-          { passive: false },
-        );
-
-        canvas.addEventListener(
-          "touchmove",
-          (e) => {
-            if (!isDrawing || currentTool !== "draw") return;
-            e.preventDefault();
-
-            const coords = getCoords(e, canvas);
-
-            ctx.lineTo(coords.x, coords.y);
-            ctx.stroke();
-
-            lastX = coords.x;
-            lastY = coords.y;
-
-            page.hasDrawing = true;
-          },
-          { passive: false },
-        );
-
-        canvas.addEventListener(
-          "touchend",
-          (e) => {
-            if (!isDrawing) return;
-            e.preventDefault();
-            isDrawing = false;
-            ctx.closePath();
-          },
-          { passive: false },
-        );
-      }
+        const element = drawingAnn.createElement();
+        page.annotationLayer.appendChild(element);
+        page.addAnnotation(drawingAnn);
+        selectAnnotation(drawingAnn);
+        drawBtn.classList.remove("active");
+      });
 
       // Tool handlers
       addTextBtn.addEventListener("click", (e) => {
@@ -1638,7 +1695,6 @@
         }
       });
 
-      // Shape properties
       document.getElementById("shapeType").addEventListener("change", (e) => {
         if (selectedAnnotation && selectedAnnotation.type === "shape") {
           selectedAnnotation.updateProperty("shapeType", e.target.value);
@@ -1696,7 +1752,6 @@
           }
         });
 
-      // Pen properties
       penColor.addEventListener("input", (e) => {
         document.getElementById("penColorHex").value = e.target.value;
       });
@@ -1708,7 +1763,6 @@
         }
       });
 
-      // FIX: IMPROVED Mouse and Touch events for dragging and resizing
       document.addEventListener("mousemove", (e) => {
         if (isDragging && selectedAnnotation) {
           const rect =
@@ -1765,7 +1819,6 @@
         resizeHandle = null;
       });
 
-      // FIX: IMPROVED Touch events
       document.addEventListener(
         "touchmove",
         (e) => {
@@ -1835,7 +1888,6 @@
         { passive: false },
       );
 
-      // Undo functionality
       undoBtn.addEventListener("click", () => {
         const currentPage = pages[currentPageIndex];
         if (currentPage.annotations.length > 0) {
@@ -1845,7 +1897,6 @@
         }
       });
 
-      // Clear all
       clearAllBtn.addEventListener("click", async () => {
         const confirmed = await CustomModal.confirm(
           "Clear all annotations on this page?",
@@ -1861,12 +1912,12 @@
             currentPage.drawingCanvas.width,
             currentPage.drawingCanvas.height,
           );
-          currentPage.hasDrawing = false; // FIX: Reset drawing flag
+          currentPage.hasDrawing = false;
+          currentPage.currentDrawingPath = null;
           selectedAnnotation = null;
         }
       });
 
-      // Delete file button
       deleteFileBtn.addEventListener("click", async () => {
         const confirmed = await CustomModal.confirm(
           "Remove this PDF and start over? All your changes will be lost.",
@@ -1878,7 +1929,6 @@
         }
       });
 
-      // Click outside to deselect
       document.addEventListener("click", (e) => {
         if (
           !e.target.closest(".annotation-item") &&

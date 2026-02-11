@@ -535,25 +535,25 @@
     <script>
       // Toast Notification System
       const Toast = {
-        show: function(message, type = 'info', duration = 3000) {
-          const container = document.getElementById('toastContainer');
-          const toast = document.createElement('div');
+        show: function (message, type = "info", duration = 3000) {
+          const container = document.getElementById("toastContainer");
+          const toast = document.createElement("div");
           toast.className = `toast ${type}`;
-          
+
           const icons = {
-            success: 'fa-check-circle',
-            error: 'fa-exclamation-circle',
-            warning: 'fa-exclamation-triangle',
-            info: 'fa-info-circle'
+            success: "fa-check-circle",
+            error: "fa-exclamation-circle",
+            warning: "fa-exclamation-triangle",
+            info: "fa-info-circle",
           };
-          
+
           const titles = {
-            success: 'Success',
-            error: 'Error',
-            warning: 'Warning',
-            info: 'Info'
+            success: "Success",
+            error: "Error",
+            warning: "Warning",
+            info: "Info",
           };
-          
+
           toast.innerHTML = `
             <i class="fa ${icons[type]} toast-icon"></i>
             <div class="toast-content">
@@ -562,132 +562,148 @@
             </div>
             <button class="toast-close">&times;</button>
           `;
-          
+
           container.appendChild(toast);
-          
-          const closeBtn = toast.querySelector('.toast-close');
+
+          const closeBtn = toast.querySelector(".toast-close");
           closeBtn.onclick = () => this.hide(toast);
-          
+
           if (duration > 0) {
             setTimeout(() => this.hide(toast), duration);
           }
-          
+
           return toast;
         },
-        
-        hide: function(toast) {
-          toast.classList.add('hiding');
+
+        hide: function (toast) {
+          toast.classList.add("hiding");
           setTimeout(() => toast.remove(), 300);
         },
-        
-        success: function(message, duration = 3000) {
-          return this.show(message, 'success', duration);
+
+        success: function (message, duration = 3000) {
+          return this.show(message, "success", duration);
         },
-        
-        error: function(message, duration = 5000) {
-          return this.show(message, 'error', duration);
+
+        error: function (message, duration = 5000) {
+          return this.show(message, "error", duration);
         },
-        
-        warning: function(message, duration = 4000) {
-          return this.show(message, 'warning', duration);
+
+        warning: function (message, duration = 4000) {
+          return this.show(message, "warning", duration);
         },
-        
-        info: function(message, duration = 3000) {
-          return this.show(message, 'info', duration);
-        }
+
+        info: function (message, duration = 3000) {
+          return this.show(message, "info", duration);
+        },
       };
 
-      // Custom Modal System
+      // Custom Modal System - COMPLETE FIX
       const CustomModal = {
-        alert: function(message, title = 'Notice') {
+        alert: function (message, title = "Notice") {
           return new Promise((resolve) => {
             const overlay = this.createOverlay();
             const modal = this.createModal(title, message, [
               {
-                text: 'OK',
-                class: 'custom-modal-btn custom-modal-btn-primary',
+                text: "OK",
+                class: "custom-modal-btn custom-modal-btn-primary",
                 onclick: () => {
                   this.close(overlay);
                   resolve(true);
-                }
-              }
+                },
+              },
             ]);
-            
+
             overlay.appendChild(modal);
             document.body.appendChild(overlay);
-            setTimeout(() => overlay.classList.add('show'), 10);
+            // Force reflow then add show class
+            overlay.offsetHeight;
+            overlay.classList.add("show");
           });
         },
-        
-        confirm: function(message, title = 'Confirm', type = 'primary') {
+
+        confirm: function (message, title = "Confirm", type = "primary") {
           return new Promise((resolve) => {
             const overlay = this.createOverlay();
-            const btnClass = type === 'danger' ? 'custom-modal-btn-danger' : 'custom-modal-btn-primary';
-            
+
+            // Set button class based on type
+            let confirmBtnClass = "custom-modal-btn";
+            if (type === "danger") {
+              confirmBtnClass += " custom-modal-btn-danger";
+            } else {
+              confirmBtnClass += " custom-modal-btn-primary";
+            }
+
             const modal = this.createModal(title, message, [
               {
-                text: 'Cancel',
-                class: 'custom-modal-btn custom-modal-btn-secondary',
-                onclick: () => {
+                text: "Cancel",
+                class: "custom-modal-btn custom-modal-btn-secondary",
+                onclick: (e) => {
+                  e.stopPropagation();
                   this.close(overlay);
                   resolve(false);
-                }
+                },
               },
               {
-                text: 'Confirm',
-                class: `custom-modal-btn ${btnClass}`,
-                onclick: () => {
+                text: "Confirm",
+                class: confirmBtnClass,
+                onclick: (e) => {
+                  e.stopPropagation();
                   this.close(overlay);
                   resolve(true);
-                }
-              }
+                },
+              },
             ]);
-            
+
             overlay.appendChild(modal);
             document.body.appendChild(overlay);
-            setTimeout(() => overlay.classList.add('show'), 10);
+            // Force reflow then add show class
+            overlay.offsetHeight;
+            overlay.classList.add("show");
           });
         },
-        
-        createOverlay: function() {
-          const overlay = document.createElement('div');
-          overlay.className = 'custom-modal-overlay';
-          overlay.onclick = (e) => {
-            if (e.target === overlay) {
-              this.close(overlay);
-            }
-          };
+
+        createOverlay: function () {
+          const overlay = document.createElement("div");
+          overlay.className = "custom-modal-overlay";
+          // Don't close on overlay click for now to debug
+          overlay.style.zIndex = "999999"; // Ensure it's on top
           return overlay;
         },
-        
-        createModal: function(title, message, buttons) {
-          const modal = document.createElement('div');
-          modal.className = 'custom-modal';
-          
+
+        createModal: function (title, message, buttons) {
+          const modal = document.createElement("div");
+          modal.className = "custom-modal";
+          modal.style.pointerEvents = "auto"; // Ensure modal captures clicks
+
           modal.innerHTML = `
-            <div class="custom-modal-header">
-              <h3 class="custom-modal-title">${title}</h3>
-            </div>
-            <div class="custom-modal-body">${message}</div>
-            <div class="custom-modal-footer"></div>
-          `;
-          
-          const footer = modal.querySelector('.custom-modal-footer');
-          buttons.forEach(btn => {
-            const button = document.createElement('button');
+      <div class="custom-modal-header">
+        <h3 class="custom-modal-title">${title}</h3>
+      </div>
+      <div class="custom-modal-body">${message}</div>
+      <div class="custom-modal-footer"></div>
+    `;
+
+          const footer = modal.querySelector(".custom-modal-footer");
+          buttons.forEach((btn) => {
+            const button = document.createElement("button");
             button.className = btn.class;
             button.textContent = btn.text;
+            button.style.pointerEvents = "auto"; // Ensure button captures clicks
             button.onclick = btn.onclick;
             footer.appendChild(button);
           });
-          
+
           return modal;
         },
-        
-        close: function(overlay) {
-          overlay.classList.remove('show');
-          setTimeout(() => overlay.remove(), 300);
-        }
+
+        close: function (overlay) {
+          overlay.classList.remove("show");
+          setTimeout(() => {
+            if (overlay.parentNode) {
+              overlay.parentNode.removeChild(overlay);
+            }
+          }, 300);
+        },
       };
 
       // DOM Elements
@@ -1349,10 +1365,10 @@
         try {
           await loadPDF(file);
           loader.style.display = "none";
-          Toast.success('PDF loaded successfully!');
+          Toast.success("PDF loaded successfully!");
         } catch (err) {
           console.error("PDF load error:", err);
-          Toast.error('Failed to load PDF. Please try another file.');
+          Toast.error("Failed to load PDF. Please try another file.");
         } finally {
           loader.style.display = "none";
         }
@@ -1516,16 +1532,22 @@
             editPdfBtn.innerHTML =
               '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
             editPdfBtn.classList.add("active");
-            Toast.success('Edit mode activated! You can now edit text and images.');
+            Toast.success(
+              "Edit mode activated! You can now edit text and images.",
+            );
           } else {
-            Toast.error("Error extracting text: " + (data.error || "Unknown error"));
+            Toast.error(
+              "Error extracting text: " + (data.error || "Unknown error"),
+            );
             editPdfBtn.innerHTML =
               '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
             editPdfBtn.disabled = false;
           }
         } catch (error) {
           console.error("Error:", error);
-          Toast.error("Failed to extract text from PDF. Make sure Flask server is running on port 8080.");
+          Toast.error(
+            "Failed to extract text from PDF. Make sure Flask server is running on port 8080.",
+          );
           editPdfBtn.innerHTML =
             '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
           editPdfBtn.disabled = false;
@@ -1623,7 +1645,7 @@
       // Save PDF with changes
       saveBtn.addEventListener("click", async () => {
         if (!pdfFile) {
-          await CustomModal.alert('No PDF loaded', 'Notice');
+          await CustomModal.alert("No PDF loaded", "Notice");
           return;
         }
 
@@ -1666,11 +1688,14 @@
                 annData.borderColor = ann.borderColor;
                 annData.borderWidth = ann.borderWidth / page.scale;
               } else if (ann.type === "drawing") {
-                const scaledPath = ann.pathData.replace(/([ML])\s*([\d.]+)\s*([\d.]+)/g, (match, cmd, x, y) => {
-                  const pdfX = parseFloat(x) / page.scale;
-                  const pdfY = parseFloat(y) / page.scale;
-                  return `${cmd} ${pdfX} ${pdfY}`;
-                });
+                const scaledPath = ann.pathData.replace(
+                  /([ML])\s*([\d.]+)\s*([\d.]+)/g,
+                  (match, cmd, x, y) => {
+                    const pdfX = parseFloat(x) / page.scale;
+                    const pdfY = parseFloat(y) / page.scale;
+                    return `${cmd} ${pdfX} ${pdfY}`;
+                  },
+                );
                 annData.pathData = scaledPath;
                 annData.color = ann.color;
                 annData.strokeWidth = ann.strokeWidth / page.scale;
@@ -1750,14 +1775,16 @@
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
 
-            Toast.success('PDF saved successfully!');
+            Toast.success("PDF saved successfully!");
           } else {
             const error = await response.json();
-            Toast.error('Error saving PDF: ' + error.error);
+            Toast.error("Error saving PDF: " + error.error);
           }
         } catch (error) {
           console.error("Error:", error);
-          Toast.error("Failed to save PDF. Make sure Flask server is running on port 8080.");
+          Toast.error(
+            "Failed to save PDF. Make sure Flask server is running on port 8080.",
+          );
         } finally {
           saveBtn.disabled = false;
           saveBtn.innerHTML =
@@ -2357,7 +2384,7 @@
           const lastAnnotation =
             currentPage.annotations[currentPage.annotations.length - 1];
           lastAnnotation.delete();
-          Toast.info('Last annotation removed');
+          Toast.info("Last annotation removed");
         }
       });
 
@@ -2379,10 +2406,11 @@
           currentPage.hasDrawing = false;
           currentPage.currentDrawingPaths = [];
           selectedAnnotation = null;
-          Toast.success('All annotations cleared');
+          Toast.success("All annotations cleared");
         }
       });
 
+      // Replace your deleteFileBtn event listener with this:
       deleteFileBtn.addEventListener("click", async () => {
         const confirmed = await CustomModal.confirm(
           "Remove this PDF and start over? All your changes will be lost.",
@@ -2390,7 +2418,42 @@
           "danger",
         );
         if (confirmed) {
-          location.reload();
+          // Reset the PDF state
+          pdfDoc = null;
+          pdfFile = null;
+          pages = [];
+          currentPageIndex = 0;
+          selectedAnnotation = null;
+          isEditMode = false;
+
+          // Clear the file input
+          pdfUpload.value = "";
+
+          // Hide editor and show upload section
+          editorContainer.style.display = "none";
+          uploadSection.style.display = "flex"; // or "block" depending on your CSS
+
+          // Clear canvas and thumbnails
+          canvasContainer.innerHTML = "";
+          thumbnailContainer.innerHTML = "";
+
+          // Reset the file name
+          currentFileName.textContent = "document.pdf";
+
+          // Reset Edit PDF button
+          editPdfBtn.innerHTML =
+            '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+          editPdfBtn.disabled = false;
+          editPdfBtn.classList.remove("active");
+
+          // Clear any selected tool
+          currentTool = null;
+          document
+            .querySelectorAll(".tool-btn")
+            .forEach((btn) => btn.classList.remove("active"));
+
+          // Show success message
+          Toast.success("PDF removed successfully");
         }
       });
 

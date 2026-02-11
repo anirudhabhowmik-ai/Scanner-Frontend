@@ -367,7 +367,7 @@
           this.ocrLayer = null;
           this.scale = 1;
           this.hasDrawing = false;
-          this.currentDrawingPath = null;
+          this.currentDrawingPaths = [];
         }
 
         addAnnotation(annotation) {
@@ -869,13 +869,56 @@
           );
           svg.setAttribute("width", "100%");
           svg.setAttribute("height", "100%");
-          svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
+
+          // Don't set viewBox - let SVG scale naturally
+          // svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
 
           const path = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "path",
           );
-          path.setAttribute("d", this.pathData);
+
+          // Transform the path coordinates to fit within the annotation bounds
+          const points =
+            this.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+          let minX = Infinity,
+            minY = Infinity,
+            maxX = -Infinity,
+            maxY = -Infinity;
+
+          points.forEach((p) => {
+            const parts = p.match(/[\d.]+/g);
+            if (parts && parts.length >= 2) {
+              const x = parseFloat(parts[0]);
+              const y = parseFloat(parts[1]);
+              minX = Math.min(minX, x);
+              minY = Math.min(minY, y);
+              maxX = Math.max(maxX, x);
+              maxY = Math.max(maxY, y);
+            }
+          });
+
+          // Scale and translate the path to fit the annotation bounds
+          const scaleX = this.width / (maxX - minX || 1);
+          const scaleY = this.height / (maxY - minY || 1);
+          const scale = Math.min(scaleX, scaleY) * 0.9; // 90% to leave some padding
+
+          const translateX =
+            (this.width - (maxX - minX) * scale) / 2 - minX * scale;
+          const translateY =
+            (this.height - (maxY - minY) * scale) / 2 - minY * scale;
+
+          // Transform the path data
+          let transformedPathData = this.pathData.replace(
+            /([ML])\s*([\d.]+)\s*([\d.]+)/g,
+            (match, cmd, x, y) => {
+              const newX = parseFloat(x) * scale + translateX;
+              const newY = parseFloat(y) * scale + translateY;
+              return `${cmd} ${newX} ${newY}`;
+            },
+          );
+
+          path.setAttribute("d", transformedPathData);
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
           path.setAttribute("stroke-width", this.strokeWidth);
@@ -1441,14 +1484,20 @@
               pathData += ` L ${points[i].x} ${points[i].y}`;
             }
 
-            page.currentDrawingPath = {
+            // Initialize array if it doesn't exist
+            if (!page.currentDrawingPaths) {
+              page.currentDrawingPaths = [];
+            }
+
+            // Push each stroke to the array
+            page.currentDrawingPaths.push({
               pathData: pathData,
               color: penColor.value,
               width: parseInt(brushSize.value),
               brushStyle: brushStyle.value,
-            };
-          } else {
-            page.currentDrawingPath = null;
+            });
+
+            page.hasDrawing = true;
           }
         }
 
@@ -1463,68 +1512,96 @@
         canvas.addEventListener("touchcancel", endStroke, { passive: false });
       }
 
-      // APPLY DRAWING BUTTON: converts drawing canvas strokes to annotation
+      // APPLY DRAWING BUTTON: converts all drawing canvas strokes to annotations
       applyDrawingBtn.addEventListener("click", () => {
         const page = pages[currentPageIndex];
-        if (!page.hasDrawing || !page.currentDrawingPath) {
-          CustomModal.alert(
-            "No drawing to apply. Draw something first.",
-            "Notice",
-          );
-          return;
+
+        // Only proceed if there are drawings to apply
+        if (
+          page.hasDrawing &&
+          page.currentDrawingPaths &&
+          page.currentDrawingPaths.length > 0
+        ) {
+          // Create an annotation for each drawing path
+page.currentDrawingPaths.forEach((drawingPath) => {
+  const { pathData, color, width, brushStyle } = drawingPath;
+
+  const drawingAnn = new DrawingAnnotation(
+    page,
+    pathData,
+    color,
+    width,
+    brushStyle,
+  );
+
+  // Calculate bounds for this specific path
+  const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
+
+  points.forEach((p) => {
+    const parts = p.match(/[\d.]+/g);
+    if (parts && parts.length >= 2) {
+      const x = parseFloat(parts[0]);
+      const y = parseFloat(parts[1]);
+      minX = Math.min(minX, x);
+      minY = Math.min(minY, y);
+      maxX = Math.max(maxX, x);
+      maxY = Math.max(maxY, y);
+    }
+  });
+
+  // Convert drawing canvas coordinates to page coordinates
+  const scaleX = page.viewport.width / page.drawingCanvas.width;
+  const scaleY = page.viewport.height / page.drawingCanvas.height;
+  
+  // Add some padding
+  const padding = 10;
+  
+  drawingAnn.x = (minX * scaleX) - padding;
+  drawingAnn.y = (minY * scaleY) - padding;
+  drawingAnn.width = ((maxX - minX) * scaleX) + (padding * 2);
+  drawingAnn.height = ((maxY - minY) * scaleY) + (padding * 2);
+
+  if (drawingAnn.width < 40) drawingAnn.width = 40;
+  if (drawingAnn.height < 40) drawingAnn.height = 40;
+
+  // Create and add the drawing annotation
+  const element = drawingAnn.createElement();
+  page.annotationLayer.appendChild(element);
+  page.addAnnotation(drawingAnn);
+});
+          
+          // Select the last created annotation
+          if (page.annotations.length > 0) {
+            selectAnnotation(page.annotations[page.annotations.length - 1]);
+          }
         }
 
-        const pathData = page.currentDrawingPath.pathData;
-        const color = page.currentDrawingPath.color;
-        const width = page.currentDrawingPath.width;
-        const brush = page.currentDrawingPath.brushStyle;
+        // ALWAYS deactivate drawing mode, even if no drawings
+        currentTool = null;
+        drawBtn.classList.remove("active");
 
-        const drawingAnn = new DrawingAnnotation(
-          page,
-          pathData,
-          color,
-          width,
-          brush,
+        // Clear the drawing canvas and reset paths
+        const ctx = page.drawingCanvas.getContext("2d");
+        ctx.clearRect(
+          0,
+          0,
+          page.drawingCanvas.width,
+          page.drawingCanvas.height,
         );
+        page.drawingCanvas.classList.remove("active");
+        page.hasDrawing = false;
+        page.currentDrawingPaths = []; // Clear all saved paths
 
-        const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-        let minX = Infinity,
-          minY = Infinity,
-          maxX = -Infinity,
-          maxY = -Infinity;
-        points.forEach((p) => {
-          const parts = p.match(/[\d.]+/g);
-          if (parts && parts.length >= 2) {
-            const x = parseFloat(parts[0]);
-            const y = parseFloat(parts[1]);
-            minX = Math.min(minX, x);
-            minY = Math.min(minY, y);
-            maxX = Math.max(maxX, x);
-            maxY = Math.max(maxY, y);
+        // Ensure all drawing canvases are deactivated
+        pages.forEach((p) => {
+          if (p.drawingCanvas) {
+            p.drawingCanvas.classList.remove("active");
           }
         });
-
-        if (minX === Infinity) {
-          drawingAnn.x = 20;
-          drawingAnn.y = 20;
-          drawingAnn.width = 200;
-          drawingAnn.height = 100;
-        } else {
-          const scaleX = page.viewport.width / page.drawingCanvas.width;
-          const scaleY = page.viewport.height / page.drawingCanvas.height;
-          drawingAnn.x = minX * scaleX;
-          drawingAnn.y = minY * scaleY;
-          drawingAnn.width = (maxX - minX) * scaleX;
-          drawingAnn.height = (maxY - minY) * scaleY;
-        }
-        if (drawingAnn.width < 20) drawingAnn.width = 50;
-        if (drawingAnn.height < 20) drawingAnn.height = 50;
-
-        const element = drawingAnn.createElement();
-        page.annotationLayer.appendChild(element);
-        page.addAnnotation(drawingAnn);
-        selectAnnotation(drawingAnn);
-        drawBtn.classList.remove("active");
       });
 
       // Tool handlers
@@ -1913,7 +1990,7 @@
             currentPage.drawingCanvas.height,
           );
           currentPage.hasDrawing = false;
-          currentPage.currentDrawingPath = null;
+          currentPage.currentDrawingPaths = []; // Clear all paths
           selectedAnnotation = null;
         }
       });

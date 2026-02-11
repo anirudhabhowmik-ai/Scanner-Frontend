@@ -1393,6 +1393,7 @@
         pagesGrid.innerHTML = "";
         pagesGrid.style.display = "grid";
         allPages = [];
+        btnContainer.style.display = "flex";
 
         try {
           for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
@@ -1405,7 +1406,6 @@
               allPages.push({ fileIndex, pageIndex: i - 1 });
             }
           }
-          btnContainer.style.display = "flex";
         } catch (error) {
           errorMsg.textContent = "Error loading PDF: " + error.message;
           errorMsg.style.display = "block";

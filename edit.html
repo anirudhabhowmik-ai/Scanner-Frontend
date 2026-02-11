@@ -1173,11 +1173,11 @@
           pageData.textBlocks.forEach((block) => {
             const annotation = new TextAnnotation(page, true);
             annotation.text = block.text;
-            annotation.x = block.x;
-            annotation.y = block.y;
-            annotation.width = Math.max(block.width, 30);
-            annotation.height = Math.max(block.height, 15);
-            annotation.fontSize = Math.round(block.fontSize);
+            annotation.x = block.x * page.scale;
+            annotation.y = block.y * page.scale;
+            annotation.width = Math.max(block.width * page.scale, 30);
+            annotation.height = Math.max(block.height * page.scale, 15);
+            annotation.fontSize = Math.round(block.fontSize * page.scale);
             annotation.fontFamily = block.fontFamily || "Arial";
             annotation.color = block.color || "#000000";
             annotation.deletionMarked = false;
@@ -1209,10 +1209,10 @@
 
       async function createEditableImage(page, imgInfo, pdfId) {
         const annotation = new ImageAnnotation(page, "");
-        annotation.x = imgInfo.x;
-        annotation.y = imgInfo.y;
-        annotation.width = imgInfo.width;
-        annotation.height = imgInfo.height;
+        annotation.x = imgInfo.x * page.scale;
+        annotation.y = imgInfo.y * page.scale;
+        annotation.width = imgInfo.width * page.scale;
+        annotation.height = imgInfo.height * page.scale;
         annotation.xref = imgInfo.xref;
         annotation.isOriginal = true;
 
@@ -1267,35 +1267,43 @@
           const annotationsData = pages.map((page) => {
             const pageAnnotations = [];
 
+            // Convert display coordinates to PDF coordinates
+            const scaleX = page.canvas.width / page.viewport.width;
+            const scaleY = page.canvas.height / page.viewport.height;
+
             page.annotations.forEach((ann) => {
               const annData = {
                 type: ann.type,
-                x: ann.x,
-                y: ann.y,
-                width: ann.width,
-                height: ann.height,
+                x: ann.x / page.scale,  // Convert from display to PDF coordinates
+                y: ann.y / page.scale,
+                width: ann.width / page.scale,
+                height: ann.height / page.scale,
               };
 
               if (ann.type === "text") {
                 annData.text = ann.text;
-                annData.fontSize = ann.fontSize;
+                annData.fontSize = ann.fontSize / page.scale;  // Scale font size
                 annData.fontFamily = ann.fontFamily;
                 annData.color = ann.color;
                 annData.fontWeight = ann.fontWeight;
                 annData.fontStyle = ann.fontStyle;
               } else if (ann.type === "image") {
                 annData.imageData = ann.imageSrc;
-                annData.width = ann.width;
-                annData.height = ann.height;
               } else if (ann.type === "shape") {
                 annData.shapeType = ann.shapeType;
                 annData.fillColor = ann.fillColor;
                 annData.borderColor = ann.borderColor;
-                annData.borderWidth = ann.borderWidth;
+                annData.borderWidth = ann.borderWidth / page.scale;  // Scale border width
               } else if (ann.type === "drawing") {
-                annData.pathData = ann.pathData;
+                // Convert path data from display coordinates to PDF coordinates
+                const scaledPath = ann.pathData.replace(/([ML])\s*([\d.]+)\s*([\d.]+)/g, (match, cmd, x, y) => {
+                  const pdfX = parseFloat(x) / page.scale;
+                  const pdfY = parseFloat(y) / page.scale;
+                  return `${cmd} ${pdfX} ${pdfY}`;
+                });
+                annData.pathData = scaledPath;
                 annData.color = ann.color;
-                annData.strokeWidth = ann.strokeWidth;
+                annData.strokeWidth = ann.strokeWidth / page.scale;  // Scale stroke width
                 annData.brushStyle = ann.brushStyle;
               }
 
@@ -1307,15 +1315,15 @@
 
               const annData = {
                 type: ann.type,
-                x: ann.x,
-                y: ann.y,
-                width: ann.width,
-                height: ann.height,
+                x: ann.x / page.scale,  // Convert from display to PDF coordinates
+                y: ann.y / page.scale,
+                width: ann.width / page.scale,
+                height: ann.height / page.scale,
               };
 
               if (ann.type === "text") {
                 annData.text = ann.text;
-                annData.fontSize = ann.fontSize;
+                annData.fontSize = ann.fontSize / page.scale;  // Scale font size
                 annData.fontFamily = ann.fontFamily;
                 annData.color = ann.color;
                 annData.fontWeight = ann.fontWeight;

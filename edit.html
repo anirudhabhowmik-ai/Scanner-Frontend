@@ -262,6 +262,12 @@
                       value="2"
                     />
                   </div>
+                  <div class="property-item">
+                    <div class="cta-button" id="applyShapeBtn">
+                      <i class="fa fa-check-circle"></i>
+                      <span>Apply Shape</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </button>
@@ -914,7 +920,15 @@
           path.setAttribute("d", this.pathData);
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
-          path.setAttribute("stroke-width", this.strokeWidth);
+
+          // IMPORTANT: Set stroke-width to a fixed pixel value that won't scale
+          // Multiply by the scale factor to maintain the original thickness
+          const scaleX = this.width / viewBoxWidth;
+          const scaleY = this.height / viewBoxHeight;
+          const scale = Math.max(scaleX, scaleY);
+
+          // Adjust stroke width to compensate for scaling
+          path.setAttribute("stroke-width", this.strokeWidth / scale);
           path.setAttribute("stroke-linecap", "round");
           path.setAttribute("stroke-linejoin", "round");
 
@@ -1638,9 +1652,13 @@
 
       addShapeBtn.addEventListener("click", (e) => {
         setTool("shape");
-        if (e.target.closest(".tool-btn") === addShapeBtn) {
-          addAnnotationToCurrentPage("shape");
-        }
+        // if (e.target.closest(".tool-btn") === addShapeBtn) {
+        //   addAnnotationToCurrentPage("shape");
+        // }
+      });
+
+      document.getElementById("applyShapeBtn").addEventListener("click", () => {
+        addAnnotationToCurrentPage("shape");
       });
 
       function setTool(tool, data = null) {
@@ -1660,6 +1678,12 @@
             page.drawingCanvas.classList.remove("active");
           }
         });
+
+        // Deselect any selected annotation when switching tools
+        if (selectedAnnotation) {
+          selectedAnnotation.element.classList.remove("selected");
+          selectedAnnotation = null;
+        }
       }
 
       function addAnnotationToCurrentPage(type, data = null) {

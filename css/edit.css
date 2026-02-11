@@ -98,17 +98,20 @@
   cursor: auto;
 }
 
-#drawProperties .property-row {
+#drawProperties .property-row,
+#shapeProperties .property-row {
   align-items: end;
 }
 
-#drawProperties .property-row .cta-button i{
-    font-size: 14px;
-    margin-right: 0;
+#drawProperties .cta-button,
+#shapeProperties .cta-button {
+  padding: 7px 9px;
 }
 
-#drawProperties .cta-button {
-  padding: 7px 9px;
+#drawProperties .property-row .cta-button i,
+#shapeProperties .property-row .cta-button i {
+  font-size: 14px;
+  margin-right: 0;
 }
 
 .tool-btn.active .properties-dropdown {

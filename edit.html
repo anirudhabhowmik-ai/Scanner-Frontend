@@ -2295,11 +2295,7 @@
           document.getElementById("drawProperties").style.display = "none";
 
           // Disable drawing canvas for all pages
-          pages.forEach((p) => {
-            p.drawingCanvas.style.display = "block";
-            p.drawingCanvas.classList.remove("active");
-            p.drawingCanvas.style.pointerEvents = "none";
-          });
+          deactivateDrawingMode(pages)
         }
       });
 

@@ -1609,64 +1609,71 @@
         }
       }
 
-      // REPLACE THE displayOCRText FUNCTION WITH THIS FIXED VERSION
+      function displayOCRText(pagesData) {
+        pagesData.forEach((pageData, index) => {
+          const page = pages[index];
+          if (!page) return;
 
-function displayOCRText(pagesData) {
-  pagesData.forEach((pageData, index) => {
-    const page = pages[index];
-    if (!page) return;
+          page.ocrTextBlocks = [];
+          page.ocrLayer.innerHTML = "";
+          page.ocrLayer.style.pointerEvents = "auto";
 
-    page.ocrTextBlocks = [];
-    page.ocrLayer.innerHTML = "";
-    page.ocrLayer.style.pointerEvents = "auto";
+          pageData.textBlocks.forEach((block) => {
+            const annotation = new TextAnnotation(page, true);
+            annotation.text = block.text;
+            annotation.x = block.x * page.scale;
+            annotation.y = block.y * page.scale;
 
-    pageData.textBlocks.forEach((block) => {
-      const annotation = new TextAnnotation(page, true);
-      annotation.text = block.text;
-      annotation.x = block.x * page.scale;
-      annotation.y = block.y * page.scale;
-      
-      // FIX: Better width and height calculation
-      // Ensure minimum width to prevent text wrapping issues
-      const minWidth = 50;
-      annotation.width = Math.max(block.width * page.scale, minWidth);
-      
-      // FIX: Better height calculation to accommodate text properly
-      // Use 1.5x the font size as minimum height to prevent text cutoff
-      const calculatedHeight = block.height * page.scale;
-      const minHeightFromFont = (block.fontSize * page.scale) * 1.5;
-      annotation.height = Math.max(calculatedHeight, minHeightFromFont, 20);
-      
-      annotation.fontSize = Math.round(block.fontSize * page.scale);
-      annotation.fontFamily = block.fontFamily || "Arial";
-      annotation.color = block.color || "#000000";
-      annotation.deletionMarked = false;
+            // FIX: Better width and height calculation
+            // Ensure minimum width to prevent text wrapping issues
+            const minWidth = 50;
+            annotation.width = Math.max(block.width * page.scale, minWidth);
 
-      annotation.originalData = {
-        x: block.x,
-        y: block.y,
-        width: block.width,
-        height: block.height,
-      };
+            // FIX: Better height calculation to accommodate text properly
+            // Use 1.5x the font size as minimum height to prevent text cutoff
+            const calculatedHeight = block.height * page.scale;
+            const minHeightFromFont = block.fontSize * page.scale * 1.5;
+            annotation.height = Math.max(
+              calculatedHeight,
+              minHeightFromFont,
+              20,
+            );
 
-      const element = annotation.createElement();
-      
-      // FIX: Add CSS to prevent text wrapping and ensure proper display
-      const textContent = element.querySelector('.text-content');
-      if (textContent) {
-        textContent.style.whiteSpace = 'nowrap';
-        textContent.style.overflow = 'visible';
-        textContent.style.textOverflow = 'clip';
-        textContent.style.display = 'block';
-        textContent.style.lineHeight = '1.2';
+            annotation.fontSize = Math.round(block.fontSize * page.scale);
+            annotation.fontFamily = block.fontFamily || "Arial";
+            annotation.color = block.color || "#000000";
+
+            // FIX: Add font weight and style from backend
+            annotation.fontWeight = block.fontWeight || "normal";
+            annotation.fontStyle = block.fontStyle || "normal";
+
+            annotation.deletionMarked = false;
+
+            annotation.originalData = {
+              x: block.x,
+              y: block.y,
+              width: block.width,
+              height: block.height,
+            };
+
+            const element = annotation.createElement();
+
+            // FIX: Add CSS to prevent text wrapping and ensure proper display
+            const textContent = element.querySelector(".text-content");
+            if (textContent) {
+              textContent.style.whiteSpace = "nowrap";
+              textContent.style.overflow = "visible";
+              textContent.style.textOverflow = "clip";
+              textContent.style.display = "block";
+              textContent.style.lineHeight = "1.2";
+            }
+
+            page.ocrLayer.appendChild(element);
+            page.ocrTextBlocks.push(annotation);
+          });
+        });
       }
-      
-      page.ocrLayer.appendChild(element);
-      page.ocrTextBlocks.push(annotation);
-    });
-  });
-}
-      
+
       function displayOCRImages(pagesData) {
         pagesData.forEach((pageData, index) => {
           const page = pages[index];

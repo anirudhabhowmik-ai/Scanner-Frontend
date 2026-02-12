@@ -2295,7 +2295,7 @@
           document.getElementById("drawProperties").style.display = "none";
 
           // Disable drawing canvas for all pages
-          deactivateDrawingMode(pages)
+          deactivateDrawingMode(pages);
         }
       });
 
@@ -2446,8 +2446,72 @@
       });
 
       function deactivateDrawingMode(pages) {
-        // Disable drawing canvas
+        // Convert drawings to annotations for all pages that have drawings
         pages.forEach((page) => {
+          // Convert current drawing paths to annotations
+          if (
+            page.hasDrawing &&
+            page.currentDrawingPaths &&
+            page.currentDrawingPaths.length > 0
+          ) {
+            page.currentDrawingPaths.forEach((pathInfo) => {
+              // Parse the path to find its bounding box
+              const points =
+                pathInfo.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+              let minX = Infinity,
+                minY = Infinity,
+                maxX = -Infinity,
+                maxY = -Infinity;
+
+              points.forEach((p) => {
+                const parts = p.match(/[\d.]+/g);
+                if (parts && parts.length >= 2) {
+                  const x = parseFloat(parts[0]);
+                  const y = parseFloat(parts[1]);
+                  minX = Math.min(minX, x);
+                  minY = Math.min(minY, y);
+                  maxX = Math.max(maxX, x);
+                  maxY = Math.max(maxY, y);
+                }
+              });
+
+              // Create the annotation
+              const annotation = new DrawingAnnotation(
+                page,
+                pathInfo.pathData,
+                pathInfo.color,
+                pathInfo.width,
+                pathInfo.brushStyle,
+              );
+
+              // Set position and size based on bounding box
+              const margin = 5;
+              annotation.x = minX - margin;
+              annotation.y = minY - margin;
+              annotation.width = maxX - minX + margin * 2;
+              annotation.height = maxY - minY + margin * 2;
+
+              // Create the element and add to page
+              const element = annotation.createElement();
+              page.annotationLayer.appendChild(element);
+              page.addAnnotation(annotation);
+            });
+
+            // Clear the drawing canvas
+            const ctx = page.drawingCanvas.getContext("2d");
+            ctx.clearRect(
+              0,
+              0,
+              page.drawingCanvas.width,
+              page.drawingCanvas.height,
+            );
+
+            // Reset drawing state
+            page.currentDrawingPaths = [];
+            page.hasDrawing = false;
+          }
+
+          // Disable drawing canvas
           if (
             page.hasDrawing &&
             page.currentDrawingPaths &&

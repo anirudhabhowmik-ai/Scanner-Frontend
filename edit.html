@@ -1323,7 +1323,7 @@
           // Remove any existing event listeners
           div.removeEventListener("mousedown", this._handleMouseDown);
           div.removeEventListener("touchstart", this._handleTouchStart);
-          
+
           // Define handlers bound to this instance
           this._handleMouseDown = (e) => {
             if (e.target.classList.contains("resize-handle")) {
@@ -1341,7 +1341,7 @@
             }
             selectAnnotation(this);
           };
-          
+
           this._handleTouchStart = (e) => {
             const touch = e.touches[0];
             if (e.target.classList.contains("resize-handle")) {
@@ -1359,11 +1359,13 @@
             }
             selectAnnotation(this);
           };
-          
+
           // Attach the event listeners
           div.addEventListener("mousedown", this._handleMouseDown);
-          div.addEventListener("touchstart", this._handleTouchStart, { passive: false });
-          
+          div.addEventListener("touchstart", this._handleTouchStart, {
+            passive: false,
+          });
+
           div.addEventListener("selectstart", (e) => {
             if (isDragging || isResizing) {
               e.preventDefault();
@@ -1389,7 +1391,7 @@
           return clone;
         }
       }
-      
+
       // Event Listeners
       pdfUpload.addEventListener("change", async (e) => {
         const file = e.target.files[0];
@@ -2255,7 +2257,7 @@
 
             page.hasDrawing = true;
           }
-          
+
           // Keep drawing mode active after stroke ends
           if (currentTool === "draw") {
             canvas.classList.add("active");
@@ -2345,13 +2347,13 @@
 
           // ============== DEACTIVATE DRAWING MODE ==============
           currentTool = null;
-          
+
           // Remove active class from draw button
           drawBtn.classList.remove("active");
-          
+
           // Hide drawing properties panel
           document.getElementById("drawProperties").style.display = "none";
-          
+
           // Disable drawing canvas for all pages
           pages.forEach((p) => {
             p.drawingCanvas.classList.remove("active");
@@ -2417,23 +2419,23 @@
         // If clicking the same tool button that's already active, deactivate it
         if (tool === currentTool) {
           currentTool = null;
-          
+
           // Remove active class from all tool buttons
           document.querySelectorAll(".tool-btn").forEach((btn) => {
             btn.classList.remove("active");
           });
-          
+
           // Hide all property panels
           document.getElementById("textProperties").style.display = "none";
           document.getElementById("shapeProperties").style.display = "none";
           document.getElementById("drawProperties").style.display = "none";
-          
+
           // Disable drawing canvas
           pages.forEach((page) => {
             page.drawingCanvas.classList.remove("active");
             page.drawingCanvas.style.pointerEvents = "none";
           });
-          
+
           return;
         }
 
@@ -2500,7 +2502,7 @@
         if (currentTool === "draw") {
           return;
         }
-        
+
         if (
           !e.target.closest(".annotation-item") &&
           !e.target.closest(".tool-btn") &&
@@ -2642,27 +2644,6 @@
             annotation.borderWidth;
 
           currentTool = "shape";
-        } else if (annotation.type === "drawing") {
-          // ============== DO NOT ACTIVATE DRAWING MODE ==============
-          // Just show the draw button as active and show properties
-          drawBtn.classList.add("active");
-          document.getElementById("drawProperties").style.display = "block";
-
-          // Update drawing property values
-          document.getElementById("penColor").value = annotation.color;
-          document.getElementById("penColorHex").value = annotation.color;
-          document.getElementById("penWidth").value = annotation.strokeWidth;
-          document.getElementById("brushSize").value = annotation.strokeWidth;
-          document.getElementById("brushStyle").value = annotation.brushStyle;
-
-          // Set currentTool to null - NOT drawing mode
-          currentTool = null;
-          
-          // Ensure drawing canvas is NOT active
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.remove("active");
-            page.drawingCanvas.style.pointerEvents = "none";
-          });
         }
       }
 

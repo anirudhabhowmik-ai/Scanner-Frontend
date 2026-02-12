@@ -1834,7 +1834,7 @@
                   );
                   annData.pathData = scaledPath;
                   annData.color = ann.color;
-                  annData.strokeWidth = ann.strokeWidth / page.scale;
+                  annData.strokeWidth = ann.strokeWidth;
                   annData.brushStyle = ann.brushStyle;
                 }
 
@@ -2455,7 +2455,16 @@
             page.currentDrawingPaths.length > 0
           ) {
             page.currentDrawingPaths.forEach((pathInfo) => {
-              // Parse the path to find its bounding box
+              // Create the annotation with the exact path data (no recalculation!)
+              const annotation = new DrawingAnnotation(
+                page,
+                pathInfo.pathData,
+                pathInfo.color,
+                pathInfo.width,
+                pathInfo.brushStyle,
+              );
+
+              // Parse ONLY to get bounding box dimensions (not to reposition)
               const points =
                 pathInfo.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
               let minX = Infinity,
@@ -2475,21 +2484,11 @@
                 }
               });
 
-              // Create the annotation
-              const annotation = new DrawingAnnotation(
-                page,
-                pathInfo.pathData,
-                pathInfo.color,
-                pathInfo.width,
-                pathInfo.brushStyle,
-              );
-
-              // Set position and size based on bounding box
-              const margin = 5;
-              annotation.x = minX - margin;
-              annotation.y = minY - margin;
-              annotation.width = maxX - minX + margin * 2;
-              annotation.height = maxY - minY + margin * 2;
+              // Set position to the top-left of the bounding box
+              annotation.x = minX;
+              annotation.y = minY;
+              annotation.width = maxX - minX;
+              annotation.height = maxY - minY;
 
               // Create the element and add to page
               const element = annotation.createElement();
@@ -2512,13 +2511,6 @@
           }
 
           // Disable drawing canvas
-          if (
-            page.hasDrawing &&
-            page.currentDrawingPaths &&
-            page.currentDrawingPaths.length > 0
-          ) {
-            page.drawingCanvas.style.display = "block";
-          }
           page.drawingCanvas.classList.remove("active");
           page.drawingCanvas.style.pointerEvents = "none";
         });

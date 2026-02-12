@@ -2193,6 +2193,7 @@
         }
 
         function startStroke(e) {
+          // CRITICAL: Only allow drawing if currentTool is "draw" (not "draw-editing")
           if (currentTool !== "draw") return;
           e.preventDefault();
 
@@ -2327,30 +2328,41 @@
             page.annotationLayer.appendChild(element);
             page.addAnnotation(drawingAnn);
           });
+
+          // Clear the drawing canvas AFTER creating annotations
+          const ctx = page.drawingCanvas.getContext("2d");
+          ctx.clearRect(
+            0,
+            0,
+            page.drawingCanvas.width,
+            page.drawingCanvas.height,
+          );
+
+          // Clear the drawing paths
+          page.currentDrawingPaths = [];
+          page.hasDrawing = false;
+
+          // Select the last drawing annotation (so user can interact with it)
           if (page.annotations.length > 0) {
             selectAnnotation(page.annotations[page.annotations.length - 1]);
           }
+
+          // KEEP the drawing mode active and properties visible
+          // DON'T deactivate the tool - user can continue drawing
+          currentTool = "draw";
+          drawBtn.classList.add("active");
+          document.getElementById("drawProperties").style.display = "block";
+
+          // Keep drawing canvas active so user can draw again if needed
+          pages.forEach((p) => {
+            p.drawingCanvas.classList.add("active");
+            p.drawingCanvas.style.pointerEvents = "all";
+          });
+
+          Toast.success("Drawing applied successfully!");
+        } else {
+          Toast.warning("No drawing to apply");
         }
-
-        currentTool = null;
-        drawBtn.classList.remove("active");
-
-        const ctx = page.drawingCanvas.getContext("2d");
-        ctx.clearRect(
-          0,
-          0,
-          page.drawingCanvas.width,
-          page.drawingCanvas.height,
-        );
-        page.drawingCanvas.classList.remove("active");
-        page.hasDrawing = false;
-        page.currentDrawingPaths = [];
-
-        pages.forEach((p) => {
-          if (p.drawingCanvas) {
-            p.drawingCanvas.classList.remove("active");
-          }
-        });
       });
 
       // Tool handlers
@@ -2379,10 +2391,12 @@
       });
 
       drawBtn.addEventListener("click", () => {
-        if (selectedAnnotation) {
+        // If a drawing annotation is selected, deselect it first
+        if (selectedAnnotation && selectedAnnotation.type === "drawing") {
           selectedAnnotation.element.classList.remove("selected");
           selectedAnnotation = null;
         }
+        // Set tool to "draw" (not "draw-editing") to enable actual drawing
         setTool("draw");
       });
 
@@ -2396,27 +2410,136 @@
 
       function setTool(tool, data = null) {
         currentTool = tool;
+
+        // Remove active class from all tool buttons
         document
           .querySelectorAll(".tool-btn")
           .forEach((btn) => btn.classList.remove("active"));
 
-        if (tool === "text") addTextBtn.classList.add("active");
-        else if (tool === "draw") drawBtn.classList.add("active");
-        else if (tool === "shape") addShapeBtn.classList.add("active");
+        // Hide all property panels
+        document.getElementById("textProperties").style.display = "none";
+        document.getElementById("shapeProperties").style.display = "none";
+        document.getElementById("drawProperties").style.display = "none";
 
-        pages.forEach((page) => {
-          if (tool === "draw") {
+        // Activate the selected tool and show its property panel
+        if (tool === "text") {
+          addTextBtn.classList.add("active");
+          document.getElementById("textProperties").style.display = "block";
+
+          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          pages.forEach((page) => {
+            if (
+              page.hasDrawing &&
+              page.currentDrawingPaths &&
+              page.currentDrawingPaths.length > 0
+            ) {
+              // Keep it visible but disable interaction
+              page.drawingCanvas.style.display = "block";
+              page.drawingCanvas.style.pointerEvents = "none";
+              page.drawingCanvas.classList.remove("active");
+            } else {
+              page.drawingCanvas.classList.remove("active");
+            }
+          });
+        } else if (tool === "draw") {
+          drawBtn.classList.add("active");
+          document.getElementById("drawProperties").style.display = "block";
+
+          // Enable drawing canvas for interaction
+          pages.forEach((page) => {
             page.drawingCanvas.classList.add("active");
-          } else {
-            page.drawingCanvas.classList.remove("active");
-          }
-        });
+            page.drawingCanvas.style.pointerEvents = "all";
+          });
+        } else if (tool === "shape") {
+          addShapeBtn.classList.add("active");
+          document.getElementById("shapeProperties").style.display = "block";
 
+          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          pages.forEach((page) => {
+            if (
+              page.hasDrawing &&
+              page.currentDrawingPaths &&
+              page.currentDrawingPaths.length > 0
+            ) {
+              // Keep it visible but disable interaction
+              page.drawingCanvas.style.display = "block";
+              page.drawingCanvas.style.pointerEvents = "none";
+              page.drawingCanvas.classList.remove("active");
+            } else {
+              page.drawingCanvas.classList.remove("active");
+            }
+          });
+        } else if (tool === "image") {
+          addImageBtn.classList.add("active");
+
+          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          pages.forEach((page) => {
+            if (
+              page.hasDrawing &&
+              page.currentDrawingPaths &&
+              page.currentDrawingPaths.length > 0
+            ) {
+              // Keep it visible but disable interaction
+              page.drawingCanvas.style.display = "block";
+              page.drawingCanvas.style.pointerEvents = "none";
+              page.drawingCanvas.classList.remove("active");
+            } else {
+              page.drawingCanvas.classList.remove("active");
+            }
+          });
+        }
+
+        // Deselect any selected annotation
         if (selectedAnnotation) {
           selectedAnnotation.element.classList.remove("selected");
           selectedAnnotation = null;
         }
       }
+
+      // ALSO update the click event handler at the bottom of the file
+      // Replace the existing document click handler with this version:
+
+      document.addEventListener("click", (e) => {
+        if (
+          !e.target.closest(".annotation-item") &&
+          !e.target.closest(".tool-btn") &&
+          !e.target.closest(".ocr-text-block") &&
+          !e.target.closest(".properties-dropdown")
+        ) {
+          if (selectedAnnotation) {
+            selectedAnnotation.element.classList.remove("selected");
+            selectedAnnotation = null;
+          }
+
+          // Remove active class from all tool buttons
+          document.querySelectorAll(".tool-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+
+          // Hide all property panels
+          document.getElementById("textProperties").style.display = "none";
+          document.getElementById("shapeProperties").style.display = "none";
+          document.getElementById("drawProperties").style.display = "none";
+
+          // Keep drawing canvas visible if there's a drawing
+          pages.forEach((page) => {
+            if (
+              page.hasDrawing &&
+              page.currentDrawingPaths &&
+              page.currentDrawingPaths.length > 0
+            ) {
+              page.drawingCanvas.style.display = "block";
+              page.drawingCanvas.style.pointerEvents = "none";
+              page.drawingCanvas.classList.remove("active");
+            } else {
+              page.drawingCanvas.classList.remove("active");
+            }
+          });
+
+          // Reset current tool
+          currentTool = null;
+        }
+      });
 
       function addAnnotationToCurrentPage(type, data = null) {
         const page = pages[currentPageIndex];
@@ -2459,20 +2582,50 @@
       }
 
       function selectAnnotation(annotation) {
+        // Remove selected class from previous annotation
         if (selectedAnnotation) {
           selectedAnnotation.element.classList.remove("selected");
         }
+
+        // Set new selected annotation
         selectedAnnotation = annotation;
         annotation.element.classList.add("selected");
 
+        // First, remove active class from all tool buttons
+        document.querySelectorAll(".tool-btn").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+
+        // Hide all property panels first
+        document.getElementById("textProperties").style.display = "none";
+        document.getElementById("shapeProperties").style.display = "none";
+        document.getElementById("drawProperties").style.display = "none";
+
+        // Disable drawing canvas for all pages first
+        pages.forEach((page) => {
+          page.drawingCanvas.classList.remove("active");
+          page.drawingCanvas.style.pointerEvents = "none";
+        });
+
+        // Show the appropriate tool button and property panel based on annotation type
         if (annotation.type === "text") {
-          document.getElementById("fontSize").value = annotation.fontSize;
+          addTextBtn.classList.add("active");
+          document.getElementById("textProperties").style.display = "block";
+
+          document.getElementById("fontSize").value = Math.round(
+            annotation.fontSize,
+          );
           document.getElementById("fontFamily").value = annotation.fontFamily;
           document.getElementById("textColor").value = annotation.color;
           document.getElementById("textColorHex").value = annotation.color;
           document.getElementById("fontWeight").value = annotation.fontWeight;
           document.getElementById("fontStyle").value = annotation.fontStyle;
+
+          currentTool = "text";
         } else if (annotation.type === "shape") {
+          addShapeBtn.classList.add("active");
+          document.getElementById("shapeProperties").style.display = "block";
+
           document.getElementById("shapeType").value = annotation.shapeType;
           document.getElementById("shapeFillColor").value =
             annotation.fillColor;
@@ -2483,8 +2636,74 @@
             annotation.borderColor;
           document.getElementById("shapeBorderWidth").value =
             annotation.borderWidth;
+
+          currentTool = "shape";
+        } else if (annotation.type === "drawing") {
+          // Activate draw tool button
+          drawBtn.classList.add("active");
+          // Show drawing properties
+          document.getElementById("drawProperties").style.display = "block";
+
+          // Update drawing property values
+          document.getElementById("penColor").value = annotation.color;
+          document.getElementById("penColorHex").value = annotation.color;
+          document.getElementById("penWidth").value = annotation.strokeWidth;
+          document.getElementById("brushSize").value = annotation.strokeWidth;
+          document.getElementById("brushStyle").value = annotation.brushStyle;
+
+          // KEEP currentTool as "draw" but DON'T enable the drawing canvas
+          // This allows the properties panel to show and user can still manipulate the annotation
+          currentTool = "draw-editing"; // Special state: editing a drawing annotation
         }
       }
+
+      // ==========================================
+      // UPDATE the document click handler:
+      // ==========================================
+
+      // Find and REPLACE the document.addEventListener("click", ...) with this:
+
+      document.addEventListener("click", (e) => {
+        if (
+          !e.target.closest(".annotation-item") &&
+          !e.target.closest(".tool-btn") &&
+          !e.target.closest(".ocr-text-block") &&
+          !e.target.closest(".properties-dropdown")
+        ) {
+          if (selectedAnnotation) {
+            selectedAnnotation.element.classList.remove("selected");
+            selectedAnnotation = null;
+          }
+
+          // Remove active class from all tool buttons
+          document.querySelectorAll(".tool-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+
+          // Hide all property panels
+          document.getElementById("textProperties").style.display = "none";
+          document.getElementById("shapeProperties").style.display = "none";
+          document.getElementById("drawProperties").style.display = "none";
+
+          // Keep drawing canvas visible if there's a drawing
+          pages.forEach((page) => {
+            if (
+              page.hasDrawing &&
+              page.currentDrawingPaths &&
+              page.currentDrawingPaths.length > 0
+            ) {
+              page.drawingCanvas.style.display = "block";
+              page.drawingCanvas.style.pointerEvents = "none";
+              page.drawingCanvas.classList.remove("active");
+            } else {
+              page.drawingCanvas.classList.remove("active");
+            }
+          });
+
+          // Reset current tool
+          currentTool = null;
+        }
+      });
 
       // Property change handlers
       document.getElementById("fontSize").addEventListener("input", (e) => {
@@ -2798,12 +3017,26 @@
         if (
           !e.target.closest(".annotation-item") &&
           !e.target.closest(".tool-btn") &&
-          !e.target.closest(".ocr-text-block")
+          !e.target.closest(".ocr-text-block") &&
+          !e.target.closest(".properties-dropdown")
         ) {
           if (selectedAnnotation) {
             selectedAnnotation.element.classList.remove("selected");
             selectedAnnotation = null;
           }
+
+          // Remove active class from all tool buttons
+          document.querySelectorAll(".tool-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+
+          // Hide all property panels
+          document.getElementById("textProperties").style.display = "none";
+          document.getElementById("shapeProperties").style.display = "none";
+          document.getElementById("drawProperties").style.display = "none";
+
+          // Reset current tool
+          currentTool = null;
         }
       });
 

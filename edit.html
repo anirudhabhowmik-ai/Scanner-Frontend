@@ -425,7 +425,7 @@
                   <div class="property-item">
                     <div class="cta-button" id="applyDrawingBtn">
                       <i class="fa fa-check-circle"></i>
-                      <span>Apply Drawing</span>
+                      <span>Deactivate Drawing Mode</span>
                     </div>
                   </div>
                 </div>
@@ -2296,10 +2296,11 @@
 
           // Disable drawing canvas for all pages
           pages.forEach((p) => {
+            p.drawingCanvas.style.display = "block";
             p.drawingCanvas.classList.remove("active");
             p.drawingCanvas.style.pointerEvents = "none";
           });
-        } 
+        }
       });
 
       // Tool handlers
@@ -2385,12 +2386,7 @@
         if (tool === "text") {
           addTextBtn.classList.add("active");
           document.getElementById("textProperties").style.display = "block";
-
-          // Disable drawing canvas
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.remove("active");
-            page.drawingCanvas.style.pointerEvents = "none";
-          });
+          deactivateDrawingMode(pages);
         } else if (tool === "draw") {
           drawBtn.classList.add("active");
           document.getElementById("drawProperties").style.display = "block";
@@ -2403,20 +2399,10 @@
         } else if (tool === "shape") {
           addShapeBtn.classList.add("active");
           document.getElementById("shapeProperties").style.display = "block";
-
-          // Disable drawing canvas
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.remove("active");
-            page.drawingCanvas.style.pointerEvents = "none";
-          });
+          deactivateDrawingMode(pages);
         } else if (tool === "image") {
           addImageBtn.classList.add("active");
-
-          // Disable drawing canvas
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.remove("active");
-            page.drawingCanvas.style.pointerEvents = "none";
-          });
+          deactivateDrawingMode(pages);
         }
 
         // Deselect any selected annotation
@@ -2425,7 +2411,6 @@
           selectedAnnotation = null;
         }
       }
-
       // ============== FIXED DOCUMENT CLICK HANDLER ==============
       document.addEventListener("click", (e) => {
         // Don't deactivate drawing mode when clicking anywhere
@@ -2455,19 +2440,7 @@
           document.getElementById("drawProperties").style.display = "none";
 
           // Keep drawing canvas visible if there's a drawing, otherwise hide it
-          pages.forEach((page) => {
-            if (
-              page.hasDrawing &&
-              page.currentDrawingPaths &&
-              page.currentDrawingPaths.length > 0
-            ) {
-              page.drawingCanvas.style.display = "block";
-              page.drawingCanvas.style.pointerEvents = "none";
-              page.drawingCanvas.classList.remove("active");
-            } else {
-              page.drawingCanvas.classList.remove("active");
-            }
-          });
+          deactivateDrawingMode(pages);
 
           // Reset current tool (but not if it's draw mode!)
           if (currentTool !== "draw") {
@@ -2475,6 +2448,21 @@
           }
         }
       });
+
+      function deactivateDrawingMode(pages) {
+        // Disable drawing canvas
+        pages.forEach((page) => {
+          if (
+            page.hasDrawing &&
+            page.currentDrawingPaths &&
+            page.currentDrawingPaths.length > 0
+          ) {
+            page.drawingCanvas.style.display = "block";
+          }
+          page.drawingCanvas.classList.remove("active");
+          page.drawingCanvas.style.pointerEvents = "none";
+        });
+      }
 
       function addAnnotationToCurrentPage(type, data = null) {
         const page = pages[currentPageIndex];

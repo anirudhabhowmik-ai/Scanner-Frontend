@@ -2285,66 +2285,6 @@
           page.currentDrawingPaths &&
           page.currentDrawingPaths.length > 0
         ) {
-          page.currentDrawingPaths.forEach((drawingPath) => {
-            const { pathData, color, width, brushStyle } = drawingPath;
-
-            const drawingAnn = new DrawingAnnotation(
-              page,
-              pathData,
-              color,
-              width,
-              brushStyle,
-            );
-
-            const points = pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-            let minX = Infinity,
-              minY = Infinity,
-              maxX = -Infinity,
-              maxY = -Infinity;
-
-            points.forEach((p) => {
-              const parts = p.match(/[\d.]+/g);
-              if (parts && parts.length >= 2) {
-                const x = parseFloat(parts[0]);
-                const y = parseFloat(parts[1]);
-                minX = Math.min(minX, x);
-                minY = Math.min(minY, y);
-                maxX = Math.max(maxX, x);
-                maxY = Math.max(maxY, y);
-              }
-            });
-
-            const scaleX = page.viewport.width / page.drawingCanvas.width;
-            const scaleY = page.viewport.height / page.drawingCanvas.height;
-
-            const padding = 2;
-
-            drawingAnn.x = minX * scaleX - padding;
-            drawingAnn.y = minY * scaleY - padding;
-            drawingAnn.width = (maxX - minX) * scaleX + padding * 2;
-            drawingAnn.height = (maxY - minY) * scaleY + padding * 2;
-
-            if (drawingAnn.width < 15) drawingAnn.width = 15;
-            if (drawingAnn.height < 15) drawingAnn.height = 15;
-
-            const element = drawingAnn.createElement();
-            page.annotationLayer.appendChild(element);
-            page.addAnnotation(drawingAnn);
-          });
-
-          // Clear the drawing canvas
-          const ctx = page.drawingCanvas.getContext("2d");
-          ctx.clearRect(
-            0,
-            0,
-            page.drawingCanvas.width,
-            page.drawingCanvas.height,
-          );
-
-          // Clear the drawing paths
-          page.currentDrawingPaths = [];
-          page.hasDrawing = false;
-
           // ============== DEACTIVATE DRAWING MODE ==============
           currentTool = null;
 
@@ -2359,17 +2299,7 @@
             p.drawingCanvas.classList.remove("active");
             p.drawingCanvas.style.pointerEvents = "none";
           });
-
-          // DO NOT select the drawing annotation - user will click on it to select
-          if (selectedAnnotation) {
-            selectedAnnotation.element.classList.remove("selected");
-            selectedAnnotation = null;
-          }
-
-          Toast.success("Drawing applied successfully!");
-        } else {
-          Toast.warning("No drawing to apply");
-        }
+        } 
       });
 
       // Tool handlers

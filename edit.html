@@ -726,7 +726,7 @@
       const penWidth = document.getElementById("penWidth");
       const brushStyle = document.getElementById("brushStyle");
       const brushSize = document.getElementById("brushSize");
-      const API_BASE_URL = `${BACKEND_BASE_URL}`;
+      const API_BASE_URL = `http://127.0.0.1:8080`;
 
       // State
       let pdfDoc = null;
@@ -1000,12 +1000,12 @@
           });
 
           content.addEventListener("input", () => {
-            this.text = content.textContent;
+            this.text = content.innerText;
           });
 
           content.addEventListener("blur", () => {
             content.contentEditable = false;
-            this.text = content.textContent;
+            this.text = content.innerText;
             content.style.cursor = "move";
             wrapper.classList.remove("editing");
 

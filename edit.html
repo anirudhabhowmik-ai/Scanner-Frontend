@@ -597,7 +597,7 @@
         },
       };
 
-      // Custom Modal System - COMPLETE FIX
+      // Custom Modal System
       const CustomModal = {
         alert: function (message, title = "Notice") {
           return new Promise((resolve) => {
@@ -615,7 +615,6 @@
 
             overlay.appendChild(modal);
             document.body.appendChild(overlay);
-            // Force reflow then add show class
             overlay.offsetHeight;
             overlay.classList.add("show");
           });
@@ -625,7 +624,6 @@
           return new Promise((resolve) => {
             const overlay = this.createOverlay();
 
-            // Set button class based on type
             let confirmBtnClass = "custom-modal-btn";
             if (type === "danger") {
               confirmBtnClass += " custom-modal-btn-danger";
@@ -656,7 +654,6 @@
 
             overlay.appendChild(modal);
             document.body.appendChild(overlay);
-            // Force reflow then add show class
             overlay.offsetHeight;
             overlay.classList.add("show");
           });
@@ -665,15 +662,14 @@
         createOverlay: function () {
           const overlay = document.createElement("div");
           overlay.className = "custom-modal-overlay";
-          // Don't close on overlay click for now to debug
-          overlay.style.zIndex = "999999"; // Ensure it's on top
+          overlay.style.zIndex = "999999";
           return overlay;
         },
 
         createModal: function (title, message, buttons) {
           const modal = document.createElement("div");
           modal.className = "custom-modal";
-          modal.style.pointerEvents = "auto"; // Ensure modal captures clicks
+          modal.style.pointerEvents = "auto";
 
           modal.innerHTML = `
       <div class="custom-modal-header">
@@ -688,7 +684,7 @@
             const button = document.createElement("button");
             button.className = btn.class;
             button.textContent = btn.text;
-            button.style.pointerEvents = "auto"; // Ensure button captures clicks
+            button.style.pointerEvents = "auto";
             button.onclick = btn.onclick;
             footer.appendChild(button);
           });
@@ -1267,7 +1263,6 @@
           svg.setAttribute("width", "100%");
           svg.setAttribute("height", "100%");
 
-          // Calculate bounds for this specific path
           const points =
             this.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
           let minX = Infinity,
@@ -1287,7 +1282,6 @@
             }
           });
 
-          // Add a very small margin to prevent stroke clipping
           const margin = 2;
           const viewBoxWidth = maxX - minX + margin * 2;
           const viewBoxHeight = maxY - minY + margin * 2;
@@ -1299,7 +1293,6 @@
             `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`,
           );
 
-          // Use "none" to force exact scaling without aspect ratio preservation
           svg.setAttribute("preserveAspectRatio", "none");
 
           const path = document.createElementNS(
@@ -1307,18 +1300,14 @@
             "path",
           );
 
-          // Use the original path data
           path.setAttribute("d", this.pathData);
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
 
-          // IMPORTANT: Set stroke-width to a fixed pixel value that won't scale
-          // Multiply by the scale factor to maintain the original thickness
           const scaleX = this.width / viewBoxWidth;
           const scaleY = this.height / viewBoxHeight;
           const scale = Math.max(scaleX, scaleY);
 
-          // Adjust stroke width to compensate for scaling
           path.setAttribute("stroke-width", this.strokeWidth / scale);
           path.setAttribute("stroke-linecap", "round");
           path.setAttribute("stroke-linejoin", "round");
@@ -1508,6 +1497,7 @@
           const formData = new FormData();
           formData.append("file", pdfFile);
 
+          // Call backend OCR extraction (which NOW also deletes originals)
           const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
             method: "POST",
             body: formData,
@@ -1520,20 +1510,27 @@
           const data = await response.json();
 
           if (data.success) {
+            console.log("✅ Received OCR data and cleaned PDF");
+
+            // Clear existing OCR layers
             pages.forEach((page) => {
               page.ocrTextBlocks = [];
               page.ocrLayer.innerHTML = "";
             });
 
+            // Display the DUPLICATE text and images as overlays
             displayOCRText(data.pages);
             displayOCRImages(data.pages);
+
+            // ⭐ CRITICAL: Reload PDF with deletions applied
+            await reloadCleanedPDF(data.cleanedPdf);
 
             isEditMode = true;
             editPdfBtn.innerHTML =
               '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
             editPdfBtn.classList.add("active");
             Toast.success(
-              "Edit mode activated! You can now edit text and images.",
+              "Edit mode activated! Original content deleted from view.",
             );
           } else {
             Toast.error(
@@ -1553,6 +1550,58 @@
           editPdfBtn.disabled = false;
         }
       });
+
+      async function reloadCleanedPDF(cleanedPdfBase64) {
+        try {
+          console.log("🔄 Reloading PDF with deletions applied...");
+
+          // Convert base64 to ArrayBuffer
+          const binaryString = atob(cleanedPdfBase64);
+          const bytes = new Uint8Array(binaryString.length);
+          for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+          }
+          const arrayBuffer = bytes.buffer;
+
+          // Reload PDF.js with cleaned PDF
+          pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+          // Re-render all canvases with the cleaned PDF
+          for (let i = 0; i < pages.length; i++) {
+            const page = pages[i];
+            const pdfPage = await pdfDoc.getPage(i + 1);
+
+            // Use the same scale as before
+            const renderScale = page.scale * (window.devicePixelRatio || 2);
+            const renderViewport = pdfPage.getViewport({ scale: renderScale });
+
+            // Clear the canvas
+            const ctx = page.canvas.getContext("2d");
+            ctx.clearRect(0, 0, page.canvas.width, page.canvas.height);
+
+            // Re-render with cleaned PDF (originals now deleted)
+            await pdfPage.render({
+              canvasContext: ctx,
+              viewport: renderViewport,
+            }).promise;
+          }
+
+          console.log("✅ PDF reloaded successfully - deletions now visible!");
+
+          // Update the pdfFile to the cleaned version for saving
+          const cleanedBlob = new Blob([arrayBuffer], {
+            type: "application/pdf",
+          });
+          pdfFile = new File([cleanedBlob], pdfFile.name, {
+            type: "application/pdf",
+          });
+        } catch (error) {
+          console.error("❌ Error reloading cleaned PDF:", error);
+          Toast.warning(
+            "Could not reload PDF preview, but deletions will apply on save",
+          );
+        }
+      }
 
       function displayOCRText(pagesData) {
         pagesData.forEach((pageData, index) => {
@@ -1705,29 +1754,31 @@
               pageAnnotations.push(annData);
             });
 
+            // FIX: Include OCR text blocks that are still in the ocrLayer
             page.ocrTextBlocks.forEach((ann) => {
-              if (ann.element && !ann.element.parentNode) return;
+              // Check if element exists and is still in the DOM
+              if (ann.element && ann.element.parentNode) {
+                const annData = {
+                  type: ann.type,
+                  x: ann.x / page.scale,
+                  y: ann.y / page.scale,
+                  width: ann.width / page.scale,
+                  height: ann.height / page.scale,
+                };
 
-              const annData = {
-                type: ann.type,
-                x: ann.x / page.scale,
-                y: ann.y / page.scale,
-                width: ann.width / page.scale,
-                height: ann.height / page.scale,
-              };
+                if (ann.type === "text") {
+                  annData.text = ann.text;
+                  annData.fontSize = ann.fontSize / page.scale;
+                  annData.fontFamily = ann.fontFamily;
+                  annData.color = ann.color;
+                  annData.fontWeight = ann.fontWeight;
+                  annData.fontStyle = ann.fontStyle;
+                } else if (ann.type === "image") {
+                  annData.imageData = ann.imageSrc;
+                }
 
-              if (ann.type === "text") {
-                annData.text = ann.text;
-                annData.fontSize = ann.fontSize / page.scale;
-                annData.fontFamily = ann.fontFamily;
-                annData.color = ann.color;
-                annData.fontWeight = ann.fontWeight;
-                annData.fontStyle = ann.fontStyle;
-              } else if (ann.type === "image") {
-                annData.imageData = ann.imageSrc;
+                pageAnnotations.push(annData);
               }
-
-              pageAnnotations.push(annData);
             });
 
             let drawingData = null;
@@ -2410,7 +2461,6 @@
         }
       });
 
-      // Replace your deleteFileBtn event listener with this:
       deleteFileBtn.addEventListener("click", async () => {
         const confirmed = await CustomModal.confirm(
           "Remove this PDF and start over? All your changes will be lost.",
@@ -2418,7 +2468,6 @@
           "danger",
         );
         if (confirmed) {
-          // Reset the PDF state
           pdfDoc = null;
           pdfFile = null;
           pages = [];
@@ -2426,33 +2475,26 @@
           selectedAnnotation = null;
           isEditMode = false;
 
-          // Clear the file input
           pdfUpload.value = "";
 
-          // Hide editor and show upload section
           editorContainer.style.display = "none";
-          uploadSection.style.display = "flex"; // or "block" depending on your CSS
+          uploadSection.style.display = "flex";
 
-          // Clear canvas and thumbnails
           canvasContainer.innerHTML = "";
           thumbnailContainer.innerHTML = "";
 
-          // Reset the file name
           currentFileName.textContent = "document.pdf";
 
-          // Reset Edit PDF button
           editPdfBtn.innerHTML =
             '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
           editPdfBtn.disabled = false;
           editPdfBtn.classList.remove("active");
 
-          // Clear any selected tool
           currentTool = null;
           document
             .querySelectorAll(".tool-btn")
             .forEach((btn) => btn.classList.remove("active"));
 
-          // Show success message
           Toast.success("PDF removed successfully");
         }
       });

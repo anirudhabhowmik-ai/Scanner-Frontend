@@ -357,6 +357,15 @@
                       <option value="italic">Italic</option>
                     </select>
                   </div>
+                  <div class="property-item">
+                    <label>Align:</label>
+                    <select id="textAlign">
+                      <option value="left">Left</option>
+                      <option value="center" selected>Center</option>
+                      <option value="right">Right</option>
+                      <option value="justify">Justify</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </button>
@@ -943,6 +952,7 @@
           this.color = "#000000";
           this.fontWeight = "normal";
           this.fontStyle = "normal";
+          this.textAlign = "center";
           this.isOCR = isOCR;
           this.originalData = null;
           this.deletionMarked = false;
@@ -962,6 +972,7 @@
           content.style.width = "100%";
           content.style.height = "100%";
           content.style.outline = "none";
+          content.style.textAlign = this.textAlign;
 
           content.addEventListener("mousedown", (e) => {
             selectAnnotation(this);
@@ -998,6 +1009,7 @@
             this.text = content.innerText;
             content.style.cursor = "move";
             wrapper.classList.remove("editing");
+            content.style.textAlign = this.textAlign;
 
             if (this.isOCR && this.originalData && !this.deletionMarked) {
               this.page.addDeletedRegion({
@@ -1020,10 +1032,29 @@
           this.element.style.color = this.color;
           this.element.style.fontWeight = this.fontWeight;
           this.element.style.fontStyle = this.fontStyle;
+          const content = this.element.querySelector(".text-content");
+          if (content) {
+            content.style.textAlign = this.textAlign;
+          }
+        }
+
+        setTextAlign(align) {
+          this.textAlign = align;
+          const content = this.element.querySelector(".text-content");
+          if (content) {
+            content.style.textAlign = align;
+          }
+          this.applyStyles();
         }
 
         updateProperty(prop, value) {
           this[prop] = value;
+          if (prop === "textAlign") {
+            const content = this.element.querySelector(".text-content");
+            if (content) {
+              content.style.textAlign = value;
+            }
+          }
           this.applyStyles();
         }
 
@@ -1035,6 +1066,7 @@
           newAnnotation.color = this.color;
           newAnnotation.fontWeight = this.fontWeight;
           newAnnotation.fontStyle = this.fontStyle;
+          newAnnotation.textAlign = this.textAlign;
           newAnnotation.width = this.width;
           newAnnotation.height = this.height;
           return newAnnotation;
@@ -1790,6 +1822,7 @@
                   annData.color = ann.color;
                   annData.fontWeight = ann.fontWeight;
                   annData.fontStyle = ann.fontStyle;
+                  annData.textAlign = ann.textAlign || "center";
                 } else if (ann.type === "image") {
                   if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
                     try {
@@ -2519,6 +2552,7 @@
           annotation.color = document.getElementById("textColor").value;
           annotation.fontWeight = document.getElementById("fontWeight").value;
           annotation.fontStyle = document.getElementById("fontStyle").value;
+          annotation.textAlign = "center";
         } else if (type === "image") {
           annotation = new ImageAnnotation(page, data);
         } else if (type === "shape") {
@@ -2586,6 +2620,8 @@
           document.getElementById("textColorHex").value = annotation.color;
           document.getElementById("fontWeight").value = annotation.fontWeight;
           document.getElementById("fontStyle").value = annotation.fontStyle;
+          document.getElementById("textAlign").value =
+            annotation.textAlign || "center";
 
           currentTool = "text";
         } else if (annotation.type === "shape") {
@@ -2919,6 +2955,12 @@
         dropdown.addEventListener("click", (e) => {
           e.stopPropagation();
         });
+      });
+
+      document.getElementById("textAlign").addEventListener("change", (e) => {
+        if (selectedAnnotation && selectedAnnotation.type === "text") {
+          selectedAnnotation.setTextAlign(e.target.value);
+        }
       });
     </script>
   </body>

@@ -1254,7 +1254,7 @@
 
         createElement() {
           const div = super.createElement();
-          div.classList.add("shape-annotation");
+          div.classList.add("shape-annotation", "drawing-annotation");
 
           const svg = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -1292,7 +1292,6 @@
             "viewBox",
             `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`,
           );
-
           svg.setAttribute("preserveAspectRatio", "none");
 
           const path = document.createElementNS(
@@ -1321,6 +1320,56 @@
           svg.appendChild(path);
           div.appendChild(svg);
 
+          // Remove any existing event listeners
+          div.removeEventListener("mousedown", this._handleMouseDown);
+          div.removeEventListener("touchstart", this._handleTouchStart);
+          
+          // Define handlers bound to this instance
+          this._handleMouseDown = (e) => {
+            if (e.target.classList.contains("resize-handle")) {
+              isResizing = true;
+              resizeHandle = e.target.dataset.handle;
+              e.stopPropagation();
+              e.preventDefault();
+            } else if (!e.target.closest(".annotation-controls")) {
+              isDragging = true;
+              const rect = this.page.annotationLayer.getBoundingClientRect();
+              dragStartX = e.clientX - rect.left - this.x;
+              dragStartY = e.clientY - rect.top - this.y;
+              e.stopPropagation();
+              e.preventDefault();
+            }
+            selectAnnotation(this);
+          };
+          
+          this._handleTouchStart = (e) => {
+            const touch = e.touches[0];
+            if (e.target.classList.contains("resize-handle")) {
+              isResizing = true;
+              resizeHandle = e.target.dataset.handle;
+              e.stopPropagation();
+              e.preventDefault();
+            } else if (!e.target.closest(".annotation-controls")) {
+              isDragging = true;
+              const rect = this.page.annotationLayer.getBoundingClientRect();
+              dragStartX = touch.clientX - rect.left - this.x;
+              dragStartY = touch.clientY - rect.top - this.y;
+              e.stopPropagation();
+              e.preventDefault();
+            }
+            selectAnnotation(this);
+          };
+          
+          // Attach the event listeners
+          div.addEventListener("mousedown", this._handleMouseDown);
+          div.addEventListener("touchstart", this._handleTouchStart, { passive: false });
+          
+          div.addEventListener("selectstart", (e) => {
+            if (isDragging || isResizing) {
+              e.preventDefault();
+            }
+          });
+
           return div;
         }
 
@@ -1340,7 +1389,7 @@
           return clone;
         }
       }
-
+      
       // Event Listeners
       pdfUpload.addEventListener("change", async (e) => {
         const file = e.target.files[0];
@@ -1497,7 +1546,6 @@
           const formData = new FormData();
           formData.append("file", pdfFile);
 
-          // Call backend OCR extraction (which NOW also deletes originals)
           const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
             method: "POST",
             body: formData,
@@ -1512,17 +1560,14 @@
           if (data.success) {
             console.log("✅ Received OCR data and cleaned PDF");
 
-            // Clear existing OCR layers
             pages.forEach((page) => {
               page.ocrTextBlocks = [];
               page.ocrLayer.innerHTML = "";
             });
 
-            // Display the DUPLICATE text and images as overlays
             displayOCRText(data.pages);
             displayOCRImages(data.pages);
 
-            // ⭐ CRITICAL: Reload PDF with deletions applied
             await reloadCleanedPDF(data.cleanedPdf);
 
             isEditMode = true;
@@ -1555,7 +1600,6 @@
         try {
           console.log("🔄 Reloading PDF with deletions applied...");
 
-          // Convert base64 to ArrayBuffer
           const binaryString = atob(cleanedPdfBase64);
           const bytes = new Uint8Array(binaryString.length);
           for (let i = 0; i < binaryString.length; i++) {
@@ -1563,37 +1607,29 @@
           }
           const arrayBuffer = bytes.buffer;
 
-          // CRITICAL FIX: Create a NEW File object from the cleaned PDF
           const cleanedBlob = new Blob([arrayBuffer], {
             type: "application/pdf",
           });
 
-          // IMPORTANT: Create a new File with the SAME name but NEW content
           const cleanedFile = new File([cleanedBlob], pdfFile.name, {
             type: "application/pdf",
             lastModified: Date.now(),
           });
 
-          // Replace the pdfFile with the cleaned version
           pdfFile = cleanedFile;
 
-          // Reload PDF.js with cleaned PDF
           pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
-          // Re-render all canvases with the cleaned PDF
           for (let i = 0; i < pages.length; i++) {
             const page = pages[i];
             const pdfPage = await pdfDoc.getPage(i + 1);
 
-            // Use the same scale as before
             const renderScale = page.scale * (window.devicePixelRatio || 2);
             const renderViewport = pdfPage.getViewport({ scale: renderScale });
 
-            // Clear the canvas
             const ctx = page.canvas.getContext("2d");
             ctx.clearRect(0, 0, page.canvas.width, page.canvas.height);
 
-            // Re-render with cleaned PDF (originals now deleted)
             await pdfPage.render({
               canvasContext: ctx,
               viewport: renderViewport,
@@ -1624,13 +1660,9 @@
             annotation.x = block.x * page.scale;
             annotation.y = block.y * page.scale;
 
-            // FIX: Better width and height calculation
-            // Ensure minimum width to prevent text wrapping issues
             const minWidth = 50;
             annotation.width = Math.max(block.width * page.scale, minWidth);
 
-            // FIX: Better height calculation to accommodate text properly
-            // Use 1.5x the font size as minimum height to prevent text cutoff
             const calculatedHeight = block.height * page.scale;
             const minHeightFromFont = block.fontSize * page.scale * 1.5;
             annotation.height = Math.max(
@@ -1643,7 +1675,6 @@
             annotation.fontFamily = block.fontFamily || "Arial";
             annotation.color = block.color || "#000000";
 
-            // FIX: Add font weight and style from backend
             annotation.fontWeight = block.fontWeight || "normal";
             annotation.fontStyle = block.fontStyle || "normal";
 
@@ -1658,7 +1689,6 @@
 
             const element = annotation.createElement();
 
-            // FIX: Add CSS to prevent text wrapping and ensure proper display
             const textContent = element.querySelector(".text-content");
             if (textContent) {
               textContent.style.whiteSpace = "nowrap";
@@ -1727,7 +1757,7 @@
         }
       }
 
-      // Save PDF with changes - MODIFIED to show download, share, reset buttons AND PDF PREVIEW
+      // Save PDF with changes
       saveBtn.addEventListener("click", async () => {
         if (!pdfFile) {
           await CustomModal.alert("No PDF loaded", "Notice");
@@ -1741,7 +1771,6 @@
         try {
           const formData = new FormData();
 
-          // CRITICAL FIX: Make sure pdfFile is valid
           if (!pdfFile || pdfFile.size === 0) {
             throw new Error("PDF file is empty or invalid");
           }
@@ -1752,7 +1781,6 @@
             pages.map(async (page) => {
               const pageAnnotations = [];
 
-              // Process regular annotations
               for (const ann of page.annotations) {
                 const annData = {
                   type: ann.type,
@@ -1811,7 +1839,6 @@
                 pageAnnotations.push(annData);
               }
 
-              // Process OCR text blocks
               for (const ann of page.ocrTextBlocks) {
                 if (ann.element && ann.element.parentNode) {
                   const annData = {
@@ -1895,42 +1922,33 @@
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
 
-            // STORE THE PDF DATA FOR SHARE/RESET FUNCTIONALITY
             const savedPdfUrl = url;
             const fileName = "edited_" + currentFileName.textContent;
 
-            // HIDE EDITOR INTERFACE
             editorContainer.style.display = "none";
             uploadSection.style.display = "none";
 
-            // HIDE NOTE
             const noteElement = document.querySelector(".note");
             if (noteElement) noteElement.style.display = "none";
 
-            // CREATE OR SHOW RESULT SECTION WITH PREVIEW
             let resultSection = document.getElementById("resultSection");
 
             if (!resultSection) {
-              // Create result section if it doesn't exist
               resultSection = document.createElement("div");
               resultSection.id = "resultSection";
               resultSection.className = "result-section";
 
-              // Insert after editor container or at appropriate location
               const container = document.querySelector(
                 ".merge-tool .container",
               );
               container.appendChild(resultSection);
             }
 
-            // Check if it's a desktop device (for preview)
             const isSmallDevice =
               window.matchMedia("(max-width: 768px)").matches;
 
-            // Style and populate the result section
             resultSection.innerHTML = `
         <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%;">
-          <!-- Success Header -->
           <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
             <div style="background: #e8f5e9; padding: 20px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
               <i class="fa fa-check-circle" style="font-size: 48px; color: #4caf50;"></i>
@@ -1939,7 +1957,6 @@
             <p style="color: #6b7280; margin: 0; font-size: 16px;">Your edited PDF is ready to download and share.</p>
           </div>
           
-          <!-- Result Card (like reference) -->
           <div style="background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
             <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
               <div style="background: #fee2e2; padding: 12px; border-radius: 8px;">
@@ -1951,7 +1968,6 @@
               </div>
             </div>
             
-            <!-- Action Buttons - EXACTLY LIKE REFERENCE -->
             <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
               <a href="${savedPdfUrl}" download="${fileName}" 
                  style="display: inline-flex; align-items: center; gap: 10px; background: #4f46e5; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer;">
@@ -1974,7 +1990,6 @@
             </p>
           </div>
           
-          <!-- PDF PREVIEW SECTION - FOR DESKTOP (EXACTLY LIKE REFERENCE) -->
           ${
             !isSmallDevice
               ? `
@@ -1999,7 +2014,6 @@
 
             resultSection.style.display = "block";
 
-            // Add share functionality to window
             window.sharePDF = function (url, filename) {
               if (navigator.share) {
                 fetch(url)
@@ -2016,7 +2030,6 @@
                       })
                       .catch((error) => {
                         console.log("Share failed:", error);
-                        // Fallback: copy link
                         const textarea = document.createElement("textarea");
                         textarea.value = url;
                         document.body.appendChild(textarea);
@@ -2027,7 +2040,6 @@
                       });
                   });
               } else {
-                // Fallback for browsers that don't support Web Share API
                 const textarea = document.createElement("textarea");
                 textarea.value = url;
                 document.body.appendChild(textarea);
@@ -2038,12 +2050,9 @@
               }
             };
 
-            // Add reset functionality to window - FIXED to show save button
             window.resetPDFEditor = function () {
-              // Hide result section
               document.getElementById("resultSection").style.display = "none";
 
-              // Reset all state
               pdfDoc = null;
               pdfFile = null;
               pages = [];
@@ -2051,43 +2060,34 @@
               selectedAnnotation = null;
               isEditMode = false;
 
-              // Reset file input
               pdfUpload.value = "";
 
-              // Show upload section
               editorContainer.style.display = "none";
               uploadSection.style.display = "flex";
 
-              // Show note
               const noteElement = document.querySelector(".note");
               if (noteElement) noteElement.style.display = "block";
 
-              // Clear containers
               canvasContainer.innerHTML = "";
               thumbnailContainer.innerHTML = "";
 
-              // Reset filename
               currentFileName.textContent = "document.pdf";
 
-              // Reset edit button
               editPdfBtn.innerHTML =
                 '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
               editPdfBtn.disabled = false;
               editPdfBtn.classList.remove("active");
 
-              // Reset tool states
               currentTool = null;
               document
                 .querySelectorAll(".tool-btn")
                 .forEach((btn) => btn.classList.remove("active"));
 
-              // SHOW THE SAVE BUTTON AGAIN
               saveBtn.style.display = "inline-flex";
               saveBtn.disabled = false;
               saveBtn.innerHTML =
                 '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
 
-              // Clear drawing states on pages
               pages.forEach((page) => {
                 if (page.drawingCanvas) {
                   const ctx = page.drawingCanvas.getContext("2d");
@@ -2107,10 +2107,8 @@
 
             Toast.success("PDF saved successfully!");
 
-            // Hide the save button after successful save
             saveBtn.style.display = "none";
 
-            // Scroll to top smoothly like reference
             window.scrollTo({ top: 0, behavior: "smooth" });
           } else {
             let errorMessage = "Error saving PDF";
@@ -2122,14 +2120,12 @@
             }
             Toast.error(errorMessage);
 
-            // Make sure save button is visible if there's an error
             saveBtn.style.display = "inline-flex";
           }
         } catch (error) {
           console.error("Error:", error);
           Toast.error("Failed to save PDF: " + error.message);
 
-          // Make sure save button is visible if there's an error
           saveBtn.style.display = "inline-flex";
         } finally {
           saveBtn.disabled = false;
@@ -2193,7 +2189,6 @@
         }
 
         function startStroke(e) {
-          // CRITICAL: Only allow drawing if currentTool is "draw" (not "draw-editing")
           if (currentTool !== "draw") return;
           e.preventDefault();
 
@@ -2260,6 +2255,12 @@
 
             page.hasDrawing = true;
           }
+          
+          // Keep drawing mode active after stroke ends
+          if (currentTool === "draw") {
+            canvas.classList.add("active");
+            canvas.style.pointerEvents = "all";
+          }
         }
 
         canvas.addEventListener("mousedown", startStroke);
@@ -2273,7 +2274,7 @@
         canvas.addEventListener("touchcancel", endStroke, { passive: false });
       }
 
-      // APPLY DRAWING BUTTON
+      // ============== APPLY DRAWING BUTTON - DEACTIVATES DRAWING MODE ==============
       applyDrawingBtn.addEventListener("click", () => {
         const page = pages[currentPageIndex];
 
@@ -2329,7 +2330,7 @@
             page.addAnnotation(drawingAnn);
           });
 
-          // Clear the drawing canvas AFTER creating annotations
+          // Clear the drawing canvas
           const ctx = page.drawingCanvas.getContext("2d");
           ctx.clearRect(
             0,
@@ -2342,22 +2343,26 @@
           page.currentDrawingPaths = [];
           page.hasDrawing = false;
 
-          // Select the last drawing annotation (so user can interact with it)
-          if (page.annotations.length > 0) {
-            selectAnnotation(page.annotations[page.annotations.length - 1]);
-          }
-
-          // KEEP the drawing mode active and properties visible
-          // DON'T deactivate the tool - user can continue drawing
-          currentTool = "draw";
-          drawBtn.classList.add("active");
-          document.getElementById("drawProperties").style.display = "block";
-
-          // Keep drawing canvas active so user can draw again if needed
+          // ============== DEACTIVATE DRAWING MODE ==============
+          currentTool = null;
+          
+          // Remove active class from draw button
+          drawBtn.classList.remove("active");
+          
+          // Hide drawing properties panel
+          document.getElementById("drawProperties").style.display = "none";
+          
+          // Disable drawing canvas for all pages
           pages.forEach((p) => {
-            p.drawingCanvas.classList.add("active");
-            p.drawingCanvas.style.pointerEvents = "all";
+            p.drawingCanvas.classList.remove("active");
+            p.drawingCanvas.style.pointerEvents = "none";
           });
+
+          // DO NOT select the drawing annotation - user will click on it to select
+          if (selectedAnnotation) {
+            selectedAnnotation.element.classList.remove("selected");
+            selectedAnnotation = null;
+          }
 
           Toast.success("Drawing applied successfully!");
         } else {
@@ -2396,7 +2401,7 @@
           selectedAnnotation.element.classList.remove("selected");
           selectedAnnotation = null;
         }
-        // Set tool to "draw" (not "draw-editing") to enable actual drawing
+        // Toggle drawing mode
         setTool("draw");
       });
 
@@ -2409,6 +2414,29 @@
       });
 
       function setTool(tool, data = null) {
+        // If clicking the same tool button that's already active, deactivate it
+        if (tool === currentTool) {
+          currentTool = null;
+          
+          // Remove active class from all tool buttons
+          document.querySelectorAll(".tool-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+          
+          // Hide all property panels
+          document.getElementById("textProperties").style.display = "none";
+          document.getElementById("shapeProperties").style.display = "none";
+          document.getElementById("drawProperties").style.display = "none";
+          
+          // Disable drawing canvas
+          pages.forEach((page) => {
+            page.drawingCanvas.classList.remove("active");
+            page.drawingCanvas.style.pointerEvents = "none";
+          });
+          
+          return;
+        }
+
         currentTool = tool;
 
         // Remove active class from all tool buttons
@@ -2426,20 +2454,10 @@
           addTextBtn.classList.add("active");
           document.getElementById("textProperties").style.display = "block";
 
-          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          // Disable drawing canvas
           pages.forEach((page) => {
-            if (
-              page.hasDrawing &&
-              page.currentDrawingPaths &&
-              page.currentDrawingPaths.length > 0
-            ) {
-              // Keep it visible but disable interaction
-              page.drawingCanvas.style.display = "block";
-              page.drawingCanvas.style.pointerEvents = "none";
-              page.drawingCanvas.classList.remove("active");
-            } else {
-              page.drawingCanvas.classList.remove("active");
-            }
+            page.drawingCanvas.classList.remove("active");
+            page.drawingCanvas.style.pointerEvents = "none";
           });
         } else if (tool === "draw") {
           drawBtn.classList.add("active");
@@ -2454,38 +2472,18 @@
           addShapeBtn.classList.add("active");
           document.getElementById("shapeProperties").style.display = "block";
 
-          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          // Disable drawing canvas
           pages.forEach((page) => {
-            if (
-              page.hasDrawing &&
-              page.currentDrawingPaths &&
-              page.currentDrawingPaths.length > 0
-            ) {
-              // Keep it visible but disable interaction
-              page.drawingCanvas.style.display = "block";
-              page.drawingCanvas.style.pointerEvents = "none";
-              page.drawingCanvas.classList.remove("active");
-            } else {
-              page.drawingCanvas.classList.remove("active");
-            }
+            page.drawingCanvas.classList.remove("active");
+            page.drawingCanvas.style.pointerEvents = "none";
           });
         } else if (tool === "image") {
           addImageBtn.classList.add("active");
 
-          // Keep drawing canvas visible if there's a drawing, otherwise hide it
+          // Disable drawing canvas
           pages.forEach((page) => {
-            if (
-              page.hasDrawing &&
-              page.currentDrawingPaths &&
-              page.currentDrawingPaths.length > 0
-            ) {
-              // Keep it visible but disable interaction
-              page.drawingCanvas.style.display = "block";
-              page.drawingCanvas.style.pointerEvents = "none";
-              page.drawingCanvas.classList.remove("active");
-            } else {
-              page.drawingCanvas.classList.remove("active");
-            }
+            page.drawingCanvas.classList.remove("active");
+            page.drawingCanvas.style.pointerEvents = "none";
           });
         }
 
@@ -2496,10 +2494,13 @@
         }
       }
 
-      // ALSO update the click event handler at the bottom of the file
-      // Replace the existing document click handler with this version:
-
+      // ============== FIXED DOCUMENT CLICK HANDLER ==============
       document.addEventListener("click", (e) => {
+        // Don't deactivate drawing mode when clicking anywhere
+        if (currentTool === "draw") {
+          return;
+        }
+        
         if (
           !e.target.closest(".annotation-item") &&
           !e.target.closest(".tool-btn") &&
@@ -2521,7 +2522,7 @@
           document.getElementById("shapeProperties").style.display = "none";
           document.getElementById("drawProperties").style.display = "none";
 
-          // Keep drawing canvas visible if there's a drawing
+          // Keep drawing canvas visible if there's a drawing, otherwise hide it
           pages.forEach((page) => {
             if (
               page.hasDrawing &&
@@ -2536,8 +2537,10 @@
             }
           });
 
-          // Reset current tool
-          currentTool = null;
+          // Reset current tool (but not if it's draw mode!)
+          if (currentTool !== "draw") {
+            currentTool = null;
+          }
         }
       });
 
@@ -2581,6 +2584,7 @@
         }
       }
 
+      // ============== FIXED SELECT ANNOTATION - NO DRAWING MODE ACTIVATION ==============
       function selectAnnotation(annotation) {
         // Remove selected class from previous annotation
         if (selectedAnnotation) {
@@ -2639,9 +2643,9 @@
 
           currentTool = "shape";
         } else if (annotation.type === "drawing") {
-          // Activate draw tool button
+          // ============== DO NOT ACTIVATE DRAWING MODE ==============
+          // Just show the draw button as active and show properties
           drawBtn.classList.add("active");
-          // Show drawing properties
           document.getElementById("drawProperties").style.display = "block";
 
           // Update drawing property values
@@ -2651,59 +2655,16 @@
           document.getElementById("brushSize").value = annotation.strokeWidth;
           document.getElementById("brushStyle").value = annotation.brushStyle;
 
-          // KEEP currentTool as "draw" but DON'T enable the drawing canvas
-          // This allows the properties panel to show and user can still manipulate the annotation
-          currentTool = "draw-editing"; // Special state: editing a drawing annotation
+          // Set currentTool to null - NOT drawing mode
+          currentTool = null;
+          
+          // Ensure drawing canvas is NOT active
+          pages.forEach((page) => {
+            page.drawingCanvas.classList.remove("active");
+            page.drawingCanvas.style.pointerEvents = "none";
+          });
         }
       }
-
-      // ==========================================
-      // UPDATE the document click handler:
-      // ==========================================
-
-      // Find and REPLACE the document.addEventListener("click", ...) with this:
-
-      document.addEventListener("click", (e) => {
-        if (
-          !e.target.closest(".annotation-item") &&
-          !e.target.closest(".tool-btn") &&
-          !e.target.closest(".ocr-text-block") &&
-          !e.target.closest(".properties-dropdown")
-        ) {
-          if (selectedAnnotation) {
-            selectedAnnotation.element.classList.remove("selected");
-            selectedAnnotation = null;
-          }
-
-          // Remove active class from all tool buttons
-          document.querySelectorAll(".tool-btn").forEach((btn) => {
-            btn.classList.remove("active");
-          });
-
-          // Hide all property panels
-          document.getElementById("textProperties").style.display = "none";
-          document.getElementById("shapeProperties").style.display = "none";
-          document.getElementById("drawProperties").style.display = "none";
-
-          // Keep drawing canvas visible if there's a drawing
-          pages.forEach((page) => {
-            if (
-              page.hasDrawing &&
-              page.currentDrawingPaths &&
-              page.currentDrawingPaths.length > 0
-            ) {
-              page.drawingCanvas.style.display = "block";
-              page.drawingCanvas.style.pointerEvents = "none";
-              page.drawingCanvas.classList.remove("active");
-            } else {
-              page.drawingCanvas.classList.remove("active");
-            }
-          });
-
-          // Reset current tool
-          currentTool = null;
-        }
-      });
 
       // Property change handlers
       document.getElementById("fontSize").addEventListener("input", (e) => {
@@ -3010,33 +2971,6 @@
             .forEach((btn) => btn.classList.remove("active"));
 
           Toast.success("PDF removed successfully");
-        }
-      });
-
-      document.addEventListener("click", (e) => {
-        if (
-          !e.target.closest(".annotation-item") &&
-          !e.target.closest(".tool-btn") &&
-          !e.target.closest(".ocr-text-block") &&
-          !e.target.closest(".properties-dropdown")
-        ) {
-          if (selectedAnnotation) {
-            selectedAnnotation.element.classList.remove("selected");
-            selectedAnnotation = null;
-          }
-
-          // Remove active class from all tool buttons
-          document.querySelectorAll(".tool-btn").forEach((btn) => {
-            btn.classList.remove("active");
-          });
-
-          // Hide all property panels
-          document.getElementById("textProperties").style.display = "none";
-          document.getElementById("shapeProperties").style.display = "none";
-          document.getElementById("drawProperties").style.display = "none";
-
-          // Reset current tool
-          currentTool = null;
         }
       });
 

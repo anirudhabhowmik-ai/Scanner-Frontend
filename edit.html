@@ -1563,6 +1563,20 @@
           }
           const arrayBuffer = bytes.buffer;
 
+          // CRITICAL FIX: Create a NEW File object from the cleaned PDF
+          const cleanedBlob = new Blob([arrayBuffer], {
+            type: "application/pdf",
+          });
+
+          // IMPORTANT: Create a new File with the SAME name but NEW content
+          const cleanedFile = new File([cleanedBlob], pdfFile.name, {
+            type: "application/pdf",
+            lastModified: Date.now(),
+          });
+
+          // Replace the pdfFile with the cleaned version
+          pdfFile = cleanedFile;
+
           // Reload PDF.js with cleaned PDF
           pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
@@ -1587,14 +1601,6 @@
           }
 
           console.log("✅ PDF reloaded successfully - deletions now visible!");
-
-          // Update the pdfFile to the cleaned version for saving
-          const cleanedBlob = new Blob([arrayBuffer], {
-            type: "application/pdf",
-          });
-          pdfFile = new File([cleanedBlob], pdfFile.name, {
-            type: "application/pdf",
-          });
         } catch (error) {
           console.error("❌ Error reloading cleaned PDF:", error);
           Toast.warning(
@@ -1692,6 +1698,7 @@
       }
 
       // Save PDF with changes
+      // Save PDF with changes
       saveBtn.addEventListener("click", async () => {
         if (!pdfFile) {
           await CustomModal.alert("No PDF loaded", "Notice");
@@ -1704,66 +1711,27 @@
 
         try {
           const formData = new FormData();
+
+          // CRITICAL FIX: Make sure pdfFile is valid
+          if (!pdfFile || pdfFile.size === 0) {
+            throw new Error("PDF file is empty or invalid");
+          }
+
           formData.append("file", pdfFile);
 
-          const annotationsData = pages.map((page) => {
-            const pageAnnotations = [];
+          const annotationsData = await Promise.all(
+            pages.map(async (page) => {
+              const pageAnnotations = [];
 
-            // Convert display coordinates to PDF coordinates
-            const scaleX = page.canvas.width / page.viewport.width;
-            const scaleY = page.canvas.height / page.viewport.height;
-
-            page.annotations.forEach((ann) => {
-              const annData = {
-                type: ann.type,
-                x: ann.x / page.scale,
-                y: ann.y / page.scale,
-                width: ann.width / page.scale,
-                height: ann.height / page.scale,
-              };
-
-              if (ann.type === "text") {
-                annData.text = ann.text;
-                annData.fontSize = ann.fontSize / page.scale;
-                annData.fontFamily = ann.fontFamily;
-                annData.color = ann.color;
-                annData.fontWeight = ann.fontWeight;
-                annData.fontStyle = ann.fontStyle;
-              } else if (ann.type === "image") {
-                annData.imageData = ann.imageSrc;
-              } else if (ann.type === "shape") {
-                annData.shapeType = ann.shapeType;
-                annData.fillColor = ann.fillColor;
-                annData.borderColor = ann.borderColor;
-                annData.borderWidth = ann.borderWidth / page.scale;
-              } else if (ann.type === "drawing") {
-                const scaledPath = ann.pathData.replace(
-                  /([ML])\s*([\d.]+)\s*([\d.]+)/g,
-                  (match, cmd, x, y) => {
-                    const pdfX = parseFloat(x) / page.scale;
-                    const pdfY = parseFloat(y) / page.scale;
-                    return `${cmd} ${pdfX} ${pdfY}`;
-                  },
-                );
-                annData.pathData = scaledPath;
-                annData.color = ann.color;
-                annData.strokeWidth = ann.strokeWidth / page.scale;
-                annData.brushStyle = ann.brushStyle;
-              }
-
-              pageAnnotations.push(annData);
-            });
-
-            // FIX: Include OCR text blocks that are still in the ocrLayer
-            page.ocrTextBlocks.forEach((ann) => {
-              // Check if element exists and is still in the DOM
-              if (ann.element && ann.element.parentNode) {
+              // Process regular annotations
+              for (const ann of page.annotations) {
                 const annData = {
                   type: ann.type,
                   x: ann.x / page.scale,
                   y: ann.y / page.scale,
                   width: ann.width / page.scale,
                   height: ann.height / page.scale,
+                  rotation: ann.rotation || 0,
                 };
 
                 if (ann.type === "text") {
@@ -1774,39 +1742,120 @@
                   annData.fontWeight = ann.fontWeight;
                   annData.fontStyle = ann.fontStyle;
                 } else if (ann.type === "image") {
-                  annData.imageData = ann.imageSrc;
+                  // FIX: Convert blob URL to base64
+                  if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
+                    try {
+                      const response = await fetch(ann.imageSrc);
+                      const blob = await response.blob();
+                      const base64 = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onloadend = () => resolve(reader.result);
+                        reader.readAsDataURL(blob);
+                      });
+                      annData.imageData = base64;
+                    } catch (err) {
+                      console.error("Error converting blob to base64:", err);
+                      continue;
+                    }
+                  } else {
+                    annData.imageData = ann.imageSrc;
+                  }
+                } else if (ann.type === "shape") {
+                  annData.shapeType = ann.shapeType;
+                  annData.fillColor = ann.fillColor;
+                  annData.borderColor = ann.borderColor;
+                  annData.borderWidth = ann.borderWidth / page.scale;
+                } else if (ann.type === "drawing") {
+                  const scaledPath = ann.pathData.replace(
+                    /([ML])\s*([\d.]+)\s*([\d.]+)/g,
+                    (match, cmd, x, y) => {
+                      const pdfX = parseFloat(x) / page.scale;
+                      const pdfY = parseFloat(y) / page.scale;
+                      return `${cmd} ${pdfX} ${pdfY}`;
+                    },
+                  );
+                  annData.pathData = scaledPath;
+                  annData.color = ann.color;
+                  annData.strokeWidth = ann.strokeWidth / page.scale;
+                  annData.brushStyle = ann.brushStyle;
                 }
 
                 pageAnnotations.push(annData);
               }
-            });
 
-            let drawingData = null;
-            if (page.hasDrawing) {
-              const ctx = page.drawingCanvas.getContext("2d");
-              const imageData = ctx.getImageData(
-                0,
-                0,
-                page.drawingCanvas.width,
-                page.drawingCanvas.height,
-              );
-              const hasDrawing = imageData.data.some(
-                (channel) => channel !== 0,
-              );
+              // Process OCR text blocks
+              for (const ann of page.ocrTextBlocks) {
+                if (ann.element && ann.element.parentNode) {
+                  const annData = {
+                    type: ann.type,
+                    x: ann.x / page.scale,
+                    y: ann.y / page.scale,
+                    width: ann.width / page.scale,
+                    height: ann.height / page.scale,
+                  };
 
-              if (hasDrawing) {
-                drawingData = page.drawingCanvas.toDataURL("image/png");
+                  if (ann.type === "text") {
+                    annData.text = ann.text;
+                    annData.fontSize = ann.fontSize / page.scale;
+                    annData.fontFamily = ann.fontFamily;
+                    annData.color = ann.color;
+                    annData.fontWeight = ann.fontWeight;
+                    annData.fontStyle = ann.fontStyle;
+                  } else if (ann.type === "image") {
+                    // FIX: Convert blob URL to base64 for OCR images too
+                    if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
+                      try {
+                        const response = await fetch(ann.imageSrc);
+                        const blob = await response.blob();
+                        const base64 = await new Promise((resolve) => {
+                          const reader = new FileReader();
+                          reader.onloadend = () => resolve(reader.result);
+                          reader.readAsDataURL(blob);
+                        });
+                        annData.imageData = base64;
+                      } catch (err) {
+                        console.error(
+                          "Error converting OCR image blob to base64:",
+                          err,
+                        );
+                        continue;
+                      }
+                    } else {
+                      annData.imageData = ann.imageSrc;
+                    }
+                  }
+
+                  pageAnnotations.push(annData);
+                }
               }
-            }
 
-            return {
-              pageNum: page.pageNum,
-              annotations: pageAnnotations,
-              deletedRegions: page.deletedRegions || [],
-              deletedImages: page.deletedImages || [],
-              drawing: drawingData,
-            };
-          });
+              let drawingData = null;
+              if (page.hasDrawing) {
+                const ctx = page.drawingCanvas.getContext("2d");
+                const imageData = ctx.getImageData(
+                  0,
+                  0,
+                  page.drawingCanvas.width,
+                  page.drawingCanvas.height,
+                );
+                const hasDrawing = imageData.data.some(
+                  (channel) => channel !== 0,
+                );
+
+                if (hasDrawing) {
+                  drawingData = page.drawingCanvas.toDataURL("image/png");
+                }
+              }
+
+              return {
+                pageNum: page.pageNum,
+                annotations: pageAnnotations,
+                deletedRegions: page.deletedRegions || [],
+                deletedImages: page.deletedImages || [],
+                drawing: drawingData,
+              };
+            }),
+          );
 
           formData.append("annotations", JSON.stringify(annotationsData));
 
@@ -1828,14 +1877,18 @@
 
             Toast.success("PDF saved successfully!");
           } else {
-            const error = await response.json();
-            Toast.error("Error saving PDF: " + error.error);
+            let errorMessage = "Error saving PDF";
+            try {
+              const error = await response.json();
+              errorMessage = error.error || errorMessage;
+            } catch {
+              errorMessage = response.statusText || errorMessage;
+            }
+            Toast.error(errorMessage);
           }
         } catch (error) {
           console.error("Error:", error);
-          Toast.error(
-            "Failed to save PDF. Make sure Flask server is running on port 8080.",
-          );
+          Toast.error("Failed to save PDF: " + error.message);
         } finally {
           saveBtn.disabled = false;
           saveBtn.innerHTML =

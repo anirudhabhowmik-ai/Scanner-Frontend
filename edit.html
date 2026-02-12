@@ -726,7 +726,7 @@
       const penWidth = document.getElementById("penWidth");
       const brushStyle = document.getElementById("brushStyle");
       const brushSize = document.getElementById("brushSize");
-      const API_BASE_URL = "http://127.0.0.1:8080";
+      const API_BASE_URL = `${BACKEND_BASE_URL}`;
 
       // State
       let pdfDoc = null;
@@ -1727,8 +1727,7 @@
         }
       }
 
-      // Save PDF with changes
-      // Save PDF with changes
+      // Save PDF with changes - MODIFIED to show download, share, reset buttons AND PDF PREVIEW
       saveBtn.addEventListener("click", async () => {
         if (!pdfFile) {
           await CustomModal.alert("No PDF loaded", "Notice");
@@ -1772,7 +1771,6 @@
                   annData.fontWeight = ann.fontWeight;
                   annData.fontStyle = ann.fontStyle;
                 } else if (ann.type === "image") {
-                  // FIX: Convert blob URL to base64
                   if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
                     try {
                       const response = await fetch(ann.imageSrc);
@@ -1832,7 +1830,6 @@
                     annData.fontWeight = ann.fontWeight;
                     annData.fontStyle = ann.fontStyle;
                   } else if (ann.type === "image") {
-                    // FIX: Convert blob URL to base64 for OCR images too
                     if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
                       try {
                         const response = await fetch(ann.imageSrc);
@@ -1897,15 +1894,224 @@
           if (response.ok) {
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "edited_" + currentFileName.textContent;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+
+            // STORE THE PDF DATA FOR SHARE/RESET FUNCTIONALITY
+            const savedPdfUrl = url;
+            const fileName = "edited_" + currentFileName.textContent;
+
+            // HIDE EDITOR INTERFACE
+            editorContainer.style.display = "none";
+            uploadSection.style.display = "none";
+
+            // HIDE NOTE
+            const noteElement = document.querySelector(".note");
+            if (noteElement) noteElement.style.display = "none";
+
+            // CREATE OR SHOW RESULT SECTION WITH PREVIEW
+            let resultSection = document.getElementById("resultSection");
+
+            if (!resultSection) {
+              // Create result section if it doesn't exist
+              resultSection = document.createElement("div");
+              resultSection.id = "resultSection";
+              resultSection.className = "result-section";
+
+              // Insert after editor container or at appropriate location
+              const container = document.querySelector(
+                ".merge-tool .container",
+              );
+              container.appendChild(resultSection);
+            }
+
+            // Check if it's a desktop device (for preview)
+            const isSmallDevice =
+              window.matchMedia("(max-width: 768px)").matches;
+
+            // Style and populate the result section
+            resultSection.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%;">
+          <!-- Success Header -->
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
+              <i class="fa fa-check-circle" style="font-size: 48px; color: #4caf50;"></i>
+            </div>
+            <h2 style="color: #1f2937; margin: 0; font-size: 28px;">PDF Saved Successfully!</h2>
+            <p style="color: #6b7280; margin: 0; font-size: 16px;">Your edited PDF is ready to download and share.</p>
+          </div>
+          
+          <!-- Result Card (like reference) -->
+          <div style="background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
+              <div style="background: #fee2e2; padding: 12px; border-radius: 8px;">
+                <i class="fa fa-file-pdf" style="font-size: 32px; color: #ef4444;"></i>
+              </div>
+              <div style="flex: 1;">
+                <h3 style="color: #1f2937; margin: 0 0 4px 0; font-size: 18px;">${fileName}</h3>
+                <p style="color: #6b7280; margin: 0; font-size: 14px;">${(blob.size / 1024).toFixed(2)} KB • Edited PDF</p>
+              </div>
+            </div>
+            
+            <!-- Action Buttons - EXACTLY LIKE REFERENCE -->
+            <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
+              <a href="${savedPdfUrl}" download="${fileName}" 
+                 style="display: inline-flex; align-items: center; gap: 10px; background: #4f46e5; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer;">
+                <i class="fa fa-download"></i> Download
+              </a>
+              
+              <button onclick="sharePDF('${savedPdfUrl}', '${fileName}')" 
+                      style="display: inline-flex; align-items: center; gap: 10px; background: #10b981; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                <i class="fa fa-share-alt"></i> Share
+              </button>
+              
+              <button onclick="resetPDFEditor()" 
+                      style="display: inline-flex; align-items: center; gap: 10px; background: white; color: #4b5563; border: 1px solid #e5e7eb; padding: 12px 28px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
+                <i class="fa fa-rotate-right"></i> Add Another Watermark
+              </button>
+            </div>
+            
+            <p style="color: #9ca3af; font-size: 14px; text-align: center; margin: 0; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+              <i class="fa fa-clock"></i> Your file will be automatically deleted after 1 hour
+            </p>
+          </div>
+          
+          <!-- PDF PREVIEW SECTION - FOR DESKTOP (EXACTLY LIKE REFERENCE) -->
+          ${
+            !isSmallDevice
+              ? `
+          <div id="pdfPreview" style="width: 100%; max-width: 900px; margin-top: 20px;">
+            <h3 style="color: #1f2937; margin-bottom: 16px; text-align: left; font-size: 20px;">Preview</h3>
+            <div style="background: white; border-radius: 12px; padding: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
+              <iframe 
+                id="pdfFrame"
+                src="${savedPdfUrl}"
+                width="100%" 
+                height="600" 
+                style="border-radius: 8px; border: none; display: block;"
+                title="Edited PDF preview"
+              ></iframe>
+            </div>
+          </div>
+          `
+              : ""
+          }
+        </div>
+      `;
+
+            resultSection.style.display = "block";
+
+            // Add share functionality to window
+            window.sharePDF = function (url, filename) {
+              if (navigator.share) {
+                fetch(url)
+                  .then((res) => res.blob())
+                  .then((blob) => {
+                    const file = new File([blob], filename, {
+                      type: "application/pdf",
+                    });
+                    navigator
+                      .share({
+                        title: "Edited PDF",
+                        text: "Check out my edited PDF",
+                        files: [file],
+                      })
+                      .catch((error) => {
+                        console.log("Share failed:", error);
+                        // Fallback: copy link
+                        const textarea = document.createElement("textarea");
+                        textarea.value = url;
+                        document.body.appendChild(textarea);
+                        textarea.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(textarea);
+                        Toast.success("Download link copied to clipboard!");
+                      });
+                  });
+              } else {
+                // Fallback for browsers that don't support Web Share API
+                const textarea = document.createElement("textarea");
+                textarea.value = url;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+                Toast.success("Download link copied to clipboard!");
+              }
+            };
+
+            // Add reset functionality to window - FIXED to show save button
+            window.resetPDFEditor = function () {
+              // Hide result section
+              document.getElementById("resultSection").style.display = "none";
+
+              // Reset all state
+              pdfDoc = null;
+              pdfFile = null;
+              pages = [];
+              currentPageIndex = 0;
+              selectedAnnotation = null;
+              isEditMode = false;
+
+              // Reset file input
+              pdfUpload.value = "";
+
+              // Show upload section
+              editorContainer.style.display = "none";
+              uploadSection.style.display = "flex";
+
+              // Show note
+              const noteElement = document.querySelector(".note");
+              if (noteElement) noteElement.style.display = "block";
+
+              // Clear containers
+              canvasContainer.innerHTML = "";
+              thumbnailContainer.innerHTML = "";
+
+              // Reset filename
+              currentFileName.textContent = "document.pdf";
+
+              // Reset edit button
+              editPdfBtn.innerHTML =
+                '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
+              editPdfBtn.disabled = false;
+              editPdfBtn.classList.remove("active");
+
+              // Reset tool states
+              currentTool = null;
+              document
+                .querySelectorAll(".tool-btn")
+                .forEach((btn) => btn.classList.remove("active"));
+
+              // SHOW THE SAVE BUTTON AGAIN
+              saveBtn.style.display = "inline-flex";
+              saveBtn.disabled = false;
+              saveBtn.innerHTML =
+                '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
+
+              // Clear drawing states on pages
+              pages.forEach((page) => {
+                if (page.drawingCanvas) {
+                  const ctx = page.drawingCanvas.getContext("2d");
+                  ctx.clearRect(
+                    0,
+                    0,
+                    page.drawingCanvas.width,
+                    page.drawingCanvas.height,
+                  );
+                  page.hasDrawing = false;
+                  page.currentDrawingPaths = [];
+                }
+              });
+
+              Toast.success("Ready to edit another PDF");
+            };
 
             Toast.success("PDF saved successfully!");
+
+            // Hide the save button after successful save
+            saveBtn.style.display = "none";
+
+            // Scroll to top smoothly like reference
+            window.scrollTo({ top: 0, behavior: "smooth" });
           } else {
             let errorMessage = "Error saving PDF";
             try {
@@ -1915,10 +2121,16 @@
               errorMessage = response.statusText || errorMessage;
             }
             Toast.error(errorMessage);
+
+            // Make sure save button is visible if there's an error
+            saveBtn.style.display = "inline-flex";
           }
         } catch (error) {
           console.error("Error:", error);
           Toast.error("Failed to save PDF: " + error.message);
+
+          // Make sure save button is visible if there's an error
+          saveBtn.style.display = "inline-flex";
         } finally {
           saveBtn.disabled = false;
           saveBtn.innerHTML =

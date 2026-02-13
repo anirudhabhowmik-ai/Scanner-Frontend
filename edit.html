@@ -1284,52 +1284,38 @@
           );
           svg.setAttribute("width", "100%");
           svg.setAttribute("height", "100%");
+          svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
+          svg.setAttribute("preserveAspectRatio", "none");
 
+          // Parse path points and make them relative to annotation position
           const points =
             this.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-          let minX = Infinity,
-            minY = Infinity,
-            maxX = -Infinity,
-            maxY = -Infinity;
+          let relativePathData = "";
 
-          points.forEach((p) => {
-            const parts = p.match(/[\d.]+/g);
-            if (parts && parts.length >= 2) {
-              const x = parseFloat(parts[0]);
-              const y = parseFloat(parts[1]);
-              minX = Math.min(minX, x);
-              minY = Math.min(minY, y);
-              maxX = Math.max(maxX, x);
-              maxY = Math.max(maxY, y);
+          points.forEach((point, index) => {
+            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
+            if (parts) {
+              const cmd = parts[1];
+              const x = parseFloat(parts[2]) - this.x;
+              const y = parseFloat(parts[3]) - this.y;
+
+              // Ensure coordinates are within bounds
+              const boundedX = Math.max(0, Math.min(x, this.width));
+              const boundedY = Math.max(0, Math.min(y, this.height));
+
+              relativePathData += `${cmd} ${boundedX} ${boundedY} `;
             }
           });
-
-          const margin = 2;
-          const viewBoxWidth = maxX - minX + margin * 2;
-          const viewBoxHeight = maxY - minY + margin * 2;
-          const viewBoxX = minX - margin;
-          const viewBoxY = minY - margin;
-
-          svg.setAttribute(
-            "viewBox",
-            `${viewBoxX} ${viewBoxY} ${viewBoxWidth} ${viewBoxHeight}`,
-          );
-          svg.setAttribute("preserveAspectRatio", "none");
 
           const path = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "path",
           );
 
-          path.setAttribute("d", this.pathData);
+          path.setAttribute("d", relativePathData);
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
-
-          const scaleX = this.width / viewBoxWidth;
-          const scaleY = this.height / viewBoxHeight;
-          const scale = Math.max(scaleX, scaleY);
-
-          path.setAttribute("stroke-width", this.strokeWidth / scale);
+          path.setAttribute("stroke-width", this.strokeWidth);
           path.setAttribute("stroke-linecap", "round");
           path.setAttribute("stroke-linejoin", "round");
 
@@ -2189,157 +2175,225 @@
       }
 
       function setupDrawing(page) {
-        const canvas = page.drawingCanvas;
-        const ctx = canvas.getContext("2d");
+  const canvas = page.drawingCanvas;
+  const ctx = canvas.getContext("2d");
+  
+  let isDrawing = false;
+  let points = [];
+  let tempPath = null; // Temporary SVG path for real-time drawing
 
-        let isDrawing = false;
-        let points = [];
+  function getCoords(e, canvas) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
 
-        function getCoords(e, canvas) {
-          const rect = canvas.getBoundingClientRect();
-          const scaleX = canvas.width / rect.width;
-          const scaleY = canvas.height / rect.height;
+    if (e.touches && e.touches.length > 0) {
+      return {
+        canvasX: (e.touches[0].clientX - rect.left) * scaleX,
+        canvasY: (e.touches[0].clientY - rect.top) * scaleY,
+        displayX: e.touches[0].clientX - rect.left,
+        displayY: e.touches[0].clientY - rect.top,
+      };
+    }
 
-          if (e.touches && e.touches.length > 0) {
-            return {
-              x: (e.touches[0].clientX - rect.left) * scaleX,
-              y: (e.touches[0].clientY - rect.top) * scaleY,
-            };
-          }
+    return {
+      canvasX: (e.clientX - rect.left) * scaleX,
+      canvasY: (e.clientY - rect.top) * scaleY,
+      displayX: e.clientX - rect.left,
+      displayY: e.clientY - rect.top,
+    };
+  }
 
-          return {
-            x: (e.clientX - rect.left) * scaleX,
-            y: (e.clientY - rect.top) * scaleY,
-          };
-        }
+  // Create a temporary SVG element for real-time drawing
+  function createTempDrawingLayer() {
+    // Remove any existing temp layer
+    const existingTemp = page.wrapper.querySelector('.temp-drawing-layer');
+    if (existingTemp) existingTemp.remove();
+    
+    const tempLayer = document.createElement('div');
+    tempLayer.className = 'temp-drawing-layer';
+    tempLayer.style.position = 'absolute';
+    tempLayer.style.top = '0';
+    tempLayer.style.left = '0';
+    tempLayer.style.width = '100%';
+    tempLayer.style.height = '100%';
+    tempLayer.style.pointerEvents = 'none';
+    tempLayer.style.zIndex = '5';
+    
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.style.position = 'absolute';
+    svg.style.top = '0';
+    svg.style.left = '0';
+    
+    tempLayer.appendChild(svg);
+    page.wrapper.appendChild(tempLayer);
+    
+    return {
+      layer: tempLayer,
+      svg: svg
+    };
+  }
 
-        function startStroke(e) {
-          if (currentTool !== "draw") return;
-          e.preventDefault();
+  // Update the temporary drawing
+  function updateTempDrawing() {
+    if (!tempPath) return;
+    
+    if (points.length < 2) return;
+    
+    // Build path data
+    let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
+    for (let i = 1; i < points.length; i++) {
+      pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
+    }
+    
+    tempPath.setAttribute('d', pathData);
+  }
 
-          isDrawing = true;
-          points = [];
+  function startStroke(e) {
+    if (currentTool !== "draw") return;
+    e.preventDefault();
 
-          const coords = getCoords(e, canvas);
-          points.push({ x: coords.x, y: coords.y });
+    isDrawing = true;
+    points = [];
 
-          ctx.strokeStyle = penColor.value;
-          ctx.lineWidth = parseInt(brushSize.value);
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
+    const coords = getCoords(e, canvas);
+    points.push({ 
+      canvasX: coords.canvasX, 
+      canvasY: coords.canvasY,
+      displayX: coords.displayX,
+      displayY: coords.displayY
+    });
 
-          const brush = brushStyle.value;
-          if (brush === "dotted") {
-            ctx.setLineDash([2, 4]);
-          } else if (brush === "dashed") {
-            ctx.setLineDash([8, 6]);
-          } else {
-            ctx.setLineDash([]);
-          }
+    // Create temporary drawing layer
+    const temp = createTempDrawingLayer();
+    tempPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    tempPath.setAttribute('fill', 'none');
+    tempPath.setAttribute('stroke', penColor.value);
+    tempPath.setAttribute('stroke-width', parseInt(brushSize.value));
+    tempPath.setAttribute('stroke-linecap', 'round');
+    tempPath.setAttribute('stroke-linejoin', 'round');
+    
+    const brush = brushStyle.value;
+    if (brush === "dotted") {
+      tempPath.setAttribute('stroke-dasharray', '2 4');
+    } else if (brush === "dashed") {
+      tempPath.setAttribute('stroke-dasharray', '9 5');
+    }
+    
+    temp.svg.appendChild(tempPath);
 
-          ctx.beginPath();
-          ctx.moveTo(coords.x, coords.y);
-        }
+    page.hasDrawing = true;
+  }
 
-        function drawStroke(e) {
-          if (!isDrawing || currentTool !== "draw") return;
-          e.preventDefault();
+  function drawStroke(e) {
+    if (!isDrawing || currentTool !== "draw") return;
+    e.preventDefault();
 
-          const coords = getCoords(e, canvas);
-          points.push({ x: coords.x, y: coords.y });
+    const coords = getCoords(e, canvas);
+    points.push({ 
+      canvasX: coords.canvasX, 
+      canvasY: coords.canvasY,
+      displayX: coords.displayX,
+      displayY: coords.displayY
+    });
 
-          ctx.lineTo(coords.x, coords.y);
-          ctx.stroke();
+    // Update the temporary drawing
+    updateTempDrawing();
+  }
 
-          page.hasDrawing = true;
-        }
+  function endStroke(e) {
+    if (!isDrawing) return;
+    e.preventDefault();
+    isDrawing = false;
 
-        function endStroke(e) {
-          if (!isDrawing) return;
-          e.preventDefault();
-          isDrawing = false;
-          ctx.closePath();
-          ctx.setLineDash([]);
-
-          if (points.length > 1) {
-            // Convert canvas coordinates to display coordinates
-            const rect = canvas.getBoundingClientRect();
-            const scaleX = rect.width / canvas.width;
-            const scaleY = rect.height / canvas.height;
-            
-            // Build path with display coordinates
-            let pathData = `M ${points[0].x * scaleX} ${points[0].y * scaleY}`;
-            for (let i = 1; i < points.length; i++) {
-              pathData += ` L ${points[i].x * scaleX} ${points[i].y * scaleY}`;
-            }
-
-            // **CREATE ANNOTATION IMMEDIATELY INSTEAD OF STORING IN ARRAY**
-            const annotation = new DrawingAnnotation(
-              page,
-              pathData,
-              penColor.value,
-              parseInt(brushSize.value),
-              brushStyle.value,
-            );
-
-            // Calculate bounding box in display coordinates
-            const points_array =
-              pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-            let minX = Infinity,
-              minY = Infinity,
-              maxX = -Infinity,
-              maxY = -Infinity;
-
-            points_array.forEach((p) => {
-              const parts = p.match(/[\d.]+/g);
-              if (parts && parts.length >= 2) {
-                const x = parseFloat(parts[0]);
-                const y = parseFloat(parts[1]);
-                minX = Math.min(minX, x);
-                minY = Math.min(minY, y);
-                maxX = Math.max(maxX, x);
-                maxY = Math.max(maxY, y);
-              }
-            });
-
-            annotation.x = minX;
-            annotation.y = minY;
-            annotation.width = maxX - minX;
-            annotation.height = maxY - minY;
-
-            // Add to page immediately
-            const element = annotation.createElement();
-            page.annotationLayer.appendChild(element);
-            page.addAnnotation(annotation);
-
-            page.hasDrawing = true;
-            
-            // Clear the temporary drawing from canvas since we now have the annotation
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-          }
-
-          // Keep drawing mode active
-          if (currentTool === "draw") {
-            canvas.classList.add("active");
-            canvas.style.pointerEvents = "all";
-          }
-        }
-
-        canvas.addEventListener("mousedown", startStroke);
-        canvas.addEventListener("mousemove", drawStroke);
-        canvas.addEventListener("mouseup", endStroke);
-        canvas.addEventListener("mouseleave", endStroke);
-
-        canvas.addEventListener("touchstart", startStroke, { passive: false });
-        canvas.addEventListener("touchmove", drawStroke, { passive: false });
-        canvas.addEventListener("touchend", endStroke, { passive: false });
-        canvas.addEventListener("touchcancel", endStroke, { passive: false });
+    if (points.length > 1) {
+      // Build final path using display coordinates
+      let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
+      for (let i = 1; i < points.length; i++) {
+        pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
       }
+
+      // Calculate bounding box in display coordinates
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      points.forEach(p => {
+        minX = Math.min(minX, p.displayX);
+        minY = Math.min(minY, p.displayY);
+        maxX = Math.max(maxX, p.displayX);
+        maxY = Math.max(maxY, p.displayY);
+      });
+
+      // Add small padding to bounding box
+      const padding = 5;
+      minX = Math.max(0, minX - padding);
+      minY = Math.max(0, minY - padding);
+      maxX = maxX + padding;
+      maxY = maxY + padding;
+
+      // Create permanent annotation
+      const annotation = new DrawingAnnotation(
+        page,
+        pathData,
+        penColor.value,
+        parseInt(brushSize.value),
+        brushStyle.value
+      );
+
+      annotation.x = minX;
+      annotation.y = minY;
+      annotation.width = maxX - minX;
+      annotation.height = maxY - minY;
+
+      // Add to page annotation layer (permanent)
+      const element = annotation.createElement();
+      page.annotationLayer.appendChild(element);
+      page.addAnnotation(annotation);
+      
+      page.hasDrawing = true;
+    }
+
+    // Remove temporary drawing layer
+    const tempLayer = page.wrapper.querySelector('.temp-drawing-layer');
+    if (tempLayer) tempLayer.remove();
+    tempPath = null;
+
+    // Keep drawing mode active
+    if (currentTool === "draw") {
+      canvas.classList.add("active");
+      canvas.style.pointerEvents = "all";
+    }
+  }
+
+  // Clean up temp layer when switching pages or tools
+  function cleanupTempLayer() {
+    const tempLayer = page.wrapper.querySelector('.temp-drawing-layer');
+    if (tempLayer) tempLayer.remove();
+    tempPath = null;
+  }
+
+  // Add cleanup on page hide
+  page.wrapper.addEventListener('remove', cleanupTempLayer);
+
+  canvas.addEventListener("mousedown", startStroke);
+  canvas.addEventListener("mousemove", drawStroke);
+  canvas.addEventListener("mouseup", endStroke);
+  canvas.addEventListener("mouseleave", (e) => {
+    if (isDrawing) {
+      endStroke(e);
+    }
+  });
+
+  canvas.addEventListener("touchstart", startStroke, { passive: false });
+  canvas.addEventListener("touchmove", drawStroke, { passive: false });
+  canvas.addEventListener("touchend", endStroke, { passive: false });
+  canvas.addEventListener("touchcancel", endStroke, { passive: false });
+}
 
       // ============== APPLY DRAWING BUTTON - DEACTIVATES DRAWING MODE ==============
       applyDrawingBtn.addEventListener("click", (e) => {
         e.stopPropagation(); // Prevent event bubbling
-        
+
         // ============== DEACTIVATE DRAWING MODE ==============
         currentTool = null;
 
@@ -2351,7 +2405,7 @@
 
         // Disable drawing canvas for all pages
         deactivateDrawingMode(pages);
-        
+
         Toast.info("Drawing mode deactivated");
       });
 

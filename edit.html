@@ -1179,6 +1179,7 @@
           }
         }
       }
+
       class ImageAnnotation extends Annotation {
         constructor(page, imageSrc) {
           super("image", page);
@@ -1750,18 +1751,18 @@
       }
 
       function displayOCRText(pagesData) {
-    pagesData.forEach((pageData, index) => {
-        const page = pages[index];
-        if (!page) return;
+        pagesData.forEach((pageData, index) => {
+          const page = pages[index];
+          if (!page) return;
 
-        page.ocrTextBlocks = [];
-        page.ocrLayer.innerHTML = "";
-        page.ocrLayer.style.pointerEvents = "auto";
+          page.ocrTextBlocks = [];
+          page.ocrLayer.innerHTML = "";
+          page.ocrLayer.style.pointerEvents = "auto";
 
-        pageData.textBlocks.forEach((block) => {
+          pageData.textBlocks.forEach((block) => {
             const annotation = new TextAnnotation(page, true);
             annotation.text = block.text;
-            
+
             // Use coordinates from backend with scale
             const scaledX = block.x * page.scale;
             const scaledY = block.y * page.scale;
@@ -1784,10 +1785,10 @@
             annotation.autoAdjustHeight = false;
 
             annotation.originalData = {
-                x: block.originalX || block.x,
-                y: block.originalY || block.y,
-                width: block.originalWidth || block.width,
-                height: block.originalHeight || block.height,
+              x: block.originalX || block.x,
+              y: block.originalY || block.y,
+              width: block.originalWidth || block.width,
+              height: block.originalHeight || block.height,
             };
 
             const element = annotation.createElement();
@@ -1795,29 +1796,29 @@
             // Style the text content to fit exactly in the box without cutting off
             const textContent = element.querySelector(".text-content");
             if (textContent) {
-                textContent.style.whiteSpace = "nowrap";
-                textContent.style.overflow = "visible"; // Change from "hidden" to "visible"
-                textContent.style.textOverflow = "clip";
-                textContent.style.display = "flex";
-                textContent.style.alignItems = "center";
-                textContent.style.padding = "0";
-                textContent.style.margin = "0";
-                textContent.style.lineHeight = "1.2";
-                textContent.style.height = "100%";
-                textContent.style.boxSizing = "border-box";
-                textContent.style.width = "100%";
-                
-                // Ensure the text container doesn't clip the text
-                textContent.style.minWidth = "100%";
-                textContent.style.maxWidth = "none";
+              textContent.style.whiteSpace = "nowrap";
+              textContent.style.overflow = "visible"; // Change from "hidden" to "visible"
+              textContent.style.textOverflow = "clip";
+              textContent.style.display = "flex";
+              textContent.style.alignItems = "center";
+              textContent.style.padding = "0";
+              textContent.style.margin = "0";
+              textContent.style.lineHeight = "1.2";
+              textContent.style.height = "100%";
+              textContent.style.boxSizing = "border-box";
+              textContent.style.width = "100%";
+
+              // Ensure the text container doesn't clip the text
+              textContent.style.minWidth = "100%";
+              textContent.style.maxWidth = "none";
             }
 
             page.ocrLayer.appendChild(element);
             page.ocrTextBlocks.push(annotation);
+          });
         });
-    });
-}
-      
+      }
+
       function displayOCRImages(pagesData) {
         pagesData.forEach((pageData, index) => {
           const page = pages[index];

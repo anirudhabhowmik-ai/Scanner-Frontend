@@ -943,64 +943,64 @@
         }
       }
 
-class TextAnnotation extends Annotation {
-    constructor(page, isOCR = false) {
-        super("text", page);
-        this.text = "Double click to edit";
-        this.fontSize = 16;
-        this.fontFamily = "Arial";
-        this.color = "#000000";
-        this.fontWeight = "normal";
-        this.fontStyle = "normal";
-        this.textAlign = "center";
-        this.isOCR = isOCR;
-        this.originalData = null;
-        this.deletionMarked = false;
-        // Add property to track if we need to adjust height
-        this.autoAdjustHeight = true;
-    }
-
-    createElement() {
-        const wrapper = super.createElement();
-        wrapper.classList.add("text-annotation");
-        if (this.isOCR) {
-            wrapper.classList.add("ocr-text-block");
+      class TextAnnotation extends Annotation {
+        constructor(page, isOCR = false) {
+          super("text", page);
+          this.text = "Double click to edit";
+          this.fontSize = 16;
+          this.fontFamily = "Arial";
+          this.color = "#000000";
+          this.fontWeight = "normal";
+          this.fontStyle = "normal";
+          this.textAlign = "center";
+          this.isOCR = isOCR;
+          this.originalData = null;
+          this.deletionMarked = false;
+          // Add property to track if we need to adjust height
+          this.autoAdjustHeight = true;
         }
 
-        const content = document.createElement("div");
-        content.className = "text-content";
-        content.textContent = this.text;
-        content.contentEditable = false;
-        content.style.width = "100%";
-        content.style.height = "100%";
-        content.style.outline = "none";
-        content.style.textAlign = this.textAlign;
-        content.style.display = "flex";
-        content.style.alignItems = "center";
-        content.style.justifyContent = this.getJustifyContent();
-        content.style.padding = "0";
-        content.style.margin = "0";
-        content.style.boxSizing = "border-box";
+        createElement() {
+          const wrapper = super.createElement();
+          wrapper.classList.add("text-annotation");
+          if (this.isOCR) {
+            wrapper.classList.add("ocr-text-block");
+          }
 
-        // Measure actual text height and adjust container if needed
-        setTimeout(() => {
+          const content = document.createElement("div");
+          content.className = "text-content";
+          content.textContent = this.text;
+          content.contentEditable = false;
+          content.style.width = "100%";
+          content.style.height = "100%";
+          content.style.outline = "none";
+          content.style.textAlign = this.textAlign;
+          content.style.display = "flex";
+          content.style.alignItems = "center";
+          content.style.justifyContent = this.getJustifyContent();
+          content.style.padding = "0";
+          content.style.margin = "0";
+          content.style.boxSizing = "border-box";
+
+          // Measure actual text height and adjust container if needed
+          setTimeout(() => {
             if (this.autoAdjustHeight) {
-                this.adjustToContentHeight();
+              this.adjustToContentHeight();
             }
-        }, 0);
+          }, 0);
 
-        content.addEventListener("mousedown", (e) => {
+          content.addEventListener("mousedown", (e) => {
             selectAnnotation(this);
             if (!content.isContentEditable) {
-                isDragging = true;
-                const rect = this.page.annotationLayer.getBoundingClientRect();
-                dragStartX = e.clientX - rect.left - this.x;
-                dragStartY = e.clientY - rect.top - this.y;
-                e.preventDefault();
+              isDragging = true;
+              const rect = this.page.annotationLayer.getBoundingClientRect();
+              dragStartX = e.clientX - rect.left - this.x;
+              dragStartY = e.clientY - rect.top - this.y;
+              e.preventDefault();
             }
-        });
+          });
 
-        content.addEventListener("dblclick", (e) => {
+          content.addEventListener("dblclick", (e) => {
             e.stopPropagation();
             content.contentEditable = true;
             content.style.cursor = "text";
@@ -1013,15 +1013,15 @@ class TextAnnotation extends Annotation {
             const sel = window.getSelection();
             sel.removeAllRanges();
             sel.addRange(range);
-        });
+          });
 
-        content.addEventListener("input", () => {
+          content.addEventListener("input", () => {
             this.text = content.innerText;
             this.autoAdjustHeight = true;
             this.adjustToContentHeight();
-        });
+          });
 
-        content.addEventListener("blur", () => {
+          content.addEventListener("blur", () => {
             content.contentEditable = false;
             this.text = content.innerText;
             content.style.cursor = "move";
@@ -1030,151 +1030,155 @@ class TextAnnotation extends Annotation {
             content.style.justifyContent = this.getJustifyContent();
 
             if (this.isOCR && this.originalData && !this.deletionMarked) {
-                this.page.addDeletedRegion({
-                    x: this.originalData.x,
-                    y: this.originalData.y,
-                    width: this.originalData.width,
-                    height: this.originalData.height,
-                });
-                this.deletionMarked = true;
+              this.page.addDeletedRegion({
+                x: this.originalData.x,
+                y: this.originalData.y,
+                width: this.originalData.width,
+                height: this.originalData.height,
+              });
+              this.deletionMarked = true;
             }
-            
+
             this.autoAdjustHeight = true;
             this.adjustToContentHeight();
-        });
-        
-        wrapper.appendChild(content);
-        this.applyStyles();
-        return wrapper;
-    }
+          });
 
-    getJustifyContent() {
-        switch(this.textAlign) {
-            case 'left': return 'flex-start';
-            case 'center': return 'center';
-            case 'right': return 'flex-end';
-            default: return 'flex-start';
+          wrapper.appendChild(content);
+          this.applyStyles();
+          return wrapper;
         }
-    }
 
-    adjustToContentHeight() {
-        if (!this.element) return;
-        
-        const content = this.element.querySelector(".text-content");
-        if (!content) return;
-        
-        // Reset height to auto to get natural height
-        content.style.height = 'auto';
-        this.element.style.height = 'auto';
-        
-        // Get the actual content height
-        const contentHeight = content.scrollHeight;
-        const lineHeight = this.fontSize * 1.2; // Approximate line height
-        
-        // Calculate number of lines
-        const lines = Math.max(1, Math.ceil(contentHeight / lineHeight));
-        const exactHeight = lines * lineHeight;
-        
-        // Add a small buffer (2px) to prevent clipping
-        const newHeight = Math.max(this.fontSize * 1.5, exactHeight + 2);
-        
-        // Update the annotation height
-        this.height = newHeight;
-        this.element.style.height = newHeight + 'px';
-        
-        // Restore content height
-        content.style.height = newHeight + 'px';
-    }
+        getJustifyContent() {
+          switch (this.textAlign) {
+            case "left":
+              return "flex-start";
+            case "center":
+              return "center";
+            case "right":
+              return "flex-end";
+            default:
+              return "flex-start";
+          }
+        }
 
-    applyStyles() {
-        if (!this.element) return;
-        
-        this.element.style.fontSize = this.fontSize + "px";
-        this.element.style.fontFamily = this.fontFamily;
-        this.element.style.color = this.color;
-        this.element.style.fontWeight = this.fontWeight;
-        this.element.style.fontStyle = this.fontStyle;
-        this.element.style.lineHeight = "1.2";
-        this.element.style.padding = "0";
-        this.element.style.margin = "0";
-        
-        const content = this.element.querySelector(".text-content");
-        if (content) {
+        adjustToContentHeight() {
+          if (!this.element) return;
+
+          const content = this.element.querySelector(".text-content");
+          if (!content) return;
+
+          // Reset height to auto to get natural height
+          content.style.height = "auto";
+          this.element.style.height = "auto";
+
+          // Get the actual content height
+          const contentHeight = content.scrollHeight;
+          const lineHeight = this.fontSize * 1.2; // Approximate line height
+
+          // Calculate number of lines
+          const lines = Math.max(1, Math.ceil(contentHeight / lineHeight));
+          const exactHeight = lines * lineHeight;
+
+          // Add a small buffer (2px) to prevent clipping
+          const newHeight = Math.max(this.fontSize * 1.5, exactHeight + 2);
+
+          // Update the annotation height
+          this.height = newHeight;
+          this.element.style.height = newHeight + "px";
+
+          // Restore content height
+          content.style.height = newHeight + "px";
+        }
+
+        applyStyles() {
+          if (!this.element) return;
+
+          this.element.style.fontSize = this.fontSize + "px";
+          this.element.style.fontFamily = this.fontFamily;
+          this.element.style.color = this.color;
+          this.element.style.fontWeight = this.fontWeight;
+          this.element.style.fontStyle = this.fontStyle;
+          this.element.style.lineHeight = "1.2";
+          this.element.style.padding = "0";
+          this.element.style.margin = "0";
+
+          const content = this.element.querySelector(".text-content");
+          if (content) {
             content.style.textAlign = this.textAlign;
             content.style.justifyContent = this.getJustifyContent();
             content.style.padding = "0";
             content.style.margin = "0";
+          }
         }
-    }
 
-    setTextAlign(align) {
-        this.textAlign = align;
-        const content = this.element.querySelector(".text-content");
-        if (content) {
+        setTextAlign(align) {
+          this.textAlign = align;
+          const content = this.element.querySelector(".text-content");
+          if (content) {
             content.style.textAlign = align;
             content.style.justifyContent = this.getJustifyContent();
+          }
+          this.applyStyles();
         }
-        this.applyStyles();
-    }
 
-    updateProperty(prop, value) {
-        this[prop] = value;
-        if (prop === "textAlign") {
+        updateProperty(prop, value) {
+          this[prop] = value;
+          if (prop === "textAlign") {
             const content = this.element.querySelector(".text-content");
             if (content) {
-                content.style.textAlign = value;
-                content.style.justifyContent = this.getJustifyContent();
+              content.style.textAlign = value;
+              content.style.justifyContent = this.getJustifyContent();
             }
-        }
-        this.applyStyles();
-        
-        // Re-adjust height after property changes
-        if (prop === "fontSize" || prop === "fontFamily" || prop === "text") {
+          }
+          this.applyStyles();
+
+          // Re-adjust height after property changes
+          if (prop === "fontSize" || prop === "fontFamily" || prop === "text") {
             this.autoAdjustHeight = true;
             this.adjustToContentHeight();
+          }
         }
-    }
 
-    clone() {
-        const newAnnotation = new TextAnnotation(this.page, false);
-        newAnnotation.text = this.text;
-        newAnnotation.fontSize = this.fontSize;
-        newAnnotation.fontFamily = this.fontFamily;
-        newAnnotation.color = this.color;
-        newAnnotation.fontWeight = this.fontWeight;
-        newAnnotation.fontStyle = this.fontStyle;
-        newAnnotation.textAlign = this.textAlign;
-        newAnnotation.width = this.width;
-        newAnnotation.height = this.height;
-        return newAnnotation;
-    }
+        clone() {
+          const newAnnotation = new TextAnnotation(this.page, false);
+          newAnnotation.text = this.text;
+          newAnnotation.fontSize = this.fontSize;
+          newAnnotation.fontFamily = this.fontFamily;
+          newAnnotation.color = this.color;
+          newAnnotation.fontWeight = this.fontWeight;
+          newAnnotation.fontStyle = this.fontStyle;
+          newAnnotation.textAlign = this.textAlign;
+          newAnnotation.width = this.width;
+          newAnnotation.height = this.height;
+          return newAnnotation;
+        }
 
-    updatePosition(x, y) {
-        super.updatePosition(x, y);
-        if (this.isOCR && this.originalData && !this.deletionMarked) {
+        updatePosition(x, y) {
+          super.updatePosition(x, y);
+          if (this.isOCR && this.originalData && !this.deletionMarked) {
             this.page.addDeletedRegion({
-                x: this.originalData.x,
-                y: this.originalData.y,
-                width: this.originalData.width,
-                height: this.originalData.height,
+              x: this.originalData.x,
+              y: this.originalData.y,
+              width: this.originalData.width,
+              height: this.originalData.height,
             });
             this.deletionMarked = true;
+          }
         }
-    }
 
-    updateSize(width, height) {
-        super.updateSize(width, height);
-        if (this.isOCR && this.originalData && !this.deletionMarked) {
+        updateSize(width, height) {
+          super.updateSize(width, height);
+          if (this.isOCR && this.originalData && !this.deletionMarked) {
             this.page.addDeletedRegion({
-                x: this.originalData.x,
-                y: this.originalData.y,
-                width: this.originalData.width,
-                height: this.originalData.height,
+              x: this.originalData.x,
+              y: this.originalData.y,
+              width: this.originalData.width,
+              height: this.originalData.height,
             });
             this.deletionMarked = true;
+          }
         }
-    }
-}      
+      }
       class ImageAnnotation extends Annotation {
         constructor(page, imageSrc) {
           super("image", page);
@@ -1746,64 +1750,74 @@ class TextAnnotation extends Annotation {
       }
 
       function displayOCRText(pagesData) {
-        pagesData.forEach((pageData, index) => {
-          const page = pages[index];
-          if (!page) return;
+    pagesData.forEach((pageData, index) => {
+        const page = pages[index];
+        if (!page) return;
 
-          page.ocrTextBlocks = [];
-          page.ocrLayer.innerHTML = "";
-          page.ocrLayer.style.pointerEvents = "auto";
+        page.ocrTextBlocks = [];
+        page.ocrLayer.innerHTML = "";
+        page.ocrLayer.style.pointerEvents = "auto";
 
-          pageData.textBlocks.forEach((block) => {
+        pageData.textBlocks.forEach((block) => {
             const annotation = new TextAnnotation(page, true);
             annotation.text = block.text;
-            annotation.x = block.x * page.scale;
-            annotation.y = block.y * page.scale;
+            
+            // Use coordinates from backend with scale
+            const scaledX = block.x * page.scale;
+            const scaledY = block.y * page.scale;
+            const scaledWidth = block.width * page.scale;
+            const scaledHeight = block.height * page.scale;
 
-            const minWidth = 50;
-            annotation.width = Math.max(block.width * page.scale, minWidth);
-
-            const calculatedHeight = block.height * page.scale;
-            const minHeightFromFont = block.fontSize * page.scale * 1.5;
-            annotation.height = Math.max(
-              calculatedHeight,
-              minHeightFromFont,
-              20,
-            );
+            annotation.x = scaledX;
+            annotation.y = scaledY;
+            annotation.width = scaledWidth;
+            annotation.height = scaledHeight;
 
             annotation.fontSize = Math.round(block.fontSize * page.scale);
             annotation.fontFamily = block.fontFamily || "Arial";
             annotation.color = block.color || "#000000";
-
             annotation.fontWeight = block.fontWeight || "normal";
             annotation.fontStyle = block.fontStyle || "normal";
+            annotation.textAlign = "left";
 
             annotation.deletionMarked = false;
+            annotation.autoAdjustHeight = false;
 
             annotation.originalData = {
-              x: block.x,
-              y: block.y,
-              width: block.width,
-              height: block.height,
+                x: block.originalX || block.x,
+                y: block.originalY || block.y,
+                width: block.originalWidth || block.width,
+                height: block.originalHeight || block.height,
             };
 
             const element = annotation.createElement();
 
+            // Style the text content to fit exactly in the box without cutting off
             const textContent = element.querySelector(".text-content");
             if (textContent) {
-              textContent.style.whiteSpace = "nowrap";
-              textContent.style.overflow = "visible";
-              textContent.style.textOverflow = "clip";
-              textContent.style.display = "block";
-              textContent.style.lineHeight = "1.2";
+                textContent.style.whiteSpace = "nowrap";
+                textContent.style.overflow = "visible"; // Change from "hidden" to "visible"
+                textContent.style.textOverflow = "clip";
+                textContent.style.display = "flex";
+                textContent.style.alignItems = "center";
+                textContent.style.padding = "0";
+                textContent.style.margin = "0";
+                textContent.style.lineHeight = "1.2";
+                textContent.style.height = "100%";
+                textContent.style.boxSizing = "border-box";
+                textContent.style.width = "100%";
+                
+                // Ensure the text container doesn't clip the text
+                textContent.style.minWidth = "100%";
+                textContent.style.maxWidth = "none";
             }
 
             page.ocrLayer.appendChild(element);
             page.ocrTextBlocks.push(annotation);
-          });
         });
-      }
-
+    });
+}
+      
       function displayOCRImages(pagesData) {
         pagesData.forEach((pageData, index) => {
           const page = pages[index];
@@ -2616,54 +2630,54 @@ class TextAnnotation extends Annotation {
       }
 
       function addAnnotationToCurrentPage(type, data = null) {
-    const page = pages[currentPageIndex];
-    let annotation;
+        const page = pages[currentPageIndex];
+        let annotation;
 
-    if (type === "text") {
-        annotation = new TextAnnotation(page, false);
-        annotation.fontSize = parseInt(
+        if (type === "text") {
+          annotation = new TextAnnotation(page, false);
+          annotation.fontSize = parseInt(
             document.getElementById("fontSize").value,
-        );
-        annotation.fontFamily = document.getElementById("fontFamily").value;
-        annotation.color = document.getElementById("textColor").value;
-        annotation.fontWeight = document.getElementById("fontWeight").value;
-        annotation.fontStyle = document.getElementById("fontStyle").value;
-        annotation.textAlign = "center";
-        
-        // Set initial size based on text content
-        annotation.text = "Double click to edit";
-        // Calculate approximate width based on text length and font size
-        const textLength = annotation.text.length;
-        const approximateCharWidth = annotation.fontSize * 0.6; // Approximate character width
-        annotation.width = Math.max(150, textLength * approximateCharWidth);
-        annotation.height = annotation.fontSize * 1.5; // Single line height
-    } else if (type === "image") {
-        annotation = new ImageAnnotation(page, data);
-    } else if (type === "shape") {
-        const shapeType = document.getElementById("shapeType").value;
-        annotation = new ShapeAnnotation(page, shapeType);
-        annotation.fillColor =
+          );
+          annotation.fontFamily = document.getElementById("fontFamily").value;
+          annotation.color = document.getElementById("textColor").value;
+          annotation.fontWeight = document.getElementById("fontWeight").value;
+          annotation.fontStyle = document.getElementById("fontStyle").value;
+          annotation.textAlign = "center";
+
+          // Set initial size based on text content
+          annotation.text = "Double click to edit";
+          // Calculate approximate width based on text length and font size
+          const textLength = annotation.text.length;
+          const approximateCharWidth = annotation.fontSize * 0.6; // Approximate character width
+          annotation.width = Math.max(150, textLength * approximateCharWidth);
+          annotation.height = annotation.fontSize * 1.5; // Single line height
+        } else if (type === "image") {
+          annotation = new ImageAnnotation(page, data);
+        } else if (type === "shape") {
+          const shapeType = document.getElementById("shapeType").value;
+          annotation = new ShapeAnnotation(page, shapeType);
+          annotation.fillColor =
             document.getElementById("shapeFillColor").value;
-        annotation.borderColor =
+          annotation.borderColor =
             document.getElementById("shapeBorderColor").value;
-        annotation.borderWidth = parseInt(
+          annotation.borderWidth = parseInt(
             document.getElementById("shapeBorderWidth").value,
-        );
-    }
+          );
+        }
 
-    if (annotation) {
-        const centerX = page.viewport.width / 2 - annotation.width / 2;
-        const centerY = page.viewport.height / 2 - annotation.height / 2;
+        if (annotation) {
+          const centerX = page.viewport.width / 2 - annotation.width / 2;
+          const centerY = page.viewport.height / 2 - annotation.height / 2;
 
-        annotation.x = centerX;
-        annotation.y = centerY;
-        const element = annotation.createElement();
-        page.annotationLayer.appendChild(element);
-        page.addAnnotation(annotation);
-        selectAnnotation(annotation);
-    }
-}
-      
+          annotation.x = centerX;
+          annotation.y = centerY;
+          const element = annotation.createElement();
+          page.annotationLayer.appendChild(element);
+          page.addAnnotation(annotation);
+          selectAnnotation(annotation);
+        }
+      }
+
       // ============== FIXED SELECT ANNOTATION - NO DRAWING MODE ACTIVATION ==============
       function selectAnnotation(annotation) {
         // Remove selected class from previous annotation

@@ -2262,26 +2262,63 @@
           ctx.setLineDash([]);
 
           if (points.length > 1) {
-            let pathData = `M ${points[0].x} ${points[0].y}`;
+            // Convert canvas coordinates to display coordinates
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = rect.width / canvas.width;
+            const scaleY = rect.height / canvas.height;
+            
+            // Build path with display coordinates
+            let pathData = `M ${points[0].x * scaleX} ${points[0].y * scaleY}`;
             for (let i = 1; i < points.length; i++) {
-              pathData += ` L ${points[i].x} ${points[i].y}`;
+              pathData += ` L ${points[i].x * scaleX} ${points[i].y * scaleY}`;
             }
 
-            if (!page.currentDrawingPaths) {
-              page.currentDrawingPaths = [];
-            }
+            // **CREATE ANNOTATION IMMEDIATELY INSTEAD OF STORING IN ARRAY**
+            const annotation = new DrawingAnnotation(
+              page,
+              pathData,
+              penColor.value,
+              parseInt(brushSize.value),
+              brushStyle.value,
+            );
 
-            page.currentDrawingPaths.push({
-              pathData: pathData,
-              color: penColor.value,
-              width: parseInt(brushSize.value),
-              brushStyle: brushStyle.value,
+            // Calculate bounding box in display coordinates
+            const points_array =
+              pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+            let minX = Infinity,
+              minY = Infinity,
+              maxX = -Infinity,
+              maxY = -Infinity;
+
+            points_array.forEach((p) => {
+              const parts = p.match(/[\d.]+/g);
+              if (parts && parts.length >= 2) {
+                const x = parseFloat(parts[0]);
+                const y = parseFloat(parts[1]);
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                maxX = Math.max(maxX, x);
+                maxY = Math.max(maxY, y);
+              }
             });
 
+            annotation.x = minX;
+            annotation.y = minY;
+            annotation.width = maxX - minX;
+            annotation.height = maxY - minY;
+
+            // Add to page immediately
+            const element = annotation.createElement();
+            page.annotationLayer.appendChild(element);
+            page.addAnnotation(annotation);
+
             page.hasDrawing = true;
+            
+            // Clear the temporary drawing from canvas since we now have the annotation
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
           }
 
-          // Keep drawing mode active after stroke ends
+          // Keep drawing mode active
           if (currentTool === "draw") {
             canvas.classList.add("active");
             canvas.style.pointerEvents = "all";
@@ -2300,26 +2337,22 @@
       }
 
       // ============== APPLY DRAWING BUTTON - DEACTIVATES DRAWING MODE ==============
-      applyDrawingBtn.addEventListener("click", () => {
-        const page = pages[currentPageIndex];
+      applyDrawingBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // Prevent event bubbling
+        
+        // ============== DEACTIVATE DRAWING MODE ==============
+        currentTool = null;
 
-        if (
-          page.hasDrawing &&
-          page.currentDrawingPaths &&
-          page.currentDrawingPaths.length > 0
-        ) {
-          // ============== DEACTIVATE DRAWING MODE ==============
-          currentTool = null;
+        // Remove active class from draw button
+        drawBtn.classList.remove("active");
 
-          // Remove active class from draw button
-          drawBtn.classList.remove("active");
+        // Hide drawing properties panel
+        document.getElementById("drawProperties").style.display = "none";
 
-          // Hide drawing properties panel
-          document.getElementById("drawProperties").style.display = "none";
-
-          // Disable drawing canvas for all pages
-          deactivateDrawingMode(pages);
-        }
+        // Disable drawing canvas for all pages
+        deactivateDrawingMode(pages);
+        
+        Toast.info("Drawing mode deactivated");
       });
 
       // Tool handlers
@@ -2469,69 +2502,19 @@
       });
 
       function deactivateDrawingMode(pages) {
-        // Convert drawings to annotations for all pages that have drawings
         pages.forEach((page) => {
-          // Convert current drawing paths to annotations
-          if (
-            page.hasDrawing &&
-            page.currentDrawingPaths &&
-            page.currentDrawingPaths.length > 0
-          ) {
-            page.currentDrawingPaths.forEach((pathInfo) => {
-              // Create the annotation with the exact path data (no recalculation!)
-              const annotation = new DrawingAnnotation(
-                page,
-                pathInfo.pathData,
-                pathInfo.color,
-                pathInfo.width,
-                pathInfo.brushStyle,
-              );
+          // Just clear the canvas - annotations already exist!
+          const ctx = page.drawingCanvas.getContext("2d");
+          ctx.clearRect(
+            0,
+            0,
+            page.drawingCanvas.width,
+            page.drawingCanvas.height,
+          );
 
-              // Parse ONLY to get bounding box dimensions (not to reposition)
-              const points =
-                pathInfo.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-              let minX = Infinity,
-                minY = Infinity,
-                maxX = -Infinity,
-                maxY = -Infinity;
-
-              points.forEach((p) => {
-                const parts = p.match(/[\d.]+/g);
-                if (parts && parts.length >= 2) {
-                  const x = parseFloat(parts[0]);
-                  const y = parseFloat(parts[1]);
-                  minX = Math.min(minX, x);
-                  minY = Math.min(minY, y);
-                  maxX = Math.max(maxX, x);
-                  maxY = Math.max(maxY, y);
-                }
-              });
-
-              // Set position to the top-left of the bounding box
-              annotation.x = minX;
-              annotation.y = minY;
-              annotation.width = maxX - minX;
-              annotation.height = maxY - minY;
-
-              // Create the element and add to page
-              const element = annotation.createElement();
-              page.annotationLayer.appendChild(element);
-              page.addAnnotation(annotation);
-            });
-
-            // Clear the drawing canvas
-            const ctx = page.drawingCanvas.getContext("2d");
-            ctx.clearRect(
-              0,
-              0,
-              page.drawingCanvas.width,
-              page.drawingCanvas.height,
-            );
-
-            // Reset drawing state
-            page.currentDrawingPaths = [];
-            page.hasDrawing = false;
-          }
+          // Reset drawing state
+          page.currentDrawingPaths = [];
+          page.hasDrawing = false;
 
           // Disable drawing canvas
           page.drawingCanvas.classList.remove("active");

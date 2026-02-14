@@ -2,60 +2,938 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
-    <!-- SEO -->
-    <title>Organize PDF Pages Online Free | PDFMaster</title>
-    <meta
-      name="description"
-      content="Organize PDF pages online. Drag, delete, reorder and add blank pages easily."
-    />
-    <meta name="keywords" content="organize pdf, reorder pdf, edit pdf pages" />
-    <meta name="author" content="PDFMaster" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Fonts & Icons -->
+    <!-- Primary Meta Tags -->
+    <title>
+      PDF to PowerPoint Converter with OCR - Free Online Tool | NextoPDF
+    </title>
+    <meta
+      name="title"
+      content="PDF to PowerPoint Converter with OCR - Free Online Tool | NextoPDF"
+    />
+    <meta
+      name="description"
+      content="Convert PDF to PowerPoint (PPTX) with automatic OCR detection. Transform scanned PDFs into editable presentations. Supports 14+ languages. Free and secure."
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
     />
 
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./images/favicon-16x16.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./images/apple-touch-icon.png"
-    />
 
-    
+    <style>
+      /* Enhanced Multi-select dropdown styles */
+      .multi-select {
+        position: relative;
+        width: 100%;
+        margin-top: 10px;
+        margin-bottom: 20px;
+      }
+
+      .select-label {
+        font-weight: 600;
+        font-size: 16px;
+        color: #1f2937;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .select-box {
+        border: 2px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 12px 14px;
+        background: #fff;
+        cursor: pointer;
+        min-height: 48px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .select-box:hover {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.05);
+      }
+
+      .select-box.open {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        background: #fafafa;
+      }
+
+      .select-box::after {
+        content: "\f078";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        position: absolute;
+        right: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6b7280;
+        transition: transform 0.2s ease;
+        pointer-events: none;
+      }
+
+      .select-box.open::after {
+        transform: translateY(-50%) rotate(180deg);
+      }
+
+      .select-placeholder {
+        color: #9ca3af;
+        font-size: 14px;
+        user-select: none;
+      }
+
+      .tag {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+        transition: all 0.2s ease;
+      }
+
+      .tag:hover {
+        box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        transform: translateY(-1px);
+      }
+
+      .tag .remove-tag {
+        cursor: pointer;
+        font-size: 16px;
+        opacity: 0.9;
+        transition: opacity 0.2s;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .tag .remove-tag:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      #dropdown {
+        display: none;
+        position: absolute;
+        width: 100%;
+        background: white;
+        border: 2px solid #4f46e5;
+        border-radius: 10px;
+        max-height: 320px;
+        overflow: hidden;
+        z-index: 1000;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        margin-top: 6px;
+        animation: dropdownSlide 0.2s ease;
+      }
+
+      @keyframes dropdownSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #dropdown.show {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #dropdown input {
+        width: calc(100% - 60px);
+        margin: 12px 14px;
+        padding: 10px 14px;
+        border: 2px solid #e5e7eb;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+      }
+
+      #dropdown input:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+      }
+
+      #dropdown input::placeholder {
+        color: #9ca3af;
+      }
+
+      #options {
+        overflow-y: auto;
+        max-height: 240px;
+      }
+
+      .option {
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+      }
+
+      .option:hover {
+        background: #f3f4f6;
+      }
+
+      .option.selected {
+        background: #ede9fe;
+        color: #6d28d9;
+        font-weight: 500;
+      }
+
+      .option.selected::after {
+        content: "\f00c";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        color: #6d28d9;
+        font-size: 12px;
+      }
+
+      /* File list styling */
+      .file-list {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+      }
+
+      .file-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 18px;
+        background: #f9fafb;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: 2px solid #e5e7eb;
+        transition: all 0.2s ease;
+      }
+
+      .file-list li:hover {
+        border-color: #d1d5db;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .file-list li .pdf-icon {
+        color: #ef4444;
+        margin-right: 12px;
+        font-size: 20px;
+      }
+
+      .file-info {
+        display: flex;
+        align-items: center;
+        flex: 1;
+      }
+
+      .file-name-text {
+        font-weight: 500;
+        color: #1f2937;
+      }
+
+      .delete-file {
+        background: #ef4444;
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+      }
+
+      .delete-file i {
+        color: #fff;
+      }
+
+      .delete-file:hover,
+      .delete-file:focus {
+        background: #dc2626;
+        transform: scale(1.1);
+      }
+
+      /* Loading state */
+      .btn-loading {
+        pointer-events: none;
+        opacity: 0.7;
+      }
+
+      .btn-loading .btn-text {
+        display: none;
+      }
+
+      .btn-spinner {
+        display: none;
+      }
+
+      .btn-loading .btn-spinner {
+        display: inline-block;
+      }
+
+      /* Enhanced Error messages */
+      .error-text {
+        color: #dc2626;
+        font-size: 14px;
+        margin-top: 12px;
+        padding: 12px 16px;
+        background: #fee2e2;
+        border-left: 4px solid #dc2626;
+        border-radius: 8px;
+        display: none;
+        animation: slideIn 0.3s ease;
+      }
+
+      .error-text::before {
+        content: "\f06a";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        margin-right: 8px;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Note styling */
+      .note {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 14px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #1e40af;
+        margin-top: 20px;
+        line-height: 1.6;
+      }
+
+      .note i {
+        margin-right: 8px;
+      }
+
+      /* Smooth scrollbar for dropdown */
+      #options::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      #options::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+
+      #options::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+
+      #options::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+
+      /* Result buttons container */
+      .result-btns-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        .result-btns-container {
+          flex-direction: column;
+        }
+
+        .result-btns-container .cta-button,
+        .result-btns-container .secondary-btn {
+          width: 100%;
+        }
+      }
+    </style>
   </head>
 
   <body>
+    <!-- Header -->
     <section id="header-placeholder"></section>
 
-    <h1>Coming Soon...</h1>
+    <!-- Main Content -->
+    <main id="main-content">
+      <!-- PDF to PPT Tool Section -->
+      <section class="merge-tool">
+        <div class="container">
+          <h1 id="ppt-heading">
+            NextoPDF - PDF to PowerPoint Converter with OCR
+          </h1>
+          <p class="subtitle">
+            Convert PDF to PowerPoint presentations with automatic OCR
+            detection. Transform scanned PDFs into editable slides. Supports 14+
+            languages. Fast, secure, and completely free.
+          </p>
 
+          <div class="upload-section">
+            <div id="uploadSection">
+              <label
+                for="pdfUpload"
+                class="upload-label"
+                tabindex="0"
+                role="button"
+                aria-label="Choose PDF file to upload"
+              >
+                <i class="fa fa-upload" aria-hidden="true"></i>
+                <span>Choose PDF File</span>
+              </label>
+              <input
+                type="file"
+                id="pdfUpload"
+                accept=".pdf"
+                aria-label="Select PDF file to convert to PowerPoint"
+              />
+            </div>
+
+            <ul
+              id="fileList"
+              class="file-list"
+              role="list"
+              aria-label="Selected PDF file"
+              style="display: none"
+            ></ul>
+
+            <!-- Language Selection -->
+            <label class="select-label" for="selectBox" id="languageLabel">
+              OCR Languages
+              <span style="font-weight: 400; color: #6b7280; font-size: 14px">
+                (For scanned PDFs - Select one or more)
+              </span>
+            </label>
+            <div class="multi-select">
+              <div
+                class="select-box"
+                id="selectBox"
+                role="button"
+                tabindex="0"
+                aria-labelledby="languageLabel"
+                aria-expanded="false"
+                aria-haspopup="listbox"
+              >
+                <span class="tag">English</span>
+              </div>
+              <div id="dropdown" role="listbox" aria-labelledby="languageLabel">
+                <input
+                  type="text"
+                  id="searchLang"
+                  placeholder="Search language..."
+                  aria-label="Search for languages"
+                />
+                <div id="options"></div>
+              </div>
+            </div>
+
+            <button
+              id="convertBtn"
+              class="cta-button"
+              aria-label="Convert PDF to PowerPoint"
+            >
+              <span class="btn-spinner" aria-hidden="true">
+                <i class="fa fa-spinner fa-spin"></i>
+                Processing...
+              </span>
+              <span class="btn-text">
+                <i class="fa fa-file-powerpoint" aria-hidden="true"></i>
+                Convert to PowerPoint
+              </span>
+            </button>
+
+            <p
+              class="error-text"
+              id="errorMsg"
+              role="alert"
+              aria-live="polite"
+            ></p>
+
+            <!-- Result Section -->
+            <div
+              id="resultBtns"
+              style="display: none; margin-top: 20px"
+              role="region"
+              aria-label="Conversion results"
+            >
+              <div id="resultCard" class="result-card">
+                <i
+                  class="fa fa-file-powerpoint"
+                  aria-hidden="true"
+                  style="font-size: 60px; color: white"
+                ></i>
+              </div>
+              <p class="file-name">
+                <a href="#" id="fileNameLink" aria-label="View converted PPTX"
+                  >presentation.pptx</a
+                >
+              </p>
+
+              <div class="result-btns-container">
+                <a
+                  id="downloadBtn"
+                  href="#"
+                  class="cta-button"
+                  download="presentation.pptx"
+                  aria-label="Download PowerPoint presentation"
+                >
+                  <i class="fa fa-download" aria-hidden="true"></i> Download
+                </a>
+                <button
+                  id="shareBtn"
+                  class="cta-button"
+                  aria-label="Share PowerPoint presentation"
+                >
+                  <i class="fa fa-share-alt" aria-hidden="true"></i> Share
+                </button>
+                <button
+                  id="resetBtn"
+                  class="secondary-btn"
+                  aria-label="Convert another PDF"
+                >
+                  <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert
+                  Another PDF
+                </button>
+              </div>
+            </div>
+
+            <p class="note">
+              <i class="fa fa-info-circle" aria-hidden="true"></i>
+              <strong>Smart Conversion:</strong> Text-based PDFs will have
+              selectable text in PowerPoint. Scanned/image-based PDFs will be
+              converted to images with OCR text in speaker notes. Select
+              multiple languages if your document contains text in different
+              languages.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
     <section id="footer-placeholder"></section>
 
+    <!-- JS -->
     <script src="./js/app.js"></script>
+    <script>
+      const BACKEND_URL = `http://127.0.0.1:8080/pdf-to-ppt`;
 
+      // Elements
+      const pdfInput = document.getElementById("pdfUpload");
+      const fileList = document.getElementById("fileList");
+      const convertBtn = document.getElementById("convertBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const resultBtns = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const fileNameLink = document.getElementById("fileNameLink");
+      const uploadSection = document.getElementById("uploadSection");
+
+      let selectedFile = null;
+      let convertedFileUrl = null;
+      let convertedFileName = "presentation.pptx";
+
+      // Language options [code, name]
+      const languages = [
+        ["eng", "English"],
+        ["hin", "Hindi"],
+        ["ben", "Bengali"],
+        ["spa", "Spanish"],
+        ["fra", "French"],
+        ["deu", "German"],
+        ["ita", "Italian"],
+        ["por", "Portuguese"],
+        ["rus", "Russian"],
+        ["jpn", "Japanese"],
+        ["kor", "Korean"],
+        ["chi_sim", "Chinese Simplified"],
+        ["chi_tra", "Chinese Traditional"],
+        ["ara", "Arabic"],
+      ];
+
+      let selectedLangs = ["eng"];
+
+      // Multi-select dropdown elements
+      const selectBox = document.getElementById("selectBox");
+      const dropdown = document.getElementById("dropdown");
+      const optionsDiv = document.getElementById("options");
+      const searchInput = document.getElementById("searchLang");
+
+      // Render language options
+      function renderOptions(filter = "") {
+        optionsDiv.innerHTML = "";
+        const filteredLangs = languages.filter((l) =>
+          l[1].toLowerCase().includes(filter.toLowerCase()),
+        );
+
+        if (filteredLangs.length === 0) {
+          optionsDiv.innerHTML =
+            '<div style="padding: 20px; text-align: center; color: #9ca3af;">No languages found</div>';
+          return;
+        }
+
+        filteredLangs.forEach((l) => {
+          const div = document.createElement("div");
+          div.className =
+            "option" + (selectedLangs.includes(l[0]) ? " selected" : "");
+          div.textContent = l[1];
+          div.setAttribute("role", "option");
+          div.setAttribute(
+            "aria-selected",
+            selectedLangs.includes(l[0]) ? "true" : "false",
+          );
+          div.onclick = () => toggleLang(l);
+          optionsDiv.appendChild(div);
+        });
+      }
+
+      // Toggle language selection
+      function toggleLang(l) {
+        if (selectedLangs.includes(l[0])) {
+          selectedLangs = selectedLangs.filter((x) => x !== l[0]);
+        } else {
+          selectedLangs.push(l[0]);
+        }
+        updateTags();
+        renderOptions(searchInput.value);
+      }
+
+      // Update selected language tags
+      function updateTags() {
+        selectBox.innerHTML = "";
+        if (selectedLangs.length === 0) {
+          selectBox.innerHTML =
+            '<span class="select-placeholder">Select languages...</span>';
+          return;
+        }
+        selectedLangs.forEach((code) => {
+          const name = languages.find((l) => l[0] === code)[1];
+          const tag = document.createElement("span");
+          tag.className = "tag";
+          tag.innerHTML = `${name} <span class="remove-tag" data-code="${code}" role="button" aria-label="Remove ${name}" tabindex="0">×</span>`;
+          selectBox.appendChild(tag);
+        });
+
+        // Add click handlers for remove buttons
+        selectBox.querySelectorAll(".remove-tag").forEach((btn) => {
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            const code = e.target.dataset.code;
+            selectedLangs = selectedLangs.filter((x) => x !== code);
+            updateTags();
+            renderOptions(searchInput.value);
+          };
+
+          // Keyboard support for remove buttons
+          btn.onkeypress = (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              e.stopPropagation();
+              const code = e.target.dataset.code;
+              selectedLangs = selectedLangs.filter((x) => x !== code);
+              updateTags();
+              renderOptions(searchInput.value);
+            }
+          };
+        });
+      }
+
+      // Toggle dropdown
+      selectBox.onclick = (e) => {
+        // Don't toggle if clicking on remove button
+        if (e.target.classList.contains("remove-tag")) return;
+
+        const isOpen = dropdown.classList.contains("show");
+        dropdown.classList.toggle("show");
+        selectBox.classList.toggle("open");
+        selectBox.setAttribute("aria-expanded", !isOpen);
+
+        if (!isOpen) {
+          searchInput.focus();
+          searchInput.value = "";
+          renderOptions();
+        }
+      };
+
+      // Search functionality
+      searchInput.oninput = (e) => renderOptions(e.target.value);
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", (e) => {
+        if (!selectBox.contains(e.target) && !dropdown.contains(e.target)) {
+          dropdown.classList.remove("show");
+          selectBox.classList.remove("open");
+          selectBox.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      // Keyboard accessibility for select box
+      selectBox.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectBox.click();
+        }
+      });
+
+      // Initialize
+      renderOptions();
+      updateTags();
+
+      // Helper function to hide error message
+      function hideError() {
+        errorMsg.style.display = "none";
+        errorMsg.textContent = "";
+      }
+
+      // Helper function to show error message
+      function showError(message) {
+        errorMsg.textContent = message;
+        errorMsg.style.display = "block";
+      }
+
+      // File handling
+      function renderFileList() {
+        if (!selectedFile) {
+          fileList.style.display = "none";
+          return;
+        }
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <div class="file-info">
+            <i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
+            <span class="file-name-text">${selectedFile.name}</span>
+          </div>
+          <button class="delete-file" onclick="removeFile()" aria-label="Remove ${selectedFile.name}">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>
+        `;
+        fileList.appendChild(li);
+      }
+
+      // File input change handler
+      pdfInput.addEventListener("change", () => {
+        hideError();
+
+        if (pdfInput.files.length > 0) {
+          selectedFile = pdfInput.files[0];
+          renderFileList();
+        }
+      });
+
+      // Delete file
+      function removeFile() {
+        selectedFile = null;
+        pdfInput.value = "";
+        renderFileList();
+        hideError();
+      }
+
+      // Language selection change - CLEARS ERROR
+      const originalToggleLang = toggleLang;
+      toggleLang = function (l) {
+        hideError();
+        originalToggleLang(l);
+      };
+
+      // Convert button
+      convertBtn.addEventListener("click", async () => {
+        // Validation
+        if (!selectedFile) {
+          showError("Please upload a PDF file");
+          return;
+        }
+
+        if (selectedLangs.length === 0) {
+          showError("Please select at least one language");
+          return;
+        }
+
+        hideError();
+        convertBtn.classList.add("btn-loading");
+
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("lang", selectedLangs.join("+"));
+
+        try {
+          const res = await fetch(BACKEND_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!res.ok) {
+            const errorData = await res.json();
+            throw new Error(errorData.error || "Conversion failed");
+          }
+
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          convertedFileUrl = url;
+
+          // Determine filename
+          const baseName = selectedFile.name.replace(/\.pdf$/i, "");
+          const filename = `${baseName}.pptx`;
+          convertedFileName = filename;
+
+          // Update UI
+          fileList.style.display = "none";
+          convertBtn.style.display = "none";
+          uploadSection.style.display = "none";
+          document.querySelector(".note").style.display = "none";
+          document.querySelector(".multi-select").style.display = "none";
+          document.querySelector(".select-label").style.display = "none";
+          resultBtns.style.display = "block";
+
+          downloadBtn.href = url;
+          downloadBtn.download = filename;
+          fileNameLink.textContent = filename;
+
+          fileNameLink.onclick = (e) => {
+            e.preventDefault();
+            window.open(url, "_blank");
+          };
+        } catch (err) {
+          showError(err.message);
+        } finally {
+          convertBtn.classList.remove("btn-loading");
+        }
+      });
+
+      // Share button functionality
+      shareBtn.addEventListener("click", async () => {
+        if (!convertedFileUrl) return;
+
+        try {
+          // Check if Web Share API is supported
+          if (navigator.share && navigator.canShare) {
+            // Convert blob URL to File object for sharing
+            const response = await fetch(convertedFileUrl);
+            const blob = await response.blob();
+            const file = new File([blob], convertedFileName, {
+              type: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            });
+
+            const shareData = {
+              title: "PowerPoint Presentation",
+              text: "Check out this PowerPoint presentation",
+              files: [file],
+            };
+
+            if (navigator.canShare(shareData)) {
+              await navigator.share(shareData);
+            } else {
+              // Fallback: share without file
+              await navigator.share({
+                title: "PowerPoint Presentation",
+                text: `I converted a PDF to PowerPoint using NextoPDF`,
+                url: window.location.href,
+              });
+            }
+          } else {
+            // Fallback for browsers that don't support Web Share API
+            // Copy download link to clipboard
+            const tempInput = document.createElement("input");
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Show temporary notification
+            const originalText = shareBtn.innerHTML;
+            shareBtn.innerHTML =
+              '<i class="fa fa-check" aria-hidden="true"></i> Link Copied!';
+            setTimeout(() => {
+              shareBtn.innerHTML = originalText;
+            }, 2000);
+          }
+        } catch (error) {
+          // User cancelled share or error occurred
+          console.log("Share failed:", error);
+        }
+      });
+
+      // Reset button
+      resetBtn.addEventListener("click", () => {
+        selectedFile = null;
+        selectedLangs = ["eng"];
+        convertedFileUrl = null;
+        convertedFileName = "presentation.pptx";
+        pdfInput.value = "";
+        fileList.innerHTML = "";
+        fileList.style.display = "none";
+        uploadSection.style.display = "block";
+        convertBtn.style.display = "inline-flex";
+        resultBtns.style.display = "none";
+        document.querySelector(".note").style.display = "block";
+        document.querySelector(".multi-select").style.display = "block";
+        document.querySelector(".select-label").style.display = "block";
+        hideError();
+        updateTags();
+        renderOptions();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Keyboard accessibility for upload label
+      document
+        .querySelector(".upload-label")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            pdfInput.click();
+          }
+        });
+    </script>
   </body>
 </html>

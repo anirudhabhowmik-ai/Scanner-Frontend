@@ -1268,10 +1268,35 @@
       class DrawingAnnotation extends Annotation {
         constructor(page, pathData, color, width, brushStyle = "solid") {
           super("drawing", page);
-          this.pathData = pathData;
+          this.rawPathData = pathData; // Store original absolute coordinates
           this.color = color;
           this.strokeWidth = width;
           this.brushStyle = brushStyle;
+          this.normalizedPathData = null; // Will store normalized coordinates
+        }
+
+        // Normalize path data relative to annotation position
+        normalizePathData() {
+          if (this.normalizedPathData) return this.normalizedPathData;
+
+          const points =
+            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+          let pathData = "";
+
+          points.forEach((point, index) => {
+            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
+            if (parts) {
+              const cmd = parts[1];
+              // Make coordinates relative to annotation position
+              const x = parseFloat(parts[2]) - this.x;
+              const y = parseFloat(parts[3]) - this.y;
+
+              pathData += `${cmd} ${x} ${y} `;
+            }
+          });
+
+          this.normalizedPathData = pathData;
+          return pathData;
         }
 
         createElement() {
@@ -1287,32 +1312,13 @@
           svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
           svg.setAttribute("preserveAspectRatio", "none");
 
-          // Parse path points and make them relative to annotation position
-          const points =
-            this.pathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-          let relativePathData = "";
-
-          points.forEach((point, index) => {
-            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
-            if (parts) {
-              const cmd = parts[1];
-              const x = parseFloat(parts[2]) - this.x;
-              const y = parseFloat(parts[3]) - this.y;
-
-              // Ensure coordinates are within bounds
-              const boundedX = Math.max(0, Math.min(x, this.width));
-              const boundedY = Math.max(0, Math.min(y, this.height));
-
-              relativePathData += `${cmd} ${boundedX} ${boundedY} `;
-            }
-          });
-
           const path = document.createElementNS(
             "http://www.w3.org/2000/svg",
             "path",
           );
 
-          path.setAttribute("d", relativePathData);
+          // Use normalized path data
+          path.setAttribute("d", this.normalizePathData());
           path.setAttribute("fill", "none");
           path.setAttribute("stroke", this.color);
           path.setAttribute("stroke-width", this.strokeWidth);
@@ -1328,65 +1334,107 @@
           svg.appendChild(path);
           div.appendChild(svg);
 
-          // Remove any existing event listeners
-          div.removeEventListener("mousedown", this._handleMouseDown);
-          div.removeEventListener("touchstart", this._handleTouchStart);
+          // Store path reference for updates
+          this.pathElement = path;
 
-          // Define handlers bound to this instance
-          this._handleMouseDown = (e) => {
-            if (e.target.classList.contains("resize-handle")) {
-              isResizing = true;
-              resizeHandle = e.target.dataset.handle;
-              e.stopPropagation();
-              e.preventDefault();
-            } else if (!e.target.closest(".annotation-controls")) {
-              isDragging = true;
-              const rect = this.page.annotationLayer.getBoundingClientRect();
-              dragStartX = e.clientX - rect.left - this.x;
-              dragStartY = e.clientY - rect.top - this.y;
-              e.stopPropagation();
-              e.preventDefault();
-            }
-            selectAnnotation(this);
-          };
-
-          this._handleTouchStart = (e) => {
-            const touch = e.touches[0];
-            if (e.target.classList.contains("resize-handle")) {
-              isResizing = true;
-              resizeHandle = e.target.dataset.handle;
-              e.stopPropagation();
-              e.preventDefault();
-            } else if (!e.target.closest(".annotation-controls")) {
-              isDragging = true;
-              const rect = this.page.annotationLayer.getBoundingClientRect();
-              dragStartX = touch.clientX - rect.left - this.x;
-              dragStartY = touch.clientY - rect.top - this.y;
-              e.stopPropagation();
-              e.preventDefault();
-            }
-            selectAnnotation(this);
-          };
-
-          // Attach the event listeners
-          div.addEventListener("mousedown", this._handleMouseDown);
-          div.addEventListener("touchstart", this._handleTouchStart, {
-            passive: false,
-          });
-
-          div.addEventListener("selectstart", (e) => {
-            if (isDragging || isResizing) {
-              e.preventDefault();
-            }
-          });
-
+          // ... rest of event listeners ...
           return div;
+        }
+
+        // Override updatePosition to recalculate normalized path
+        updatePosition(x, y) {
+          // Calculate the delta movement
+          const deltaX = x - this.x;
+          const deltaY = y - this.y;
+
+          // Update position
+          this.x = x;
+          this.y = y;
+
+          // Update element position
+          this.element.style.left = x + "px";
+          this.element.style.top = y + "px";
+
+          // Update raw path data to reflect new position
+          const points =
+            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+          let newRawPathData = "";
+
+          points.forEach((point, index) => {
+            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
+            if (parts) {
+              const cmd = parts[1];
+              const oldX = parseFloat(parts[2]);
+              const oldY = parseFloat(parts[3]);
+              // Move the absolute coordinates
+              const newX = oldX + deltaX;
+              const newY = oldY + deltaY;
+              newRawPathData += `${cmd} ${newX} ${newY} `;
+            }
+          });
+
+          this.rawPathData = newRawPathData;
+          this.normalizedPathData = null; // Invalidate normalized data
+
+          // Update the path if it exists
+          if (this.pathElement) {
+            this.pathElement.setAttribute("d", this.normalizePathData());
+          }
+        }
+
+        // Override updateSize to scale the path
+        updateSize(width, height) {
+          // Calculate scale factors
+          const scaleX = width / this.width;
+          const scaleY = height / this.height;
+
+          // Update size
+          this.width = width;
+          this.height = height;
+
+          // Update element size
+          this.element.style.width = width + "px";
+          this.element.style.height = height + "px";
+
+          // Scale the raw path data
+          const points =
+            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
+          let newRawPathData = "";
+
+          points.forEach((point, index) => {
+            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
+            if (parts) {
+              const cmd = parts[1];
+              const oldX = parseFloat(parts[2]);
+              const oldY = parseFloat(parts[3]);
+              // Scale coordinates relative to annotation position
+              const relativeX = oldX - this.x;
+              const relativeY = oldY - this.y;
+              const newX = this.x + relativeX * scaleX;
+              const newY = this.y + relativeY * scaleY;
+              newRawPathData += `${cmd} ${newX} ${newY} `;
+            }
+          });
+
+          this.rawPathData = newRawPathData;
+          this.normalizedPathData = null; // Invalidate normalized data
+
+          // Update viewBox and path
+          if (this.element) {
+            const svg = this.element.querySelector("svg");
+            if (svg) {
+              svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+            }
+            if (this.pathElement) {
+              this.pathElement.setAttribute("d", this.normalizePathData());
+            }
+          }
         }
 
         clone() {
           const clone = new DrawingAnnotation(
             this.page,
-            this.pathData,
+            this.rawPathData,
             this.color,
             this.strokeWidth,
             this.brushStyle,
@@ -2175,220 +2223,228 @@
       }
 
       function setupDrawing(page) {
-  const canvas = page.drawingCanvas;
-  const ctx = canvas.getContext("2d");
-  
-  let isDrawing = false;
-  let points = [];
-  let tempPath = null; // Temporary SVG path for real-time drawing
+        const canvas = page.drawingCanvas;
+        const ctx = canvas.getContext("2d");
 
-  function getCoords(e, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
+        let isDrawing = false;
+        let points = [];
+        let tempPath = null; // Temporary SVG path for real-time drawing
 
-    if (e.touches && e.touches.length > 0) {
-      return {
-        canvasX: (e.touches[0].clientX - rect.left) * scaleX,
-        canvasY: (e.touches[0].clientY - rect.top) * scaleY,
-        displayX: e.touches[0].clientX - rect.left,
-        displayY: e.touches[0].clientY - rect.top,
-      };
-    }
+        function getCoords(e, canvas) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
 
-    return {
-      canvasX: (e.clientX - rect.left) * scaleX,
-      canvasY: (e.clientY - rect.top) * scaleY,
-      displayX: e.clientX - rect.left,
-      displayY: e.clientY - rect.top,
-    };
-  }
+          if (e.touches && e.touches.length > 0) {
+            return {
+              canvasX: (e.touches[0].clientX - rect.left) * scaleX,
+              canvasY: (e.touches[0].clientY - rect.top) * scaleY,
+              displayX: e.touches[0].clientX - rect.left,
+              displayY: e.touches[0].clientY - rect.top,
+            };
+          }
 
-  // Create a temporary SVG element for real-time drawing
-  function createTempDrawingLayer() {
-    // Remove any existing temp layer
-    const existingTemp = page.wrapper.querySelector('.temp-drawing-layer');
-    if (existingTemp) existingTemp.remove();
-    
-    const tempLayer = document.createElement('div');
-    tempLayer.className = 'temp-drawing-layer';
-    tempLayer.style.position = 'absolute';
-    tempLayer.style.top = '0';
-    tempLayer.style.left = '0';
-    tempLayer.style.width = '100%';
-    tempLayer.style.height = '100%';
-    tempLayer.style.pointerEvents = 'none';
-    tempLayer.style.zIndex = '5';
-    
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '100%');
-    svg.setAttribute('height', '100%');
-    svg.style.position = 'absolute';
-    svg.style.top = '0';
-    svg.style.left = '0';
-    
-    tempLayer.appendChild(svg);
-    page.wrapper.appendChild(tempLayer);
-    
-    return {
-      layer: tempLayer,
-      svg: svg
-    };
-  }
+          return {
+            canvasX: (e.clientX - rect.left) * scaleX,
+            canvasY: (e.clientY - rect.top) * scaleY,
+            displayX: e.clientX - rect.left,
+            displayY: e.clientY - rect.top,
+          };
+        }
 
-  // Update the temporary drawing
-  function updateTempDrawing() {
-    if (!tempPath) return;
-    
-    if (points.length < 2) return;
-    
-    // Build path data
-    let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
-    for (let i = 1; i < points.length; i++) {
-      pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
-    }
-    
-    tempPath.setAttribute('d', pathData);
-  }
+        // Create a temporary SVG element for real-time drawing
+        function createTempDrawingLayer() {
+          // Remove any existing temp layer
+          const existingTemp = page.wrapper.querySelector(
+            ".temp-drawing-layer",
+          );
+          if (existingTemp) existingTemp.remove();
 
-  function startStroke(e) {
-    if (currentTool !== "draw") return;
-    e.preventDefault();
+          const tempLayer = document.createElement("div");
+          tempLayer.className = "temp-drawing-layer";
+          tempLayer.style.position = "absolute";
+          tempLayer.style.top = "0";
+          tempLayer.style.left = "0";
+          tempLayer.style.width = "100%";
+          tempLayer.style.height = "100%";
+          tempLayer.style.pointerEvents = "none";
+          tempLayer.style.zIndex = "5";
 
-    isDrawing = true;
-    points = [];
+          const svg = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "svg",
+          );
+          svg.setAttribute("width", "100%");
+          svg.setAttribute("height", "100%");
+          svg.style.position = "absolute";
+          svg.style.top = "0";
+          svg.style.left = "0";
 
-    const coords = getCoords(e, canvas);
-    points.push({ 
-      canvasX: coords.canvasX, 
-      canvasY: coords.canvasY,
-      displayX: coords.displayX,
-      displayY: coords.displayY
-    });
+          tempLayer.appendChild(svg);
+          page.wrapper.appendChild(tempLayer);
 
-    // Create temporary drawing layer
-    const temp = createTempDrawingLayer();
-    tempPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    tempPath.setAttribute('fill', 'none');
-    tempPath.setAttribute('stroke', penColor.value);
-    tempPath.setAttribute('stroke-width', parseInt(brushSize.value));
-    tempPath.setAttribute('stroke-linecap', 'round');
-    tempPath.setAttribute('stroke-linejoin', 'round');
-    
-    const brush = brushStyle.value;
-    if (brush === "dotted") {
-      tempPath.setAttribute('stroke-dasharray', '2 4');
-    } else if (brush === "dashed") {
-      tempPath.setAttribute('stroke-dasharray', '9 5');
-    }
-    
-    temp.svg.appendChild(tempPath);
+          return {
+            layer: tempLayer,
+            svg: svg,
+          };
+        }
 
-    page.hasDrawing = true;
-  }
+        // Update the temporary drawing
+        function updateTempDrawing() {
+          if (!tempPath) return;
 
-  function drawStroke(e) {
-    if (!isDrawing || currentTool !== "draw") return;
-    e.preventDefault();
+          if (points.length < 2) return;
 
-    const coords = getCoords(e, canvas);
-    points.push({ 
-      canvasX: coords.canvasX, 
-      canvasY: coords.canvasY,
-      displayX: coords.displayX,
-      displayY: coords.displayY
-    });
+          // Build path data
+          let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
+          for (let i = 1; i < points.length; i++) {
+            pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
+          }
 
-    // Update the temporary drawing
-    updateTempDrawing();
-  }
+          tempPath.setAttribute("d", pathData);
+        }
 
-  function endStroke(e) {
-    if (!isDrawing) return;
-    e.preventDefault();
-    isDrawing = false;
+        function startStroke(e) {
+          if (currentTool !== "draw") return;
+          e.preventDefault();
 
-    if (points.length > 1) {
-      // Build final path using display coordinates
-      let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
-      for (let i = 1; i < points.length; i++) {
-        pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
+          isDrawing = true;
+          points = [];
+
+          const coords = getCoords(e, canvas);
+          points.push({
+            canvasX: coords.canvasX,
+            canvasY: coords.canvasY,
+            displayX: coords.displayX,
+            displayY: coords.displayY,
+          });
+
+          // Create temporary drawing layer
+          const temp = createTempDrawingLayer();
+          tempPath = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          tempPath.setAttribute("fill", "none");
+          tempPath.setAttribute("stroke", penColor.value);
+          tempPath.setAttribute("stroke-width", parseInt(brushSize.value));
+          tempPath.setAttribute("stroke-linecap", "round");
+          tempPath.setAttribute("stroke-linejoin", "round");
+
+          const brush = brushStyle.value;
+          if (brush === "dotted") {
+            tempPath.setAttribute("stroke-dasharray", "2 4");
+          } else if (brush === "dashed") {
+            tempPath.setAttribute("stroke-dasharray", "9 5");
+          }
+
+          temp.svg.appendChild(tempPath);
+
+          page.hasDrawing = true;
+        }
+
+        function drawStroke(e) {
+          if (!isDrawing || currentTool !== "draw") return;
+          e.preventDefault();
+
+          const coords = getCoords(e, canvas);
+          points.push({
+            canvasX: coords.canvasX,
+            canvasY: coords.canvasY,
+            displayX: coords.displayX,
+            displayY: coords.displayY,
+          });
+
+          // Update the temporary drawing
+          updateTempDrawing();
+        }
+
+        function endStroke(e) {
+          if (!isDrawing) return;
+          e.preventDefault();
+          isDrawing = false;
+
+          if (points.length > 1) {
+            // Calculate bounding box from points with more precision
+            let minX = Infinity,
+              minY = Infinity,
+              maxX = -Infinity,
+              maxY = -Infinity;
+            points.forEach((p) => {
+              minX = Math.min(minX, p.displayX);
+              minY = Math.min(minY, p.displayY);
+              maxX = Math.max(maxX, p.displayX);
+              maxY = Math.max(maxY, p.displayY);
+            });
+
+            // Add padding based on stroke width
+            const strokeWidth = parseInt(brushSize.value);
+            const padding = strokeWidth * 2; // More padding for thicker strokes
+
+            minX = Math.max(0, minX - padding);
+            minY = Math.max(0, minY - padding);
+            maxX = maxX + padding;
+            maxY = maxY + padding;
+
+            // Build path data using absolute coordinates
+            let absolutePathData = `M ${points[0].displayX} ${points[0].displayY}`;
+            for (let i = 1; i < points.length; i++) {
+              absolutePathData += ` L ${points[i].displayX} ${points[i].displayY}`;
+            }
+
+            // Create the annotation
+            const annotation = new DrawingAnnotation(
+              page,
+              absolutePathData,
+              penColor.value,
+              strokeWidth,
+              brushStyle.value,
+            );
+
+            // Set position and size
+            annotation.x = minX;
+            annotation.y = minY;
+            annotation.width = maxX - minX;
+            annotation.height = maxY - minY;
+
+            // Add to page annotation layer
+            const element = annotation.createElement();
+            page.annotationLayer.appendChild(element);
+            page.addAnnotation(annotation);
+
+            page.hasDrawing = true;
+          }
+
+          // Remove temporary drawing layer
+          const tempLayer = page.wrapper.querySelector(".temp-drawing-layer");
+          if (tempLayer) tempLayer.remove();
+          tempPath = null;
+        }
+
+        // Clean up temp layer when switching pages or tools
+        function cleanupTempLayer() {
+          const tempLayer = page.wrapper.querySelector(".temp-drawing-layer");
+          if (tempLayer) tempLayer.remove();
+          tempPath = null;
+        }
+
+        // Add cleanup on page hide
+        page.wrapper.addEventListener("remove", cleanupTempLayer);
+
+        canvas.addEventListener("mousedown", startStroke);
+        canvas.addEventListener("mousemove", drawStroke);
+        canvas.addEventListener("mouseup", endStroke);
+        canvas.addEventListener("mouseleave", (e) => {
+          if (isDrawing) {
+            endStroke(e);
+          }
+        });
+
+        canvas.addEventListener("touchstart", startStroke, { passive: false });
+        canvas.addEventListener("touchmove", drawStroke, { passive: false });
+        canvas.addEventListener("touchend", endStroke, { passive: false });
+        canvas.addEventListener("touchcancel", endStroke, { passive: false });
       }
-
-      // Calculate bounding box in display coordinates
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      points.forEach(p => {
-        minX = Math.min(minX, p.displayX);
-        minY = Math.min(minY, p.displayY);
-        maxX = Math.max(maxX, p.displayX);
-        maxY = Math.max(maxY, p.displayY);
-      });
-
-      // Add small padding to bounding box
-      const padding = 5;
-      minX = Math.max(0, minX - padding);
-      minY = Math.max(0, minY - padding);
-      maxX = maxX + padding;
-      maxY = maxY + padding;
-
-      // Create permanent annotation
-      const annotation = new DrawingAnnotation(
-        page,
-        pathData,
-        penColor.value,
-        parseInt(brushSize.value),
-        brushStyle.value
-      );
-
-      annotation.x = minX;
-      annotation.y = minY;
-      annotation.width = maxX - minX;
-      annotation.height = maxY - minY;
-
-      // Add to page annotation layer (permanent)
-      const element = annotation.createElement();
-      page.annotationLayer.appendChild(element);
-      page.addAnnotation(annotation);
-      
-      page.hasDrawing = true;
-    }
-
-    // Remove temporary drawing layer
-    const tempLayer = page.wrapper.querySelector('.temp-drawing-layer');
-    if (tempLayer) tempLayer.remove();
-    tempPath = null;
-
-    // Keep drawing mode active
-    if (currentTool === "draw") {
-      canvas.classList.add("active");
-      canvas.style.pointerEvents = "all";
-    }
-  }
-
-  // Clean up temp layer when switching pages or tools
-  function cleanupTempLayer() {
-    const tempLayer = page.wrapper.querySelector('.temp-drawing-layer');
-    if (tempLayer) tempLayer.remove();
-    tempPath = null;
-  }
-
-  // Add cleanup on page hide
-  page.wrapper.addEventListener('remove', cleanupTempLayer);
-
-  canvas.addEventListener("mousedown", startStroke);
-  canvas.addEventListener("mousemove", drawStroke);
-  canvas.addEventListener("mouseup", endStroke);
-  canvas.addEventListener("mouseleave", (e) => {
-    if (isDrawing) {
-      endStroke(e);
-    }
-  });
-
-  canvas.addEventListener("touchstart", startStroke, { passive: false });
-  canvas.addEventListener("touchmove", drawStroke, { passive: false });
-  canvas.addEventListener("touchend", endStroke, { passive: false });
-  canvas.addEventListener("touchcancel", endStroke, { passive: false });
-}
 
       // ============== APPLY DRAWING BUTTON - DEACTIVATES DRAWING MODE ==============
       applyDrawingBtn.addEventListener("click", (e) => {

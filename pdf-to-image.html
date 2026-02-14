@@ -1321,8 +1321,8 @@
     <!-- JS -->
     <script src="./js/app.js"></script>
     <script>
-      const BACKEND_URL = `http://127.0.0.1:8080/pdf-to-image`;
-      const PAGE_COUNT_URL = `http://127.0.0.1:8080/pdf-page-count`;
+      const BACKEND_URL = `${BACKEND_BASE_URL}/pdf-to-image`;
+      const PAGE_COUNT_URL = `${BACKEND_BASE_URL}/pdf-page-count`;
 
       // Elements
       const pdfInput = document.getElementById("pdfUpload");
@@ -1497,6 +1497,10 @@
             throw new Error(errorData.error || "Conversion failed");
           }
 
+          // Check content type to determine if it's a ZIP or single image
+          const contentType = response.headers.get("content-type");
+          const isZip = contentType && contentType.includes("application/zip");
+
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           convertedFileUrl = url;
@@ -1505,13 +1509,16 @@
           const contentDisposition = response.headers.get(
             "Content-Disposition",
           );
-          let filename = "converted_images.zip";
+          let filename = isZip
+            ? "converted_images.zip"
+            : `converted_image.${selectedFormat}`;
 
           if (contentDisposition) {
-            const filenameMatch =
-              contentDisposition.match(/filename="?(.+)"?/i);
-            if (filenameMatch) {
-              filename = filenameMatch[1];
+            const filenameMatch = contentDisposition.match(
+              /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
+            );
+            if (filenameMatch && filenameMatch[1]) {
+              filename = filenameMatch[1].replace(/['"]/g, "");
             }
           }
 
@@ -1527,8 +1534,8 @@
           downloadBtn.download = filename;
 
           // Update result text based on file type
-          if (filename.endsWith(".zip")) {
-            resultText.textContent = `${pageCount} images ready for download`;
+          if (isZip) {
+            resultText.textContent = `${pageCount} images ready for download (ZIP archive)`;
           } else {
             resultText.textContent = "Image ready for download";
           }

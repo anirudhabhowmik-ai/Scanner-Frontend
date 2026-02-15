@@ -759,7 +759,6 @@
         .file-list .file-info {
           width: calc(100% - 2rem);
         }
-
       }
 
       /* Fix for container width conflict */
@@ -778,7 +777,6 @@
         .tool-header h2 {
           font-size: 1.5rem;
         }
-
       }
     </style>
   </head>
@@ -1002,10 +1000,7 @@
                 margin: 2rem 0;
               "
             >
-              <button
-                id="convertBtn"
-                class="cta-button"
-              >
+              <button id="convertBtn" class="cta-button">
                 <span class="btn-spinner">
                   <i class="fa fa-spinner fa-spin"></i> Converting...
                 </span>
@@ -1042,7 +1037,7 @@
                   href="#"
                   class="cta-button"
                   download="converted.pdf"
-                  style="display: block;"
+                  style="display: block"
                 >
                   <i class="fas fa-download"></i> Download PDF
                 </a>
@@ -1255,22 +1250,15 @@
 
       function getConversionOptions() {
         return {
-          // Screen size
           screenSize: document.getElementById("screenSize").value,
-
-          // Page size
           pageSize: document.getElementById("pageSize").value,
-
-          // Long page
-          longPage: document.getElementById("longPage").checked,
-
-          // Orientation
           orientation: document.querySelector(
             'input[name="orientation"]:checked',
           ).value,
-
-          // Margin
           margin: document.querySelector('input[name="margin"]:checked').value,
+          blockAds: document.getElementById("blockAds").checked,
+          removeOverlays: document.getElementById("removeOverlays").checked,
+          longPage: document.getElementById("longPage").checked,
         };
       }
 

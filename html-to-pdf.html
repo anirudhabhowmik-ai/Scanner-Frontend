@@ -157,28 +157,6 @@
     ></script>
 
     <style>
-      /* Additional styles that complement style.css */
-      .merge-tool {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: calc(100vh - 80px);
-        padding: 60px 20px;
-      }
-
-      .merge-tool h1 {
-        color: white;
-        font-size: 2.5rem;
-        margin-bottom: 0.5rem;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-family: "Montserrat", sans-serif;
-      }
-
-      .merge-tool > .container > p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
-        font-family: "Inter", sans-serif;
-      }
-
       .tool-card {
         background: white;
         border-radius: 24px;
@@ -603,68 +581,6 @@
         font-size: 1.25rem;
       }
 
-      .result-section {
-        text-align: center;
-        animation: fadeIn 0.3s ease;
-      }
-
-      .result-card {
-        background: linear-gradient(135deg, #ecfdf5 0%, #e0f2fe 100%);
-        padding: 2rem;
-        border-radius: 24px;
-        margin-bottom: 1.5rem;
-      }
-
-      .result-card i {
-        font-size: 4rem;
-        color: #10b981;
-        margin-bottom: 1rem;
-      }
-
-      .result-card h3 {
-        font-size: 1.5rem;
-        font-weight: 600;
-        color: #1f2937;
-        margin: 0 0 0.5rem 0;
-        font-family: "Montserrat", sans-serif;
-      }
-
-      .result-card p {
-        color: #4b5563;
-        font-family: "Inter", sans-serif;
-        margin: 0;
-      }
-
-      .file-name {
-        background: #f3f4f6;
-        padding: 0.75rem 1.5rem;
-        border-radius: 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 1rem 0;
-        font-family: "Inter", sans-serif;
-        max-width: 100%;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-
-      .file-name i {
-        color: #10b981;
-        font-size: 1.1rem;
-      }
-
-      .file-name a {
-        color: #10b981;
-        text-decoration: none;
-        font-weight: 500;
-        word-break: break-word;
-      }
-
-      .file-name a:hover {
-        text-decoration: underline;
-      }
-
       .action-group {
         display: flex;
         gap: 1rem;
@@ -844,10 +760,6 @@
           width: calc(100% - 2rem);
         }
 
-        .file-name {
-          padding: 0.75rem 1rem;
-          font-size: 0.95rem;
-        }
       }
 
       /* Fix for container width conflict */
@@ -867,24 +779,6 @@
           font-size: 1.5rem;
         }
 
-        .result-card {
-          padding: 1.5rem;
-        }
-
-        .result-card i {
-          font-size: 3rem;
-        }
-
-        .result-card h3 {
-          font-size: 1.25rem;
-        }
-
-        .file-name {
-          padding: 0.5rem 1rem;
-          font-size: 0.9rem;
-          flex-direction: column;
-          text-align: center;
-        }
       }
     </style>
   </head>
@@ -1111,12 +1005,6 @@
               <button
                 id="convertBtn"
                 class="cta-button"
-                style="
-                  background: #10b981;
-                  border: none;
-                  color: white;
-                  padding: 1rem 3rem;
-                "
               >
                 <span class="btn-spinner">
                   <i class="fa fa-spinner fa-spin"></i> Converting...
@@ -1140,14 +1028,11 @@
               class="result-section"
               style="display: none"
             >
-              <div class="result-card">
-                <i class="fas fa-check-circle"></i>
-                <h3>Conversion Complete!</h3>
-                <p>Your PDF has been generated successfully</p>
+              <div id="resultCard" class="result-card">
+                <i class="fa fa-file-pdf" aria-hidden="true"></i>
               </div>
 
               <div class="file-name">
-                <i class="fas fa-file-pdf"></i>
                 <a href="#" id="fileNameLink">converted.pdf</a>
               </div>
 
@@ -1157,10 +1042,9 @@
                   href="#"
                   class="cta-button"
                   download="converted.pdf"
-                  style="background: #10b981; border: none; color: white"
+                  style="display: block;"
                 >
-                  <i class="fas fa-download"></i>
-                  Download PDF
+                  <i class="fas fa-download"></i> Download PDF
                 </a>
                 <button id="resetBtn" class="secondary-btn">
                   <i class="fas fa-redo-alt"></i>

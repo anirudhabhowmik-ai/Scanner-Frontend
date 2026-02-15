@@ -1280,35 +1280,44 @@
         errorMsg.querySelector("span").textContent = msg;
       }
 
-      // Reset Button Click
+      // Reset Button Click - FIXED VERSION
       resetBtn.addEventListener("click", () => {
-        // Show input panels
+        // Reset form inputs
         urlInput.value = "";
         htmlInput.value = "";
         selectedFiles = [];
-        fileList.style.display = "none";
-        fileList.innerHTML = "";
 
-        // Show sections
-        uploadSection.style.display = "block";
+        // Reset file list
+        fileList.innerHTML = "";
+        fileList.style.display = "none";
+
+        // Show all input sections that were hidden during conversion
+        inputTabs.style.display = "flex"; // Show the tabs
         optionsSection.style.display = "block";
         settingsGroup.style.display = "block";
         infoBox.style.display = "flex";
+        convertBtn.style.display = "inline-flex"; // Show convert button
 
-        // Hide result and preview
+        // Reset to URL tab (first tab) and show the URL panel
+        tabs.forEach((t) => t.classList.remove("active"));
+        panels.forEach((p) => p.removeAttribute("style"));
+
+        tabs[0].classList.add("active"); // URL tab active
+        document.getElementById("urlPanel").classList.add("active"); // Show URL panel
+
+        // Hide result and preview sections
         resultSection.style.display = "none";
         previewSection.style.display = "none";
-        pdfFrame.src = "";
 
-        // Reset tabs to default
-        tabs.forEach((t) => t.classList.remove("active"));
-        panels.forEach((p) => p.classList.remove("active"));
-        tabs[0].classList.add("active"); // URL tab active
-        panels[0].classList.add("active"); // URL panel active
+        // Clear PDF preview
+        if (pdfFrame.src) {
+          URL.revokeObjectURL(pdfFrame.src);
+          pdfFrame.src = "";
+        }
 
-        // Reset options
-        document.getElementById("screenSize").selectedIndex = 0;
-        document.getElementById("pageSize").selectedIndex = 0;
+        // Reset all options to default values
+        document.getElementById("screenSize").value = "1358";
+        document.getElementById("pageSize").value = "A4";
         document.getElementById("longPage").checked = false;
         document.getElementById("portrait").checked = true;
         document.getElementById("marginNone").checked = false;
@@ -1317,8 +1326,11 @@
         document.getElementById("blockAds").checked = false;
         document.getElementById("removeOverlays").checked = false;
 
-        // Hide error if any
+        // Hide error message if visible
         errorMsg.style.display = "none";
+
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     </script>
   </body>

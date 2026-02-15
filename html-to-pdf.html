@@ -800,7 +800,7 @@
 
           <div class="tool-body">
             <!-- Input Tabs -->
-            <div class="input-tabs">
+            <div class="input-tabs" id="inputTabs">
               <button class="input-tab active" data-tab="url">
                 <i class="fas fa-globe"></i>
                 Website URL
@@ -844,7 +844,7 @@
             <ul id="fileList" class="file-list" style="display: none"></ul>
 
             <!-- Conversion Options -->
-            <div class="options-section">
+            <div class="options-section" id="optionsSection">
               <h3><i class="fas fa-sliders-h"></i> Conversion Settings</h3>
 
               <div class="options-grid">
@@ -961,7 +961,7 @@
             </div>
 
             <!-- Advanced Settings -->
-            <div class="settings-group">
+            <div class="settings-group" id="settingsGroup">
               <h4><i class="fas fa-cog"></i> Advanced HTML Settings</h4>
               <div
                 style="
@@ -982,7 +982,7 @@
             </div>
 
             <!-- Info Box -->
-            <div class="info-box">
+            <div class="info-box" id="infoBox">
               <i class="fas fa-lightbulb"></i>
               <p>
                 <strong>Tip:</strong> All styles, colors, and layout will be
@@ -1087,6 +1087,10 @@
       const previewSection = document.getElementById("previewSection");
       const pdfFrame = document.getElementById("pdfFrame");
       const fileUploadArea = document.getElementById("fileUploadArea");
+      const optionsSection = document.getElementById("optionsSection");
+      const settingsGroup = document.getElementById("settingsGroup");
+      const infoBox = document.getElementById("infoBox");
+      const inputTabs = document.getElementById("inputTabs");
 
       // Tab Elements
       const tabs = document.querySelectorAll(".input-tab");
@@ -1198,7 +1202,7 @@
         resultSection.style.display = "none";
         previewSection.style.display = "none";
 
-        const options = getConversionOptions(); // ✅ Get all selected options
+        const options = getConversionOptions();
         let formData = new FormData();
 
         if (tabs[0].classList.contains("active")) {
@@ -1235,6 +1239,15 @@
           const blob = await response.blob();
           const pdfUrl = URL.createObjectURL(blob);
 
+          // Hide input sections
+          inputTabs.style.display = "none";
+          panels.forEach((p) => (p.style.display = "none"));
+          fileList.style.display = "none";
+          optionsSection.style.display = "none";
+          settingsGroup.style.display = "none";
+          infoBox.style.display = "none";
+          convertBtn.style.display = "none";
+
           // Show results
           fileNameLink.href = pdfUrl;
           downloadBtn.href = pdfUrl;
@@ -1267,41 +1280,46 @@
         errorMsg.querySelector("span").textContent = msg;
       }
 
-      // Reset Button
+      // Reset Button Click
       resetBtn.addEventListener("click", () => {
-        selectedFiles = [];
-        fileList.innerHTML = "";
-        fileList.style.display = "none";
+        // Show input panels
         urlInput.value = "";
         htmlInput.value = "";
+        selectedFiles = [];
+        fileList.style.display = "none";
+        fileList.innerHTML = "";
 
-        document.querySelector(".input-tabs").style.display = "flex";
-        document
-          .querySelectorAll(".input-panel")
-          .forEach(
-            (p) =>
-              (p.style.display = p.classList.contains("active")
-                ? "block"
-                : "none"),
-          );
-        document.querySelector(".options-section").style.display = "block";
-        document.querySelector(".settings-group").style.display = "block";
-        document.querySelector(".info-box").style.display = "flex";
-        convertBtn.style.display = "inline-flex";
+        // Show sections
+        uploadSection.style.display = "block";
+        optionsSection.style.display = "block";
+        settingsGroup.style.display = "block";
+        infoBox.style.display = "flex";
 
+        // Hide result and preview
         resultSection.style.display = "none";
         previewSection.style.display = "none";
         pdfFrame.src = "";
 
+        // Reset tabs to default
+        tabs.forEach((t) => t.classList.remove("active"));
+        panels.forEach((p) => p.classList.remove("active"));
+        tabs[0].classList.add("active"); // URL tab active
+        panels[0].classList.add("active"); // URL panel active
+
+        // Reset options
+        document.getElementById("screenSize").selectedIndex = 0;
+        document.getElementById("pageSize").selectedIndex = 0;
+        document.getElementById("longPage").checked = false;
+        document.getElementById("portrait").checked = true;
+        document.getElementById("marginNone").checked = false;
+        document.getElementById("marginSmall").checked = true;
+        document.getElementById("marginBig").checked = false;
+        document.getElementById("blockAds").checked = false;
+        document.getElementById("removeOverlays").checked = false;
+
+        // Hide error if any
         errorMsg.style.display = "none";
-
-        window.scrollTo({ top: 0, behavior: "smooth" });
       });
-
-      function showError(message) {
-        errorMsg.style.display = "flex";
-        errorMsg.querySelector("span").textContent = message;
-      }
     </script>
   </body>
 </html>

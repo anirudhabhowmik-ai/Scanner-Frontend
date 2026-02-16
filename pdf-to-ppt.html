@@ -6,16 +6,111 @@
 
     <!-- Primary Meta Tags -->
     <title>
-      PDF to PowerPoint Converter with OCR - Free Online Tool | NextoPDF
+      PDF to PowerPoint Converter Online Free - Convert PDF to PPTX | NextoPDF
     </title>
     <meta
       name="title"
-      content="PDF to PowerPoint Converter with OCR - Free Online Tool | NextoPDF"
+      content="PDF to PowerPoint Converter Online Free - Convert PDF to PPTX | NextoPDF"
     />
     <meta
       name="description"
       content="Convert PDF to PowerPoint (PPTX) with automatic OCR detection. Transform scanned PDFs into editable presentations. Supports 14+ languages. Free and secure."
     />
+    <meta
+      name="keywords"
+      content="PDF to PowerPoint, PDF to PPTX, convert PDF to PPT, PDF converter, online PDF to PowerPoint, free PDF to PPTX converter, PDF to slides, OCR PowerPoint"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://nextopdf.com/pdf-to-ppt" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/pdf-to-ppt" />
+    <meta
+      property="og:title"
+      content="PDF to PowerPoint Converter Online Free - Convert PDF to PPTX | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Convert PDF to PowerPoint presentations online for free. Transform your PDF documents into editable PPTX slides with OCR support."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/pdf-to-ppt-og.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/pdf-to-ppt" />
+    <meta
+      name="twitter:title"
+      content="PDF to PowerPoint Converter Online Free - Convert PDF to PPTX | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Convert PDF to PowerPoint presentations online for free. Transform your PDF documents into editable PPTX slides."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/pdf-to-ppt-twitter.png"
+    />
+    <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
+
+    <!-- Structured Data / Schema.org -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF - PDF to PowerPoint Converter",
+        "url": "https://nextopdf.com/pdf-to-ppt",
+        "description": "Free online tool to convert PDF files to PowerPoint presentations with OCR support",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "Convert PDF to PPTX format",
+          "OCR support for scanned PDFs",
+          "14+ language support",
+          "Maintain formatting and layout",
+          "Secure and private processing",
+          "No registration required"
+        ]
+      }
+    </script>
+
+    <!-- Breadcrumb Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://nextopdf.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "PDF to PowerPoint",
+            "item": "https://nextopdf.com/pdf-to-ppt"
+          }
+        ]
+      }
+    </script>
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -37,7 +132,65 @@
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
 
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./images/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./images/apple-touch-icon.png"
+    />
+
     <style>
+      /* Accessibility: Skip to main content link */
+      .skip-to-main {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #4f46e5;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 100;
+        border-radius: 0 0 4px 0;
+        font-weight: 500;
+      }
+
+      .skip-to-main:focus {
+        top: 0;
+      }
+
+      /* Additional accessibility improvements */
+      button:focus,
+      a:focus,
+      input:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 2px;
+      }
+
+      /* Screen reader only text */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
       /* Enhanced Multi-select dropdown styles */
       .multi-select {
         position: relative;
@@ -385,7 +538,225 @@
         justify-content: center;
       }
 
+      /* Responsive subtitle styling */
+      .subtitle {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      /* Ad section spacing */
+      .ad-section {
+        min-height: 100px;
+      }
+
+      /* OCR Choice Dialog Styles */
+      .ocr-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+
+      .ocr-dialog.show {
+        display: flex;
+      }
+
+      .ocr-dialog-content {
+        background: white;
+        position: relative;
+        border-radius: 24px;
+        padding: 35px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+      }
+
+      .ocr-dialog-content h3 {
+        color: #1f2937;
+        margin-bottom: 15px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+      }
+
+      .ocr-dialog-content p {
+        color: #4b5563;
+        margin-bottom: 10px;
+        line-height: 1.6;
+        font-size: 16px;
+      }
+
+      .dialog-subtitle {
+        font-weight: 600;
+        color: #374151;
+        margin-top: 20px;
+        margin-bottom: 15px;
+      }
+
+      .ocr-dialog-options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 20px 0;
+      }
+
+      .ocr-dialog-options button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 20px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        width: 100%;
+        text-align: center;
+      }
+
+      .option-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 8px 0 5px;
+      }
+
+      .ocr-dialog-options button .option-desc {
+        font-size: 14px;
+        opacity: 0.9;
+        color: inherit;
+        line-height: 1.5;
+      }
+
+      .ocr-dialog-options .cta-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+      }
+
+      .ocr-dialog-options .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+      }
+
+      .ocr-dialog-options .secondary-btn {
+        background: white;
+        color: #4b5563;
+        border: 2px solid #e5e7eb;
+      }
+
+      .ocr-dialog-options .secondary-btn:hover {
+        border-color: #667eea;
+        background: #f9fafb;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .text-btn {
+        position: absolute;
+        top: 34px;
+        right: 15px;
+        background: red;
+        border: none;
+        color: #fff;
+        font-size: 20px;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999999;
+        cursor: pointer;
+      }
+
+      .text-btn:hover {
+        color: #ef4444;
+        background: #fef2f2;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Processing Dialog Styles */
+      .processing-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        backdrop-filter: blur(5px);
+      }
+
+      .processing-dialog.show {
+        display: flex;
+      }
+
+      .processing-dialog-content {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      }
+
+      .spinner {
+        width: 80px;
+        height: 80px;
+        border: 4px solid #f3f4f6;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
       @media (max-width: 768px) {
+        .subtitle {
+          font-size: 16px;
+        }
+
         .result-btns-container {
           flex-direction: column;
         }
@@ -396,16 +767,26 @@
         }
       }
     </style>
+
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
     <!-- Header -->
     <section id="header-placeholder"></section>
 
     <!-- Main Content -->
     <main id="main-content">
       <!-- PDF to PPT Tool Section -->
-      <section class="merge-tool">
+      <section class="merge-tool" aria-labelledby="ppt-heading">
         <div class="container">
           <h1 id="ppt-heading">
             NextoPDF - PDF to PowerPoint Converter with OCR
@@ -555,7 +936,775 @@
           </div>
         </div>
       </section>
+
+      <!-- AdSense Ad Placeholder (Above the fold) -->
+      <section class="ad-section" style="margin: 40px 0; text-align: center">
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- PDF to PPT ads 1 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- How to Convert Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>How to Convert PDF to PowerPoint Online</h2>
+          <p
+            style="
+              text-align: center;
+              color: #555;
+              margin-bottom: 40px;
+              max-width: 800px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            Follow these simple steps to convert your PDF documents into
+            editable PowerPoint presentations using our free online tool.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                1
+              </div>
+              <h3>Upload PDF File</h3>
+              <p>
+                Click "Choose PDF File" button and select your PDF document from
+                your device. Supported file types include both text-based and
+                scanned PDFs.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                2
+              </div>
+              <h3>Select Languages</h3>
+              <p>
+                Choose OCR languages if your PDF contains scanned images or text
+                in multiple languages. This ensures accurate text recognition
+                and conversion.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                3
+              </div>
+              <h3>Convert & Download</h3>
+              <p>
+                Click "Convert to PowerPoint" and wait a few moments. Once
+                converted, download your PPTX file immediately to your device
+                for editing.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Convert PDFs Section -->
+      <section class="benefits" style="background: white; padding: 60px 20px">
+        <div class="container">
+          <h2>Why Use Our PDF to PowerPoint Converter?</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-bolt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Lightning Fast</h3>
+              <p>
+                Convert PDF files to PowerPoint in seconds with our optimized
+                processing. No waiting in queues or slow uploads.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-shield-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Secure & Private</h3>
+              <p>
+                Your files are processed securely. We never store your PDFs on
+                our servers. Complete privacy and security guaranteed.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-dollar-sign"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>100% Free</h3>
+              <p>
+                Convert unlimited PDF files to PowerPoint without any charges,
+                subscriptions, or hidden fees. Free forever for everyone.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-user-lock"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>No Registration</h3>
+              <p>
+                Start converting PDFs immediately without creating an account or
+                providing personal information.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-mobile-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Works Everywhere</h3>
+              <p>
+                Use on any device - Windows, Mac, Linux, iOS, or Android. Works
+                perfectly in all modern browsers.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-language"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Multi-Language OCR</h3>
+              <p>
+                Support for 14+ languages with advanced OCR technology for
+                scanned PDFs and image-based documents.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AdSense Ad Placeholder (Mid-content) -->
+      <section
+        class="ad-section"
+        style="
+          margin: 40px 0;
+          text-align: center;
+          background: #f9fafb;
+          padding: 40px 20px;
+        "
+      >
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- PDF to PPT ads 2 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- Detailed Guide Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>Complete Guide to PDF to PowerPoint Conversion</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              What Does PDF to PowerPoint Conversion Mean?
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Converting PDF to PowerPoint means transforming a static PDF
+              document into an editable PPTX presentation file. This process
+              extracts content, images, and formatting from your PDF and
+              recreates them as PowerPoint slides. When you convert PDFs to
+              PowerPoint, you gain the ability to edit text, modify layouts, add
+              animations, and customize the presentation according to your
+              needs. This is particularly useful when you receive PDF reports,
+              documents, or presentations that you need to modify, update, or
+              repurpose for your own presentations.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Common Reasons to Convert PDF to PowerPoint
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              There are numerous practical situations where converting PDFs to
+              PowerPoint becomes essential:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Business Presentations:</strong> Convert PDF reports,
+                whitepapers, or proposals into editable PowerPoint presentations
+                for meetings and pitches.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Educational Materials:</strong> Transform PDF lecture
+                notes, textbooks, or research papers into presentation slides
+                for teaching or studying.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Content Repurposing:</strong> Reuse existing PDF content
+                by converting it to PowerPoint for webinars, training sessions,
+                or workshops.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Collaboration:</strong> Convert PDFs to PPTX format to
+                enable team members to collaborate and edit presentations
+                together.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Template Creation:</strong> Use PDF designs as a
+                starting point to create custom PowerPoint templates for your
+                organization.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Archive Modernization:</strong> Update old PDF
+                presentations to modern PowerPoint format with new branding and
+                features.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              How Our PDF to PowerPoint Converter Works
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Our online PDF to PowerPoint converter uses advanced technology to
+              transform your documents accurately. The tool first analyzes your
+              PDF to determine if it's text-based or image-based (scanned). For
+              text-based PDFs, we extract the content directly, maintaining
+              formatting, fonts, and layout. For scanned or image-based PDFs, we
+              employ OCR (Optical Character Recognition) technology to recognize
+              and extract text from images. The converter then intelligently
+              organizes the content into PowerPoint slides, preserving the
+              visual structure of your original PDF while making the content
+              fully editable in PPTX format.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Understanding OCR Technology for Scanned PDFs
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Optical Character Recognition (OCR) is a crucial technology for
+              converting scanned PDFs or image-based documents to PowerPoint.
+              When you upload a scanned PDF, our OCR engine analyzes the images,
+              identifies text characters, and converts them into editable text.
+              This process supports multiple languages including English, Hindi,
+              Bengali, Spanish, French, German, Italian, Portuguese, Russian,
+              Japanese, Korean, Chinese (Simplified and Traditional), Arabic,
+              Thai, and Vietnamese. You can select multiple languages if your
+              document contains text in different scripts, ensuring accurate
+              recognition across all content.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Tips for Best Conversion Results
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              To achieve the best results when converting your PDFs to
+              PowerPoint, consider these helpful tips:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                Use high-quality PDF files for better conversion accuracy,
+                especially for scanned documents
+              </li>
+              <li style="margin-bottom: 10px">
+                Select all relevant OCR languages before conversion if your
+                document is multilingual
+              </li>
+              <li style="margin-bottom: 10px">
+                For best results with scanned PDFs, ensure the original scan was
+                done at 300 DPI or higher
+              </li>
+              <li style="margin-bottom: 10px">
+                Review the converted PowerPoint file and make manual adjustments
+                to formatting if needed
+              </li>
+              <li style="margin-bottom: 10px">
+                If your PDF has complex layouts, you may need to reorganize some
+                content in PowerPoint after conversion
+              </li>
+              <li style="margin-bottom: 10px">
+                Keep backup copies of your original PDF files before conversion
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Security and Privacy Considerations
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              When converting PDFs online, security is paramount, especially
+              with sensitive business or personal documents. Our tool
+              prioritizes your privacy by using encrypted connections for all
+              file transfers. Files are processed securely and automatically
+              deleted from our servers immediately after conversion is complete.
+              We never access, store, or share the content of your documents.
+              However, if you're working with highly confidential information,
+              consider using the tool on a secure, private network. All
+              conversions are performed with enterprise-grade security measures
+              to protect your data.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Troubleshooting Common Conversion Issues
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              If you encounter problems while converting PDFs to PowerPoint,
+              here are solutions to common issues:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>File won't upload:</strong> Ensure your PDF isn't
+                password-protected. Remove password protection first before
+                conversion.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Conversion is slow:</strong> Large files or scanned PDFs
+                with many pages may take longer to process. Please be patient.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Text not recognized:</strong> For scanned PDFs, ensure
+                you've selected the correct OCR languages that match your
+                document.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Formatting issues:</strong> Complex PDF layouts may
+                require manual adjustments in PowerPoint after conversion.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>File size too large:</strong> If your PDF exceeds size
+                limits, try compressing it first or splitting it into smaller
+                sections.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Editing Your Converted PowerPoint Presentation
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              After converting your PDF to PowerPoint, you have full editing
+              capabilities. You can modify text content, change fonts and
+              colors, rearrange slides, add or remove images, insert animations
+              and transitions, and customize the design to match your branding.
+              The converted PPTX file is compatible with Microsoft PowerPoint,
+              Google Slides, LibreOffice Impress, and other presentation
+              software. This flexibility allows you to enhance and personalize
+              your presentation beyond what was possible in the original PDF
+              format. You can also export the edited presentation back to PDF if
+              needed.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About PDF to PowerPoint Conversion</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is it really free to convert PDF to PowerPoint on this website?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, absolutely! Our PDF to PowerPoint converter is completely
+                free with no hidden charges, subscriptions, or premium features.
+                You can convert unlimited files as many times as you need
+                without any cost.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will the converted PowerPoint file maintain the original
+                formatting?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our converter strives to maintain as much of the original
+                formatting as possible, including fonts, colors, images, and
+                layout. However, some complex PDF layouts may require minor
+                adjustments after conversion.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert scanned PDFs to PowerPoint?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! Our tool includes OCR technology that can recognize text in
+                scanned PDFs and convert them to editable PowerPoint
+                presentations. Select the appropriate languages for best
+                results.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is it safe to convert confidential documents online?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, your privacy is protected. We use secure encrypted
+                connections and automatically delete all files immediately after
+                processing. Your documents are never stored or accessed by
+                anyone.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What languages does the OCR support?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Our OCR technology supports 14+ languages including English,
+                Hindi, Bengali, Spanish, French, German, Italian, Portuguese,
+                Russian, Japanese, Korean, Chinese (Simplified and Traditional),
+                Arabic, Thai, and Vietnamese.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I edit the PowerPoint file after conversion?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! The converted file is a fully editable PPTX format that can
+                be opened and modified in Microsoft PowerPoint, Google Slides,
+                or any compatible presentation software.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert PDF to PowerPoint on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes! Our converter works perfectly on all devices including
+                smartphones and tablets running iOS or Android. The interface is
+                fully responsive and mobile-friendly.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What's the maximum file size I can convert?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                You can convert PDF files up to 50MB in size. For best
+                performance, we recommend files under 20MB. Larger files may
+                take longer to process.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Do I need to install any software?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No installation required! Our tool works entirely in your web
+                browser. Just visit the page, upload your PDF, and convert
+                instantly without downloading or installing anything.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does the conversion process take?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Most conversions complete in 10-30 seconds depending on file
+                size and complexity. Scanned PDFs with OCR processing may take
+                slightly longer.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert password-protected PDFs?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No, password-protected PDFs cannot be converted directly. You'll
+                need to remove the password protection first before conversion.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will images in my PDF be included in the PowerPoint?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, all images from your PDF will be included in the converted
+                PowerPoint presentation, maintaining their quality and
+                positioning as much as possible.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AdSense Ad Placeholder (Bottom) -->
+      <section
+        class="ad-section"
+        style="
+          margin: 40px 0;
+          text-align: center;
+          background: white;
+          padding: 40px 20px;
+        "
+      >
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- PDF to PPT ads 3 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: #f9fafb">
+        <div class="container">
+          <h2>Related PDF Tools You Might Need</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-file-pdf"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple PDF files into a single document quickly and
+                easily.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Merge PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce PDF file size to make it easier to email or upload
+                online.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Compress PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-file-word"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>PDF to Word</h3>
+              <p>
+                Convert PDF documents to editable Word format while maintaining
+                formatting.
+              </p>
+              <a
+                href="/pdf-to-word"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >PDF to Word</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section
+        class="hero"
+        style="
+          padding: 60px 20px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        "
+      >
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
+            Ready to Convert Your PDF to PowerPoint?
+          </h2>
+          <p style="margin-bottom: 25px; color: white">
+            Start transforming your PDF documents into editable presentations
+            now. Fast, secure, and completely free. No registration needed.
+          </p>
+          <a
+            href="#main-content"
+            class="cta-button"
+            style="background: white; color: #667eea"
+          >
+            <i class="fas fa-arrow-up" aria-hidden="true"></i> Convert PDF Now
+          </a>
+        </div>
+      </section>
     </main>
+
+    <!-- OCR Choice Dialog (Hidden by default) -->
+    <div
+      id="ocrChoiceDialog"
+      class="ocr-dialog"
+      role="dialog"
+      aria-labelledby="ocrDialogTitle"
+      aria-modal="true"
+    >
+      <div class="ocr-dialog-content">
+        <h3 id="ocrDialogTitle">
+          <i
+            class="fa fa-search"
+            aria-hidden="true"
+            style="margin-right: 10px; color: #667eea"
+          ></i>
+          OCR Detection Required
+        </h3>
+        <p>Your PDF appears to be image-based (scanned document or images).</p>
+        <p class="dialog-subtitle">Choose how to process:</p>
+        <div class="ocr-dialog-options">
+          <!-- <button id="ocrOption" class="cta-button" aria-label="Process with OCR">
+            <i class="fa fa-magic" aria-hidden="true" style="font-size: 24px; margin-bottom: 8px;"></i>
+            <span class="option-title">OCR Processing</span>
+            <span class="option-desc">Extract text from images - text will be editable and searchable in PowerPoint (slower but better)</span>
+          </button> -->
+          <button
+            id="imageOption"
+            class="secondary-btn"
+            aria-label="Convert as images only"
+          >
+            <i
+              class="fa fa-image"
+              aria-hidden="true"
+              style="font-size: 24px; margin-bottom: 8px"
+            ></i>
+            <span class="option-title">Image-Only</span>
+            <span class="option-desc"
+              >Convert as images without OCR - faster but text won't be
+              selectable</span
+            >
+          </button>
+        </div>
+        <button
+          id="cancelOption"
+          class="text-btn"
+          aria-label="Cancel conversion"
+        >
+          <i class="fa fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Processing Dialog (Hidden by default) -->
+    <div
+      id="processingDialog"
+      class="processing-dialog"
+      role="dialog"
+      aria-labelledby="processingTitle"
+      aria-modal="true"
+    >
+      <div class="processing-dialog-content">
+        <div class="spinner" aria-hidden="true"></div>
+        <h3
+          id="processingTitle"
+          style="color: #1f2937; margin-bottom: 10px; font-size: 22px"
+        >
+          Converting PDF to PowerPoint
+        </h3>
+        <p style="color: #6b7280; margin-bottom: 15px; font-size: 15px">
+          Processing your file...
+        </p>
+        <p style="color: #9ca3af; font-size: 13px">
+          This may take a moment. Please don't close this page.
+        </p>
+      </div>
+    </div>
 
     <!-- Footer -->
     <section id="footer-placeholder"></section>
@@ -579,6 +1728,13 @@
       const fileNameLink = document.getElementById("fileNameLink");
       const uploadSection = document.getElementById("uploadSection");
 
+      // Dialog elements
+      const ocrDialog = document.getElementById("ocrChoiceDialog");
+      const ocrOptionBtn = document.getElementById("ocrOption");
+      const imageOptionBtn = document.getElementById("imageOption");
+      const cancelOptionBtn = document.getElementById("cancelOption");
+      const processingDialog = document.getElementById("processingDialog");
+
       // ============================================================================
       // STATE
       // ============================================================================
@@ -592,7 +1748,6 @@
       // LANGUAGE SELECTION
       // ============================================================================
 
-      // Language options [code, name]
       const languages = [
         ["eng", "English"],
         ["hin", "Hindi"],
@@ -614,13 +1769,11 @@
 
       let selectedLangs = ["eng"];
 
-      // Multi-select dropdown elements
       const selectBox = document.getElementById("selectBox");
       const dropdown = document.getElementById("dropdown");
       const optionsDiv = document.getElementById("options");
       const searchInput = document.getElementById("searchLang");
 
-      // Render language options
       function renderOptions(filter = "") {
         optionsDiv.innerHTML = "";
         const filteredLangs = languages.filter((l) =>
@@ -648,7 +1801,6 @@
         });
       }
 
-      // Toggle language selection
       function toggleLang(l) {
         hideError();
         if (selectedLangs.includes(l[0])) {
@@ -660,7 +1812,6 @@
         renderOptions(searchInput.value);
       }
 
-      // Update selected language tags
       function updateTags() {
         selectBox.innerHTML = "";
         if (selectedLangs.length === 0) {
@@ -676,7 +1827,6 @@
           selectBox.appendChild(tag);
         });
 
-        // Add click handlers for remove buttons
         selectBox.querySelectorAll(".remove-tag").forEach((btn) => {
           btn.onclick = (e) => {
             e.stopPropagation();
@@ -686,7 +1836,6 @@
             renderOptions(searchInput.value);
           };
 
-          // Keyboard support for remove buttons
           btn.onkeypress = (e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
@@ -700,9 +1849,7 @@
         });
       }
 
-      // Toggle dropdown
       selectBox.onclick = (e) => {
-        // Don't toggle if clicking on remove button
         if (e.target.classList.contains("remove-tag")) return;
 
         const isOpen = dropdown.classList.contains("show");
@@ -717,10 +1864,8 @@
         }
       };
 
-      // Search functionality
       searchInput.oninput = (e) => renderOptions(e.target.value);
 
-      // Close dropdown when clicking outside
       document.addEventListener("click", (e) => {
         if (!selectBox.contains(e.target) && !dropdown.contains(e.target)) {
           dropdown.classList.remove("show");
@@ -729,7 +1874,6 @@
         }
       });
 
-      // Keyboard accessibility for select box
       selectBox.addEventListener("keypress", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -737,7 +1881,6 @@
         }
       });
 
-      // Initialize
       renderOptions();
       updateTags();
 
@@ -754,7 +1897,6 @@
         errorMsg.textContent = message;
         errorMsg.style.display = "block";
 
-        // Auto hide after 7 seconds
         setTimeout(() => {
           if (errorMsg.textContent === message) {
             errorMsg.style.display = "none";
@@ -763,7 +1905,6 @@
       }
 
       function showSuccess(message) {
-        // Create success message element if it doesn't exist
         let successMsg = document.getElementById("successMsg");
         if (!successMsg) {
           successMsg = document.createElement("div");
@@ -788,10 +1929,51 @@
         successMsg.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true" style="margin-right: 8px;"></i>${message}`;
         successMsg.style.display = "block";
 
-        // Auto hide after 4 seconds
         setTimeout(() => {
           successMsg.style.display = "none";
         }, 4000);
+      }
+
+      // ============================================================================
+      // DIALOG FUNCTIONS
+      // ============================================================================
+
+      function showOCRChoiceDialog() {
+        return new Promise((resolve) => {
+          ocrDialog.classList.add("show");
+
+          ocrOptionBtn.onclick = () => {
+            ocrDialog.classList.remove("show");
+            resolve("ocr");
+          };
+
+          imageOptionBtn.onclick = () => {
+            ocrDialog.classList.remove("show");
+            resolve("image");
+          };
+
+          cancelOptionBtn.onclick = () => {
+            ocrDialog.classList.remove("show");
+            resolve("cancel");
+          };
+
+          const escHandler = (e) => {
+            if (e.key === "Escape") {
+              ocrDialog.classList.remove("show");
+              document.removeEventListener("keydown", escHandler);
+              resolve("cancel");
+            }
+          };
+          document.addEventListener("keydown", escHandler);
+        });
+      }
+
+      function showProcessingDialog() {
+        processingDialog.classList.add("show");
+      }
+
+      function hideProcessingDialog() {
+        processingDialog.classList.remove("show");
       }
 
       // ============================================================================
@@ -821,21 +2003,16 @@
         fileList.appendChild(li);
       }
 
-      // File input change handler
       pdfInput.addEventListener("change", (e) => {
-        console.log("File input changed");
         hideError();
 
         if (pdfInput.files && pdfInput.files.length > 0) {
           const file = pdfInput.files[0];
-          console.log("File selected:", file.name, file.size, file.type);
 
-          // Validate file type
           if (
             file.type !== "application/pdf" &&
             !file.name.toLowerCase().endsWith(".pdf")
           ) {
-            console.error("Invalid file type:", file.type);
             showError("Please select a valid PDF file");
             pdfInput.value = "";
             selectedFile = null;
@@ -843,9 +2020,7 @@
             return;
           }
 
-          // Validate file size
           if (file.size > MAX_FILE_SIZE) {
-            console.error("File too large:", file.size);
             showError(
               `File size exceeds ${(MAX_FILE_SIZE / (1024 * 1024)).toFixed(0)}MB limit`,
             );
@@ -855,9 +2030,7 @@
             return;
           }
 
-          // Validate file is not empty
           if (file.size === 0) {
-            console.error("File is empty");
             showError("Selected file is empty. Please choose a valid PDF.");
             pdfInput.value = "";
             selectedFile = null;
@@ -866,17 +2039,14 @@
           }
 
           selectedFile = file;
-          console.log("File successfully set:", selectedFile);
           renderFileList();
           showSuccess(`File "${file.name}" selected successfully!`);
         } else {
-          console.log("No file selected");
           selectedFile = null;
           renderFileList();
         }
       });
 
-      // Delete file
       window.removeFile = function () {
         selectedFile = null;
         pdfInput.value = "";
@@ -889,7 +2059,6 @@
         formData.append("file", file);
 
         try {
-          console.log("Checking if PDF has text...");
           const response = await fetch(CHECK_TEXT_URL, {
             method: "POST",
             body: formData,
@@ -897,328 +2066,17 @@
 
           if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
-            console.error(
-              "Check text response not OK:",
-              response.status,
-              errorData,
-            );
             throw new Error(errorData.error || "Failed to check PDF text");
           }
 
           const result = await response.json();
-          console.log("PDF text check result:", result);
-          console.log(
-            `  - hasText: ${result.hasText} (${result.hasText ? "TEXT-BASED PDF" : "IMAGE-BASED PDF"})`,
-          );
-          console.log(`  - Reason: ${result.reason || "N/A"}`);
-
-          // Return the hasText value from the server
-          // true = TEXT-BASED PDF (has selectable text)
-          // false = IMAGE-BASED PDF (scanned/images)
           return result.hasText;
         } catch (error) {
-          console.error("Error checking PDF:", error);
-          // If check fails, assume it might be image-based to be safe
-          console.warn("Defaulting to image-based due to check failure");
           return false;
         }
       }
 
-      function showOCRChoiceDialog() {
-        return new Promise((resolve) => {
-          // Remove existing dialog if any
-          const existingDialog = document.getElementById("ocrChoiceDialog");
-          if (existingDialog) {
-            existingDialog.remove();
-          }
-
-          // Remove existing styles if any
-          const existingStyle = document.getElementById("ocrDialogStyle");
-          if (existingStyle) {
-            existingStyle.remove();
-          }
-
-          // Create dialog
-          const dialog = document.createElement("div");
-          dialog.id = "ocrChoiceDialog";
-          dialog.className = "ocr-dialog";
-          dialog.innerHTML = `
-      <div class="ocr-dialog-content">
-        <h3><i class="fa fa-search" aria-hidden="true" style="margin-right: 10px; color: #667eea;"></i>OCR Detection Required</h3>
-        <p>Your PDF appears to be image-based (scanned document or images).</p>
-        <p class="dialog-subtitle">Choose how to process:</p>
-        <div class="ocr-dialog-options">
-          <button id="ocrOption" class="cta-button">
-            <i class="fa fa-magic" aria-hidden="true" style="font-size: 24px; margin-bottom: 8px;"></i>
-            <span class="option-title">OCR Processing</span>
-            <span class="option-desc">Extract text from images - text will be editable and searchable in PowerPoint (slower but better)</span>
-          </button>
-          <button id="imageOption" class="secondary-btn">
-            <i class="fa fa-image" aria-hidden="true" style="font-size: 24px; margin-bottom: 8px;"></i>
-            <span class="option-title">Image-Only</span>
-            <span class="option-desc">Convert as images without OCR - faster but text won't be selectable</span>
-          </button>
-        </div>
-        <button id="cancelOption" class="text-btn">
-          <i class="fa fa-times" aria-hidden="true"></i> Cancel
-        </button>
-      </div>
-    `;
-
-          // Add styles
-          const style = document.createElement("style");
-          style.id = "ocrDialogStyle";
-          style.textContent = `
-      .ocr-dialog {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 99999;
-        animation: fadeIn 0.3s ease;
-        backdrop-filter: blur(5px);
-      }
-      
-      .ocr-dialog-content {
-        background: white;
-        border-radius: 24px;
-        padding: 35px;
-        max-width: 500px;
-        width: 90%;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-        animation: slideUp 0.3s ease;
-      }
-      
-      .ocr-dialog-content h3 {
-        color: #1f2937;
-        margin-bottom: 15px;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-      }
-      
-      .ocr-dialog-content p {
-        color: #4b5563;
-        margin-bottom: 10px;
-        line-height: 1.6;
-        font-size: 16px;
-      }
-      
-      .dialog-subtitle {
-        font-weight: 600;
-        color: #374151;
-        margin-top: 20px;
-        margin-bottom: 15px;
-      }
-      
-      .ocr-dialog-options {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        margin: 20px 0;
-      }
-      
-      .ocr-dialog-options button {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 25px 20px;
-        border-radius: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-        width: 100%;
-        text-align: center;
-      }
-      
-      .option-title {
-        font-size: 18px;
-        font-weight: 700;
-        margin: 8px 0 5px;
-      }
-      
-      .ocr-dialog-options button .option-desc {
-        font-size: 14px;
-        opacity: 0.9;
-        color: inherit;
-        line-height: 1.5;
-      }
-      
-      .ocr-dialog-options .cta-button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border: none;
-      }
-      
-      .ocr-dialog-options .cta-button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
-      }
-      
-      .ocr-dialog-options .secondary-btn {
-        background: white;
-        color: #4b5563;
-        border: 2px solid #e5e7eb;
-      }
-      
-      .ocr-dialog-options .secondary-btn:hover {
-        border-color: #667eea;
-        background: #f9fafb;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      }
-      
-      .text-btn {
-        background: none;
-        border: none;
-        color: #9ca3af;
-        cursor: pointer;
-        font-size: 14px;
-        width: 100%;
-        padding: 12px;
-        transition: all 0.2s ease;
-        border-radius: 8px;
-        margin-top: 10px;
-      }
-      
-      .text-btn:hover {
-        color: #ef4444;
-        background: #fef2f2;
-      }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-      
-      @keyframes slideUp {
-        from { 
-          opacity: 0;
-          transform: translateY(30px);
-        }
-        to { 
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-    `;
-
-          document.head.appendChild(style);
-          document.body.appendChild(dialog);
-
-          // Handle button clicks
-          document.getElementById("ocrOption").onclick = () => {
-            dialog.remove();
-            style.remove();
-            resolve("ocr");
-          };
-
-          document.getElementById("imageOption").onclick = () => {
-            dialog.remove();
-            style.remove();
-            resolve("image");
-          };
-
-          document.getElementById("cancelOption").onclick = () => {
-            dialog.remove();
-            style.remove();
-            resolve("cancel");
-          };
-
-          // Close on escape key
-          const escHandler = (e) => {
-            if (e.key === "Escape") {
-              dialog.remove();
-              style.remove();
-              document.removeEventListener("keydown", escHandler);
-              resolve("cancel");
-            }
-          };
-          document.addEventListener("keydown", escHandler);
-        });
-      }
-
-      function showProcessingDialog(pageCount = null) {
-        const dialog = document.createElement("div");
-        dialog.id = "processingDialog";
-        dialog.style.cssText = `
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      backdrop-filter: blur(5px);
-    `;
-
-        const content = `
-      <div style="
-        background: white;
-        border-radius: 20px;
-        padding: 40px;
-        max-width: 400px;
-        width: 90%;
-        text-align: center;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-      ">
-        <div style="
-          width: 80px;
-          height: 80px;
-          border: 4px solid #f3f4f6;
-          border-top: 4px solid #667eea;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-          margin: 0 auto 20px;
-        "></div>
-        <h3 style="color: #1f2937; margin-bottom: 10px; font-size: 22px;">
-          Converting PDF to PowerPoint
-        </h3>
-        <p style="color: #6b7280; margin-bottom: 15px; font-size: 15px;">
-          ${pageCount ? `Processing ${pageCount} page${pageCount > 1 ? "s" : ""}...` : "Processing..."}
-        </p>
-        <p style="color: #9ca3af; font-size: 13px;">
-          This may take a moment. Please don't close this page.
-        </p>
-      </div>
-    `;
-
-        dialog.innerHTML = content;
-
-        // Add animation style
-        const style = document.createElement("style");
-        style.textContent = `
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-    `;
-        document.head.appendChild(style);
-        document.body.appendChild(dialog);
-
-        return dialog;
-      }
-
-      function hideProcessingDialog() {
-        const dialog = document.getElementById("processingDialog");
-        if (dialog) {
-          dialog.remove();
-        }
-      }
-
       convertBtn.addEventListener("click", async () => {
-        console.log("\n=== CONVERSION STARTED ===");
-        console.log("Selected file:", selectedFile?.name);
-        console.log("Selected languages:", selectedLangs);
-
         if (isConverting) {
           showError("Conversion already in progress. Please wait.");
           return;
@@ -1239,59 +2097,37 @@
         convertBtn.classList.add("btn-loading");
         convertBtn.disabled = true;
 
-        let processingDialog = null;
-
         try {
-          // STEP 1: Check if PDF has text
-          console.log("\nSTEP 1: Checking PDF type...");
           const hasText = await checkPDFHasText(selectedFile);
 
           let conversionMode = "auto";
           let finalHasText = hasText;
 
-          // STEP 2: Decide whether to show dialog
           if (hasText) {
-            // TEXT-BASED PDF - Convert directly without dialog
-            console.log("\nSTEP 2: TEXT-BASED PDF detected");
-            console.log("  → Converting directly without showing dialog");
             conversionMode = "auto";
             finalHasText = true;
           } else {
-            // IMAGE-BASED PDF - Show dialog to user
-            console.log("\nSTEP 2: IMAGE-BASED PDF detected");
-            console.log(
-              "  → Showing dialog for user to choose processing method",
-            );
-
             const choice = await showOCRChoiceDialog();
-            console.log("  → User selected:", choice);
 
             if (choice === "cancel") {
-              console.log("  → User cancelled conversion");
               isConverting = false;
               convertBtn.classList.remove("btn-loading");
               convertBtn.disabled = false;
               return;
             }
 
-            conversionMode = choice; // 'ocr' or 'image'
+            conversionMode = choice;
             finalHasText = false;
           }
 
-          // STEP 3: Show processing dialog
-          console.log("\nSTEP 3: Starting conversion...");
-          console.log(`  → Mode: ${conversionMode}`);
-          console.log(`  → Has Text: ${finalHasText}`);
-          processingDialog = showProcessingDialog();
+          showProcessingDialog();
 
-          // STEP 4: Prepare and send request
           const formData = new FormData();
           formData.append("file", selectedFile);
           formData.append("lang", selectedLangs.join("+"));
           formData.append("mode", conversionMode);
           formData.append("has_text", finalHasText.toString());
 
-          console.log("\nSTEP 4: Sending to backend...");
           const res = await fetch(BACKEND_URL, {
             method: "POST",
             body: formData,
@@ -1317,9 +2153,6 @@
           const filename = `${baseName}.pptx`;
           convertedFileName = filename;
 
-          console.log("\n✓ CONVERSION SUCCESSFUL");
-
-          // Update UI
           fileList.style.display = "none";
           convertBtn.style.display = "none";
           uploadSection.style.display = "none";
@@ -1336,7 +2169,6 @@
             window.open(url, "_blank");
           };
 
-          // Show success message
           if (!hasText && conversionMode === "ocr") {
             showSuccess(
               "Image-based PDF processed with OCR! Text is now editable.",
@@ -1347,16 +2179,12 @@
             showSuccess("Text-based PDF converted successfully!");
           }
         } catch (err) {
-          console.error("\n✗ CONVERSION FAILED:", err);
           showError(err.message || "Conversion failed. Please try again.");
         } finally {
-          if (processingDialog) {
-            processingDialog.remove();
-          }
+          hideProcessingDialog();
           isConverting = false;
           convertBtn.classList.remove("btn-loading");
           convertBtn.disabled = false;
-          console.log("=== CONVERSION ENDED ===\n");
         }
       });
 
@@ -1364,9 +2192,7 @@
         if (!convertedFileUrl) return;
 
         try {
-          // Check if Web Share API is supported
           if (navigator.share && navigator.canShare) {
-            // Convert blob URL to File object for sharing
             const response = await fetch(convertedFileUrl);
             const blob = await response.blob();
             const file = new File([blob], convertedFileName, {
@@ -1383,7 +2209,6 @@
               await navigator.share(shareData);
               showSuccess("File shared successfully!");
             } else {
-              // Fallback: share without file
               await navigator.share({
                 title: "PowerPoint Presentation",
                 text: `I converted a PDF to PowerPoint`,
@@ -1391,7 +2216,6 @@
               });
             }
           } else {
-            // Fallback for browsers that don't support Web Share API
             const tempInput = document.createElement("input");
             tempInput.value = window.location.href;
             document.body.appendChild(tempInput);
@@ -1399,7 +2223,6 @@
             document.execCommand("copy");
             document.body.removeChild(tempInput);
 
-            // Show temporary notification
             const originalText = shareBtn.innerHTML;
             shareBtn.innerHTML =
               '<i class="fa fa-check" aria-hidden="true"></i> Link Copied!';
@@ -1412,9 +2235,7 @@
             showSuccess("Download link copied to clipboard!");
           }
         } catch (error) {
-          // User cancelled share or error occurred
           if (error.name !== "AbortError") {
-            console.log("Share failed:", error);
             showError("Sharing failed. You can still download the file.");
           }
         }
@@ -1425,7 +2246,6 @@
       // ============================================================================
 
       resetBtn.addEventListener("click", () => {
-        // Clean up blob URL
         if (convertedFileUrl) {
           URL.revokeObjectURL(convertedFileUrl);
         }
@@ -1459,35 +2279,41 @@
       const uploadLabel = document.querySelector(".upload-label");
 
       ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
-        uploadLabel.addEventListener(eventName, preventDefaults, false);
+        uploadLabel.addEventListener(
+          eventName,
+          (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+          },
+          false,
+        );
       });
 
-      function preventDefaults(e) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-
       ["dragenter", "dragover"].forEach((eventName) => {
-        uploadLabel.addEventListener(eventName, highlight, false);
+        uploadLabel.addEventListener(
+          eventName,
+          () => {
+            uploadLabel.classList.add("drag-over");
+            uploadLabel.style.transform = "scale(1.02)";
+            uploadLabel.style.borderColor = "#4f46e5";
+            uploadLabel.style.backgroundColor = "#f5f3ff";
+          },
+          false,
+        );
       });
 
       ["dragleave", "drop"].forEach((eventName) => {
-        uploadLabel.addEventListener(eventName, unhighlight, false);
+        uploadLabel.addEventListener(
+          eventName,
+          () => {
+            uploadLabel.classList.remove("drag-over");
+            uploadLabel.style.transform = "scale(1)";
+            uploadLabel.style.borderColor = "";
+            uploadLabel.style.backgroundColor = "";
+          },
+          false,
+        );
       });
-
-      function highlight() {
-        uploadLabel.classList.add("drag-over");
-        uploadLabel.style.transform = "scale(1.02)";
-        uploadLabel.style.borderColor = "#4f46e5";
-        uploadLabel.style.backgroundColor = "#f5f3ff";
-      }
-
-      function unhighlight() {
-        uploadLabel.classList.remove("drag-over");
-        uploadLabel.style.transform = "scale(1)";
-        uploadLabel.style.borderColor = "";
-        uploadLabel.style.backgroundColor = "";
-      }
 
       uploadLabel.addEventListener("drop", (e) => {
         const dt = e.dataTransfer;
@@ -1496,7 +2322,6 @@
         if (files.length > 0) {
           const file = files[0];
           if (file.type === "application/pdf") {
-            // Check file size
             if (file.size > MAX_FILE_SIZE) {
               showError(
                 `File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`,
@@ -1504,7 +2329,6 @@
               return;
             }
             selectedFile = file;
-            // Create a new FileList-like object
             const dataTransfer = new DataTransfer();
             dataTransfer.items.add(file);
             pdfInput.files = dataTransfer.files;
@@ -1520,7 +2344,6 @@
       // KEYBOARD SHORTCUTS
       // ============================================================================
 
-      // Keyboard accessibility for upload label
       document
         .querySelector(".upload-label")
         .addEventListener("keypress", (e) => {
@@ -1530,7 +2353,6 @@
           }
         });
 
-      // Ctrl/Cmd + Enter to convert
       document.addEventListener("keydown", (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
           if (
@@ -1547,20 +2369,11 @@
       // CLEANUP
       // ============================================================================
 
-      // Clean up blob URL when page unloads
       window.addEventListener("beforeunload", () => {
         if (convertedFileUrl) {
           URL.revokeObjectURL(convertedFileUrl);
         }
       });
-
-      // ============================================================================
-      // INITIALIZATION LOG
-      // ============================================================================
-
-      console.log("PDF to PowerPoint converter initialized");
-      console.log("Backend URL:", BACKEND_URL);
-      console.log("Check text URL:", CHECK_TEXT_URL);
     </script>
   </body>
 </html>

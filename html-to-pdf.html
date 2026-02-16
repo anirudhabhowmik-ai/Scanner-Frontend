@@ -865,56 +865,31 @@
                   </div>
                 </div>
 
-                <!-- Page Size -->
+                <!-- Page Format Options -->
                 <div class="option-card">
                   <div class="option-header">
                     <i class="fas fa-file"></i>
-                    <h4>Page Size</h4>
+                    <h4>Page Format</h4>
                   </div>
                   <div class="option-content">
-                    <select id="pageSize">
-                      <option value="A4">A4 (210x297 mm)</option>
-                      <option value="A3">A3 (297x420 mm)</option>
-                      <option value="A5">A5 (148x210 mm)</option>
-                      <option value="US_Letter">US Letter (216x279 mm)</option>
-                    </select>
-                    <div class="checkbox-option" style="margin-top: 1rem">
-                      <input type="checkbox" id="longPage" />
+                    <div class="checkbox-option">
+                      <input type="checkbox" id="longPage" checked />
                       <label for="longPage"
-                        >One long page (no page breaks)</label
+                        ><strong>One long page (no page breaks)</strong> -
+                        Recommended</label
                       >
                     </div>
-                  </div>
-                </div>
-
-                <!-- Orientation -->
-                <div class="option-card">
-                  <div class="option-header">
-                    <i class="fas fa-arrows-alt"></i>
-                    <h4>Orientation</h4>
-                  </div>
-                  <div class="option-content">
-                    <div class="radio-group">
-                      <div class="radio-option">
-                        <input
-                          type="radio"
-                          name="orientation"
-                          value="portrait"
-                          id="portrait"
-                          checked
-                        />
-                        <label for="portrait">Portrait</label>
-                      </div>
-                      <div class="radio-option">
-                        <input
-                          type="radio"
-                          name="orientation"
-                          value="landscape"
-                          id="landscape"
-                        />
-                        <label for="landscape">Landscape</label>
-                      </div>
-                    </div>
+                    <p
+                      style="
+                        font-size: 0.85rem;
+                        color: #6b7280;
+                        margin-top: 0.5rem;
+                        margin-bottom: 0;
+                      "
+                    >
+                      <i class="fas fa-info-circle"></i> Creates a single
+                      continuous PDF without page breaks
+                    </p>
                   </div>
                 </div>
 
@@ -972,13 +947,27 @@
               >
                 <div class="checkbox-option">
                   <input type="checkbox" id="blockAds" />
-                  <label for="blockAds">Try to block advertisements</label>
+                  <label for="blockAds"
+                    >Remove advertisements (preserves header content)</label
+                  >
                 </div>
                 <div class="checkbox-option">
                   <input type="checkbox" id="removeOverlays" />
                   <label for="removeOverlays">Remove overlay popups</label>
                 </div>
               </div>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: #6b7280;
+                  margin-top: 0.75rem;
+                  margin-bottom: 0;
+                "
+              >
+                <i class="fas fa-info-circle"></i> Ad blocking only targets
+                common ad elements while preserving header, navigation, and main
+                content.
+              </p>
             </div>
 
             <!-- Info Box -->
@@ -1264,13 +1253,10 @@
       function getConversionOptions() {
         return {
           screenSize: document.getElementById("screenSize").value,
-          pageSize: document.getElementById("pageSize").value,
-          orientation: document.querySelector(
-            'input[name="orientation"]:checked',
-          ).value,
           margin: document.querySelector('input[name="margin"]:checked').value,
           blockAds: document.getElementById("blockAds").checked,
           removeOverlays: document.getElementById("removeOverlays").checked,
+          // Get long page value from checkbox (checked by default)
           longPage: document.getElementById("longPage").checked,
         };
       }
@@ -1280,32 +1266,36 @@
         errorMsg.querySelector("span").textContent = msg;
       }
 
-      // Reset Button Click - FIXED VERSION
+      // Reset Button - Completely reset the form
       resetBtn.addEventListener("click", () => {
-        // Reset form inputs
-        urlInput.value = "";
-        htmlInput.value = "";
+        // Reset file selection
         selectedFiles = [];
-
-        // Reset file list
         fileList.innerHTML = "";
         fileList.style.display = "none";
+        urlInput.value = "";
+        htmlInput.value = "";
 
-        // Show all input sections that were hidden during conversion
-        inputTabs.style.display = "flex"; // Show the tabs
+        // Reset all options to defaults (longPage checked by default)
+        document.getElementById("screenSize").value = "1358";
+        document.getElementById("marginSmall").checked = true;
+        document.getElementById("longPage").checked = true; // Keep checked by default
+        document.getElementById("blockAds").checked = false;
+        document.getElementById("removeOverlays").checked = false;
+
+        // Show all input sections
+        inputTabs.style.display = "flex";
         optionsSection.style.display = "block";
         settingsGroup.style.display = "block";
         infoBox.style.display = "flex";
-        convertBtn.style.display = "inline-flex"; // Show convert button
+        convertBtn.style.display = "inline-flex";
 
-        // Reset to URL tab (first tab) and show the URL panel
+        // Reset to URL tab (first tab)
         tabs.forEach((t) => t.classList.remove("active"));
         panels.forEach((p) => p.removeAttribute("style"));
+        tabs[0].classList.add("active");
+        document.getElementById("urlPanel").classList.add("active");
 
-        tabs[0].classList.add("active"); // URL tab active
-        document.getElementById("urlPanel").classList.add("active"); // Show URL panel
-
-        // Hide result and preview sections
+        // Hide result sections
         resultSection.style.display = "none";
         previewSection.style.display = "none";
 
@@ -1315,18 +1305,7 @@
           pdfFrame.src = "";
         }
 
-        // Reset all options to default values
-        document.getElementById("screenSize").value = "1358";
-        document.getElementById("pageSize").value = "A4";
-        document.getElementById("longPage").checked = false;
-        document.getElementById("portrait").checked = true;
-        document.getElementById("marginNone").checked = false;
-        document.getElementById("marginSmall").checked = true;
-        document.getElementById("marginBig").checked = false;
-        document.getElementById("blockAds").checked = false;
-        document.getElementById("removeOverlays").checked = false;
-
-        // Hide error message if visible
+        // Clear error message
         errorMsg.style.display = "none";
 
         // Scroll to top smoothly

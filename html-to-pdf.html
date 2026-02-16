@@ -157,6 +157,37 @@
     ></script>
 
     <style>
+      /* Accessibility: Skip to main content link */
+      .skip-to-main {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background: #4f46e5;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        z-index: 100;
+        border-radius: 0 0 4px 0;
+        font-weight: 500;
+      }
+
+      .skip-to-main:focus {
+        top: 0;
+      }
+
+      /* Screen reader only text */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+
       .tool-card {
         background: white;
         border-radius: 24px;
@@ -237,6 +268,15 @@
       .input-tab:hover {
         color: #059669;
         background: #f9fafb;
+      }
+
+      /* Additional accessibility improvements */
+      button:focus,
+      a:focus,
+      input:focus,
+      select:focus {
+        outline: 2px solid #4f46e5;
+        outline-offset: 2px;
       }
 
       /* Input Panels */
@@ -365,15 +405,29 @@
       }
 
       .file-list .delete-file {
-        color: #ef4444;
+        background: #ef4444;
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
         cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         transition: all 0.2s;
-        padding: 0.5rem;
+        padding: 0;
       }
 
-      .file-list .delete-file:hover {
-        color: #dc2626;
+      .file-list .delete-file:hover,
+      .file-list .delete-file:focus {
+        background: #dc2626;
         transform: scale(1.1);
+      }
+
+      .file-list .delete-file i {
+        color: #fff;
+        font-size: 0.875rem;
       }
 
       .options-section {
@@ -689,6 +743,19 @@
         margin-top: 2rem;
       }
 
+      /* Responsive subtitle styling */
+      .subtitle {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+
+      /* Ad section spacing */
+      .ad-section {
+        min-height: 100px;
+      }
+
       @media (max-width: 768px) {
         .merge-tool h1 {
           font-size: 2rem;
@@ -759,6 +826,10 @@
         .file-list .file-info {
           width: calc(100% - 2rem);
         }
+
+        .subtitle {
+          font-size: 16px;
+        }
       }
 
       /* Fix for container width conflict */
@@ -782,278 +853,1096 @@
   </head>
 
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
     <section id="header-placeholder"></section>
 
-    <section class="merge-tool">
-      <div class="container">
-        <h1>HTML to PDF Converter</h1>
-        <p>
-          Transform websites and HTML files into professional PDF documents with
-          advanced customization
-        </p>
+    <main id="main-content">
+      <section class="merge-tool" aria-labelledby="converter-heading">
+        <div class="container">
+          <h1 id="converter-heading">
+            NextoPDF - HTML to PDF Converter Online Free
+          </h1>
+          <p class="subtitle">
+            NextoPDF - Transform websites and HTML files into professional PDF
+            documents with advanced customization. Fast, secure, and completely
+            free. No registration required.
+          </p>
 
-        <div class="tool-card">
-          <div class="tool-header">
-            <h2><i class="fas fa-file-code"></i> Convert to PDF</h2>
-            <p>Upload HTML files or enter a website URL to convert to PDF</p>
-          </div>
-
-          <div class="tool-body">
-            <!-- Input Tabs -->
-            <div class="input-tabs" id="inputTabs">
-              <button class="input-tab active" data-tab="url">
-                <i class="fas fa-globe"></i>
-                Website URL
-              </button>
-              <button class="input-tab" data-tab="file">
-                <i class="fas fa-file-code"></i>
-                HTML Files
-              </button>
+          <div class="tool-card">
+            <div class="tool-header">
+              <h2>
+                <i class="fas fa-file-code" aria-hidden="true"></i> Convert to
+                PDF
+              </h2>
+              <p>Upload HTML files or enter a website URL to convert to PDF</p>
             </div>
 
-            <!-- URL Input Panel -->
-            <div class="input-panel active" id="urlPanel">
-              <div class="url-input-wrapper">
-                <input
-                  type="text"
-                  id="urlInput"
-                  placeholder="Enter website URL (e.g., https://example.com)"
-                />
+            <div class="tool-body">
+              <!-- Input Tabs -->
+              <div
+                class="input-tabs"
+                id="inputTabs"
+                role="tablist"
+                aria-label="Conversion input method"
+              >
+                <button
+                  class="input-tab active"
+                  data-tab="url"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="urlPanel"
+                  id="urlTab"
+                >
+                  <i class="fas fa-globe" aria-hidden="true"></i>
+                  Website URL
+                </button>
+                <button
+                  class="input-tab"
+                  data-tab="file"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="filePanel"
+                  id="fileTab"
+                >
+                  <i class="fas fa-file-code" aria-hidden="true"></i>
+                  HTML Files
+                </button>
               </div>
-            </div>
 
-            <!-- File Input Panel -->
-            <div class="input-panel" id="filePanel">
-              <div id="uploadSection">
-                <div class="file-upload-area" id="fileUploadArea">
-                  <i class="fas fa-cloud-upload-alt"></i>
-                  <h3>Choose HTML Files</h3>
-                  <p>Click to browse or drag and drop</p>
+              <!-- URL Input Panel -->
+              <div
+                class="input-panel active"
+                id="urlPanel"
+                role="tabpanel"
+                aria-labelledby="urlTab"
+              >
+                <div class="url-input-wrapper">
+                  <label for="urlInput" class="sr-only">Website URL</label>
                   <input
-                    type="file"
-                    id="htmlUpload"
-                    accept=".html,.htm"
-                    multiple
-                    hidden
+                    type="url"
+                    id="urlInput"
+                    placeholder="Enter website URL (e.g., https://example.com)"
+                    aria-label="Enter website URL to convert to PDF"
                   />
                 </div>
               </div>
-            </div>
 
-            <!-- File List -->
-            <ul id="fileList" class="file-list" style="display: none"></ul>
-
-            <!-- Conversion Options -->
-            <div class="options-section" id="optionsSection">
-              <h3><i class="fas fa-sliders-h"></i> Conversion Settings</h3>
-
-              <div class="options-grid">
-                <!-- Screen Size -->
-                <div class="option-card">
-                  <div class="option-header">
-                    <i class="fas fa-desktop"></i>
-                    <h4>Screen Size</h4>
-                  </div>
-                  <div class="option-content">
-                    <select id="screenSize">
-                      <option value="1358">Your screen (1358px)</option>
-                      <option value="1920">Desktop HD (1920px)</option>
-                      <option value="1440">Desktop (1440px)</option>
-                      <option value="768">Tablet (768px)</option>
-                      <option value="320">Mobile (320px)</option>
-                    </select>
+              <!-- File Input Panel -->
+              <div
+                class="input-panel"
+                id="filePanel"
+                role="tabpanel"
+                aria-labelledby="fileTab"
+              >
+                <div id="uploadSection">
+                  <div
+                    class="file-upload-area"
+                    id="fileUploadArea"
+                    tabindex="0"
+                    role="button"
+                    aria-label="Choose HTML files to upload"
+                  >
+                    <i class="fas fa-cloud-upload-alt" aria-hidden="true"></i>
+                    <h3>Choose HTML Files</h3>
+                    <p>Click to browse or drag and drop</p>
+                    <input
+                      type="file"
+                      id="htmlUpload"
+                      accept=".html,.htm"
+                      multiple
+                      hidden
+                      aria-label="Select HTML files"
+                    />
                   </div>
                 </div>
+              </div>
 
-                <!-- Page Format Options -->
-                <div class="option-card">
-                  <div class="option-header">
-                    <i class="fas fa-file"></i>
-                    <h4>Page Format</h4>
-                  </div>
-                  <div class="option-content">
-                    <div class="checkbox-option">
-                      <input type="checkbox" id="longPage" checked />
-                      <label for="longPage"
-                        ><strong>One long page (no page breaks)</strong> -
-                        Recommended</label
-                      >
+              <!-- File List -->
+              <ul
+                id="fileList"
+                class="file-list"
+                style="display: none"
+                role="list"
+                aria-label="Selected HTML files"
+              ></ul>
+
+              <!-- Conversion Options -->
+              <div class="options-section" id="optionsSection">
+                <h3>
+                  <i class="fas fa-sliders-h" aria-hidden="true"></i> Conversion
+                  Settings
+                </h3>
+
+                <div class="options-grid">
+                  <!-- Screen Size -->
+                  <div class="option-card">
+                    <div class="option-header">
+                      <i class="fas fa-desktop" aria-hidden="true"></i>
+                      <h4>Screen Size</h4>
                     </div>
-                    <p
-                      style="
-                        font-size: 0.85rem;
-                        color: #6b7280;
-                        margin-top: 0.5rem;
-                        margin-bottom: 0;
-                      "
-                    >
-                      <i class="fas fa-info-circle"></i> Creates a single
-                      continuous PDF without page breaks
-                    </p>
+                    <div class="option-content">
+                      <label for="screenSize" class="sr-only"
+                        >Select screen size for conversion</label
+                      >
+                      <select id="screenSize" aria-label="Screen size">
+                        <option value="1358">Your screen (1358px)</option>
+                        <option value="1920">Desktop HD (1920px)</option>
+                        <option value="1440">Desktop (1440px)</option>
+                        <option value="768">Tablet (768px)</option>
+                        <option value="320">Mobile (320px)</option>
+                      </select>
+                    </div>
                   </div>
-                </div>
 
-                <!-- Page Margin -->
-                <div class="option-card">
-                  <div class="option-header">
-                    <i class="fas fa-expand"></i>
-                    <h4>Page Margin</h4>
-                  </div>
-                  <div class="option-content">
-                    <div class="radio-group">
-                      <div class="radio-option">
+                  <!-- Page Format Options -->
+                  <div class="option-card">
+                    <div class="option-header">
+                      <i class="fas fa-file" aria-hidden="true"></i>
+                      <h4>Page Format</h4>
+                    </div>
+                    <div class="option-content">
+                      <div class="checkbox-option">
                         <input
-                          type="radio"
-                          name="margin"
-                          value="none"
-                          id="marginNone"
-                        />
-                        <label for="marginNone">No margin</label>
-                      </div>
-                      <div class="radio-option">
-                        <input
-                          type="radio"
-                          name="margin"
-                          value="small"
-                          id="marginSmall"
+                          type="checkbox"
+                          id="longPage"
                           checked
+                          aria-describedby="longPageDesc"
                         />
-                        <label for="marginSmall">Small</label>
+                        <label for="longPage"
+                          ><strong>One long page (no page breaks)</strong> -
+                          Recommended</label
+                        >
                       </div>
-                      <div class="radio-option">
-                        <input
-                          type="radio"
-                          name="margin"
-                          value="big"
-                          id="marginBig"
-                        />
-                        <label for="marginBig">Big</label>
-                      </div>
+                      <p
+                        id="longPageDesc"
+                        style="
+                          font-size: 0.85rem;
+                          color: #6b7280;
+                          margin-top: 0.5rem;
+                          margin-bottom: 0;
+                        "
+                      >
+                        <i class="fas fa-info-circle" aria-hidden="true"></i>
+                        Creates a single continuous PDF without page breaks
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Page Margin -->
+                  <div class="option-card">
+                    <div class="option-header">
+                      <i class="fas fa-expand" aria-hidden="true"></i>
+                      <h4>Page Margin</h4>
+                    </div>
+                    <div class="option-content">
+                      <fieldset
+                        class="radio-group"
+                        aria-label="Page margin options"
+                      >
+                        <legend class="sr-only">Choose page margin size</legend>
+                        <div class="radio-option">
+                          <input
+                            type="radio"
+                            name="margin"
+                            value="none"
+                            id="marginNone"
+                            aria-label="No margin"
+                          />
+                          <label for="marginNone">No margin</label>
+                        </div>
+                        <div class="radio-option">
+                          <input
+                            type="radio"
+                            name="margin"
+                            value="small"
+                            id="marginSmall"
+                            checked
+                            aria-label="Small margin"
+                          />
+                          <label for="marginSmall">Small</label>
+                        </div>
+                        <div class="radio-option">
+                          <input
+                            type="radio"
+                            name="margin"
+                            value="big"
+                            id="marginBig"
+                            aria-label="Big margin"
+                          />
+                          <label for="marginBig">Big</label>
+                        </div>
+                      </fieldset>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <!-- Advanced Settings -->
-            <div class="settings-group" id="settingsGroup">
-              <h4><i class="fas fa-cog"></i> Advanced HTML Settings</h4>
+              <!-- Advanced Settings -->
+              <div class="settings-group" id="settingsGroup">
+                <h4>
+                  <i class="fas fa-cog" aria-hidden="true"></i> Advanced HTML
+                  Settings
+                </h4>
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                  "
+                >
+                  <div class="checkbox-option">
+                    <input
+                      type="checkbox"
+                      id="blockAds"
+                      aria-describedby="blockAdsDesc"
+                    />
+                    <label for="blockAds"
+                      >Remove advertisements (preserves header content)</label
+                    >
+                  </div>
+                  <div class="checkbox-option">
+                    <input
+                      type="checkbox"
+                      id="removeOverlays"
+                      aria-describedby="overlaysDesc"
+                    />
+                    <label for="removeOverlays">Remove overlay popups</label>
+                  </div>
+                </div>
+                <p
+                  id="blockAdsDesc"
+                  style="
+                    font-size: 0.85rem;
+                    color: #6b7280;
+                    margin-top: 0.75rem;
+                    margin-bottom: 0;
+                  "
+                >
+                  <i class="fas fa-info-circle" aria-hidden="true"></i> Ad
+                  blocking only targets common ad elements while preserving
+                  header, navigation, and main content.
+                </p>
+              </div>
+
+              <!-- Info Box -->
+              <div
+                class="info-box"
+                id="infoBox"
+                role="status"
+                aria-live="polite"
+              >
+                <i class="fas fa-lightbulb" aria-hidden="true"></i>
+                <p>
+                  <strong>Tip:</strong> All styles, colors, and layout will be
+                  preserved in the PDF. For best results with websites, ensure
+                  the URL is publicly accessible.
+                </p>
+              </div>
+
+              <!-- Action Buttons -->
               <div
                 style="
-                  display: grid;
-                  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                  display: flex;
                   gap: 1rem;
+                  justify-content: center;
+                  margin: 2rem 0;
                 "
               >
-                <div class="checkbox-option">
-                  <input type="checkbox" id="blockAds" />
-                  <label for="blockAds"
-                    >Remove advertisements (preserves header content)</label
-                  >
-                </div>
-                <div class="checkbox-option">
-                  <input type="checkbox" id="removeOverlays" />
-                  <label for="removeOverlays">Remove overlay popups</label>
-                </div>
-              </div>
-              <p
-                style="
-                  font-size: 0.85rem;
-                  color: #6b7280;
-                  margin-top: 0.75rem;
-                  margin-bottom: 0;
-                "
-              >
-                <i class="fas fa-info-circle"></i> Ad blocking only targets
-                common ad elements while preserving header, navigation, and main
-                content.
-              </p>
-            </div>
-
-            <!-- Info Box -->
-            <div class="info-box" id="infoBox">
-              <i class="fas fa-lightbulb"></i>
-              <p>
-                <strong>Tip:</strong> All styles, colors, and layout will be
-                preserved in the PDF. For best results with websites, ensure the
-                URL is publicly accessible.
-              </p>
-            </div>
-
-            <!-- Action Buttons -->
-            <div
-              style="
-                display: flex;
-                gap: 1rem;
-                justify-content: center;
-                margin: 2rem 0;
-              "
-            >
-              <button id="convertBtn" class="cta-button">
-                <span class="btn-spinner">
-                  <i class="fa fa-spinner fa-spin"></i> Converting...
-                </span>
-                <span class="btn-text">
-                  <i class="fas fa-file-pdf"></i>
-                  Convert to PDF
-                </span>
-              </button>
-            </div>
-
-            <!-- Error Message -->
-            <div id="errorMsg" class="error-message" style="display: none">
-              <i class="fas fa-exclamation-circle"></i>
-              <span></span>
-            </div>
-
-            <!-- Result Section -->
-            <div
-              id="resultSection"
-              class="result-section"
-              style="display: none"
-            >
-              <div id="resultCard" class="result-card">
-                <i class="fa fa-file-pdf" aria-hidden="true"></i>
-              </div>
-
-              <div class="file-name">
-                <a href="#" id="fileNameLink">converted.pdf</a>
-              </div>
-
-              <div class="action-group">
-                <a
-                  id="downloadBtn"
-                  href="#"
+                <button
+                  id="convertBtn"
                   class="cta-button"
-                  download="converted.pdf"
-                  style="display: block"
+                  aria-label="Convert to PDF"
                 >
-                  <i class="fas fa-download"></i> Download PDF
-                </a>
-                <button id="resetBtn" class="secondary-btn">
-                  <i class="fas fa-redo-alt"></i>
-                  Convert Another
+                  <span class="btn-spinner">
+                    <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+                    Converting...
+                  </span>
+                  <span class="btn-text">
+                    <i class="fas fa-file-pdf" aria-hidden="true"></i>
+                    Convert to PDF
+                  </span>
                 </button>
               </div>
-            </div>
 
-            <!-- PDF Preview -->
-            <div
-              id="previewSection"
-              class="preview-section"
-              style="display: none"
-            >
-              <h4><i class="fas fa-eye"></i> PDF Preview</h4>
-              <iframe
-                id="pdfFrame"
-                class="preview-frame"
-                title="PDF Preview"
-              ></iframe>
+              <!-- Error Message -->
+              <div
+                id="errorMsg"
+                class="error-message"
+                style="display: none"
+                role="alert"
+                aria-live="assertive"
+              >
+                <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+                <span></span>
+              </div>
+
+              <!-- Result Section -->
+              <div
+                id="resultSection"
+                class="result-section"
+                style="display: none"
+                role="region"
+                aria-label="Conversion results"
+              >
+                <div id="resultCard" class="result-card">
+                  <i class="fa fa-file-pdf" aria-hidden="true"></i>
+                </div>
+
+                <div class="file-name">
+                  <a href="#" id="fileNameLink" aria-label="View converted PDF"
+                    >converted.pdf</a
+                  >
+                </div>
+
+                <div class="action-group">
+                  <a
+                    id="downloadBtn"
+                    href="#"
+                    class="cta-button"
+                    download="converted.pdf"
+                    style="display: block"
+                    aria-label="Download converted PDF"
+                  >
+                    <i class="fas fa-download" aria-hidden="true"></i> Download
+                    PDF
+                  </a>
+                  <button
+                    id="resetBtn"
+                    class="secondary-btn"
+                    aria-label="Convert another file"
+                  >
+                    <i class="fas fa-redo-alt" aria-hidden="true"></i>
+                    Convert Another
+                  </button>
+                </div>
+              </div>
+
+              <!-- PDF Preview -->
+              <div
+                id="previewSection"
+                class="preview-section"
+                style="display: none"
+              >
+                <h4>
+                  <i class="fas fa-eye" aria-hidden="true"></i> PDF Preview
+                </h4>
+                <iframe
+                  id="pdfFrame"
+                  class="preview-frame"
+                  title="PDF Preview"
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- AdSense Ad Placeholder (Above the fold) -->
+      <section class="ad-section" style="margin: 40px 0; text-align: center">
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- index ads 1 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- How to Convert HTML to PDF Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>How to Convert HTML to PDF Online</h2>
+          <p
+            style="
+              text-align: center;
+              color: #555;
+              margin-bottom: 40px;
+              max-width: 800px;
+              margin-left: auto;
+              margin-right: auto;
+            "
+          >
+            Follow these simple steps to convert HTML files or websites to PDF
+            format using our free online converter tool.
+          </p>
+
+          <div class="feature-grid">
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                1
+              </div>
+              <h3>Choose Input Method</h3>
+              <p>
+                Select either "Website URL" to convert a live website or "HTML
+                Files" to upload HTML files from your device. You can convert
+                multiple HTML files at once.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                2
+              </div>
+              <h3>Customize Settings</h3>
+              <p>
+                Adjust screen size, page format, margins, and advanced options
+                like ad removal. Choose settings that best fit your needs for
+                the perfect PDF output.
+              </p>
+            </div>
+            <div class="feature-card">
+              <div
+                style="
+                  font-size: 48px;
+                  color: #4f46e5;
+                  font-weight: bold;
+                  margin-bottom: 10px;
+                "
+              >
+                3
+              </div>
+              <h3>Convert & Download</h3>
+              <p>
+                Click "Convert to PDF" and wait a few seconds. Preview your PDF,
+                then download it immediately to your device. Ready to share or
+                print!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Use HTML to PDF Converter Section -->
+      <section class="benefits" style="background: white; padding: 60px 20px">
+        <div class="container">
+          <h2>Why Use Our HTML to PDF Converter?</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-palette"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Perfect Formatting</h3>
+              <p>
+                Preserves all CSS styles, colors, fonts, images, and layout
+                exactly as they appear in the original HTML or website.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-sliders-h"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Customizable Options</h3>
+              <p>
+                Control screen size, page format, margins, and advanced settings
+                to get exactly the PDF output you need for your project.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-shield-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Secure & Private</h3>
+              <p>
+                Your files are processed securely and deleted immediately after
+                conversion. We never store or access your HTML content.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-bolt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Lightning Fast</h3>
+              <p>
+                Convert HTML to PDF in seconds with our optimized processing. No
+                lengthy wait times or slow conversions.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-dollar-sign"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>100% Free</h3>
+              <p>
+                Convert unlimited HTML files to PDF without any charges,
+                subscriptions, or hidden fees. Free forever for everyone.
+              </p>
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-mobile-alt"
+                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Works Everywhere</h3>
+              <p>
+                Use on any device - Windows, Mac, Linux, iOS, or Android. Works
+                perfectly in all modern browsers without installation.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AdSense Ad Placeholder (Mid-content) -->
+      <section
+        class="ad-section"
+        style="
+          margin: 40px 0;
+          text-align: center;
+          background: #f9fafb;
+          padding: 40px 20px;
+        "
+      >
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- index ads 1 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- Detailed Guide Section -->
+      <section class="features" style="background: white">
+        <div class="container">
+          <h2>Complete Guide to Converting HTML to PDF</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              What is HTML to PDF Conversion?
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              HTML to PDF conversion is the process of transforming web pages or
+              HTML documents into PDF (Portable Document Format) files. This
+              process captures the visual appearance of the HTML content,
+              including all formatting, styles, images, and layout, and converts
+              it into a static PDF document. The resulting PDF preserves the
+              original design while making the content easily shareable,
+              printable, and viewable across all devices and platforms without
+              requiring a web browser or internet connection.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Common Uses for HTML to PDF Conversion
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Converting HTML to PDF serves numerous practical purposes across
+              various scenarios:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Web Page Archiving:</strong> Save important web pages,
+                articles, or blog posts as PDFs for offline reading and
+                permanent archival before content changes or disappears.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Documentation:</strong> Convert technical documentation,
+                user guides, or help pages into PDF format for easy distribution
+                and printing.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Reports and Presentations:</strong> Transform HTML-based
+                reports, dashboards, or presentations into professional PDF
+                documents for sharing with clients and stakeholders.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Email Newsletters:</strong> Convert HTML email templates
+                into PDFs for attachments or archival purposes.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Receipts and Invoices:</strong> Generate PDF copies of
+                online receipts, invoices, or transaction records for accounting
+                and record-keeping.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Portfolio Creation:</strong> Combine multiple HTML pages
+                into PDF documents to create digital portfolios or compilations
+                of work.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              How Our HTML to PDF Converter Works
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              Our converter uses advanced rendering technology to accurately
+              transform HTML content into PDF format. When you provide a URL,
+              our system fetches the web page, processes its HTML and CSS,
+              renders it using a headless browser engine, and generates a
+              high-quality PDF that maintains all visual elements. For uploaded
+              HTML files, the converter processes the markup along with any
+              embedded styles and creates a faithful PDF representation. The
+              tool supports various customization options including screen size
+              simulation, page formatting, and content filtering to give you
+              complete control over the final output.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Understanding Screen Size Options
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              The screen size setting determines how the web page is rendered
+              before conversion. Different screen widths affect how responsive
+              websites display their content. Choosing "Desktop HD (1920px)"
+              captures the website as it would appear on a large desktop
+              monitor, ideal for capturing full-width designs and detailed
+              layouts. The "Tablet (768px)" option shows how the site appears on
+              tablet devices, often triggering different layouts in responsive
+              designs. "Mobile (320px)" captures the mobile version, useful for
+              creating PDFs of mobile-optimized content. Select the screen size
+              that best represents how you want the content to appear in your
+              PDF.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Page Format and Margin Settings
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              The "One long page" option creates a single continuous PDF without
+              page breaks, which is recommended for web content as it preserves
+              the natural flow of the page. This prevents awkward breaks in the
+              middle of sections or images. When disabled, the converter will
+              create multiple pages with standard page breaks. Margin settings
+              control the white space around the content. "No margin" maximizes
+              content area, "Small" provides minimal spacing for a cleaner look,
+              and "Big" creates substantial margins useful for printing or
+              annotation. Choose based on whether the PDF is for digital viewing
+              or physical printing.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Advanced Options: Ad Removal and Overlays
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              The ad removal feature intelligently identifies and filters common
+              advertisement elements from web pages, creating cleaner PDFs
+              focused on the main content. This option preserves headers,
+              navigation, and actual content while removing banner ads, sidebar
+              advertisements, and promotional elements. The "Remove overlay
+              popups" option eliminates modal dialogs, cookie notices,
+              newsletter signup popups, and other overlay elements that might
+              obstruct content in the PDF. These features are particularly
+              useful when converting news articles, blog posts, or informational
+              websites where advertisements can clutter the final document.
+            </p>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Tips for Best Results
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              To achieve optimal PDF output from your HTML conversions:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                Ensure URLs are publicly accessible and not behind login walls
+                or paywalls
+              </li>
+              <li style="margin-bottom: 10px">
+                For uploaded HTML files, include all referenced CSS, images, and
+                resources
+              </li>
+              <li style="margin-bottom: 10px">
+                Test different screen sizes to find the best layout for your
+                content
+              </li>
+              <li style="margin-bottom: 10px">
+                Use the "One long page" option for single-page websites and
+                articles
+              </li>
+              <li style="margin-bottom: 10px">
+                Enable ad removal for cleaner, more professional-looking PDFs
+              </li>
+              <li style="margin-bottom: 10px">
+                Preview the PDF before downloading to verify all content is
+                captured correctly
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Troubleshooting Common Issues
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              If you encounter problems during conversion, here are solutions:
+            </p>
+            <ul
+              style="
+                color: #555;
+                line-height: 1.8;
+                margin-bottom: 25px;
+                padding-left: 25px;
+              "
+            >
+              <li style="margin-bottom: 10px">
+                <strong>Missing images or styles:</strong> Ensure all resources
+                use absolute URLs or are properly embedded in uploaded HTML
+                files.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Page appears blank:</strong> The website might have
+                access restrictions or require JavaScript. Try a different URL
+                or upload the HTML directly.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Layout looks wrong:</strong> Adjust the screen size
+                setting to match your intended display width.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Unwanted content in PDF:</strong> Enable ad removal and
+                overlay removal options to filter unnecessary elements.
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Conversion takes too long:</strong> Large or complex web
+                pages may take longer. Simpler pages convert faster.
+              </li>
+            </ul>
+
+            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
+              Security and Privacy Considerations
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
+              When converting HTML to PDF online, your privacy is protected
+              through secure processing. For URL conversions, our system
+              accesses only the specific page you provide and immediately
+              discards it after conversion. Uploaded HTML files are processed
+              temporarily and deleted immediately after the PDF is generated.
+              All connections use encryption to protect data in transit. We
+              never store, log, or access the content of your conversions.
+              However, avoid converting pages containing sensitive personal
+              information, financial data, or confidential business information
+              unless using the tool on a secure, private network.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="features" style="background: #f9fafb">
+        <div class="container">
+          <h2>Frequently Asked Questions About HTML to PDF Conversion</h2>
+          <div style="max-width: 800px; margin: 0 auto; text-align: left">
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is this HTML to PDF converter really free?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, our HTML to PDF converter is completely free with no hidden
+                charges, subscriptions, or premium upgrades. You can convert
+                unlimited HTML files and websites to PDF without any cost.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert websites that require login?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                No, the converter can only access publicly available web pages.
+                For content behind login walls, you'll need to save the HTML
+                locally while logged in, then upload the HTML file to our
+                converter.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Will all styles and images be preserved in the PDF?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, our converter captures all CSS styles, fonts, colors,
+                images, and layout elements from the original HTML. The PDF will
+                look identical to how the page appears in a web browser.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What's the difference between URL and file upload?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                URL conversion fetches a live website from the internet and
+                converts it. File upload converts HTML files stored on your
+                device. Use URL for converting any public website, and file
+                upload for HTML documents you've created or saved locally.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                How long does the conversion process take?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Most conversions complete within 5-15 seconds. Complex pages
+                with many images or heavy scripts may take up to 30 seconds. The
+                time depends on the page size and complexity.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I convert multiple HTML files at once?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, when using the file upload option, you can select and
+                convert multiple HTML files simultaneously. Each file will be
+                processed and combined into a single PDF document.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What does the "One long page" option do?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                This creates a single continuous PDF without page breaks, which
+                is ideal for web content. It prevents awkward breaks in the
+                middle of paragraphs or images and maintains the natural flow of
+                the web page.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Does the ad removal feature work on all websites?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                The ad removal feature targets common advertisement patterns and
+                works on most websites. It filters standard ad formats while
+                preserving the main content, headers, and navigation. Some
+                custom ad implementations might not be detected.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Is my data safe when using this converter?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, your data is secure. All conversions use encrypted
+                connections, and your files are deleted immediately after
+                processing. We never store, access, or share your HTML content
+                or generated PDFs.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Can I use this on mobile devices?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Yes, our HTML to PDF converter works perfectly on smartphones
+                and tablets running iOS or Android. The interface is fully
+                responsive and optimized for touch devices.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                Why should I choose a specific screen size?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Different screen sizes affect how responsive websites display.
+                Desktop sizes show full layouts, while mobile sizes trigger
+                mobile-optimized designs. Choose the size that best matches how
+                you want the content to appear in your PDF.
+              </p>
+            </div>
+
+            <div style="margin-bottom: 30px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                What file size limits apply to conversions?
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                There are no strict file size limits for uploaded HTML files.
+                However, very large or complex pages may take longer to process.
+                For optimal performance, we recommend files under 10MB.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AdSense Ad Placeholder (Bottom) -->
+      <section
+        class="ad-section"
+        style="
+          margin: 40px 0;
+          text-align: center;
+          background: white;
+          padding: 40px 20px;
+        "
+      >
+        <div class="container">
+          <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+            crossorigin="anonymous"
+          ></script>
+          <!-- index ads 1 -->
+          <ins
+            class="adsbygoogle"
+            style="display: block"
+            data-ad-client="ca-pub-5797619165090350"
+            data-ad-slot="7553156845"
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </div>
+      </section>
+
+      <!-- Related Tools Section -->
+      <section class="benefits" style="background: #f9fafb">
+        <div class="container">
+          <h2>Related PDF Tools You Might Need</h2>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <i
+                class="fas fa-object-group"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Merge PDF</h3>
+              <p>
+                Combine multiple PDF files into a single document quickly and
+                easily.
+              </p>
+              <a
+                href="/merge"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Merge PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-compress"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Compress PDF</h3>
+              <p>
+                Reduce PDF file size to make it easier to email or upload
+                online.
+              </p>
+              <a
+                href="/compress-pdf"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Compress PDF</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-cut"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+                aria-hidden="true"
+              ></i>
+              <h3>Split PDF</h3>
+              <p>
+                Extract specific pages or split large PDFs into multiple smaller
+                files.
+              </p>
+              <a
+                href="/split"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Split PDF</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section
+        class="hero"
+        style="
+          padding: 60px 20px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        "
+      >
+        <div class="container">
+          <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
+            Ready to Convert HTML to PDF?
+          </h2>
+          <p style="margin-bottom: 25px; color: white">
+            Start converting your HTML files and websites to PDF now. Fast,
+            secure, and completely free. No registration needed.
+          </p>
+          <a
+            href="#main-content"
+            class="cta-button"
+            style="background: white; color: #667eea"
+          >
+            <i class="fas fa-arrow-up" aria-hidden="true"></i> Convert Now
+          </a>
+        </div>
+      </section>
+    </main>
 
     <section id="footer-placeholder"></section>
 
@@ -1087,13 +1976,17 @@
 
       let selectedFiles = [];
 
-      // Tab Switching
+      // Tab Switching with ARIA
       tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
-          tabs.forEach((t) => t.classList.remove("active"));
+          tabs.forEach((t) => {
+            t.classList.remove("active");
+            t.setAttribute("aria-selected", "false");
+          });
           panels.forEach((p) => p.classList.remove("active"));
 
           tab.classList.add("active");
+          tab.setAttribute("aria-selected", "true");
           const tabName = tab.dataset.tab;
           document.getElementById(`${tabName}Panel`).classList.add("active");
           errorMsg.style.display = "none";
@@ -1103,6 +1996,14 @@
       // File Upload Area Click
       fileUploadArea.addEventListener("click", () => {
         htmlInput.click();
+      });
+
+      // Keyboard accessibility for upload area
+      fileUploadArea.addEventListener("keypress", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          htmlInput.click();
+        }
       });
 
       // Drag and Drop
@@ -1150,11 +2051,13 @@
             return `
               <li>
                 <div class="file-info">
-                  <i class="fas fa-file-code"></i>
+                  <i class="fas fa-file-code" aria-hidden="true"></i>
                   <span class="file-name">${file.name}</span>
                   <span class="file-size">${size}</span>
                 </div>
-                <i class="fas fa-times delete-file" data-index="${index}"></i>
+                <button class="delete-file" data-index="${index}" aria-label="Remove ${file.name}">
+                  <i class="fas fa-times" aria-hidden="true"></i>
+                </button>
               </li>
             `;
           })
@@ -1171,8 +2074,9 @@
 
       // Delete File
       fileList.addEventListener("click", (e) => {
-        if (e.target.classList.contains("delete-file")) {
-          const index = parseInt(e.target.dataset.index);
+        const deleteBtn = e.target.closest(".delete-file");
+        if (deleteBtn) {
+          const index = parseInt(deleteBtn.dataset.index);
           selectedFiles.splice(index, 1);
 
           if (selectedFiles.length === 0) {
@@ -1218,6 +2122,7 @@
 
         try {
           convertBtn.classList.add("btn-loading");
+          convertBtn.setAttribute("aria-busy", "true");
           const response = await fetch(BACKEND_URL, {
             method: "POST",
             body: formData,
@@ -1241,12 +2146,30 @@
           fileNameLink.href = pdfUrl;
           downloadBtn.href = pdfUrl;
           resultSection.style.display = "block";
-          previewSection.style.display = "block";
-          pdfFrame.src = pdfUrl;
+
+          // Only show preview on larger screens
+          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+          if (!isSmallDevice) {
+            previewSection.style.display = "block";
+            pdfFrame.src = pdfUrl;
+          }
+
+          fileNameLink.onclick = (e) => {
+            e.preventDefault();
+            if (isSmallDevice) {
+              window.open(pdfUrl, "_blank");
+            } else {
+              previewSection.scrollIntoView({ behavior: "smooth" });
+            }
+          };
         } catch (err) {
-          showError(err.message);
+          showError(
+            err.message ||
+              "An error occurred during conversion. Please try again.",
+          );
         } finally {
           convertBtn.classList.remove("btn-loading");
+          convertBtn.setAttribute("aria-busy", "false");
         }
       });
 
@@ -1256,7 +2179,6 @@
           margin: document.querySelector('input[name="margin"]:checked').value,
           blockAds: document.getElementById("blockAds").checked,
           removeOverlays: document.getElementById("removeOverlays").checked,
-          // Get long page value from checkbox (checked by default)
           longPage: document.getElementById("longPage").checked,
         };
       }
@@ -1266,7 +2188,7 @@
         errorMsg.querySelector("span").textContent = msg;
       }
 
-      // Reset Button - Completely reset the form
+      // Reset Button
       resetBtn.addEventListener("click", () => {
         // Reset file selection
         selectedFiles = [];
@@ -1275,10 +2197,10 @@
         urlInput.value = "";
         htmlInput.value = "";
 
-        // Reset all options to defaults (longPage checked by default)
+        // Reset all options to defaults
         document.getElementById("screenSize").value = "1358";
         document.getElementById("marginSmall").checked = true;
-        document.getElementById("longPage").checked = true; // Keep checked by default
+        document.getElementById("longPage").checked = true;
         document.getElementById("blockAds").checked = false;
         document.getElementById("removeOverlays").checked = false;
 
@@ -1289,10 +2211,14 @@
         infoBox.style.display = "flex";
         convertBtn.style.display = "inline-flex";
 
-        // Reset to URL tab (first tab)
-        tabs.forEach((t) => t.classList.remove("active"));
+        // Reset to URL tab
+        tabs.forEach((t) => {
+          t.classList.remove("active");
+          t.setAttribute("aria-selected", "false");
+        });
         panels.forEach((p) => p.removeAttribute("style"));
         tabs[0].classList.add("active");
+        tabs[0].setAttribute("aria-selected", "true");
         document.getElementById("urlPanel").classList.add("active");
 
         // Hide result sections

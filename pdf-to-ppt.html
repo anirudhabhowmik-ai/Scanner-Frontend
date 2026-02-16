@@ -562,10 +562,12 @@
 
     <!-- JS -->
     <script src="./js/app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
       const BACKEND_URL = `http://127.0.0.1:8080/pdf-to-ppt`;
+      const CHECK_TEXT_URL = `http://127.0.0.1:8080/check-pdf-text`;
+      const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
-      // Elements
       const pdfInput = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
       const convertBtn = document.getElementById("convertBtn");
@@ -577,9 +579,18 @@
       const fileNameLink = document.getElementById("fileNameLink");
       const uploadSection = document.getElementById("uploadSection");
 
+      // ============================================================================
+      // STATE
+      // ============================================================================
+
       let selectedFile = null;
       let convertedFileUrl = null;
       let convertedFileName = "presentation.pptx";
+      let isConverting = false;
+
+      // ============================================================================
+      // LANGUAGE SELECTION
+      // ============================================================================
 
       // Language options [code, name]
       const languages = [
@@ -597,6 +608,8 @@
         ["chi_sim", "Chinese Simplified"],
         ["chi_tra", "Chinese Traditional"],
         ["ara", "Arabic"],
+        ["tha", "Thai"],
+        ["vie", "Vietnamese"],
       ];
 
       let selectedLangs = ["eng"];
@@ -637,6 +650,7 @@
 
       // Toggle language selection
       function toggleLang(l) {
+        hideError();
         if (selectedLangs.includes(l[0])) {
           selectedLangs = selectedLangs.filter((x) => x !== l[0]);
         } else {
@@ -727,19 +741,63 @@
       renderOptions();
       updateTags();
 
-      // Helper function to hide error message
+      // ============================================================================
+      // UTILITY FUNCTIONS
+      // ============================================================================
+
       function hideError() {
         errorMsg.style.display = "none";
         errorMsg.textContent = "";
       }
 
-      // Helper function to show error message
       function showError(message) {
         errorMsg.textContent = message;
         errorMsg.style.display = "block";
+
+        // Auto hide after 7 seconds
+        setTimeout(() => {
+          if (errorMsg.textContent === message) {
+            errorMsg.style.display = "none";
+          }
+        }, 7000);
       }
 
-      // File handling
+      function showSuccess(message) {
+        // Create success message element if it doesn't exist
+        let successMsg = document.getElementById("successMsg");
+        if (!successMsg) {
+          successMsg = document.createElement("div");
+          successMsg.id = "successMsg";
+          successMsg.className = "success-message";
+          successMsg.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        z-index: 10000;
+        animation: slideInRight 0.3s ease;
+        font-weight: 500;
+      `;
+          document.body.appendChild(successMsg);
+        }
+
+        successMsg.innerHTML = `<i class="fa fa-check-circle" aria-hidden="true" style="margin-right: 8px;"></i>${message}`;
+        successMsg.style.display = "block";
+
+        // Auto hide after 4 seconds
+        setTimeout(() => {
+          successMsg.style.display = "none";
+        }, 4000);
+      }
+
+      // ============================================================================
+      // FILE HANDLING
+      // ============================================================================
+
       function renderFileList() {
         if (!selectedFile) {
           fileList.style.display = "none";
@@ -749,82 +807,517 @@
         fileList.innerHTML = "";
 
         const li = document.createElement("li");
+        const fileSizeMB = (selectedFile.size / (1024 * 1024)).toFixed(2);
         li.innerHTML = `
-          <div class="file-info">
-            <i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
-            <span class="file-name-text">${selectedFile.name}</span>
-          </div>
-          <button class="delete-file" onclick="removeFile()" aria-label="Remove ${selectedFile.name}">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-        `;
+      <div class="file-info">
+        <i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
+        <span class="file-name-text">${selectedFile.name}</span>
+        <span style="color: #6b7280; font-size: 13px; margin-left: 8px;">(${fileSizeMB} MB)</span>
+      </div>
+      <button class="delete-file" onclick="removeFile()" aria-label="Remove ${selectedFile.name}">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    `;
         fileList.appendChild(li);
       }
 
       // File input change handler
-      pdfInput.addEventListener("change", () => {
+      pdfInput.addEventListener("change", (e) => {
+        console.log("File input changed");
         hideError();
 
-        if (pdfInput.files.length > 0) {
-          selectedFile = pdfInput.files[0];
+        if (pdfInput.files && pdfInput.files.length > 0) {
+          const file = pdfInput.files[0];
+          console.log("File selected:", file.name, file.size, file.type);
+
+          // Validate file type
+          if (
+            file.type !== "application/pdf" &&
+            !file.name.toLowerCase().endsWith(".pdf")
+          ) {
+            console.error("Invalid file type:", file.type);
+            showError("Please select a valid PDF file");
+            pdfInput.value = "";
+            selectedFile = null;
+            renderFileList();
+            return;
+          }
+
+          // Validate file size
+          if (file.size > MAX_FILE_SIZE) {
+            console.error("File too large:", file.size);
+            showError(
+              `File size exceeds ${(MAX_FILE_SIZE / (1024 * 1024)).toFixed(0)}MB limit`,
+            );
+            pdfInput.value = "";
+            selectedFile = null;
+            renderFileList();
+            return;
+          }
+
+          // Validate file is not empty
+          if (file.size === 0) {
+            console.error("File is empty");
+            showError("Selected file is empty. Please choose a valid PDF.");
+            pdfInput.value = "";
+            selectedFile = null;
+            renderFileList();
+            return;
+          }
+
+          selectedFile = file;
+          console.log("File successfully set:", selectedFile);
+          renderFileList();
+          showSuccess(`File "${file.name}" selected successfully!`);
+        } else {
+          console.log("No file selected");
+          selectedFile = null;
           renderFileList();
         }
       });
 
       // Delete file
-      function removeFile() {
+      window.removeFile = function () {
         selectedFile = null;
         pdfInput.value = "";
         renderFileList();
         hideError();
-      }
-
-      // Language selection change - CLEARS ERROR
-      const originalToggleLang = toggleLang;
-      toggleLang = function (l) {
-        hideError();
-        originalToggleLang(l);
       };
 
-      // Convert button
+      async function checkPDFHasText(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          console.log("Checking if PDF has text...");
+          const response = await fetch(CHECK_TEXT_URL, {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error(
+              "Check text response not OK:",
+              response.status,
+              errorData,
+            );
+            throw new Error(errorData.error || "Failed to check PDF text");
+          }
+
+          const result = await response.json();
+          console.log("PDF text check result:", result);
+          console.log(
+            `  - hasText: ${result.hasText} (${result.hasText ? "TEXT-BASED PDF" : "IMAGE-BASED PDF"})`,
+          );
+          console.log(`  - Reason: ${result.reason || "N/A"}`);
+
+          // Return the hasText value from the server
+          // true = TEXT-BASED PDF (has selectable text)
+          // false = IMAGE-BASED PDF (scanned/images)
+          return result.hasText;
+        } catch (error) {
+          console.error("Error checking PDF:", error);
+          // If check fails, assume it might be image-based to be safe
+          console.warn("Defaulting to image-based due to check failure");
+          return false;
+        }
+      }
+
+      function showOCRChoiceDialog() {
+        return new Promise((resolve) => {
+          // Remove existing dialog if any
+          const existingDialog = document.getElementById("ocrChoiceDialog");
+          if (existingDialog) {
+            existingDialog.remove();
+          }
+
+          // Remove existing styles if any
+          const existingStyle = document.getElementById("ocrDialogStyle");
+          if (existingStyle) {
+            existingStyle.remove();
+          }
+
+          // Create dialog
+          const dialog = document.createElement("div");
+          dialog.id = "ocrChoiceDialog";
+          dialog.className = "ocr-dialog";
+          dialog.innerHTML = `
+      <div class="ocr-dialog-content">
+        <h3><i class="fa fa-search" aria-hidden="true" style="margin-right: 10px; color: #667eea;"></i>OCR Detection Required</h3>
+        <p>Your PDF appears to be image-based (scanned document or images).</p>
+        <p class="dialog-subtitle">Choose how to process:</p>
+        <div class="ocr-dialog-options">
+          <button id="ocrOption" class="cta-button">
+            <i class="fa fa-magic" aria-hidden="true" style="font-size: 24px; margin-bottom: 8px;"></i>
+            <span class="option-title">OCR Processing</span>
+            <span class="option-desc">Extract text from images - text will be editable and searchable in PowerPoint (slower but better)</span>
+          </button>
+          <button id="imageOption" class="secondary-btn">
+            <i class="fa fa-image" aria-hidden="true" style="font-size: 24px; margin-bottom: 8px;"></i>
+            <span class="option-title">Image-Only</span>
+            <span class="option-desc">Convert as images without OCR - faster but text won't be selectable</span>
+          </button>
+        </div>
+        <button id="cancelOption" class="text-btn">
+          <i class="fa fa-times" aria-hidden="true"></i> Cancel
+        </button>
+      </div>
+    `;
+
+          // Add styles
+          const style = document.createElement("style");
+          style.id = "ocrDialogStyle";
+          style.textContent = `
+      .ocr-dialog {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        animation: fadeIn 0.3s ease;
+        backdrop-filter: blur(5px);
+      }
+      
+      .ocr-dialog-content {
+        background: white;
+        border-radius: 24px;
+        padding: 35px;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.3s ease;
+      }
+      
+      .ocr-dialog-content h3 {
+        color: #1f2937;
+        margin-bottom: 15px;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+      }
+      
+      .ocr-dialog-content p {
+        color: #4b5563;
+        margin-bottom: 10px;
+        line-height: 1.6;
+        font-size: 16px;
+      }
+      
+      .dialog-subtitle {
+        font-weight: 600;
+        color: #374151;
+        margin-top: 20px;
+        margin-bottom: 15px;
+      }
+      
+      .ocr-dialog-options {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 20px 0;
+      }
+      
+      .ocr-dialog-options button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 20px;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        width: 100%;
+        text-align: center;
+      }
+      
+      .option-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin: 8px 0 5px;
+      }
+      
+      .ocr-dialog-options button .option-desc {
+        font-size: 14px;
+        opacity: 0.9;
+        color: inherit;
+        line-height: 1.5;
+      }
+      
+      .ocr-dialog-options .cta-button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+      }
+      
+      .ocr-dialog-options .cta-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+      }
+      
+      .ocr-dialog-options .secondary-btn {
+        background: white;
+        color: #4b5563;
+        border: 2px solid #e5e7eb;
+      }
+      
+      .ocr-dialog-options .secondary-btn:hover {
+        border-color: #667eea;
+        background: #f9fafb;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+      
+      .text-btn {
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        font-size: 14px;
+        width: 100%;
+        padding: 12px;
+        transition: all 0.2s ease;
+        border-radius: 8px;
+        margin-top: 10px;
+      }
+      
+      .text-btn:hover {
+        color: #ef4444;
+        background: #fef2f2;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from { 
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to { 
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `;
+
+          document.head.appendChild(style);
+          document.body.appendChild(dialog);
+
+          // Handle button clicks
+          document.getElementById("ocrOption").onclick = () => {
+            dialog.remove();
+            style.remove();
+            resolve("ocr");
+          };
+
+          document.getElementById("imageOption").onclick = () => {
+            dialog.remove();
+            style.remove();
+            resolve("image");
+          };
+
+          document.getElementById("cancelOption").onclick = () => {
+            dialog.remove();
+            style.remove();
+            resolve("cancel");
+          };
+
+          // Close on escape key
+          const escHandler = (e) => {
+            if (e.key === "Escape") {
+              dialog.remove();
+              style.remove();
+              document.removeEventListener("keydown", escHandler);
+              resolve("cancel");
+            }
+          };
+          document.addEventListener("keydown", escHandler);
+        });
+      }
+
+      function showProcessingDialog(pageCount = null) {
+        const dialog = document.createElement("div");
+        dialog.id = "processingDialog";
+        dialog.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      backdrop-filter: blur(5px);
+    `;
+
+        const content = `
+      <div style="
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 400px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+      ">
+        <div style="
+          width: 80px;
+          height: 80px;
+          border: 4px solid #f3f4f6;
+          border-top: 4px solid #667eea;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 20px;
+        "></div>
+        <h3 style="color: #1f2937; margin-bottom: 10px; font-size: 22px;">
+          Converting PDF to PowerPoint
+        </h3>
+        <p style="color: #6b7280; margin-bottom: 15px; font-size: 15px;">
+          ${pageCount ? `Processing ${pageCount} page${pageCount > 1 ? "s" : ""}...` : "Processing..."}
+        </p>
+        <p style="color: #9ca3af; font-size: 13px;">
+          This may take a moment. Please don't close this page.
+        </p>
+      </div>
+    `;
+
+        dialog.innerHTML = content;
+
+        // Add animation style
+        const style = document.createElement("style");
+        style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+        document.head.appendChild(style);
+        document.body.appendChild(dialog);
+
+        return dialog;
+      }
+
+      function hideProcessingDialog() {
+        const dialog = document.getElementById("processingDialog");
+        if (dialog) {
+          dialog.remove();
+        }
+      }
+
       convertBtn.addEventListener("click", async () => {
-        // Validation
+        console.log("\n=== CONVERSION STARTED ===");
+        console.log("Selected file:", selectedFile?.name);
+        console.log("Selected languages:", selectedLangs);
+
+        if (isConverting) {
+          showError("Conversion already in progress. Please wait.");
+          return;
+        }
+
         if (!selectedFile) {
           showError("Please upload a PDF file");
           return;
         }
 
         if (selectedLangs.length === 0) {
-          showError("Please select at least one language");
+          showError("Please select at least one language for OCR");
           return;
         }
 
         hideError();
+        isConverting = true;
         convertBtn.classList.add("btn-loading");
+        convertBtn.disabled = true;
 
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("lang", selectedLangs.join("+"));
+        let processingDialog = null;
 
         try {
+          // STEP 1: Check if PDF has text
+          console.log("\nSTEP 1: Checking PDF type...");
+          const hasText = await checkPDFHasText(selectedFile);
+
+          let conversionMode = "auto";
+          let finalHasText = hasText;
+
+          // STEP 2: Decide whether to show dialog
+          if (hasText) {
+            // TEXT-BASED PDF - Convert directly without dialog
+            console.log("\nSTEP 2: TEXT-BASED PDF detected");
+            console.log("  → Converting directly without showing dialog");
+            conversionMode = "auto";
+            finalHasText = true;
+          } else {
+            // IMAGE-BASED PDF - Show dialog to user
+            console.log("\nSTEP 2: IMAGE-BASED PDF detected");
+            console.log(
+              "  → Showing dialog for user to choose processing method",
+            );
+
+            const choice = await showOCRChoiceDialog();
+            console.log("  → User selected:", choice);
+
+            if (choice === "cancel") {
+              console.log("  → User cancelled conversion");
+              isConverting = false;
+              convertBtn.classList.remove("btn-loading");
+              convertBtn.disabled = false;
+              return;
+            }
+
+            conversionMode = choice; // 'ocr' or 'image'
+            finalHasText = false;
+          }
+
+          // STEP 3: Show processing dialog
+          console.log("\nSTEP 3: Starting conversion...");
+          console.log(`  → Mode: ${conversionMode}`);
+          console.log(`  → Has Text: ${finalHasText}`);
+          processingDialog = showProcessingDialog();
+
+          // STEP 4: Prepare and send request
+          const formData = new FormData();
+          formData.append("file", selectedFile);
+          formData.append("lang", selectedLangs.join("+"));
+          formData.append("mode", conversionMode);
+          formData.append("has_text", finalHasText.toString());
+
+          console.log("\nSTEP 4: Sending to backend...");
           const res = await fetch(BACKEND_URL, {
             method: "POST",
             body: formData,
           });
 
           if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || "Conversion failed");
+            const errorData = await res.json().catch(() => ({}));
+            throw new Error(
+              errorData.error || `Conversion failed (Status: ${res.status})`,
+            );
           }
 
           const blob = await res.blob();
+
+          if (blob.size === 0) {
+            throw new Error("Received empty file from server");
+          }
+
           const url = URL.createObjectURL(blob);
           convertedFileUrl = url;
 
-          // Determine filename
           const baseName = selectedFile.name.replace(/\.pdf$/i, "");
           const filename = `${baseName}.pptx`;
           convertedFileName = filename;
+
+          console.log("\n✓ CONVERSION SUCCESSFUL");
 
           // Update UI
           fileList.style.display = "none";
@@ -838,19 +1331,35 @@
           downloadBtn.href = url;
           downloadBtn.download = filename;
           fileNameLink.textContent = filename;
-
           fileNameLink.onclick = (e) => {
             e.preventDefault();
             window.open(url, "_blank");
           };
+
+          // Show success message
+          if (!hasText && conversionMode === "ocr") {
+            showSuccess(
+              "Image-based PDF processed with OCR! Text is now editable.",
+            );
+          } else if (!hasText && conversionMode === "image") {
+            showSuccess("Image-based PDF converted as images successfully!");
+          } else {
+            showSuccess("Text-based PDF converted successfully!");
+          }
         } catch (err) {
-          showError(err.message);
+          console.error("\n✗ CONVERSION FAILED:", err);
+          showError(err.message || "Conversion failed. Please try again.");
         } finally {
+          if (processingDialog) {
+            processingDialog.remove();
+          }
+          isConverting = false;
           convertBtn.classList.remove("btn-loading");
+          convertBtn.disabled = false;
+          console.log("=== CONVERSION ENDED ===\n");
         }
       });
 
-      // Share button functionality
       shareBtn.addEventListener("click", async () => {
         if (!convertedFileUrl) return;
 
@@ -872,17 +1381,17 @@
 
             if (navigator.canShare(shareData)) {
               await navigator.share(shareData);
+              showSuccess("File shared successfully!");
             } else {
               // Fallback: share without file
               await navigator.share({
                 title: "PowerPoint Presentation",
-                text: `I converted a PDF to PowerPoint using NextoPDF`,
+                text: `I converted a PDF to PowerPoint`,
                 url: window.location.href,
               });
             }
           } else {
             // Fallback for browsers that don't support Web Share API
-            // Copy download link to clipboard
             const tempInput = document.createElement("input");
             tempInput.value = window.location.href;
             document.body.appendChild(tempInput);
@@ -894,27 +1403,45 @@
             const originalText = shareBtn.innerHTML;
             shareBtn.innerHTML =
               '<i class="fa fa-check" aria-hidden="true"></i> Link Copied!';
+            shareBtn.disabled = true;
             setTimeout(() => {
               shareBtn.innerHTML = originalText;
+              shareBtn.disabled = false;
             }, 2000);
+
+            showSuccess("Download link copied to clipboard!");
           }
         } catch (error) {
           // User cancelled share or error occurred
-          console.log("Share failed:", error);
+          if (error.name !== "AbortError") {
+            console.log("Share failed:", error);
+            showError("Sharing failed. You can still download the file.");
+          }
         }
       });
 
-      // Reset button
+      // ============================================================================
+      // RESET FUNCTIONALITY
+      // ============================================================================
+
       resetBtn.addEventListener("click", () => {
+        // Clean up blob URL
+        if (convertedFileUrl) {
+          URL.revokeObjectURL(convertedFileUrl);
+        }
+
         selectedFile = null;
         selectedLangs = ["eng"];
         convertedFileUrl = null;
         convertedFileName = "presentation.pptx";
+        isConverting = false;
         pdfInput.value = "";
         fileList.innerHTML = "";
         fileList.style.display = "none";
         uploadSection.style.display = "block";
         convertBtn.style.display = "inline-flex";
+        convertBtn.classList.remove("btn-loading");
+        convertBtn.disabled = false;
         resultBtns.style.display = "none";
         document.querySelector(".note").style.display = "block";
         document.querySelector(".multi-select").style.display = "block";
@@ -925,6 +1452,74 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
+      // ============================================================================
+      // DRAG AND DROP
+      // ============================================================================
+
+      const uploadLabel = document.querySelector(".upload-label");
+
+      ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+        uploadLabel.addEventListener(eventName, preventDefaults, false);
+      });
+
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      ["dragenter", "dragover"].forEach((eventName) => {
+        uploadLabel.addEventListener(eventName, highlight, false);
+      });
+
+      ["dragleave", "drop"].forEach((eventName) => {
+        uploadLabel.addEventListener(eventName, unhighlight, false);
+      });
+
+      function highlight() {
+        uploadLabel.classList.add("drag-over");
+        uploadLabel.style.transform = "scale(1.02)";
+        uploadLabel.style.borderColor = "#4f46e5";
+        uploadLabel.style.backgroundColor = "#f5f3ff";
+      }
+
+      function unhighlight() {
+        uploadLabel.classList.remove("drag-over");
+        uploadLabel.style.transform = "scale(1)";
+        uploadLabel.style.borderColor = "";
+        uploadLabel.style.backgroundColor = "";
+      }
+
+      uploadLabel.addEventListener("drop", (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        if (files.length > 0) {
+          const file = files[0];
+          if (file.type === "application/pdf") {
+            // Check file size
+            if (file.size > MAX_FILE_SIZE) {
+              showError(
+                `File size exceeds ${MAX_FILE_SIZE / (1024 * 1024)}MB limit`,
+              );
+              return;
+            }
+            selectedFile = file;
+            // Create a new FileList-like object
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            pdfInput.files = dataTransfer.files;
+            renderFileList();
+            showSuccess(`File "${file.name}" selected successfully!`);
+          } else {
+            showError("Please drop a PDF file");
+          }
+        }
+      });
+
+      // ============================================================================
+      // KEYBOARD SHORTCUTS
+      // ============================================================================
+
       // Keyboard accessibility for upload label
       document
         .querySelector(".upload-label")
@@ -934,6 +1529,38 @@
             pdfInput.click();
           }
         });
+
+      // Ctrl/Cmd + Enter to convert
+      document.addEventListener("keydown", (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+          if (
+            selectedFile &&
+            !isConverting &&
+            convertBtn.style.display !== "none"
+          ) {
+            convertBtn.click();
+          }
+        }
+      });
+
+      // ============================================================================
+      // CLEANUP
+      // ============================================================================
+
+      // Clean up blob URL when page unloads
+      window.addEventListener("beforeunload", () => {
+        if (convertedFileUrl) {
+          URL.revokeObjectURL(convertedFileUrl);
+        }
+      });
+
+      // ============================================================================
+      // INITIALIZATION LOG
+      // ============================================================================
+
+      console.log("PDF to PowerPoint converter initialized");
+      console.log("Backend URL:", BACKEND_URL);
+      console.log("Check text URL:", CHECK_TEXT_URL);
     </script>
   </body>
 </html>

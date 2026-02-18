@@ -662,6 +662,60 @@
               </span>
             </button>
 
+            <div id="progressContainer" style="display: none; margin-top: 24px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  margin-bottom: 6px;
+                "
+              >
+                <span
+                  id="progressLabel"
+                  style="font-size: 14px; font-weight: 600; color: #1f2937"
+                >
+                  Starting OCR…
+                </span>
+                <span
+                  id="progressCount"
+                  style="font-size: 13px; font-weight: 600; color: #4f46e5"
+                >
+                  0 / 0 pages
+                </span>
+              </div>
+              <div
+                style="
+                  background: #e5e7eb;
+                  border-radius: 999px;
+                  height: 12px;
+                  overflow: hidden;
+                "
+              >
+                <div
+                  id="progressBar"
+                  style="
+                    height: 100%;
+                    width: 0%;
+                    background: linear-gradient(90deg, #667eea, #764ba2);
+                    border-radius: 999px;
+                    transition: width 0.5s ease;
+                  "
+                ></div>
+              </div>
+              <p
+                id="progressSub"
+                style="
+                  margin-top: 8px;
+                  font-size: 13px;
+                  color: #6b7280;
+                  text-align: center;
+                "
+              >
+                Please keep this tab open while processing…
+              </p>
+            </div>
+
             <p
               class="error-text"
               id="errorMsg"
@@ -1668,11 +1722,12 @@
     <section id="footer-placeholder"></section>
 
     <!-- JS -->
+
     <script src="./js/app.js"></script>
     <script>
       const BACKEND_URL = `${BACKEND_BASE_URL}/pdfa-ocr`;
 
-      // Elements
+      // ── DOM refs ────────────────────────────────────────────────────────────────
       const pdfInput = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
       const convertBtn = document.getElementById("convertBtn");
@@ -1685,12 +1740,18 @@
       const pdfFrame = document.getElementById("pdfFrame");
       const fileNameLink = document.getElementById("fileNameLink");
       const uploadSection = document.getElementById("uploadSection");
+      const progressContainer = document.getElementById("progressContainer");
+      const progressLabel = document.getElementById("progressLabel");
+      const progressCount = document.getElementById("progressCount");
+      const progressBar = document.getElementById("progressBar");
+      const progressSub = document.getElementById("progressSub");
 
       let selectedFiles = [];
       let convertedFileUrl = null;
       let convertedFileName = "searchable.pdf";
+      let pollTimer = null; // setInterval handle for progress polling
 
-      // Language options [code, name]
+      // ── Language list ────────────────────────────────────────────────────────────
       const languages = [
         ["eng", "English"],
         ["hin", "Hindi"],
@@ -1710,26 +1771,23 @@
 
       let selectedLangs = ["eng"];
 
-      // Multi-select dropdown elements
+      // ── Multi-select dropdown ───────────────────────────────────────────────────
       const selectBox = document.getElementById("selectBox");
       const dropdown = document.getElementById("dropdown");
       const optionsDiv = document.getElementById("options");
       const searchInput = document.getElementById("searchLang");
 
-      // Render language options
       function renderOptions(filter = "") {
         optionsDiv.innerHTML = "";
-        const filteredLangs = languages.filter((l) =>
+        const filtered = languages.filter((l) =>
           l[1].toLowerCase().includes(filter.toLowerCase()),
         );
-
-        if (filteredLangs.length === 0) {
+        if (filtered.length === 0) {
           optionsDiv.innerHTML =
-            '<div style="padding: 20px; text-align: center; color: #9ca3af;">No languages found</div>';
+            '<div style="padding:20px;text-align:center;color:#9ca3af;">No languages found</div>';
           return;
         }
-
-        filteredLangs.forEach((l) => {
+        filtered.forEach((l) => {
           const div = document.createElement("div");
           div.className =
             "option" + (selectedLangs.includes(l[0]) ? " selected" : "");
@@ -1744,8 +1802,8 @@
         });
       }
 
-      // Toggle language selection
       function toggleLang(l) {
+        hideError();
         if (selectedLangs.includes(l[0])) {
           selectedLangs = selectedLangs.filter((x) => x !== l[0]);
         } else {
@@ -1755,39 +1813,37 @@
         renderOptions(searchInput.value);
       }
 
-      // Update selected language tags
       function updateTags() {
         selectBox.innerHTML = "";
         if (selectedLangs.length === 0) {
           selectBox.innerHTML =
-            '<span class="select-placeholder">Select languages...</span>';
+            '<span class="select-placeholder">Select languages…</span>';
           return;
         }
         selectedLangs.forEach((code) => {
           const name = languages.find((l) => l[0] === code)[1];
           const tag = document.createElement("span");
           tag.className = "tag";
-          tag.innerHTML = `${name} <span class="remove-tag" data-code="${code}" role="button" aria-label="Remove ${name}" tabindex="0">×</span>`;
+          tag.innerHTML = `${name} <span class="remove-tag" data-code="${code}"
+        role="button" aria-label="Remove ${name}" tabindex="0">×</span>`;
           selectBox.appendChild(tag);
         });
-
-        // Add click handlers for remove buttons
         selectBox.querySelectorAll(".remove-tag").forEach((btn) => {
           btn.onclick = (e) => {
             e.stopPropagation();
-            const code = e.target.dataset.code;
-            selectedLangs = selectedLangs.filter((x) => x !== code);
+            selectedLangs = selectedLangs.filter(
+              (x) => x !== e.target.dataset.code,
+            );
             updateTags();
             renderOptions(searchInput.value);
           };
-
-          // Keyboard support for remove buttons
           btn.onkeypress = (e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
               e.stopPropagation();
-              const code = e.target.dataset.code;
-              selectedLangs = selectedLangs.filter((x) => x !== code);
+              selectedLangs = selectedLangs.filter(
+                (x) => x !== e.target.dataset.code,
+              );
               updateTags();
               renderOptions(searchInput.value);
             }
@@ -1795,16 +1851,12 @@
         });
       }
 
-      // Toggle dropdown
       selectBox.onclick = (e) => {
-        // Don't toggle if clicking on remove button
         if (e.target.classList.contains("remove-tag")) return;
-
         const isOpen = dropdown.classList.contains("show");
         dropdown.classList.toggle("show");
         selectBox.classList.toggle("open");
         selectBox.setAttribute("aria-expanded", !isOpen);
-
         if (!isOpen) {
           searchInput.focus();
           searchInput.value = "";
@@ -1812,10 +1864,8 @@
         }
       };
 
-      // Search functionality
       searchInput.oninput = (e) => renderOptions(e.target.value);
 
-      // Close dropdown when clicking outside
       document.addEventListener("click", (e) => {
         if (!selectBox.contains(e.target) && !dropdown.contains(e.target)) {
           dropdown.classList.remove("show");
@@ -1824,7 +1874,6 @@
         }
       });
 
-      // Keyboard accessibility for select box
       selectBox.addEventListener("keypress", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -1832,23 +1881,20 @@
         }
       });
 
-      // Initialize
       renderOptions();
       updateTags();
 
-      // Helper function to hide error message
+      // ── Error helpers ────────────────────────────────────────────────────────────
       function hideError() {
         errorMsg.style.display = "none";
         errorMsg.textContent = "";
       }
-
-      // Helper function to show error message
-      function showError(message) {
-        errorMsg.textContent = message;
+      function showError(msg) {
+        errorMsg.textContent = msg;
         errorMsg.style.display = "block";
       }
 
-      // File handling
+      // ── File list ────────────────────────────────────────────────────────────────
       function renderFileList() {
         if (selectedFiles.length === 0) {
           fileList.style.display = "none";
@@ -1865,56 +1911,59 @@
         </div>
         <button class="delete-file" data-i="${i}" aria-label="Remove ${file.name}">
           <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-      `;
+        </button>`;
           fileList.appendChild(li);
         });
       }
 
-      // File input change handler
       pdfInput.addEventListener("change", () => {
         hideError();
-
         Array.from(pdfInput.files).forEach((f) => {
           if (
             !selectedFiles.some((x) => x.name === f.name && x.size === f.size)
-          ) {
+          )
             selectedFiles.push(f);
-          }
         });
         renderFileList();
-        pdfInput.value = ""; // Reset for reselection
+        pdfInput.value = "";
       });
 
-      // Delete file
       fileList.addEventListener("click", (e) => {
-        const deleteBtn = e.target.closest(".delete-file");
-        if (deleteBtn) {
-          selectedFiles.splice(deleteBtn.dataset.i, 1);
+        const btn = e.target.closest(".delete-file");
+        if (btn) {
+          selectedFiles.splice(btn.dataset.i, 1);
           renderFileList();
-
-          // Hide error if no files left
-          if (selectedFiles.length === 0) {
-            hideError();
-          }
+          if (selectedFiles.length === 0) hideError();
         }
       });
 
-      // Language selection change - CLEARS ERROR
-      const originalToggleLang = toggleLang;
-      toggleLang = function (l) {
-        hideError();
-        originalToggleLang(l);
-      };
+      // ── Progress UI helpers ─────────────────────────────────────────────────────
+      function showProgress(labelText, current, total) {
+        progressContainer.style.display = "block";
+        progressLabel.textContent = labelText;
+        progressCount.textContent = `${current} / ${total} pages`;
+        const pct = total > 0 ? Math.round((current / total) * 100) : 0;
+        progressBar.style.width = pct + "%";
+        progressSub.textContent =
+          pct < 100
+            ? "Please keep this tab open while processing…"
+            : "Completed! ✅";
+      }
 
-      // Convert button
+      function hideProgress() {
+        progressContainer.style.display = "none";
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      }
+
+      // ── Convert button ──────────────────────────────────────────────────────────
       convertBtn.addEventListener("click", async () => {
-        // Validation
         if (selectedFiles.length === 0) {
           showError("Please upload at least one PDF file");
           return;
         }
-
         if (selectedLangs.length === 0) {
           showError("Please select at least one language");
           return;
@@ -1923,128 +1972,228 @@
         hideError();
         convertBtn.classList.add("btn-loading");
 
-        const formData = new FormData();
-        // CRITICAL: Backend expects "files" (plural)
-        selectedFiles.forEach((f) => formData.append("files", f));
-        formData.append("lang", selectedLangs.join("+"));
+        // Process files one by one (backend handles 1 file per request)
+        const total = selectedFiles.length;
+        const results = []; // { filename, url }
 
-        try {
-          const res = await fetch(BACKEND_URL, {
-            method: "POST",
-            body: formData,
+        for (let i = 0; i < total; i++) {
+          const file = selectedFiles[i];
+
+          // ── Step 1: Upload file → get job_id + total_pages ──────────────────
+          const formData = new FormData();
+          formData.append("files", file);
+          formData.append("lang", selectedLangs.join("+"));
+
+          let job_id, totalPages;
+
+          try {
+            const uploadRes = await fetch(BACKEND_URL, {
+              method: "POST",
+              body: formData,
+            });
+            if (!uploadRes.ok) {
+              const err = await uploadRes.json();
+              throw new Error(err.error || "Upload failed");
+            }
+            const uploadData = await uploadRes.json();
+            job_id = uploadData.job_id;
+            totalPages = uploadData.total_pages;
+          } catch (err) {
+            showError(`"${file.name}": ${err.message}`);
+            convertBtn.classList.remove("btn-loading");
+            hideProgress();
+            return;
+          }
+
+          // ── Step 2: Poll /pdfa-ocr/progress/:job_id until done ──────────────
+          showProgress(
+            total > 1
+              ? `File ${i + 1} of ${total}: "${file.name}"`
+              : `Processing "${file.name}"…`,
+            0,
+            totalPages,
+          );
+
+          const fileUrl = await new Promise((resolve, reject) => {
+            pollTimer = setInterval(async () => {
+              try {
+                const progRes = await fetch(
+                  `${BACKEND_URL}/progress/${job_id}`,
+                );
+                if (!progRes.ok) {
+                  clearInterval(pollTimer);
+                  reject(new Error("Progress check failed"));
+                  return;
+                }
+
+                const prog = await progRes.json();
+
+                if (prog.status === "processing" || prog.status === "pending") {
+                  showProgress(
+                    total > 1
+                      ? `File ${i + 1} of ${total}: "${file.name}"`
+                      : `Processing "${file.name}"…`,
+                    prog.current_page,
+                    prog.total_pages,
+                  );
+                } else if (prog.status === "done") {
+                  clearInterval(pollTimer);
+                  showProgress(
+                    total > 1
+                      ? `File ${i + 1} of ${total}: "${file.name}" ✅`
+                      : `Done! All ${prog.total_pages} pages processed. `,
+                    prog.total_pages,
+                    prog.total_pages,
+                  );
+                  // ── Step 3: Download the finished PDF ──────────────────────
+                  try {
+                    const dlRes = await fetch(
+                      `${BACKEND_URL}/download/${job_id}`,
+                    );
+                    if (!dlRes.ok) {
+                      reject(new Error("Download failed"));
+                      return;
+                    }
+                    const blob = await dlRes.blob();
+                    resolve({
+                      url: URL.createObjectURL(blob),
+                      filename: prog.filename,
+                    });
+                  } catch (dlErr) {
+                    reject(dlErr);
+                  }
+                } else if (prog.status === "error") {
+                  clearInterval(pollTimer);
+                  reject(new Error(prog.error || "OCR failed"));
+                }
+              } catch (pollErr) {
+                clearInterval(pollTimer);
+                reject(pollErr);
+              }
+            }, 1500); // poll every 1.5 s
+          }).catch((err) => {
+            showError(`"${file.name}": ${err.message}`);
+            return null;
           });
 
-          if (!res.ok) {
-            const errorData = await res.json();
-            throw new Error(errorData.error || "OCR conversion failed");
-          }
+          if (fileUrl) results.push(fileUrl);
+        }
 
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          convertedFileUrl = url;
+        // ── All files done ────────────────────────────────────────────────────
+        convertBtn.classList.remove("btn-loading");
 
-          // Determine filename
-          let filename;
-          if (selectedFiles.length === 1) {
-            const baseName = selectedFiles[0].name.replace(/\.pdf$/i, "");
-            filename = `${baseName}_searchable.pdf`;
-          } else {
-            filename = "merged_searchable.pdf";
-          }
-          convertedFileName = filename;
+        if (results.length === 0) {
+          hideProgress();
+          return;
+        }
 
-          // Update UI
-          fileList.style.display = "none";
-          convertBtn.style.display = "none";
-          uploadSection.style.display = "none";
-          document.querySelector(".note").style.display = "none";
-          document.querySelector(".multi-select").style.display = "none";
-          document.querySelector(".select-label").style.display = "none";
+        // Hide upload UI
+        fileList.style.display = "none";
+        convertBtn.style.display = "none";
+        uploadSection.style.display = "none";
+        document.querySelector(".note").style.display = "none";
+        document.querySelector(".multi-select").style.display = "none";
+        document.querySelector(".select-label").style.display = "none";
+
+        if (results.length === 1) {
+          // Single file → standard download UI
+          convertedFileUrl = results[0].url;
+          convertedFileName = results[0].filename;
           resultBtns.style.display = "block";
+          downloadBtn.href = results[0].url;
+          downloadBtn.download = results[0].filename;
+          fileNameLink.textContent = results[0].filename;
 
-          downloadBtn.href = url;
-          downloadBtn.download = filename;
-          fileNameLink.textContent = filename;
-
-          // Show preview on larger screens
-          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-
-          if (!isSmallDevice) {
-            pdfFrame.src = url;
+          const small = window.matchMedia("(max-width:768px)").matches;
+          if (!small) {
+            pdfFrame.src = results[0].url;
             pdfPreview.style.display = "block";
           }
 
           fileNameLink.onclick = (e) => {
             e.preventDefault();
-            if (isSmallDevice) {
-              window.open(url, "_blank");
-            } else {
-              pdfPreview.scrollIntoView({ behavior: "smooth" });
-            }
+            small
+              ? window.open(results[0].url, "_blank")
+              : pdfPreview.scrollIntoView({ behavior: "smooth" });
           };
-        } catch (err) {
-          showError(err.message);
-        } finally {
-          convertBtn.classList.remove("btn-loading");
+
+        } else {
+          // Multiple files → individual download buttons
+          const multiResult = document.createElement("div");
+          multiResult.id = "multiResult";
+          multiResult.style.cssText = "margin-top:20px; text-align:center;";
+          multiResult.innerHTML = `
+        <p style="font-weight:600; color:#059669; font-size:16px; margin-bottom:16px;">
+          ✅ ${results.length} file(s) ready to download
+        </p>`;
+          results.forEach(({ filename, url }) => {
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.className = "cta-button";
+            a.style.cssText =
+              "display:block; margin-bottom:10px; font-size:14px;";
+            a.innerHTML = `<i class="fa fa-download"></i> ${filename}`;
+            multiResult.appendChild(a);
+          });
+          const resetB = document.createElement("button");
+          resetB.className = "secondary-btn";
+          resetB.style.marginTop = "12px";
+          resetB.innerHTML =
+            '<i class="fa fa-rotate-right"></i> Convert More Files';
+          resetB.onclick = () => resetBtn.click();
+          multiResult.appendChild(resetB);
+          progressContainer.after(multiResult);
         }
       });
 
-      // Share button functionality
+      // ── Share button ─────────────────────────────────────────────────────────────
       shareBtn.addEventListener("click", async () => {
         if (!convertedFileUrl) return;
-
         try {
-          // Check if Web Share API is supported
           if (navigator.share && navigator.canShare) {
-            // Convert blob URL to File object for sharing
             const response = await fetch(convertedFileUrl);
             const blob = await response.blob();
             const file = new File([blob], convertedFileName, {
               type: "application/pdf",
             });
-
             const shareData = {
               title: "Searchable PDF/A",
               text: "Check out this searchable PDF/A file",
               files: [file],
             };
-
             if (navigator.canShare(shareData)) {
               await navigator.share(shareData);
             } else {
-              // Fallback: share without file
               await navigator.share({
                 title: "Searchable PDF/A",
-                text: `I converted a PDF to searchable PDF/A format using NextoPDF`,
                 url: window.location.href,
               });
             }
           } else {
-            // Fallback for browsers that don't support Web Share API
-            // Copy download link to clipboard
-            const tempInput = document.createElement("input");
-            tempInput.value = window.location.href;
-            document.body.appendChild(tempInput);
-            tempInput.select();
+            const tmp = document.createElement("input");
+            tmp.value = window.location.href;
+            document.body.appendChild(tmp);
+            tmp.select();
             document.execCommand("copy");
-            document.body.removeChild(tempInput);
-
-            // Show temporary notification
-            const originalText = shareBtn.innerHTML;
-            shareBtn.innerHTML =
-              '<i class="fa fa-check" aria-hidden="true"></i> Link Copied!';
+            document.body.removeChild(tmp);
+            const orig = shareBtn.innerHTML;
+            shareBtn.innerHTML = '<i class="fa fa-check"></i> Link Copied!';
             setTimeout(() => {
-              shareBtn.innerHTML = originalText;
+              shareBtn.innerHTML = orig;
             }, 2000);
           }
-        } catch (error) {
-          // User cancelled share or error occurred
-          console.log("Share failed:", error);
+        } catch (e) {
+          console.log("Share failed:", e);
         }
       });
 
-      // Reset button
+      // ── Reset button ─────────────────────────────────────────────────────────────
       resetBtn.addEventListener("click", () => {
+        if (pollTimer) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
         selectedFiles = [];
         selectedLangs = ["eng"];
         convertedFileUrl = null;
@@ -2059,13 +2208,16 @@
         document.querySelector(".select-label").style.display = "block";
         pdfFrame.src = "";
         pdfPreview.style.display = "none";
+        hideProgress();
         hideError();
+        const mr = document.getElementById("multiResult");
+        if (mr) mr.remove();
         updateTags();
         renderOptions();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      // Keyboard accessibility for upload label
+      // ── Upload label keyboard support ────────────────────────────────────────────
       document
         .querySelector(".upload-label")
         .addEventListener("keypress", (e) => {

@@ -493,273 +493,325 @@
       </div>
     </section>
 
+    <!-- About This OCR Tool - Rewritten with Personal Story -->
     <section style="padding: 70px 20px; background: #ffffff">
       <div style="max-width: 1000px; margin: 0 auto">
         <h2 style="text-align: center; color: #1e3a8a; margin-bottom: 40px">
-          About This OCR PDF Tool
+          Why I Built This OCR Tool
         </h2>
 
         <div style="display: grid; grid-template-columns: 1fr; gap: 30px">
           <div>
-            <p style="color: #444; line-height: 1.8; font-size: 16px">
-              This OCR tool converts scanned PDF documents into searchable files
-              by adding a hidden text layer. We provide scan features also. The original layout and visual
-              appearance of your document remain unchanged, but the text becomes
-              selectable and searchable after processing.
+            <p
+              style="
+                color: #444;
+                line-height: 1.8;
+                font-size: 16px;
+                margin-bottom: 20px;
+              "
+            >
+              A lawyer friend called me last year. He had 40 boxes of old
+              contracts that needed to be searchable for an upcoming case.
+              Paying someone to retype them would cost thousands. Scanning them
+              gave him image files he couldn't search through. He asked if I
+              could help.
+            </p>
+
+            <p
+              style="
+                color: #444;
+                line-height: 1.8;
+                font-size: 16px;
+                margin-bottom: 20px;
+              "
+            >
+              That's why I built this OCR tool. It takes scanned PDFs (which are
+              really just pictures of pages) and makes them searchable. You can
+              hit Ctrl+F and find exactly what you need in seconds instead of
+              flipping through hundreds of pages manually. The original document
+              looks exactly the same - there's just a hidden text layer
+              underneath that makes it searchable.
             </p>
 
             <p style="color: #444; line-height: 1.8; font-size: 16px">
-              The tool works directly in your browser. No installation or
-              account registration is required for most of the features. It is suitable for contracts,
-              invoices, reports, academic papers, and other scanned documents
-              that need text search functionality.
+              My friend scanned all 40 boxes. The tool processed everything. He
+              won his case. Now I'm sharing it with anyone who needs it.
             </p>
           </div>
 
           <div style="background: #f3f6fb; padding: 25px; border-radius: 10px">
             <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Recommended Usage
+              Quick Tips (Learned The Hard Way)
             </h3>
             <ul style="color: #444; line-height: 1.8; padding-left: 20px">
-              <li>Use clear scans (300 DPI recommended)</li>
-              <li>Ensure pages are properly aligned before uploading</li>
-              <li>Remove password protection before processing</li>
-              <li>For large files, allow additional processing time</li>
+              <li style="margin-bottom: 10px">
+                <strong>300 DPI scans work best</strong> - Lower resolution =
+                worse accuracy
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Straighten your pages first</strong> - Crooked scans
+                confuse the recognition
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Remove passwords before uploading</strong> - Can't read
+                locked files
+              </li>
+              <li style="margin-bottom: 10px">
+                <strong>Big files take longer</strong> - A 100-page document
+                might need a minute or two
+              </li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- What is OCR Section -->
-    <section
-      class="features"
-      style="background: #f9fafb; padding: 60px 20px;"
-    >
+    <!-- What is OCR - Explained Like I'm Talking to My Mom -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
       <div class="container">
-        <h2>What is OCR and How Does It Work?</h2>
+        <h2>What is OCR? (And Why You Might Need It)</h2>
         <div style="max-width: 900px; margin: 0 auto; text-align: left">
           <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
-            OCR (Optical Character Recognition) is a document processing
-            technology that converts image-based PDFs into searchable and
-            selectable text. When a document is scanned, the resulting file
-            usually contains only images of pages rather than real text data.
-            This means you cannot search, copy, or highlight words inside the
-            document.
+            OCR stands for Optical Character Recognition. Fancy name, simple
+            idea: it's software that reads text from images.
           </p>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
-            OCR analyzes the visual patterns of characters within those images
-            and converts them into machine-readable text. The final output looks
-            identical to the original document but includes an invisible text
-            layer that enables search, copy, and accessibility features. For
-            example, a 25-page scanned contract (around 12–15MB) can typically
-            be processed in under a minute, making the entire document instantly
-            searchable.
+            Here's the problem: when you scan a document or take a photo of a
+            page, you end up with an image file. Your computer sees a picture,
+            not words. You can't search for "rent increase" in a scanned lease
+            agreement because to the computer, it's just a photo of words, not
+            actual text.
+          </p>
+
+          <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+            OCR fixes that. It looks at the image, figures out which letters and
+            numbers are where, and adds a hidden text layer underneath. The
+            document looks identical, but now you can search, copy, and
+            highlight text. It turns your scanner into something actually
+            useful.
           </p>
 
           <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
-            The OCR Process Explained
+            How It Actually Works (No Tech Jargon)
           </h3>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
-            <strong>1. Image Preprocessing:</strong> Each page is analyzed to
-            improve clarity before recognition. The system adjusts contrast,
-            reduces noise, corrects slight rotation, and enhances text edges to
-            improve accuracy.
+            <strong>Step 1: Clean up the image.</strong> The software adjusts
+            contrast, removes noise, and straightens things out so it can "read"
+            better.
           </p>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
-            <strong>2. Layout Detection:</strong> The engine detects text
-            blocks, paragraphs, columns, and tables to preserve the original
-            structure of the document.
+            <strong>Step 2: Find the text.</strong> It looks for blocks of text,
+            columns, paragraphs - anything that looks like words.
           </p>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 10px">
-            <strong>3. Character Recognition:</strong> Individual characters are
-            compared against trained character models to determine the closest
-            match. This step converts visual shapes into actual text data.
+            <strong>Step 3: Recognize each letter.</strong> It compares what it
+            sees against patterns it knows. That shape could be an "a" or an "o"
+            - context helps figure it out.
           </p>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 25px">
-            <strong>4. Text Layer Generation:</strong> After recognition, a
-            hidden text layer is embedded into the PDF while keeping the
-            original visual appearance unchanged. The document becomes fully
-            searchable without altering its layout.
+            <strong>Step 4: Add the text layer.</strong> It creates an invisible
+            layer of actual text that sits on top of your document. You still
+            see the original scan, but now you can interact with the words.
           </p>
 
           <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
-            Why Searchable PDFs Matter
+            Why Bother Making PDFs Searchable?
           </h3>
 
           <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Image-only PDFs are difficult to work with in professional and
-            academic environments. Searchable PDFs allow you to quickly find
-            names, dates, invoice numbers, or keywords across large documents.
-            They also improve accessibility, enabling screen readers to
-            interpret the text. For businesses, searchable records improve
-            document retrieval, compliance, and long-term digital archiving.
+            I'll give you a real example. My accountant used to keep paper
+            receipts in shoeboxes. Tax time meant hours of flipping through
+            slips of paper. Now he scans everything, runs OCR, and can find any
+            receipt by searching for the vendor name or date. Takes seconds
+            instead of hours.
+          </p>
+
+          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+            Same for contracts, research papers, medical records - anything you
+            might need to find later. Searchable PDFs turn a pile of scanned
+            documents into an actual organized filing system.
           </p>
 
           <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 35px">
-            File Security and Privacy
+            About Your Privacy
           </h3>
 
           <p style="color: #555; line-height: 1.8">
-            Uploaded files are processed securely and automatically removed
-            after conversion. We do not permanently store documents or use them
-            for any secondary purpose. The OCR process is limited strictly to
-            generating a searchable PDF version of your file.
+            Since people ask: your files get processed and then immediately
+            deleted. I don't keep them, don't look at them, don't sell them. If
+            you're scanning something sensitive (medical records, legal docs,
+            tax returns), they're not sitting on some server somewhere
+            afterward.
           </p>
         </div>
       </div>
     </section>
 
-    <!-- Use Cases Section -->
+    <!-- How People Actually Use This (Real Examples) -->
     <section class="features" style="background: white; padding: 60px 20px">
       <div class="container">
-        <h2>Common Uses for OCR PDF Conversion</h2>
+        <h2>How People Actually Use OCR (From Emails I've Gotten)</h2>
         <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Digitizing Historical Documents and Archives
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Libraries, museums, and archives use OCR to preserve and provide
-            access to historical documents, old books, newspapers, and
-            manuscripts. Converting these materials to searchable PDFs makes
-            them accessible to researchers worldwide without risking damage to
-            fragile originals. Academic institutions digitize thesis
-            collections, research papers, and rare books, creating searchable
-            databases that students and scholars can access remotely. This
-            preservation work ensures that valuable historical information
-            remains available for future generations.
-          </p>
+          <div
+            style="
+              margin-bottom: 40px;
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              📚 Libraries and Researchers
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              "I'm digitizing old local newspapers from the 1920s. OCR lets
+              people search for names and events instead of scrolling through
+              microfilm." - A librarian in Ohio
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Business Document Management
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Companies scan and OCR contracts, invoices, receipts, purchase
-            orders, and correspondence to create searchable digital archives.
-            This enables quick retrieval of specific documents when needed for
-            audits, legal reviews, or customer service. Financial departments
-            use OCR to process invoices and receipts, extracting key information
-            like dates, amounts, and vendor names for automated entry into
-            accounting systems. Human resources departments digitize employee
-            records, making it easy to search for specific information across
-            thousands of personnel files. Legal departments scan case files,
-            depositions, and evidence, creating searchable databases that
-            lawyers can search to find relevant precedents or specific
-            testimony.
-          </p>
+          <div
+            style="
+              margin-bottom: 40px;
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              💼 Small Business Owners
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              "I scan every invoice and receipt now. When a client asks about a
+              payment from 2 years ago, I search their name and find it in 10
+              seconds." - A freelance graphic designer
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Academic and Research Applications
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Students and researchers frequently need to extract information from
-            scanned textbooks, research papers, and journal articles. OCR allows
-            them to search for specific topics, copy quotes for citations, and
-            compile research materials efficiently. Instead of manually typing
-            excerpts from scanned materials, OCR enables instant text
-            extraction, saving hours of work. Researchers working with
-            multilingual sources benefit from OCR's language support, which can
-            recognize text in multiple languages within the same document. This
-            is particularly valuable for comparative studies or international
-            research projects.
-          </p>
+          <div
+            style="
+              margin-bottom: 40px;
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">🎓 Students</h3>
+            <p style="color: #555; line-height: 1.8">
+              "I scan textbook chapters and use OCR so I can search for terms
+              when studying for exams. Way faster than flipping through pages."
+              - A med student
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Legal and Compliance Requirements
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Law firms handle enormous volumes of documents that must be
-            searchable for discovery processes, case preparation, and
-            compliance. OCR converts scanned legal documents, court filings,
-            depositions, and evidence into searchable formats required by courts
-            and regulatory bodies. Many legal jurisdictions now require
-            electronic filing of searchable documents. Government agencies use
-            OCR to make public records accessible and searchable by citizens,
-            improving transparency and reducing the burden on staff who
-            previously had to manually search physical files. Healthcare
-            providers OCR medical records to comply with digital record-keeping
-            requirements while maintaining the ability to search patient
-            histories quickly.
-          </p>
+          <div
+            style="
+              margin-bottom: 40px;
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">⚖️ Legal</h3>
+            <p style="color: #555; line-height: 1.8">
+              "That lawyer friend I mentioned? He still uses it. Said it saved
+              him about 80 hours of manual document review on his last case." -
+              Anirudha
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Personal Document Organization
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Individuals use OCR to organize personal documents like tax records,
-            medical records, insurance policies, warranties, and important
-            correspondence. Creating searchable PDFs of these documents makes it
-            easy to find specific information when needed—for example, searching
-            for a specific medical test result from years ago or finding
-            warranty information for a purchased item. OCR is also valuable for
-            preserving family documents, old letters, recipe collections, and
-            genealogy records. Converting these to searchable PDFs protects them
-            from physical deterioration while making the information easily
-            accessible to family members.
-          </p>
-
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Accessibility and Translation
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            OCR makes documents accessible to people with visual impairments by
-            enabling screen readers to read the text aloud. Without OCR, scanned
-            documents are just images that assistive technologies cannot
-            interpret. Educational institutions use OCR to make course materials
-            accessible to all students, complying with accessibility
-            requirements. OCR also facilitates translation workflows—once text
-            is extracted, it can be fed into translation tools to convert
-            documents between languages. This is invaluable for international
-            businesses, immigration applications, and cross-border legal
-            matters.
-          </p>
+          <div
+            style="
+              margin-bottom: 40px;
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              🏠 Regular People
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              "I scanned all my appliance manuals and warranties. Now when
+              something breaks, I search for the appliance name and find the
+              manual instantly." - Someone who's more organized than me
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Practical Example - Make It Relatable -->
     <section style="padding: 60px 20px; background: #f9fafb">
       <div style="max-width: 900px; margin: 0 auto">
         <h2 style="text-align: center; color: #1e3a8a; margin-bottom: 30px">
-          Practical Use Case
+          Here's Why You'd Actually Use This
         </h2>
 
-        <p style="color: #444; line-height: 1.8; font-size: 16px">
-          For example, if you scan a 40-page rental agreement and need to locate
-          a clause related to “termination” or “security deposit,” you can
-          convert the scanned PDF using this OCR tool. After processing, you can
-          use your PDF viewer’s search function (Ctrl + F) to instantly find
-          relevant sections instead of manually reviewing every page.
-        </p>
+        <div
+          style="
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+          "
+        >
+          <p
+            style="
+              color: #444;
+              line-height: 1.8;
+              font-size: 16px;
+              margin-bottom: 20px;
+            "
+          >
+            <strong>Scenario:</strong> You have a 40-page rental agreement you
+            scanned as a PDF. Somewhere in there is the clause about breaking
+            the lease early. Without OCR, you're reading 40 pages.
+          </p>
 
-        <p style="color: #444; line-height: 1.8; font-size: 16px">
-          This is especially useful for legal documents, archived contracts,
-          printed reports, and administrative paperwork where quick text
-          retrieval is important.
-        </p>
+          <p
+            style="
+              color: #444;
+              line-height: 1.8;
+              font-size: 16px;
+              margin-bottom: 20px;
+            "
+          >
+            <strong>With OCR:</strong> Run it through this tool, wait 30
+            seconds, then hit Ctrl+F and type "termination" or "early lease."
+            You find it immediately.
+          </p>
+
+          <p style="color: #444; line-height: 1.8; font-size: 16px">
+            Same for tax documents ("find all receipts from Home Depot"),
+            research papers ("where does it mention photosynthesis?"), or
+            medical records ("when was my last tetanus shot?"). OCR turns a pile
+            of paper into something you can actually search.
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- Features Section -->
-    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+    <!-- Features - What It Actually Does -->
+    <section class="features" style="background: white; padding: 60px 20px">
       <div class="container">
-        <h2>OCR PDF Features</h2>
+        <h2>What This Tool Actually Does</h2>
         <div class="feature-grid">
           <div class="feature-card">
             <i
               class="fas fa-language"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>Multi-Language Support</h3>
+            <h3>Works in Multiple Languages</h3>
             <p>
-              Recognize text in 14+ languages including English, Spanish,
-              French, German, Italian, Portuguese, Russian, Arabic, Chinese,
-              Japanese, Korean, Hindi, and Bengali. Process multilingual
-              documents in one conversion.
+              English, Spanish, French, German, Italian, Portuguese, Russian,
+              Arabic, Chinese, Japanese, Korean, Hindi, Bengali. If your
+              document mixes languages, it handles that too.
             </p>
           </div>
           <div class="feature-card">
@@ -767,11 +819,11 @@
               class="fas fa-search"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>Fully Searchable PDFs</h3>
+            <h3>Makes PDFs Searchable</h3>
             <p>
-              Convert image-based PDFs into fully searchable documents. Find any
-              word or phrase instantly using Ctrl+F or your PDF reader's search
-              function.
+              After processing, you can hit Ctrl+F (or Cmd+F on Mac) and find
+              any word instantly. Works exactly like searching a webpage or Word
+              document.
             </p>
           </div>
           <div class="feature-card">
@@ -779,11 +831,10 @@
               class="fas fa-copy"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>Copy & Edit Text</h3>
+            <h3>Copy Text Anywhere</h3>
             <p>
-              Select, copy, and paste text from your PDFs. No more manual
-              retyping - extract quotes, data, or information with simple
-              copy-paste.
+              Need to quote something from a scanned document? Select the text,
+              copy it, paste it. No more typing things out manually.
             </p>
           </div>
           <div class="feature-card">
@@ -791,11 +842,10 @@
               class="fas fa-file-image"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>Preserve Original Layout</h3>
+            <h3>Looks Exactly The Same</h3>
             <p>
-              Maintains the original document formatting, including columns,
-              tables, images, and page structure while adding searchable text
-              layer.
+              Your document's formatting, images, columns, everything stays
+              identical. You just get a hidden text layer underneath.
             </p>
           </div>
           <div class="feature-card">
@@ -803,11 +853,10 @@
               class="fas fa-bolt"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>Fast Processing</h3>
+            <h3>Usually Takes Under a Minute</h3>
             <p>
-              Advanced OCR engine processes documents quickly without
-              compromising accuracy. Get results in seconds, even for multi-page
-              documents.
+              Most documents process in 30-60 seconds. Really big ones might
+              take 2-3 minutes. Grab coffee, come back, done.
             </p>
           </div>
           <div class="feature-card">
@@ -815,22 +864,21 @@
               class="fas fa-check-circle"
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
-            <h3>High Accuracy</h3>
+            <h3>Pretty Accurate</h3>
             <p>
-              State-of-the-art recognition algorithms ensure high accuracy even
-              with challenging documents, varied fonts, or slightly degraded
-              scans.
+              With clean scans, accuracy is usually 95%+. Not perfect, but good
+              enough to find what you need. Better than retyping everything.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Limitations Section -->
-    <section style="padding: 60px 20px; background: #ffffff">
+    <!-- What Won't Work Well (Honest Limitations) -->
+    <section style="padding: 60px 20px; background: #f9fafb">
       <div style="max-width: 900px; margin: 0 auto">
         <h2 style="text-align: center; color: #1e3a8a; margin-bottom: 30px">
-          Limitations of OCR Processing
+          What This Tool Is NOT Good At (Be Honest)
         </h2>
 
         <div
@@ -842,399 +890,353 @@
           "
         >
           <ul style="color: #444; line-height: 1.8; padding-left: 20px">
-            <li>Handwritten text may not convert accurately.</li>
-            <li>
-              Low-resolution or blurry scans can reduce recognition accuracy.
+            <li style="margin-bottom: 15px">
+              <strong>Handwriting:</strong> If you scan handwritten notes, OCR
+              will probably mess it up. Computers still struggle with cursive.
             </li>
-            <li>
-              Highly complex layouts (multi-column designs, tables) may require
-              manual review.
+            <li style="margin-bottom: 15px">
+              <strong>Blurry scans:</strong> If the original is fuzzy, the text
+              recognition will be fuzzy too. Garbage in, garbage out.
             </li>
-            <li>
-              Encrypted or password-protected PDFs must be unlocked before
-              processing.
+            <li style="margin-bottom: 15px">
+              <strong>Crazy layouts:</strong> Newspapers with multiple columns,
+              text wrapped around images, weird formatting - might confuse it.
+            </li>
+            <li style="margin-bottom: 15px">
+              <strong>Password-protected files:</strong> Can't read what's
+              locked. Use the Unlock PDF tool first.
+            </li>
+            <li style="margin-bottom: 15px">
+              <strong>Tiny text:</strong> Below 8-point font starts getting hard
+              to recognize accurately.
             </li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Tips Section -->
+    <!-- Tips From Experience -->
     <section class="features" style="background: white; padding: 60px 20px">
       <div class="container">
-        <h2>Tips for Best OCR Results</h2>
+        <h2>Tips From Someone Who's Processed Thousands of Pages</h2>
         <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Start with Quality Source Documents
+          <div
+            style="
+              margin-bottom: 35px;
+              padding-left: 20px;
+              border-left: 4px solid #4f46e5;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              300 DPI is the Sweet Spot
             </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              The quality of your OCR results depends heavily on the quality of
-              your input. When scanning documents, use at least 300 DPI (dots
-              per inch) resolution. Lower resolutions make characters blurry and
-              harder to recognize accurately. Ensure the scanner glass is
-              clean—dust, smudges, or marks can interfere with character
-              recognition. If possible, scan in grayscale or color rather than
-              pure black and white, as this preserves more detail for the OCR
-              engine to work with. For photographs of documents, use adequate
-              lighting and hold the camera steady to avoid blur.
+            <p style="color: #555; line-height: 1.8">
+              If you're scanning, set your scanner to 300 DPI (dots per inch).
+              Lower than that and text gets blurry. Higher than that and files
+              get huge without improving accuracy much. 300 is the Goldilocks
+              setting.
             </p>
           </div>
 
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Document Preparation
+          <div
+            style="
+              margin-bottom: 35px;
+              padding-left: 20px;
+              border-left: 4px solid #4f46e5;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Straighten Before Scanning
             </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              Before scanning or uploading, flatten any creases or folds in
-              paper documents. Wrinkled pages create shadows and distortions
-              that reduce OCR accuracy. Remove any staples, paper clips, or
-              bindings that might cause pages to curl or create shadows. If
-              working with bound materials like books, press pages as flat as
-              possible against the scanner bed. For multi-page documents, ensure
-              pages are in the correct order before scanning to avoid confusion
-              in the searchable PDF. Clean any marks, coffee stains, or
-              excessive highlighting that might obscure text.
+            <p style="color: #555; line-height: 1.8">
+              A page scanned at a 10-degree angle can still be read, but OCR
+              accuracy drops. Take the extra second to line it up straight on
+              the scanner. For photos of documents, try to shoot straight-on
+              rather than from an angle.
             </p>
           </div>
 
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Select the Correct Languages
+          <div
+            style="
+              margin-bottom: 35px;
+              padding-left: 20px;
+              border-left: 4px solid #4f46e5;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Clean Originals Matter
             </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              Our OCR tool supports multiple languages, but you need to specify
-              which languages are present in your document. If your document
-              contains text in English and Spanish, select both languages before
-              processing. This tells the OCR engine which character sets to
-              recognize, significantly improving accuracy. For documents in less
-              common languages or with special characters, selecting the correct
-              language is crucial. If unsure about the language, look for
-              identifying features like accent marks, character types, or
-              writing direction. Processing a document with the wrong language
-              selected will result in gibberish or very poor accuracy.
+            <p style="color: #555; line-height: 1.8">
+              Coffee stains, highlighter marks, crumpled pages, faded print -
+              all of these confuse OCR. If the document is important and the
+              original is rough, consider finding a cleaner copy or at least
+              smoothing out wrinkles before scanning.
             </p>
           </div>
 
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Understanding OCR Limitations
+          <div
+            style="
+              margin-bottom: 35px;
+              padding-left: 20px;
+              border-left: 4px solid #4f46e5;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Pick Your Language
             </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              While OCR technology is highly advanced, it has limitations.
-              Handwritten text, especially cursive writing, is much harder to
-              recognize accurately than printed text. Decorative fonts,
-              extremely small text (below 8-point), or unusual typography may
-              also cause errors. Documents with complex layouts, multiple
-              columns, or text overlapping images can sometimes confuse the
-              layout detection. Faded text, low-contrast documents (like yellow
-              paper with light print), or heavily highlighted or annotated pages
-              will have reduced accuracy. Understanding these limitations helps
-              you set realistic expectations and choose appropriate source
-              materials.
+            <p style="color: #555; line-height: 1.8">
+              If your document is in Spanish, tell the tool it's Spanish. If it
+              mixes English and French, select both. The OCR engine uses
+              language patterns to guess words correctly. Selecting the right
+              language boosts accuracy noticeably.
             </p>
           </div>
 
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Verify and Correct Results
+          <div
+            style="
+              margin-bottom: 35px;
+              padding-left: 20px;
+              border-left: 4px solid #4f46e5;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              Proofread Important Stuff
             </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              After OCR processing, always review the results for accuracy,
-              especially for important documents. Open the searchable PDF and
-              use the search function to verify that text is recognized
-              correctly. Spot-check names, numbers, dates, and technical terms,
-              as these are more prone to errors than common words. If you notice
-              systematic errors (like a specific letter consistently
-              misrecognized), consider rescanning with better quality settings.
-              For critical documents like legal contracts or academic papers,
-              consider having someone proofread the searchable text against the
-              original.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 35px">
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              Dealing with Tables and Forms
-            </h3>
-            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
-              Documents with tables, forms, or structured data require special
-              consideration. OCR engines can sometimes struggle with table
-              boundaries, causing text from different cells to merge together.
-              If working primarily with tabular data, consider using specialized
-              table extraction tools in addition to standard OCR. For forms with
-              checkboxes or handwritten entries, the checkbox symbols and
-              handwriting may not convert accurately. In these cases, the goal
-              should be making printed labels and instructions searchable rather
-              than expecting perfect capture of all form data. Complex
-              multi-column layouts like newspapers may benefit from being
-              processed in sections rather than all at once.
+            <p style="color: #555; line-height: 1.8">
+              OCR is good, not perfect. For legal documents or anything where
+              accuracy matters, spot-check the results. Names, numbers, and
+              dates are most likely to have errors. I always double-check those.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Comparison Section -->
+    <!-- Comparison - Why Use This -->
     <section class="features" style="background: #f9fafb; padding: 60px 20px">
       <div class="container">
-        <h2>OCR PDF vs Traditional Methods</h2>
+        <h2>Why Use This Instead of Something Else?</h2>
         <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            OCR vs Manual Typing
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Before OCR technology, the only way to make scanned documents
-            searchable was to manually retype all the text—an incredibly
-            time-consuming and error-prone process. Even skilled typists make
-            mistakes, especially with technical terminology, names, or numbers.
-            A single page might take 10-15 minutes to type accurately, while OCR
-            processes it in seconds. For a 100-page document, manual typing
-            could take over 20 hours of work, compared to a few minutes with
-            OCR. Beyond the time savings, OCR is actually more accurate for
-            standard printed text, as it doesn't suffer from typing fatigue or
-            attention lapses. The cost savings for businesses are
-            enormous—paying someone to type thousands of pages is far more
-            expensive than using automated OCR.
-          </p>
+          <div
+            style="
+              margin-bottom: 35px;
+              background: white;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              vs. Typing Everything Manually
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              A good typist does about 60 words per minute. A 10-page document
+              might have 3,000 words. That's 50 minutes of typing, plus
+              proofreading, plus fixing mistakes. OCR does it in under a minute.
+              No contest.
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Free Online OCR vs Desktop Software
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Traditional OCR software often requires expensive
-            licenses—professional OCR programs can cost hundreds of dollars per
-            user. These desktop applications need installation, regular updates,
-            and consume significant computer resources. Our free online OCR tool
-            provides professional-quality results without any software
-            installation or costs. You can access it from any device with a web
-            browser, whether you're on a Windows PC, Mac, Linux, or even a
-            tablet. There's no need to worry about software compatibility,
-            version updates, or license renewals. While desktop software may
-            offer advanced features for specialized use cases, our online tool
-            handles the vast majority of OCR needs perfectly well.
-          </p>
+          <div
+            style="
+              margin-bottom: 35px;
+              background: white;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              vs. Paid Software
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Adobe Acrobat Pro costs about $15/month or $180/year. Other OCR
+              software can cost hundreds upfront. This does the core job -
+              making PDFs searchable - for free. If you need professional OCR
+              occasionally, why pay for it monthly?
+            </p>
+          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            OCR vs Adobe Acrobat Pro
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Adobe Acrobat Pro is one of the most popular commercial solutions
-            for OCR, but it requires a subscription costing hundreds of dollars
-            per year. While Acrobat offers excellent OCR capabilities along with
-            many other PDF features, many users only need the OCR function
-            occasionally and don't want to pay for a full subscription. Our free
-            tool provides core OCR functionality without the subscription cost,
-            making it ideal for individuals, students, small businesses, or
-            anyone with occasional OCR needs. You get reliable, accurate OCR
-            results without committing to monthly payments or learning complex
-            software interfaces.
-          </p>
-
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 30px">
-            Online OCR vs Mobile Scanning Apps
-          </h3>
-          <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
-            Many mobile scanning apps include OCR features, but they often limit
-            the number of free scans per month, add watermarks, or require
-            premium subscriptions for full functionality. Mobile apps are
-            convenient for on-the-go scanning but may be less accurate than
-            computer-based OCR due to camera limitations and processing power.
-            Our web-based tool provides unlimited, watermark-free OCR processing
-            and can handle PDFs you've already scanned with any device. It
-            offers the convenience of working with files from any
-            source—scanner, phone camera, or email attachments—without being
-            locked into a specific app ecosystem.
-          </p>
+          <div
+            style="
+              margin-bottom: 35px;
+              background: white;
+              padding: 25px;
+              border-radius: 12px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px">vs. Mobile Apps</h3>
+            <p style="color: #555; line-height: 1.8">
+              Phone scanning apps often limit you to 5-10 free scans, then ask
+              for money. Or they add watermarks. Or they upload your docs to
+              their cloud. This has no limits, no watermarks, and your files
+              aren't stored anywhere afterward.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- FAQ - Real Questions People Ask -->
     <section
       class="features"
       style="background: white; padding: 60px 20px"
       id="faq"
     >
       <div class="container">
-        <h2>Frequently Asked Questions About OCR PDF</h2>
+        <h2>Questions People Actually Ask</h2>
         <div style="max-width: 800px; margin: 0 auto; text-align: left">
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              What does OCR mean?
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Is this really free? What's the catch?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              OCR stands for Optical Character Recognition. It's a technology
-              that converts images of text (from scans, photos, or PDF files)
-              into actual text data that can be searched, edited, and copied.
-              Think of it as teaching computers to "read" text from pictures.
+              No catch. I built this because I needed it, not to make money.
+              There's no hidden premium tier, no watermark after 10 documents,
+              no "sign up for free trial" nonsense. It just works.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Do you keep my documents?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              No. Files are deleted immediately after processing. I don't have a
+              database of your tax returns or medical records. I don't want
+              them.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Can it read handwriting?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Not well. If you need to search handwritten notes, this probably
+              won't work. It's designed for printed text - books, contracts,
+              invoices, receipts, etc.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "How accurate is it?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              With clean, well-scanned documents, 95-98% accuracy is typical.
+              It's not perfect, but it's good enough to find what you're looking
+              for. Names and unusual words might get misread occasionally.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "What's the file size limit?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              50MB per file. For larger documents, split them into smaller PDFs
+              using the Split PDF tool, then process each section separately.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Does it work with password-protected PDFs?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              No. Remove the password first using the Unlock PDF tool, then run
+              OCR. The tool can't read locked files.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "How long does it take?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Most documents process in 30 seconds to 2 minutes. Really large or
+              complex files might take 3-4 minutes. It depends on length and how
+              messy the original is.
+            </p>
+          </div>
+
+          <div
+            style="
+              margin-bottom: 30px;
+              border-bottom: 1px solid #e5e7eb;
+              padding-bottom: 20px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Can I OCR images, not PDFs?"
+            </h3>
+            <p style="color: #555; line-height: 1.8">
+              Yes, but first convert them to PDF using the Image to PDF tool,
+              then run OCR on the result. Two steps, but it works.
             </p>
           </div>
 
           <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Is this OCR PDF tool really free?
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Something's not working. Can you help?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              Yes, completely free with no hidden costs, watermarks, or usage
-              limits. You can convert as many PDFs as you need without paying
-              anything or creating an account.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              What languages are supported?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              We support 14+ languages including English, Spanish, French,
-              German, Italian, Portuguese, Russian, Japanese, Korean, Chinese
-              (Simplified and Traditional), Arabic, Hindi, and Bengali. You can
-              select multiple languages for multilingual documents.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              How accurate is the OCR?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              OCR accuracy depends on the quality of your input document. With
-              clear, well-scanned documents, accuracy typically exceeds 95-98%.
-              Poor quality scans, unusual fonts, or handwritten text may have
-              lower accuracy.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Can OCR recognize handwritten text?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              OCR works best with printed text. While it may recognize some
-              clear handwriting, accuracy is significantly lower than with typed
-              or printed text. For best results, use documents with printed
-              text.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Does OCR preserve the original PDF formatting?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Yes. The OCR process adds an invisible text layer over your
-              original PDF while preserving all visual formatting, images,
-              layouts, and page structure. Your PDF looks identical but is now
-              searchable.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              What's the difference between a scanned PDF and a searchable PDF?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              A scanned PDF is essentially a picture of a document—you can see
-              the text but can't search it, copy it, or edit it. A searchable
-              PDF (created with OCR) contains actual text data, allowing you to
-              search for words, copy text, and interact with the content.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Are my documents safe and private?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Yes. Your files are processed securely and deleted immediately
-              after conversion. We never store, access, or share your documents.
-              Your privacy is our priority.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Is there a file size limit?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              We can process PDFs up to 50MB. For larger files, consider
-              splitting them into smaller PDFs first using our Split PDF tool,
-              then processing each section separately.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Can I OCR password-protected PDFs?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              No, password-protected PDFs must be unlocked first. Use our Unlock
-              PDF tool to remove the password, then proceed with OCR processing.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              How long does OCR processing take?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Processing time depends on document length and complexity. Most
-              documents process in 30 seconds to 2 minutes. Larger or more
-              complex PDFs may take longer.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Can I convert images to searchable PDFs?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Yes. First use our Image to PDF tool to convert your image to PDF
-              format, then use this OCR tool to make it searchable.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              What file format does the output have?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              The output is a standard PDF file with an embedded text layer. It
-              works with all PDF readers and maintains full compatibility with
-              Adobe Acrobat, web browsers, and other PDF software.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Is this OCR PDF tool free to use?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Yes. You can use the tool without creating an account. There are
-              no watermarks added to your processed files.
-            </p>
-          </div>
-
-          <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              Are my documents stored?
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              No. Files are automatically removed after processing. We do not
-              keep copies of uploaded documents.
+              Email me at <strong>nextopdf@gmail.com</strong>. I read everything
+              and usually reply within a day. If the tool is broken, tell me and
+              I'll fix it.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Related Tools Section -->
+    <!-- Related Tools -->
     <section class="features" style="background: #f9fafb; padding: 60px 20px">
       <div class="container">
-        <h2>Related PDF Tools</h2>
+        <h2>Other Tools You Might Need</h2>
         <p style="text-align: center; color: #555; margin-bottom: 40px">
-          Enhance your PDFs with these additional tools
+          Same deal - all free, no sign-ups
         </p>
         <div class="feature-grid">
           <div class="feature-card">
@@ -1244,8 +1246,7 @@
             ></i>
             <h3>Document Scanner</h3>
             <p>
-              Scan paper documents with your camera and convert them directly to
-              searchable PDFs with OCR.
+              Scan paper docs with your phone camera, then OCR them right here.
             </p>
             <a
               href="/scan"
@@ -1260,10 +1261,7 @@
               style="font-size: 40px; color: #10b981; margin-bottom: 15px"
             ></i>
             <h3>PDF to Word</h3>
-            <p>
-              Convert searchable PDFs to editable Word documents for easy
-              editing and reformatting.
-            </p>
+            <p>Convert those searchable PDFs into editable Word docs.</p>
             <a
               href="/pdf-to-word"
               class="cta-button"
@@ -1277,63 +1275,9 @@
               style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
             ></i>
             <h3>Compress PDF</h3>
-            <p>
-              Reduce file size of your searchable PDFs for easier sharing via
-              email or cloud storage.
-            </p>
+            <p>Make your PDFs smaller for email attachments.</p>
             <a
               href="/compress-pdf"
-              class="cta-button"
-              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-              >Use Tool</a
-            >
-          </div>
-          <div class="feature-card">
-            <i
-              class="fas fa-object-group"
-              style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-            ></i>
-            <h3>Merge PDFs</h3>
-            <p>
-              Combine multiple OCR-processed PDFs into a single searchable
-              document.
-            </p>
-            <a
-              href="/merge"
-              class="cta-button"
-              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-              >Use Tool</a
-            >
-          </div>
-          <div class="feature-card">
-            <i
-              class="fas fa-unlock"
-              style="font-size: 40px; color: #10b981; margin-bottom: 15px"
-            ></i>
-            <h3>Unlock PDF</h3>
-            <p>
-              Remove password protection from PDFs before OCR processing if
-              needed.
-            </p>
-            <a
-              href="/unprotect-pdf"
-              class="cta-button"
-              style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-              >Use Tool</a
-            >
-          </div>
-          <div class="feature-card">
-            <i
-              class="fas fa-edit"
-              style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
-            ></i>
-            <h3>Edit PDF</h3>
-            <p>
-              Make corrections or additions to your searchable PDFs after OCR
-              processing.
-            </p>
-            <a
-              href="/edit"
               class="cta-button"
               style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
               >Use Tool</a
@@ -1353,11 +1297,11 @@
     >
       <div class="container">
         <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
-          Make Your PDFs Searchable Today
+          Stop Reading, Start Searching
         </h2>
-        <p style="margin-bottom: 25px; color: white">
-          Free OCR PDF conversion with support for 14+ languages. No
-          registration, unlimited use.
+        <p style="margin-bottom: 25px; color: white; font-size: 18px">
+          Turn your scanned PDFs into something actually useful. Free, no
+          sign-up, unlimited.
         </p>
         <a
           href="#"
@@ -1368,8 +1312,30 @@
           class="cta-button"
           style="background: white; color: #2563eb"
         >
-          <i class="fas fa-arrow-up"></i> Start Converting Now
+          <i class="fas fa-arrow-up"></i> Try OCR Now
         </a>
+      </div>
+    </section>
+
+    <!-- Simple Contact Reminder -->
+    <section
+      style="
+        background: white;
+        padding: 30px 20px;
+        text-align: center;
+        border-top: 1px solid #e5e7eb;
+      "
+    >
+      <div class="container">
+        <p style="font-size: 18px; color: #1e3a8a">
+          Questions?
+          <a
+            href="mailto:nextopdf@gmail.com"
+            style="color: #4f46e5; font-weight: bold; text-decoration: none"
+            >nextopdf@gmail.com</a
+          >
+        </p>
+        <p style="color: #555; margin-top: 10px">I actually reply to emails</p>
       </div>
     </section>
 

@@ -557,6 +557,188 @@
           width: 100%;
         }
       }
+
+      /* Add these new styles for progress bar */
+      .progress-container {
+        margin-top: 25px;
+        padding: 20px;
+        background: linear-gradient(135deg, #f6f8ff 0%, #f0f3ff 100%);
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.1);
+        border: 1px solid rgba(79, 70, 229, 0.2);
+        animation: slideIn 0.3s ease;
+      }
+
+      .progress-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+      }
+
+      .progress-header i {
+        font-size: 28px;
+        color: #4f46e5;
+        background: white;
+        padding: 10px;
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(79, 70, 229, 0.2);
+      }
+
+      .progress-header h3 {
+        margin: 0;
+        color: #1f2937;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .progress-bar-container {
+        width: 100%;
+        height: 24px;
+        background: #e5e7eb;
+        border-radius: 12px;
+        overflow: hidden;
+        margin: 15px 0;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+
+      .progress-bar-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transition: width 0.3s ease;
+        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .progress-bar-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.1) 25%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0.1) 75%
+        );
+        animation: shimmer 2s infinite;
+        transform: translateX(-100%);
+      }
+
+      @keyframes shimmer {
+        100% {
+          transform: translateX(100%);
+        }
+      }
+
+      .progress-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 10px;
+      }
+
+      .progress-info {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .progress-info-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        padding: 8px 16px;
+        border-radius: 30px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .progress-info-item i {
+        color: #4f46e5;
+        font-size: 14px;
+      }
+
+      .progress-info-item span {
+        color: #4b5563;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .progress-info-item strong {
+        color: #1f2937;
+        font-size: 16px;
+        margin-left: 5px;
+      }
+
+      .progress-status {
+        font-size: 14px;
+        color: #4f46e5;
+        font-weight: 600;
+        background: rgba(79, 70, 229, 0.1);
+        padding: 8px 16px;
+        border-radius: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .progress-status i {
+        font-size: 14px;
+      }
+
+      .progress-time {
+        font-size: 13px;
+        color: #6b7280;
+        margin-top: 10px;
+        text-align: right;
+        font-family: monospace;
+      }
+
+      .cancel-btn {
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+      }
+
+      .cancel-btn:hover {
+        background: #dc2626;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+
+      .cancel-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      @media (max-width: 768px) {
+        .progress-info {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .progress-stats {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
     </style>
 
     <!-- Google AdSense -->
@@ -661,6 +843,8 @@
                 Convert to Searchable PDF/A
               </span>
             </button>
+
+            <div id="progressContainer" style="display: none"></div>
 
             <p
               class="error-text"
@@ -1690,6 +1874,11 @@
       let convertedFileUrl = null;
       let convertedFileName = "searchable.pdf";
 
+      let currentJobId = null;
+      let progressInterval = null;
+      let processingStartTime = null;
+      let progressTimer = null;
+
       // Language options [code, name]
       const languages = [
         ["eng", "English"],
@@ -1908,6 +2097,7 @@
       };
 
       // Convert button
+      // Convert button - UPDATED for async processing
       convertBtn.addEventListener("click", async () => {
         // Validation
         if (selectedFiles.length === 0) {
@@ -1920,72 +2110,51 @@
           return;
         }
 
+        // Check file size for large files
+        const totalSize = selectedFiles.reduce((sum, f) => sum + f.size, 0);
+        const totalMB = totalSize / (1024 * 1024);
+        if (totalMB > 20) {
+          if (
+            !confirm(
+              `Large file detected (${totalMB.toFixed(1)}MB). This may take several minutes. Continue?`,
+            )
+          ) {
+            return;
+          }
+        }
+
         hideError();
         convertBtn.classList.add("btn-loading");
 
+        // Show progress UI immediately
+        showProgressUI();
+        processingStartTime = Date.now();
+
         const formData = new FormData();
-        // CRITICAL: Backend expects "files" (plural)
         selectedFiles.forEach((f) => formData.append("files", f));
         formData.append("lang", selectedLangs.join("+"));
 
         try {
-          const res = await fetch(BACKEND_URL, {
+          // Start the OCR job
+          const response = await fetch(BACKEND_URL, {
             method: "POST",
             body: formData,
           });
 
-          if (!res.ok) {
-            const errorData = await res.json();
+          if (!response.ok) {
+            const errorData = await response.json();
             throw new Error(errorData.error || "OCR conversion failed");
           }
 
-          const blob = await res.blob();
-          const url = URL.createObjectURL(blob);
-          convertedFileUrl = url;
+          const data = await response.json();
+          currentJobId = data.job_id;
 
-          // Determine filename
-          let filename;
-          if (selectedFiles.length === 1) {
-            const baseName = selectedFiles[0].name.replace(/\.pdf$/i, "");
-            filename = `${baseName}_searchable.pdf`;
-          } else {
-            filename = "merged_searchable.pdf";
-          }
-          convertedFileName = filename;
-
-          // Update UI
-          fileList.style.display = "none";
-          convertBtn.style.display = "none";
-          uploadSection.style.display = "none";
-          document.querySelector(".note").style.display = "none";
-          document.querySelector(".multi-select").style.display = "none";
-          document.querySelector(".select-label").style.display = "none";
-          resultBtns.style.display = "block";
-
-          downloadBtn.href = url;
-          downloadBtn.download = filename;
-          fileNameLink.textContent = filename;
-
-          // Show preview on larger screens
-          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-
-          if (!isSmallDevice) {
-            pdfFrame.src = url;
-            pdfPreview.style.display = "block";
-          }
-
-          fileNameLink.onclick = (e) => {
-            e.preventDefault();
-            if (isSmallDevice) {
-              window.open(url, "_blank");
-            } else {
-              pdfPreview.scrollIntoView({ behavior: "smooth" });
-            }
-          };
+          // Start polling for progress
+          startProgressPolling(currentJobId);
         } catch (err) {
           showError(err.message);
-        } finally {
           convertBtn.classList.remove("btn-loading");
+          hideProgressUI();
         }
       });
 
@@ -2044,11 +2213,24 @@
       });
 
       // Reset button
+      // Reset button - UPDATED to clear progress
       resetBtn.addEventListener("click", () => {
+        // Cancel any ongoing processing
+        if (progressInterval) {
+          clearInterval(progressInterval);
+          progressInterval = null;
+        }
+        if (progressTimer) {
+          clearInterval(progressTimer);
+          progressTimer = null;
+        }
+
         selectedFiles = [];
         selectedLangs = ["eng"];
         convertedFileUrl = null;
         convertedFileName = "searchable.pdf";
+        currentJobId = null;
+
         fileList.innerHTML = "";
         fileList.style.display = "none";
         uploadSection.style.display = "block";
@@ -2059,11 +2241,224 @@
         document.querySelector(".select-label").style.display = "block";
         pdfFrame.src = "";
         pdfPreview.style.display = "none";
+        hideProgressUI();
         hideError();
         updateTags();
         renderOptions();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
+
+      // Progress UI functions
+      function showProgressUI() {
+        const progressHTML = `
+    <div class="progress-container">
+      <div class="progress-header">
+        <i class="fa-solid fa-microchip"></i>
+        <h3>OCR Processing</h3>
+      </div>
+      
+      <div class="progress-bar-container">
+        <div id="progressBarFill" class="progress-bar-fill" style="width: 0%"></div>
+      </div>
+      
+      <div class="progress-stats">
+        <div class="progress-info">
+          <div class="progress-info-item">
+            <i class="fa-regular fa-file-lines"></i>
+            <span>Pages:</span>
+            <strong id="progressPages">0/0</strong>
+          </div>
+          <div class="progress-info-item">
+            <i class="fa-solid fa-percent"></i>
+            <span>Complete:</span>
+            <strong id="progressPercent">0%</strong>
+          </div>
+        </div>
+        <div class="progress-status">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+          <span id="progressMessage">Initializing...</span>
+        </div>
+      </div>
+      
+      <div class="progress-time" id="progressTime">
+        Elapsed: 0s
+      </div>
+      
+      <button id="cancelProcessingBtn" class="cancel-btn">
+        <i class="fa-solid fa-ban"></i> Cancel Processing
+      </button>
+    </div>
+  `;
+
+        progressContainer.innerHTML = progressHTML;
+        progressContainer.style.display = "block";
+
+        // Add cancel button handler
+        document
+          .getElementById("cancelProcessingBtn")
+          .addEventListener("click", cancelProcessing);
+      }
+
+      function updateProgressUI(progress) {
+        const bar = document.getElementById("progressBarFill");
+        const pagesEl = document.getElementById("progressPages");
+        const percentEl = document.getElementById("progressPercent");
+        const messageEl = document.getElementById("progressMessage");
+        const timeEl = document.getElementById("progressTime");
+
+        if (bar) {
+          const percent = progress.percent || 0;
+          bar.style.width = `${percent}%`;
+        }
+
+        if (pagesEl && progress.current_page && progress.total_pages) {
+          pagesEl.textContent = `${progress.current_page}/${progress.total_pages}`;
+        } else if (pagesEl && progress.total_pages) {
+          pagesEl.textContent = `0/${progress.total_pages}`;
+        }
+
+        if (percentEl) {
+          percentEl.textContent = `${progress.percent || 0}%`;
+        }
+
+        if (messageEl) {
+          messageEl.textContent = progress.message || "Processing...";
+        }
+
+        if (timeEl && processingStartTime) {
+          const elapsed = Math.floor((Date.now() - processingStartTime) / 1000);
+          const minutes = Math.floor(elapsed / 60);
+          const seconds = elapsed % 60;
+          timeEl.textContent = `Elapsed: ${minutes}m ${seconds}s`;
+        }
+      }
+
+      function hideProgressUI() {
+        progressContainer.style.display = "none";
+        progressContainer.innerHTML = "";
+      }
+
+      function cancelProcessing() {
+        if (progressInterval) {
+          clearInterval(progressInterval);
+          progressInterval = null;
+        }
+        if (progressTimer) {
+          clearInterval(progressTimer);
+          progressTimer = null;
+        }
+        hideProgressUI();
+        convertBtn.classList.remove("btn-loading");
+        convertBtn.style.display = "inline-flex";
+        showError("Processing cancelled by user");
+        currentJobId = null;
+      }
+
+      async function startProgressPolling(jobId) {
+        progressInterval = setInterval(async () => {
+          try {
+            const response = await fetch(`${BACKEND_URL}/progress/${jobId}`);
+
+            if (!response.ok) {
+              if (response.status === 404) {
+                // Job not found - might be expired
+                clearInterval(progressInterval);
+                showError("Job expired or not found");
+                convertBtn.classList.remove("btn-loading");
+                hideProgressUI();
+                return;
+              }
+              throw new Error(`Progress check failed: ${response.status}`);
+            }
+
+            const progress = await response.json();
+
+            if (progress.status === "completed") {
+              // Processing complete - fetch the result
+              clearInterval(progressInterval);
+              await fetchResult(jobId);
+            } else if (progress.status === "error") {
+              clearInterval(progressInterval);
+              showError(progress.message || "Processing failed");
+              convertBtn.classList.remove("btn-loading");
+              hideProgressUI();
+            } else {
+              // Still processing - update UI
+              updateProgressUI(progress);
+            }
+          } catch (err) {
+            console.error("Progress poll error:", err);
+            // Don't stop polling on temporary errors
+          }
+        }, 1000); // Poll every second
+      }
+
+      async function fetchResult(jobId) {
+        try {
+          const response = await fetch(`${BACKEND_URL}/result/${jobId}`);
+
+          if (!response.ok) {
+            throw new Error("Failed to download result");
+          }
+
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+          convertedFileUrl = url;
+
+          // Get filename from response headers or generate
+          const contentDisposition = response.headers.get(
+            "Content-Disposition",
+          );
+          let filename = "searchable.pdf";
+          if (contentDisposition) {
+            const match = contentDisposition.match(
+              /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
+            );
+            if (match && match[1]) {
+              filename = match[1].replace(/['"]/g, "");
+            }
+          } else if (selectedFiles.length === 1) {
+            const baseName = selectedFiles[0].name.replace(/\.pdf$/i, "");
+            filename = `${baseName}_searchable.pdf`;
+          }
+          convertedFileName = filename;
+
+          // Update UI for result
+          fileList.style.display = "none";
+          convertBtn.style.display = "none";
+          uploadSection.style.display = "none";
+          document.querySelector(".note").style.display = "none";
+          document.querySelector(".multi-select").style.display = "none";
+          document.querySelector(".select-label").style.display = "none";
+          resultBtns.style.display = "block";
+          hideProgressUI();
+
+          downloadBtn.href = url;
+          downloadBtn.download = filename;
+          fileNameLink.textContent = filename;
+
+          // Show preview on larger screens
+          const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
+
+          if (!isSmallDevice) {
+            pdfFrame.src = url;
+            pdfPreview.style.display = "block";
+          }
+
+          fileNameLink.onclick = (e) => {
+            e.preventDefault();
+            if (isSmallDevice) {
+              window.open(url, "_blank");
+            } else {
+              pdfPreview.scrollIntoView({ behavior: "smooth" });
+            }
+          };
+        } catch (err) {
+          showError(err.message);
+          convertBtn.classList.remove("btn-loading");
+          hideProgressUI();
+        }
+      }
 
       // Keyboard accessibility for upload label
       document

@@ -1,3060 +1,1109 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Edit PDF Online Free | PDFMaster</title>
-    <meta
-      name="description"
-      content="Edit PDF online: add text, images, shapes, draw, and annotate PDFs for free."
-    />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PDF Editor | PDFMaster</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:#0f1117;color:#e2e8f0;overflow:hidden}
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <!-- CSS -->
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/edit.css" />
+:root{
+  --bg:#0f1117;
+  --surface:#1a1d27;
+  --surface2:#22263a;
+  --border:#2d3148;
+  --accent:#6366f1;
+  --accent-h:#4f52d9;
+  --danger:#f43f5e;
+  --success:#10b981;
+  --info:#38bdf8;
+  --warn:#f59e0b;
+  --text:#e2e8f0;
+  --muted:#64748b;
+  --sb:96px;
+  --fbar:38px;
+  --tbar:52px;
+}
 
-    <!-- Favicon -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="32x32"
-      href="./images/favicon-32x32.png"
-    />
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="./images/favicon-16x16.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="./images/apple-touch-icon.png"
-    />
+/* ══ UPLOAD ══ */
+#uploadScreen{display:flex;align-items:center;justify-content:center;height:100vh}
+.upload-card{
+  display:flex;flex-direction:column;align-items:center;gap:16px;
+  padding:56px 44px;border:2px dashed var(--border);border-radius:24px;
+  background:var(--surface);cursor:pointer;transition:all .22s;
+  max-width:420px;width:90%;text-align:center;
+}
+.upload-card:hover{border-color:var(--accent);background:var(--surface2)}
+.upload-card .ico{width:68px;height:68px;border-radius:16px;background:rgba(99,102,241,.15);
+  display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--accent)}
+.upload-card h2{font-size:21px;font-weight:700}
+.upload-card p{font-size:13px;color:var(--muted);line-height:1.55}
+.upload-card .badge{font-size:11px;background:rgba(99,102,241,.12);color:var(--accent);
+  padding:4px 12px;border-radius:20px;font-weight:600}
 
-    <!-- Google AdSense (Replace with your AdSense ID) -->
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
-      crossorigin="anonymous"
-    ></script>
+/* ══ EDITOR SHELL ══ */
+#editorScreen{display:none;flex-direction:column;height:100vh;width:100%}
+#editorScreen.show{display:flex}
 
-    <style>
-      /* Toast Notification Styles */
-      .toast-container {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        z-index: 10000;
-        max-width: 350px;
-      }
+/* ══ FILE BAR ══ */
+.file-bar{
+  height:var(--fbar);min-height:var(--fbar);background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;padding:0 14px;flex-shrink:0;
+}
+.file-bar .ficon{color:var(--danger);font-size:15px;flex-shrink:0}
+.file-bar .fname{font-size:13px;font-weight:600;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-bar .xbtn{background:none;border:none;color:var(--muted);cursor:pointer;
+  font-size:15px;padding:5px 7px;border-radius:6px;transition:all .15s;flex-shrink:0}
+.file-bar .xbtn:hover{color:var(--danger);background:rgba(244,63,94,.12)}
 
-      .toast {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        padding: 16px 20px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        animation: slideIn 0.3s ease-out;
-        border-left: 4px solid #4f46e5;
-      }
+/* ══ TOOLBAR ══ */
+.toolbar{
+  min-height:var(--tbar);background:var(--surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:2px;padding:0 8px;
+  flex-shrink:0;overflow-x:auto;overflow-y:visible;
+  scrollbar-width:none;position:relative;z-index:100;flex-wrap:nowrap;
+}
+.toolbar::-webkit-scrollbar{display:none}
 
-      .toast.success {
-        border-left-color: #10b981;
-      }
+/* Flat standalone buttons — never nested inside another button */
+.tbtn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:6px 11px;border:1.5px solid var(--border);border-radius:7px;
+  background:transparent;font-size:12px;font-weight:600;
+  color:var(--muted);cursor:pointer;white-space:nowrap;
+  font-family:inherit;transition:all .14s;flex-shrink:0;
+}
+.tbtn i{font-size:11px}
+.tbtn:hover{background:var(--surface2);border-color:#3d4268;color:var(--text)}
+.tbtn.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.tbtn.cta{background:var(--accent);border-color:var(--accent);color:#fff}
+.tbtn.cta:hover{background:var(--accent-h)}
+.tsep{width:1px;height:24px;background:var(--border);margin:0 3px;flex-shrink:0}
+.tgap{flex:1;min-width:4px}
 
-      .toast.error {
-        border-left-color: #ef4444;
-      }
+/* ══ PANEL HOST — sibling of toolbar ══ */
+.panel-host{position:relative;z-index:300;flex-shrink:0}
+.prop-panel{
+  display:none;position:absolute;top:0;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:15px;
+  box-shadow:0 14px 48px rgba(0,0,0,.6);
+  min-width:300px;flex-direction:column;gap:11px;
+}
+.prop-panel.open{display:flex}
+.pp-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+  color:var(--muted);padding-bottom:8px;border-bottom:1px solid var(--border)}
+.pp-row{display:flex;flex-wrap:wrap;gap:9px;align-items:flex-end}
+.pp-field{display:flex;flex-direction:column;gap:4px}
+.pp-field label{font-size:11px;font-weight:600;color:var(--muted)}
+.pp-field input[type=number],
+.pp-field select{
+  padding:5px 8px;border:1px solid var(--border);border-radius:6px;
+  font-size:12px;background:var(--surface2);color:var(--text);
+  min-width:76px;font-family:inherit;outline:none;
+}
+.pp-field input[type=number]:focus,.pp-field select:focus{border-color:var(--accent)}
+.pp-field input[type=color]{
+  width:36px;height:28px;border:1px solid var(--border);
+  border-radius:5px;cursor:pointer;padding:2px;background:var(--surface2)
+}
+.pp-footer{padding-top:9px;border-top:1px solid var(--border);display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.pp-btn{
+  display:inline-flex;align-items:center;gap:5px;padding:6px 13px;
+  border:none;border-radius:7px;font-size:12px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:background .14s;
+}
+.pp-btn.primary{background:var(--accent);color:#fff}
+.pp-btn.primary:hover{background:var(--accent-h)}
+.pp-btn.success{background:var(--success);color:#fff}
+.pp-btn.success:hover{background:#059669}
 
-      .toast.info {
-        border-left-color: #3b82f6;
-      }
+/* Draw panel edit-path badge */
+.edit-badge{
+  font-size:10px;background:rgba(248,159,0,.15);color:var(--warn);
+  padding:3px 9px;border-radius:20px;font-weight:700;
+  display:none;align-items:center;gap:4px;
+}
+.edit-badge.show{display:inline-flex}
 
-      .toast.warning {
-        border-left-color: #f59e0b;
-      }
+/* Text panel — edit selected mode */
+.text-edit-badge{
+  font-size:10px;background:rgba(56,189,248,.15);color:var(--info);
+  padding:3px 9px;border-radius:20px;font-weight:700;
+  display:none;align-items:center;gap:4px;
+}
+.text-edit-badge.show{display:inline-flex}
 
-      .toast-icon {
-        font-size: 20px;
-        flex-shrink: 0;
-      }
+/* ══ EDITOR BODY ══ */
+.editor-body{display:flex;flex:1;overflow:hidden;min-height:0}
 
-      .toast.success .toast-icon {
-        color: #10b981;
-      }
+/* ══ SIDEBAR — always visible, shrinks responsively ══ */
+.sidebar{
+  width:var(--sb);min-width:var(--sb);
+  background:var(--surface);border-right:1px solid var(--border);
+  overflow-y:auto;padding:7px 5px;
+  display:flex;flex-direction:column;gap:5px;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+  flex-shrink:0;
+}
+.sb-title{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;color:var(--muted);padding:3px 2px 6px;
+  border-bottom:1px solid var(--border);text-align:center;margin-bottom:2px}
+.thumb{cursor:pointer;border-radius:6px;border:2px solid transparent;
+  overflow:hidden;transition:border-color .2s;text-align:center}
+.thumb:hover{border-color:#3d4268}
+.thumb.active{border-color:var(--accent)}
+.thumb canvas{display:block;width:100%;height:auto}
+.thumb .pg{font-size:10px;color:var(--muted);padding:3px 0;font-weight:600}
 
-      .toast.error .toast-icon {
-        color: #ef4444;
-      }
+/* ══ CANVAS AREA ══ */
+.canvas-area{
+  flex:1;overflow:auto;display:flex;flex-direction:column;
+  align-items:center;padding:24px;gap:24px;
+  background:var(--bg);min-width:0;
+}
+.page-block{
+  position:relative;box-shadow:0 8px 40px rgba(0,0,0,.55);
+  border-radius:3px;overflow:hidden;flex-shrink:0;
+}
+.page-block canvas.pdf-bg{display:block;position:absolute;top:0;left:0;pointer-events:none}
+.page-block canvas.fab-layer{position:absolute;top:0;left:0}
 
-      .toast.info .toast-icon {
-        color: #3b82f6;
-      }
+/* ══ ANNOTATION BAR ══ */
+#annotBar{
+  display:none;position:fixed;z-index:1000;
+  background:#1a1d27;border:1px solid var(--border);
+  border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.6);
+  padding:5px 7px;gap:4px;align-items:center;
+}
+#annotBar.show{display:flex}
+.ab-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 10px;border:none;border-radius:6px;
+  font-size:11px;font-weight:600;cursor:pointer;
+  color:#fff;font-family:inherit;transition:opacity .14s;
+}
+.ab-btn:hover{opacity:.8}
+.ab-btn.edit{background:var(--info)}
+.ab-btn.rot {background:var(--warn)}
+.ab-btn.copy{background:var(--success)}
+.ab-btn.del {background:var(--danger)}
+.ab-btn i{font-size:10px}
+.ab-sep{width:1px;height:18px;background:rgba(255,255,255,.12)}
 
-      .toast.warning .toast-icon {
-        color: #f59e0b;
-      }
+/* ══ CUSTOM MODAL ══ */
+#modalOverlay{
+  display:none;position:fixed;inset:0;z-index:5000;
+  background:rgba(0,0,0,.65);align-items:center;justify-content:center;
+  backdrop-filter:blur(3px);
+}
+#modalOverlay.show{display:flex}
+.modal-box{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:28px 28px 22px;
+  box-shadow:0 24px 60px rgba(0,0,0,.7);
+  max-width:380px;width:90%;display:flex;flex-direction:column;gap:16px;
+  animation:mPop .22s ease;
+}
+@keyframes mPop{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.modal-icon.warn  {background:rgba(245,158,11,.15);color:var(--warn)}
+.modal-icon.info  {background:rgba(56,189,248,.15);color:var(--info)}
+.modal-icon.danger{background:rgba(244,63,94,.15);color:var(--danger)}
+.modal-head{display:flex;align-items:flex-start;gap:14px}
+.modal-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px}
+.modal-msg{font-size:13px;color:var(--muted);line-height:1.55}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;padding-top:4px}
+.modal-btn{padding:8px 18px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .14s}
+.modal-btn.secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+.modal-btn.secondary:hover{border-color:#3d4268;background:#2a2f45}
+.modal-btn.primary{background:var(--accent);color:#fff}
+.modal-btn.primary:hover{background:var(--accent-h)}
+.modal-btn.danger{background:var(--danger);color:#fff}
+.modal-btn.danger:hover{background:#d9304f}
 
-      .toast-content {
-        flex: 1;
-      }
+/* ══ TOASTS ══ */
+#toastBox{position:fixed;top:12px;right:12px;z-index:9999;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{background:var(--surface);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.4);
+  padding:9px 13px;display:flex;align-items:center;gap:8px;font-size:12px;min-width:190px;
+  border-left:3px solid var(--accent);animation:tin .24s ease}
+.toast.s{border-left-color:var(--success)}.toast.e{border-left-color:var(--danger)}.toast.i{border-left-color:var(--info)}
+.toast i{font-size:13px}
+.toast.s i{color:var(--success)}.toast.e i{color:var(--danger)}.toast.i i{color:var(--info)}
+@keyframes tin{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-      .toast-title {
-        font-weight: 600;
-        margin-bottom: 4px;
-        color: #1f2937;
-      }
+/* ══ RESPONSIVE ══ */
+@media(max-width:640px){
+  :root{--sb:62px}
+  .tbtn span{display:none}
+  .tbtn{padding:6px 8px}
+  .canvas-area{padding:10px 6px}
+  .prop-panel{min-width:240px}
+}
+@media(max-width:380px){
+  :root{--sb:50px}
+  .sb-title{font-size:8px}
+  .canvas-area{padding:6px 3px}
+}
 
-      .toast-message {
-        font-size: 14px;
-        color: #6b7280;
-      }
+.hidden{display:none!important}
+</style>
+</head>
+<body>
 
-      .toast-close {
-        background: none;
-        border: none;
-        color: #9ca3af;
-        cursor: pointer;
-        font-size: 18px;
-        padding: 0;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+<div id="toastBox"></div>
 
-      .toast-close:hover {
-        color: #4b5563;
-      }
-
-      @keyframes slideIn {
-        from {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes slideOut {
-        from {
-          transform: translateX(0);
-          opacity: 1;
-        }
-        to {
-          transform: translateX(400px);
-          opacity: 0;
-        }
-      }
-
-      .toast.hiding {
-        animation: slideOut 0.3s ease-out forwards;
-      }
-
-      /* Custom Modal Styles */
-      .custom-modal-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-      }
-
-      .custom-modal-overlay.show {
-        opacity: 1;
-      }
-
-      .custom-modal {
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-        max-width: 450px;
-        width: 90%;
-        transform: scale(0.9);
-        transition: transform 0.3s ease;
-      }
-
-      .custom-modal-overlay.show .custom-modal {
-        transform: scale(1);
-      }
-
-      .custom-modal-header {
-        padding: 24px 24px 16px;
-        border-bottom: 1px solid #e5e7eb;
-      }
-
-      .custom-modal-title {
-        font-size: 20px;
-        font-weight: 600;
-        color: #1f2937;
-        margin: 0;
-      }
-
-      .custom-modal-body {
-        padding: 24px;
-        color: #4b5563;
-        font-size: 15px;
-        line-height: 1.6;
-      }
-
-      .custom-modal-footer {
-        padding: 16px 24px 24px;
-        display: flex;
-        gap: 12px;
-        justify-content: flex-end;
-      }
-
-      .custom-modal-btn {
-        padding: 10px 20px;
-        border-radius: 6px;
-        border: none;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-        font-size: 14px;
-      }
-
-      .custom-modal-btn-primary {
-        background: #4f46e5;
-        color: white;
-      }
-
-      .custom-modal-btn-primary:hover {
-        background: #4338ca;
-      }
-
-      .custom-modal-btn-danger {
-        background: #ef4444;
-        color: white;
-      }
-
-      .custom-modal-btn-danger:hover {
-        background: #dc2626;
-      }
-
-      .custom-modal-btn-secondary {
-        background: #f3f4f6;
-        color: #4b5563;
-      }
-
-      .custom-modal-btn-secondary:hover {
-        background: #e5e7eb;
-      }
-    </style>
-  </head>
-
-  <body>
-    <section id="header-placeholder"></section>
-
-    <!-- Toast Container -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <section class="merge-tool">
-      <div class="container">
-        <h1>Edit PDF</h1>
-        <p>Add text, images, shapes, and annotations to your PDF.</p>
-
-        <div class="upload-section" id="uploadSection">
-          <label for="pdfUpload" class="upload-label">
-            <i class="fa fa-upload"></i> Choose PDF file
-          </label>
-          <input type="file" id="pdfUpload" accept=".pdf" class="hidden" />
-
-          <div id="uploadLoader" class="upload-loader" style="display: none">
-            <div class="spinner"></div>
-            <p>Loading PDF…</p>
-          </div>
-        </div>
-
-        <div id="editorContainer" class="editor-container">
-          <div class="file-info" id="fileInfo">
-            <div class="file-info-left">
-              <i class="fa fa-file-pdf"></i>
-              <span class="file-name-text" id="currentFileName"
-                >document.pdf</span
-              >
-            </div>
-            <button class="delete-file-btn" id="deleteFileBtn">
-              <i class="fa fa-times"></i>
-            </button>
-          </div>
-
-          <div class="toolbar">
-            <button class="tool-btn" id="editPdf">
-              <i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>
-            </button>
-
-            <button class="tool-btn" id="addTextBtn">
-              <i class="fa fa-font"></i> <span>Add Text</span>
-              <div class="properties-dropdown" id="textProperties">
-                <div class="property-row">
-                  <div class="property-item">
-                    <label>Size:</label>
-                    <input
-                      type="number"
-                      id="fontSize"
-                      min="8"
-                      max="72"
-                      value="16"
-                    />
-                  </div>
-                  <div class="property-item">
-                    <label>Font:</label>
-                    <select id="fontFamily">
-                      <option value="Arial">Arial</option>
-                      <option value="Helvetica">Helvetica</option>
-                      <option value="Times New Roman">Times</option>
-                      <option value="Courier New">Courier</option>
-                      <option value="Georgia">Georgia</option>
-                      <option value="Verdana">Verdana</option>
-                    </select>
-                  </div>
-                  <div class="property-item">
-                    <label>Color:</label>
-                    <div class="color-select">
-                      <input type="color" id="textColor" value="#000000" />
-                      <input
-                        type="text"
-                        id="textColorHex"
-                        value="#000000"
-                        maxlength="7"
-                      />
-                    </div>
-                  </div>
-                  <div class="property-item">
-                    <label>Weight:</label>
-                    <select id="fontWeight">
-                      <option value="normal">Normal</option>
-                      <option value="bold">Bold</option>
-                    </select>
-                  </div>
-                  <div class="property-item">
-                    <label>Style:</label>
-                    <select id="fontStyle">
-                      <option value="normal">Regular</option>
-                      <option value="italic">Italic</option>
-                    </select>
-                  </div>
-                  <div class="property-item">
-                    <label>Align:</label>
-                    <select id="textAlign">
-                      <option value="left">Left</option>
-                      <option value="center" selected>Center</option>
-                      <option value="right">Right</option>
-                      <option value="justify">Justify</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </button>
-
-            <button class="tool-btn" id="addImageBtn">
-              <i class="fa fa-image"></i> <span>Add Image</span>
-            </button>
-
-            <!-- DRAW BUTTON + BRUSH OPTION + APPLY DRAWING BUTTON (UI) -->
-            <button class="tool-btn" id="drawBtn">
-              <i class="fa fa-pencil"></i> <span>Draw</span>
-              <!-- BRUSH OPTIONS IN DRAWING PROPERTY (dropdown) -->
-              <div class="properties-dropdown" id="drawProperties">
-                <div class="property-row">
-                  <div class="property-item">
-                    <label>Color:</label>
-                    <div class="color-select">
-                      <input type="color" id="penColor" value="#000000" />
-                      <input
-                        type="text"
-                        id="penColorHex"
-                        value="#000000"
-                        maxlength="7"
-                      />
-                    </div>
-                  </div>
-                  <!-- BRUSH OPTION: additional style (solid/dotted) -->
-                  <div class="property-item">
-                    <label>Brush:</label>
-                    <select id="brushStyle">
-                      <option value="solid">Solid</option>
-                      <option value="dotted">Dotted</option>
-                      <option value="dashed">Dashed</option>
-                    </select>
-                  </div>
-                  <!-- BRUSH SIZE: dropdown select -->
-                  <div class="property-item">
-                    <label>Brush Size:</label>
-                    <select id="brushSize">
-                      <option value="1">1px (Extra Thin)</option>
-                      <option value="2">2px (Thin)</option>
-                      <option value="3" selected>3px (Medium)</option>
-                      <option value="4">4px</option>
-                      <option value="5">5px</option>
-                      <option value="6">6px (Thick)</option>
-                      <option value="8">8px (Extra Thick)</option>
-                      <option value="10">10px</option>
-                      <option value="12">12px</option>
-                      <option value="14">14px</option>
-                      <option value="16">16px</option>
-                      <option value="18">18px</option>
-                      <option value="20">20px</option>
-                    </select>
-                  </div>
-                  <!-- NEW: APPLY DRAWING BUTTON (commits drawing as annotation) -->
-                  <div class="property-item">
-                    <div class="cta-button" id="applyDrawingBtn">
-                      <i class="fa fa-check-circle"></i>
-                      <span>Deactivate Drawing Mode</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
-
-            <button class="tool-btn" id="addShapeBtn">
-              <i class="fa fa-shapes"></i> <span>Add Shape</span>
-              <div class="properties-dropdown" id="shapeProperties">
-                <div class="property-row">
-                  <div class="property-item">
-                    <label>Shape:</label>
-                    <select id="shapeType">
-                      <option value="rectangle">Rectangle</option>
-                      <option value="circle">Circle</option>
-                      <option value="line">Line</option>
-                    </select>
-                  </div>
-                  <div class="property-item">
-                    <label>Fill:</label>
-                    <div class="color-select">
-                      <input type="color" id="shapeFillColor" value="#4f46e5" />
-                      <input
-                        type="text"
-                        id="shapeFillHex"
-                        value="#4f46e5"
-                        maxlength="7"
-                      />
-                    </div>
-                  </div>
-                  <div class="property-item">
-                    <label>Border:</label>
-                    <div class="color-select">
-                      <input
-                        type="color"
-                        id="shapeBorderColor"
-                        value="#1e3a8a"
-                      />
-                      <input
-                        type="text"
-                        id="shapeBorderHex"
-                        value="#1e3a8a"
-                        maxlength="7"
-                      />
-                    </div>
-                  </div>
-                  <div class="property-item">
-                    <label>Width:</label>
-                    <input
-                      type="number"
-                      id="shapeBorderWidth"
-                      min="0"
-                      max="10"
-                      value="2"
-                    />
-                  </div>
-                  <div class="property-item">
-                    <div class="cta-button" id="applyShapeBtn">
-                      <i class="fa fa-check-circle"></i>
-                      <span>Apply Shape</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </button>
-
-            <button class="tool-btn" id="undoBtn">
-              <i class="fa fa-undo"></i> <span>Undo</span>
-            </button>
-            <button class="tool-btn" id="clearAllBtn">
-              <i class="fa fa-eraser"></i> <span>Clear All</span>
-            </button>
-            <button class="tool-btn cta-button" id="saveBtn">
-              <i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>
-            </button>
-          </div>
-
-          <div class="editor-layout">
-            <div class="sidebar">
-              <div class="page-thumbnails">
-                <h4 class="pages-title"><i class="fa fa-images"></i> Pages</h4>
-
-                <div class="thumbnails-scroll" id="thumbnailContainer"></div>
-              </div>
-            </div>
-
-            <div class="main-editor">
-              <div class="canvas-container" id="canvasContainer"></div>
-            </div>
-          </div>
-
-          <input type="file" id="imageUpload" accept="image/*" class="hidden" />
-        </div>
-
-        <p class="note">
-          Supported format: PDF. All editing is done in your browser.
-        </p>
+<!-- Custom modal -->
+<div id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-icon" id="modalIcon"><i id="modalIconI" class="fa fa-circle-info"></i></div>
+      <div>
+        <div class="modal-title" id="modalTitle">Notice</div>
+        <div class="modal-msg"   id="modalMsg"></div>
       </div>
-    </section>
+    </div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
 
-    <section id="footer-placeholder"></section>
+<!-- Annotation bar -->
+<div id="annotBar">
+  <button class="ab-btn edit" id="abEdit"><i class="fa fa-pen"></i> Edit</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn rot"  id="abRot"> <i class="fa fa-rotate-right"></i> Rotate</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn copy" id="abCopy"><i class="fa fa-copy"></i> Copy</button>
+  <div class="ab-sep"></div>
+  <button class="ab-btn del"  id="abDel"> <i class="fa fa-trash"></i> Delete</button>
+</div>
 
-    <!-- JS -->
-    <script src="./js/app.js"></script>
+<!-- Upload -->
+<div id="uploadScreen">
+  <label class="upload-card" for="fileInput">
+    <div class="ico"><i class="fa fa-file-pdf"></i></div>
+    <h2>Upload PDF to Edit</h2>
+    <p>Click to browse or drag &amp; drop<br>your PDF file here</p>
+    <span class="badge">Editing happens entirely in your browser</span>
+  </label>
+  <input type="file" id="fileInput" accept=".pdf" class="hidden"/>
+</div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-      // Toast Notification System
-      const Toast = {
-        show: function (message, type = "info", duration = 3000) {
-          const container = document.getElementById("toastContainer");
-          const toast = document.createElement("div");
-          toast.className = `toast ${type}`;
+<!-- Editor -->
+<div id="editorScreen">
 
-          const icons = {
-            success: "fa-check-circle",
-            error: "fa-exclamation-circle",
-            warning: "fa-exclamation-triangle",
-            info: "fa-info-circle",
-          };
+  <div class="file-bar">
+    <i class="fa fa-file-pdf ficon"></i>
+    <span class="fname" id="fileName">document.pdf</span>
+    <button class="xbtn" id="btnClose" title="Remove file"><i class="fa fa-xmark"></i></button>
+  </div>
 
-          const titles = {
-            success: "Success",
-            error: "Error",
-            warning: "Warning",
-            info: "Info",
-          };
+  <!-- Toolbar: all <button> are flat siblings, none nested -->
+  <div class="toolbar">
+    <!-- NO Select button — clicking on an annotation selects it directly -->
+    <button class="tbtn on" id="tbDraw">  <i class="fa fa-pencil"></i><span>Draw</span></button>
+    <button class="tbtn"    id="tbText">  <i class="fa fa-font"></i><span>Add Text</span></button>
+    <button class="tbtn"    id="tbShape"> <i class="fa fa-shapes"></i><span>Shape</span></button>
+    <button class="tbtn"    id="tbImage"> <i class="fa fa-image"></i><span>Image</span></button>
+    <div class="tsep"></div>
+    <button class="tbtn" id="tbUndo"> <i class="fa fa-rotate-left"></i><span>Undo</span></button>
+    <button class="tbtn" id="tbDel">  <i class="fa fa-trash"></i><span>Delete</span></button>
+    <button class="tbtn" id="tbClear"><i class="fa fa-eraser"></i><span>Clear</span></button>
+    <div class="tgap"></div>
+    <button class="tbtn cta" id="tbSave"><i class="fa fa-floppy-disk"></i><span>Save PDF</span></button>
+  </div>
 
-          toast.innerHTML = `
-            <i class="fa ${icons[type]} toast-icon"></i>
-            <div class="toast-content">
-              <div class="toast-title">${titles[type]}</div>
-              <div class="toast-message">${message}</div>
-            </div>
-            <button class="toast-close">&times;</button>
-          `;
+  <!-- Panel host: sibling of toolbar, never inside a button -->
+  <div class="panel-host" id="panelHost">
 
-          container.appendChild(toast);
-
-          const closeBtn = toast.querySelector(".toast-close");
-          closeBtn.onclick = () => this.hide(toast);
-
-          if (duration > 0) {
-            setTimeout(() => this.hide(toast), duration);
-          }
-
-          return toast;
-        },
-
-        hide: function (toast) {
-          toast.classList.add("hiding");
-          setTimeout(() => toast.remove(), 300);
-        },
-
-        success: function (message, duration = 3000) {
-          return this.show(message, "success", duration);
-        },
-
-        error: function (message, duration = 5000) {
-          return this.show(message, "error", duration);
-        },
-
-        warning: function (message, duration = 4000) {
-          return this.show(message, "warning", duration);
-        },
-
-        info: function (message, duration = 3000) {
-          return this.show(message, "info", duration);
-        },
-      };
-
-      // Custom Modal System
-      const CustomModal = {
-        alert: function (message, title = "Notice") {
-          return new Promise((resolve) => {
-            const overlay = this.createOverlay();
-            const modal = this.createModal(title, message, [
-              {
-                text: "OK",
-                class: "custom-modal-btn custom-modal-btn-primary",
-                onclick: () => {
-                  this.close(overlay);
-                  resolve(true);
-                },
-              },
-            ]);
-
-            overlay.appendChild(modal);
-            document.body.appendChild(overlay);
-            overlay.offsetHeight;
-            overlay.classList.add("show");
-          });
-        },
-
-        confirm: function (message, title = "Confirm", type = "primary") {
-          return new Promise((resolve) => {
-            const overlay = this.createOverlay();
-
-            let confirmBtnClass = "custom-modal-btn";
-            if (type === "danger") {
-              confirmBtnClass += " custom-modal-btn-danger";
-            } else {
-              confirmBtnClass += " custom-modal-btn-primary";
-            }
-
-            const modal = this.createModal(title, message, [
-              {
-                text: "Cancel",
-                class: "custom-modal-btn custom-modal-btn-secondary",
-                onclick: (e) => {
-                  e.stopPropagation();
-                  this.close(overlay);
-                  resolve(false);
-                },
-              },
-              {
-                text: "Confirm",
-                class: confirmBtnClass,
-                onclick: (e) => {
-                  e.stopPropagation();
-                  this.close(overlay);
-                  resolve(true);
-                },
-              },
-            ]);
-
-            overlay.appendChild(modal);
-            document.body.appendChild(overlay);
-            overlay.offsetHeight;
-            overlay.classList.add("show");
-          });
-        },
-
-        createOverlay: function () {
-          const overlay = document.createElement("div");
-          overlay.className = "custom-modal-overlay";
-          overlay.style.zIndex = "999999";
-          return overlay;
-        },
-
-        createModal: function (title, message, buttons) {
-          const modal = document.createElement("div");
-          modal.className = "custom-modal";
-          modal.style.pointerEvents = "auto";
-
-          modal.innerHTML = `
-      <div class="custom-modal-header">
-        <h3 class="custom-modal-title">${title}</h3>
+    <!-- Draw panel -->
+    <div class="prop-panel" id="ppDraw">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)">Drawing Options</span>
+        <span class="edit-badge" id="drawEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
       </div>
-      <div class="custom-modal-body">${message}</div>
-      <div class="custom-modal-footer"></div>
-    `;
-
-          const footer = modal.querySelector(".custom-modal-footer");
-          buttons.forEach((btn) => {
-            const button = document.createElement("button");
-            button.className = btn.class;
-            button.textContent = btn.text;
-            button.style.pointerEvents = "auto";
-            button.onclick = btn.onclick;
-            footer.appendChild(button);
-          });
-
-          return modal;
-        },
-
-        close: function (overlay) {
-          overlay.classList.remove("show");
-          setTimeout(() => {
-            if (overlay.parentNode) {
-              overlay.parentNode.removeChild(overlay);
-            }
-          }, 300);
-        },
-      };
-
-      // DOM Elements
-      const pdfUpload = document.getElementById("pdfUpload");
-      const editorContainer = document.getElementById("editorContainer");
-      const canvasContainer = document.getElementById("canvasContainer");
-      const thumbnailContainer = document.getElementById("thumbnailContainer");
-      const uploadSection = document.getElementById("uploadSection");
-      const currentFileName = document.getElementById("currentFileName");
-      const deleteFileBtn = document.getElementById("deleteFileBtn");
-      const editPdfBtn = document.getElementById("editPdf");
-
-      // Tool buttons
-      const addTextBtn = document.getElementById("addTextBtn");
-      const addImageBtn = document.getElementById("addImageBtn");
-      const drawBtn = document.getElementById("drawBtn");
-      const applyDrawingBtn = document.getElementById("applyDrawingBtn");
-      const addShapeBtn = document.getElementById("addShapeBtn");
-      const undoBtn = document.getElementById("undoBtn");
-      const clearAllBtn = document.getElementById("clearAllBtn");
-      const saveBtn = document.getElementById("saveBtn");
-      const imageUpload = document.getElementById("imageUpload");
-      const penColor = document.getElementById("penColor");
-      const penWidth = document.getElementById("penWidth");
-      const brushStyle = document.getElementById("brushStyle");
-      const brushSize = document.getElementById("brushSize");
-      const API_BASE_URL = `http://127.0.0.1:8080`;
-
-      // State
-      let pdfDoc = null;
-      let pdfFile = null;
-      let currentTool = null;
-      let pages = [];
-      let currentPageIndex = 0;
-      let selectedAnnotation = null;
-      let isDragging = false;
-      let isResizing = false;
-      let dragStartX = 0;
-      let dragStartY = 0;
-      let resizeHandle = null;
-      let scale = 1;
-      let isEditMode = false;
-      let ocrTextBlocks = [];
-      const MAX_WIDTH = 800;
-
-      class PDFPage {
-        constructor(pageNum, canvas, viewport) {
-          this.pageNum = pageNum;
-          this.canvas = canvas;
-          this.viewport = viewport;
-          this.annotations = [];
-          this.ocrTextBlocks = [];
-          this.deletedRegions = [];
-          this.deletedImages = [];
-          this.drawingCanvas = null;
-          this.wrapper = null;
-          this.annotationLayer = null;
-          this.ocrLayer = null;
-          this.scale = 1;
-          this.hasDrawing = false;
-          this.currentDrawingPaths = [];
-        }
-
-        addAnnotation(annotation) {
-          this.annotations.push(annotation);
-        }
-
-        removeAnnotation(annotation) {
-          const index = this.annotations.indexOf(annotation);
-          if (index > -1) {
-            this.annotations.splice(index, 1);
-          }
-        }
-
-        addDeletedRegion(region) {
-          this.deletedRegions.push(region);
-        }
-      }
-
-      class Annotation {
-        constructor(type, page) {
-          this.type = type;
-          this.page = page;
-          this.element = null;
-          this.x = 0;
-          this.y = 0;
-          this.width = 100;
-          this.height = 50;
-          this.rotation = 0;
-        }
-
-        applyTransform() {
-          this.element.style.transform = `rotate(${this.rotation}deg)`;
-        }
-
-        createElement() {
-          const div = document.createElement("div");
-          div.className = "annotation-item";
-          div.style.left = this.x + "px";
-          div.style.top = this.y + "px";
-          div.style.transformOrigin = "center center";
-          div.style.width = this.width + "px";
-          div.style.height = this.height + "px";
-
-          const controls = document.createElement("div");
-          controls.className = "annotation-controls";
-
-          const copyBtn = document.createElement("button");
-          copyBtn.className = "control-btn copy-btn";
-          copyBtn.innerHTML = '<i class="fa fa-copy"></i>';
-          copyBtn.title = "Copy";
-          copyBtn.onclick = (e) => {
-            e.stopPropagation();
-            this.copy();
-          };
-          controls.appendChild(copyBtn);
-
-          const rotateBtn = document.createElement("button");
-          rotateBtn.className = "control-btn rotate-btn";
-          rotateBtn.innerHTML = '<i class="fa fa-rotate-right"></i>';
-          rotateBtn.title = "Rotate";
-          rotateBtn.onclick = (e) => {
-            e.stopPropagation();
-            this.rotate(15);
-          };
-          controls.appendChild(rotateBtn);
-
-          const deleteBtn = document.createElement("button");
-          deleteBtn.className = "control-btn delete-btn";
-          deleteBtn.innerHTML = '<i class="fa fa-times"></i>';
-          deleteBtn.title = "Delete";
-          deleteBtn.onclick = (e) => {
-            e.stopPropagation();
-            this.delete();
-          };
-          controls.appendChild(deleteBtn);
-
-          div.appendChild(controls);
-
-          ["nw", "ne", "sw", "se"].forEach((pos) => {
-            const handle = document.createElement("div");
-            handle.className = `resize-handle ${pos}`;
-            handle.dataset.handle = pos;
-            div.appendChild(handle);
-          });
-
-          this.element = div;
-          this.attachEvents();
-          this.applyTransform();
-          return div;
-        }
-
-        rotate(deg) {
-          this.rotation = (this.rotation + deg) % 360;
-          this.applyTransform();
-        }
-
-        attachEvents() {
-          this.element.addEventListener("mousedown", (e) => {
-            if (e.target.classList.contains("resize-handle")) {
-              isResizing = true;
-              resizeHandle = e.target.dataset.handle;
-              e.stopPropagation();
-              e.preventDefault();
-            } else if (!e.target.closest(".annotation-controls")) {
-              isDragging = true;
-              const rect = this.page.annotationLayer.getBoundingClientRect();
-              dragStartX = e.clientX - rect.left - this.x;
-              dragStartY = e.clientY - rect.top - this.y;
-              e.stopPropagation();
-              e.preventDefault();
-            }
-            selectAnnotation(this);
-          });
-
-          this.element.addEventListener(
-            "touchstart",
-            (e) => {
-              const touch = e.touches[0];
-
-              if (e.target.classList.contains("resize-handle")) {
-                isResizing = true;
-                resizeHandle = e.target.dataset.handle;
-                e.stopPropagation();
-                e.preventDefault();
-              } else if (!e.target.closest(".annotation-controls")) {
-                isDragging = true;
-                const rect = this.page.annotationLayer.getBoundingClientRect();
-                dragStartX = touch.clientX - rect.left - this.x;
-                dragStartY = touch.clientY - rect.top - this.y;
-                e.stopPropagation();
-                e.preventDefault();
-              }
-              selectAnnotation(this);
-            },
-            { passive: false },
-          );
-
-          this.element.addEventListener("selectstart", (e) => {
-            if (isDragging || isResizing) {
-              e.preventDefault();
-            }
-          });
-        }
-
-        updatePosition(x, y) {
-          this.x = x;
-          this.y = y;
-          this.element.style.left = x + "px";
-          this.element.style.top = y + "px";
-        }
-
-        updateSize(width, height) {
-          this.width = Math.max(20, width);
-          this.height = Math.max(20, height);
-          this.element.style.width = this.width + "px";
-          this.element.style.height = this.height + "px";
-        }
-
-        delete() {
-          this.element.remove();
-          this.page.removeAnnotation(this);
-          if (selectedAnnotation === this) {
-            selectedAnnotation = null;
-          }
-        }
-
-        copy() {
-          const newAnnotation = this.clone();
-          newAnnotation.rotation = this.rotation;
-          newAnnotation.x += 20;
-          newAnnotation.y += 20;
-          const element = newAnnotation.createElement();
-          newAnnotation.applyTransform();
-          this.page.annotationLayer.appendChild(element);
-          this.page.addAnnotation(newAnnotation);
-          selectAnnotation(newAnnotation);
-        }
-
-        clone() {
-          return null;
-        }
-      }
-
-      class TextAnnotation extends Annotation {
-        constructor(page, isOCR = false) {
-          super("text", page);
-          this.text = "Double click to edit";
-          this.fontSize = 16;
-          this.fontFamily = "Arial";
-          this.color = "#000000";
-          this.fontWeight = "normal";
-          this.fontStyle = "normal";
-          this.textAlign = "center";
-          this.isOCR = isOCR;
-          this.originalData = null;
-          this.deletionMarked = false;
-        }
-
-        createElement() {
-          const wrapper = super.createElement();
-          wrapper.classList.add("text-annotation");
-          if (this.isOCR) {
-            wrapper.classList.add("ocr-text-block");
-          }
-
-          const content = document.createElement("div");
-          content.className = "text-content";
-          content.textContent = this.text;
-          content.contentEditable = false;
-          content.style.width = "100%";
-          content.style.height = "100%";
-          content.style.outline = "none";
-          content.style.textAlign = this.textAlign;
-
-          content.addEventListener("mousedown", (e) => {
-            selectAnnotation(this);
-            if (!content.isContentEditable) {
-              isDragging = true;
-              const rect = this.page.annotationLayer.getBoundingClientRect();
-              dragStartX = e.clientX - rect.left - this.x;
-              dragStartY = e.clientY - rect.top - this.y;
-              e.preventDefault();
-            }
-          });
-
-          content.addEventListener("dblclick", (e) => {
-            e.stopPropagation();
-            content.contentEditable = true;
-            content.style.cursor = "text";
-            wrapper.classList.add("editing");
-            content.focus();
-
-            const range = document.createRange();
-            range.selectNodeContents(content);
-            range.collapse(false);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(range);
-          });
-
-          content.addEventListener("input", () => {
-            this.text = content.innerText;
-          });
-
-          content.addEventListener("blur", () => {
-            content.contentEditable = false;
-            this.text = content.innerText;
-            content.style.cursor = "move";
-            wrapper.classList.remove("editing");
-            content.style.textAlign = this.textAlign;
-
-            if (this.isOCR && this.originalData && !this.deletionMarked) {
-              this.page.addDeletedRegion({
-                x: this.originalData.x,
-                y: this.originalData.y,
-                width: this.originalData.width,
-                height: this.originalData.height,
-              });
-              this.deletionMarked = true;
-            }
-          });
-          wrapper.appendChild(content);
-          this.applyStyles();
-          return wrapper;
-        }
-
-        applyStyles() {
-          this.element.style.fontSize = this.fontSize + "px";
-          this.element.style.fontFamily = this.fontFamily;
-          this.element.style.color = this.color;
-          this.element.style.fontWeight = this.fontWeight;
-          this.element.style.fontStyle = this.fontStyle;
-          const content = this.element.querySelector(".text-content");
-          if (content) {
-            content.style.textAlign = this.textAlign;
-          }
-        }
-
-        setTextAlign(align) {
-          this.textAlign = align;
-          const content = this.element.querySelector(".text-content");
-          if (content) {
-            content.style.textAlign = align;
-          }
-          this.applyStyles();
-        }
-
-        updateProperty(prop, value) {
-          this[prop] = value;
-          if (prop === "textAlign") {
-            const content = this.element.querySelector(".text-content");
-            if (content) {
-              content.style.textAlign = value;
-            }
-          }
-          this.applyStyles();
-        }
-
-        clone() {
-          const newAnnotation = new TextAnnotation(this.page, false);
-          newAnnotation.text = this.text;
-          newAnnotation.fontSize = this.fontSize;
-          newAnnotation.fontFamily = this.fontFamily;
-          newAnnotation.color = this.color;
-          newAnnotation.fontWeight = this.fontWeight;
-          newAnnotation.fontStyle = this.fontStyle;
-          newAnnotation.textAlign = this.textAlign;
-          newAnnotation.width = this.width;
-          newAnnotation.height = this.height;
-          return newAnnotation;
-        }
-
-        updatePosition(x, y) {
-          super.updatePosition(x, y);
-          if (this.isOCR && this.originalData && !this.deletionMarked) {
-            this.page.addDeletedRegion({
-              x: this.originalData.x,
-              y: this.originalData.y,
-              width: this.originalData.width,
-              height: this.originalData.height,
-            });
-            this.deletionMarked = true;
-          }
-        }
-
-        updateSize(width, height) {
-          super.updateSize(width, height);
-          if (this.isOCR && this.originalData && !this.deletionMarked) {
-            this.page.addDeletedRegion({
-              x: this.originalData.x,
-              y: this.originalData.y,
-              width: this.originalData.width,
-              height: this.originalData.height,
-            });
-            this.deletionMarked = true;
-          }
-        }
-      }
-
-      class ImageAnnotation extends Annotation {
-        constructor(page, imageSrc) {
-          super("image", page);
-          this.imageSrc = imageSrc;
-          this.width = 150;
-          this.height = 150;
-          this.isOriginal = false;
-          this.originalImageData = null;
-          this.deletionMarked = false;
-        }
-
-        createElement() {
-          const div = super.createElement();
-          div.classList.add("image-annotation");
-          const img = document.createElement("img");
-          img.src = this.imageSrc;
-          img.draggable = false;
-          div.appendChild(img);
-          return div;
-        }
-
-        clone() {
-          const newAnnotation = new ImageAnnotation(this.page, this.imageSrc);
-          newAnnotation.width = this.width;
-          newAnnotation.height = this.height;
-          return newAnnotation;
-        }
-
-        updatePosition(x, y) {
-          super.updatePosition(x, y);
-          if (
-            this.isOriginal &&
-            this.originalImageData &&
-            !this.deletionMarked
-          ) {
-            if (!this.page.deletedImages) {
-              this.page.deletedImages = [];
-            }
-            this.page.deletedImages.push(this.originalImageData);
-            this.deletionMarked = true;
-            this.isOriginal = false;
-          }
-        }
-
-        updateSize(width, height) {
-          super.updateSize(width, height);
-          if (
-            this.isOriginal &&
-            this.originalImageData &&
-            !this.deletionMarked
-          ) {
-            if (!this.page.deletedImages) {
-              this.page.deletedImages = [];
-            }
-            this.page.deletedImages.push(this.originalImageData);
-            this.deletionMarked = true;
-            this.isOriginal = false;
-          }
-        }
-
-        delete() {
-          this.element.remove();
-          this.page.removeAnnotation(this);
-
-          if (
-            this.isOriginal &&
-            this.originalImageData &&
-            !this.deletionMarked
-          ) {
-            if (!this.page.deletedImages) {
-              this.page.deletedImages = [];
-            }
-            this.page.deletedImages.push(this.originalImageData);
-            this.deletionMarked = true;
-          }
-
-          if (selectedAnnotation === this) {
-            selectedAnnotation = null;
-          }
-        }
-      }
-
-      class ShapeAnnotation extends Annotation {
-        constructor(page, shapeType) {
-          super("shape", page);
-          this.shapeType = shapeType;
-          this.fillColor = "#4f46e5";
-          this.borderColor = "#1e3a8a";
-          this.borderWidth = 2;
-        }
-
-        createElement() {
-          const div = super.createElement();
-          div.classList.add("shape-annotation");
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg",
-          );
-          svg.style.width = "100%";
-          svg.style.height = "100%";
-          svg.style.pointerEvents = "auto";
-          svg.style.userSelect = "none";
-
-          this.svg = svg;
-          this.updateShape();
-          div.appendChild(svg);
-          return div;
-        }
-
-        updateShape() {
-          this.svg.innerHTML = "";
-
-          if (this.shapeType === "rectangle") {
-            const rect = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "rect",
-            );
-            rect.setAttribute("width", "100%");
-            rect.setAttribute("height", "100%");
-            rect.setAttribute("fill", this.fillColor);
-            rect.setAttribute("stroke", this.borderColor);
-            rect.setAttribute("stroke-width", this.borderWidth);
-            this.svg.appendChild(rect);
-          } else if (this.shapeType === "circle") {
-            const circle = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "circle",
-            );
-            circle.setAttribute("cx", "50%");
-            circle.setAttribute("cy", "50%");
-            circle.setAttribute("r", "45%");
-            circle.setAttribute("fill", this.fillColor);
-            circle.setAttribute("stroke", this.borderColor);
-            circle.setAttribute("stroke-width", this.borderWidth);
-            this.svg.appendChild(circle);
-          } else if (this.shapeType === "line") {
-            const line = document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "line",
-            );
-            line.setAttribute("x1", "0");
-            line.setAttribute("y1", "50%");
-            line.setAttribute("x2", "100%");
-            line.setAttribute("y2", "50%");
-            line.setAttribute("stroke", this.borderColor);
-            line.setAttribute("stroke-width", this.borderWidth);
-            this.svg.appendChild(line);
-          }
-        }
-
-        updateProperty(prop, value) {
-          this[prop] = value;
-          this.updateShape();
-        }
-
-        clone() {
-          const newAnnotation = new ShapeAnnotation(this.page, this.shapeType);
-          newAnnotation.fillColor = this.fillColor;
-          newAnnotation.borderColor = this.borderColor;
-          newAnnotation.borderWidth = this.borderWidth;
-          newAnnotation.width = this.width;
-          newAnnotation.height = this.height;
-          return newAnnotation;
-        }
-      }
-
-      class DrawingAnnotation extends Annotation {
-        constructor(page, pathData, color, width, brushStyle = "solid") {
-          super("drawing", page);
-          this.rawPathData = pathData; // Store original absolute coordinates
-          this.color = color;
-          this.strokeWidth = width;
-          this.brushStyle = brushStyle;
-          this.normalizedPathData = null; // Will store normalized coordinates
-        }
-
-        // Normalize path data relative to annotation position
-        normalizePathData() {
-          if (this.normalizedPathData) return this.normalizedPathData;
-
-          const points =
-            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-          let pathData = "";
-
-          points.forEach((point, index) => {
-            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
-            if (parts) {
-              const cmd = parts[1];
-              // Make coordinates relative to annotation position
-              const x = parseFloat(parts[2]) - this.x;
-              const y = parseFloat(parts[3]) - this.y;
-
-              pathData += `${cmd} ${x} ${y} `;
-            }
-          });
-
-          this.normalizedPathData = pathData;
-          return pathData;
-        }
-
-        createElement() {
-          const div = super.createElement();
-          div.classList.add("shape-annotation", "drawing-annotation");
-
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg",
-          );
-          svg.setAttribute("width", "100%");
-          svg.setAttribute("height", "100%");
-          svg.setAttribute("viewBox", `0 0 ${this.width} ${this.height}`);
-          svg.setAttribute("preserveAspectRatio", "none");
-
-          const path = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path",
-          );
-
-          // Use normalized path data
-          path.setAttribute("d", this.normalizePathData());
-          path.setAttribute("fill", "none");
-          path.setAttribute("stroke", this.color);
-          path.setAttribute("stroke-width", this.strokeWidth);
-          path.setAttribute("stroke-linecap", "round");
-          path.setAttribute("stroke-linejoin", "round");
-
-          if (this.brushStyle === "dotted") {
-            path.setAttribute("stroke-dasharray", "2 4");
-          } else if (this.brushStyle === "dashed") {
-            path.setAttribute("stroke-dasharray", "9 5");
-          }
-
-          svg.appendChild(path);
-          div.appendChild(svg);
-
-          // Store path reference for updates
-          this.pathElement = path;
-
-          // ... rest of event listeners ...
-          return div;
-        }
-
-        // Override updatePosition to recalculate normalized path
-        updatePosition(x, y) {
-          // Calculate the delta movement
-          const deltaX = x - this.x;
-          const deltaY = y - this.y;
-
-          // Update position
-          this.x = x;
-          this.y = y;
-
-          // Update element position
-          this.element.style.left = x + "px";
-          this.element.style.top = y + "px";
-
-          // Update raw path data to reflect new position
-          const points =
-            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-          let newRawPathData = "";
-
-          points.forEach((point, index) => {
-            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
-            if (parts) {
-              const cmd = parts[1];
-              const oldX = parseFloat(parts[2]);
-              const oldY = parseFloat(parts[3]);
-              // Move the absolute coordinates
-              const newX = oldX + deltaX;
-              const newY = oldY + deltaY;
-              newRawPathData += `${cmd} ${newX} ${newY} `;
-            }
-          });
-
-          this.rawPathData = newRawPathData;
-          this.normalizedPathData = null; // Invalidate normalized data
-
-          // Update the path if it exists
-          if (this.pathElement) {
-            this.pathElement.setAttribute("d", this.normalizePathData());
-          }
-        }
-
-        // Override updateSize to scale the path
-        updateSize(width, height) {
-          // Calculate scale factors
-          const scaleX = width / this.width;
-          const scaleY = height / this.height;
-
-          // Update size
-          this.width = width;
-          this.height = height;
-
-          // Update element size
-          this.element.style.width = width + "px";
-          this.element.style.height = height + "px";
-
-          // Scale the raw path data
-          const points =
-            this.rawPathData.match(/[ML]\s*([\d.]+)\s*([\d.]+)/g) || [];
-          let newRawPathData = "";
-
-          points.forEach((point, index) => {
-            const parts = point.match(/([ML])\s*([\d.]+)\s*([\d.]+)/);
-            if (parts) {
-              const cmd = parts[1];
-              const oldX = parseFloat(parts[2]);
-              const oldY = parseFloat(parts[3]);
-              // Scale coordinates relative to annotation position
-              const relativeX = oldX - this.x;
-              const relativeY = oldY - this.y;
-              const newX = this.x + relativeX * scaleX;
-              const newY = this.y + relativeY * scaleY;
-              newRawPathData += `${cmd} ${newX} ${newY} `;
-            }
-          });
-
-          this.rawPathData = newRawPathData;
-          this.normalizedPathData = null; // Invalidate normalized data
-
-          // Update viewBox and path
-          if (this.element) {
-            const svg = this.element.querySelector("svg");
-            if (svg) {
-              svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-            }
-            if (this.pathElement) {
-              this.pathElement.setAttribute("d", this.normalizePathData());
-            }
-          }
-        }
-
-        clone() {
-          const clone = new DrawingAnnotation(
-            this.page,
-            this.rawPathData,
-            this.color,
-            this.strokeWidth,
-            this.brushStyle,
-          );
-          clone.x = this.x;
-          clone.y = this.y;
-          clone.width = this.width;
-          clone.height = this.height;
-          clone.rotation = this.rotation;
-          return clone;
-        }
-      }
-
-      // Event Listeners
-      pdfUpload.addEventListener("change", async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        pdfFile = file;
-        currentFileName.textContent = file.name;
-        const loader = document.getElementById("uploadLoader");
-        loader.style.display = "block";
-
-        try {
-          await loadPDF(file);
-          loader.style.display = "none";
-          Toast.success("PDF loaded successfully!");
-        } catch (err) {
-          console.error("PDF load error:", err);
-          Toast.error("Failed to load PDF. Please try another file.");
-        } finally {
-          loader.style.display = "none";
-        }
-      });
-
-      async function loadPDF(file) {
-        editorContainer.style.display = "block";
-        uploadSection.style.display = "none";
-        const arrayBuffer = await file.arrayBuffer();
-        pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
-        canvasContainer.innerHTML = "";
-        thumbnailContainer.innerHTML = "";
-        pages = [];
-
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-          const page = await pdfDoc.getPage(i);
-
-          const baseViewport = page.getViewport({ scale: 1 });
-
-          const containerRect = canvasContainer.getBoundingClientRect();
-          const containerWidth = containerRect.width || MAX_WIDTH;
-          const maxWidth = Math.min(containerWidth - 40, MAX_WIDTH);
-
-          const displayScale = maxWidth / baseViewport.width;
-
-          const renderScale = displayScale * (window.devicePixelRatio || 2);
-          const renderViewport = page.getViewport({ scale: renderScale });
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "pdf-page-wrapper";
-          wrapper.style.width = baseViewport.width * displayScale + "px";
-          wrapper.style.height = baseViewport.height * displayScale + "px";
-          if (i === 1) wrapper.classList.add("active");
-
-          const canvas = document.createElement("canvas");
-          canvas.className = "pdf-canvas";
-          canvas.width = renderViewport.width;
-          canvas.height = renderViewport.height;
-
-          canvas.style.width = baseViewport.width * displayScale + "px";
-          canvas.style.height = baseViewport.height * displayScale + "px";
-
-          const context = canvas.getContext("2d");
-          await page.render({
-            canvasContext: context,
-            viewport: renderViewport,
-          }).promise;
-
-          const annotationLayer = document.createElement("div");
-          annotationLayer.className = "annotation-layer";
-          annotationLayer.style.width =
-            baseViewport.width * displayScale + "px";
-          annotationLayer.style.height =
-            baseViewport.height * displayScale + "px";
-
-          const ocrLayer = document.createElement("div");
-          ocrLayer.className = "ocr-layer";
-          ocrLayer.style.width = baseViewport.width * displayScale + "px";
-          ocrLayer.style.height = baseViewport.height * displayScale + "px";
-          ocrLayer.style.position = "absolute";
-          ocrLayer.style.top = "0";
-          ocrLayer.style.left = "0";
-          ocrLayer.style.pointerEvents = "none";
-
-          const drawingCanvas = document.createElement("canvas");
-          drawingCanvas.className = "drawing-canvas";
-          drawingCanvas.width = renderViewport.width;
-          drawingCanvas.height = renderViewport.height;
-          drawingCanvas.style.width = baseViewport.width * displayScale + "px";
-          drawingCanvas.style.height =
-            baseViewport.height * displayScale + "px";
-
-          wrapper.appendChild(canvas);
-          wrapper.appendChild(ocrLayer);
-          wrapper.appendChild(annotationLayer);
-          wrapper.appendChild(drawingCanvas);
-          canvasContainer.appendChild(wrapper);
-
-          const thumbViewport = page.getViewport({ scale: 0.2 });
-          const thumbCanvas = document.createElement("canvas");
-          thumbCanvas.width = thumbViewport.width;
-          thumbCanvas.height = thumbViewport.height;
-          const thumbContext = thumbCanvas.getContext("2d");
-          await page.render({
-            canvasContext: thumbContext,
-            viewport: thumbViewport,
-          }).promise;
-
-          const thumbItem = document.createElement("div");
-          thumbItem.className = "thumbnail-item";
-          if (i === 1) thumbItem.classList.add("active");
-          thumbItem.dataset.page = i - 1;
-          thumbItem.appendChild(thumbCanvas);
-
-          const pageLabel = document.createElement("div");
-          pageLabel.className = "page-label";
-          pageLabel.textContent = `Page ${i}`;
-          thumbItem.appendChild(pageLabel);
-
-          thumbItem.addEventListener("click", () => switchToPage(i - 1));
-          thumbnailContainer.appendChild(thumbItem);
-
-          const displayViewport = page.getViewport({ scale: displayScale });
-          const pdfPage = new PDFPage(i, canvas, displayViewport);
-          pdfPage.wrapper = wrapper;
-          pdfPage.annotationLayer = annotationLayer;
-          pdfPage.ocrLayer = ocrLayer;
-          pdfPage.drawingCanvas = drawingCanvas;
-          pdfPage.scale = displayScale;
-          pages.push(pdfPage);
-
-          setupDrawing(pdfPage);
-        }
-
-        editorContainer.style.display = "block";
-        uploadSection.style.display = "none";
-      }
-
-      // Edit PDF Button - Extract text using OCR
-      editPdfBtn.addEventListener("click", async () => {
-        if (!pdfFile) {
-          await CustomModal.alert("Please upload a PDF first", "Notice");
-          return;
-        }
-
-        if (isEditMode) {
-          await CustomModal.alert("Edit mode is already active", "Notice");
-          return;
-        }
-
-        editPdfBtn.disabled = true;
-        editPdfBtn.innerHTML =
-          '<i class="fa fa-spinner fa-spin"></i> <span>Extracting Text...</span>';
-
-        try {
-          const formData = new FormData();
-          formData.append("file", pdfFile);
-
-          const response = await fetch(`${API_BASE_URL}/extract-text-ocr`, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const data = await response.json();
-
-          if (data.success) {
-            console.log("✅ Received OCR data and cleaned PDF");
-
-            pages.forEach((page) => {
-              page.ocrTextBlocks = [];
-              page.ocrLayer.innerHTML = "";
-            });
-
-            displayOCRText(data.pages);
-            displayOCRImages(data.pages);
-
-            await reloadCleanedPDF(data.cleanedPdf);
-
-            isEditMode = true;
-            editPdfBtn.innerHTML =
-              '<i class="fa fa-check"></i> <span>Edit Mode Active</span>';
-            editPdfBtn.classList.add("active");
-            Toast.success(
-              "Edit mode activated! Original content deleted from view.",
-            );
-          } else {
-            Toast.error(
-              "Error extracting text: " + (data.error || "Unknown error"),
-            );
-            editPdfBtn.innerHTML =
-              '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-            editPdfBtn.disabled = false;
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          Toast.error(
-            "Failed to extract text from PDF. Make sure Flask server is running on port 8080.",
-          );
-          editPdfBtn.innerHTML =
-            '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-          editPdfBtn.disabled = false;
-        }
-      });
-
-      async function reloadCleanedPDF(cleanedPdfBase64) {
-        try {
-          console.log("🔄 Reloading PDF with deletions applied...");
-
-          const binaryString = atob(cleanedPdfBase64);
-          const bytes = new Uint8Array(binaryString.length);
-          for (let i = 0; i < binaryString.length; i++) {
-            bytes[i] = binaryString.charCodeAt(i);
-          }
-          const arrayBuffer = bytes.buffer;
-
-          const cleanedBlob = new Blob([arrayBuffer], {
-            type: "application/pdf",
-          });
-
-          const cleanedFile = new File([cleanedBlob], pdfFile.name, {
-            type: "application/pdf",
-            lastModified: Date.now(),
-          });
-
-          pdfFile = cleanedFile;
-
-          pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-
-          for (let i = 0; i < pages.length; i++) {
-            const page = pages[i];
-            const pdfPage = await pdfDoc.getPage(i + 1);
-
-            const renderScale = page.scale * (window.devicePixelRatio || 2);
-            const renderViewport = pdfPage.getViewport({ scale: renderScale });
-
-            const ctx = page.canvas.getContext("2d");
-            ctx.clearRect(0, 0, page.canvas.width, page.canvas.height);
-
-            await pdfPage.render({
-              canvasContext: ctx,
-              viewport: renderViewport,
-            }).promise;
-          }
-
-          console.log("✅ PDF reloaded successfully - deletions now visible!");
-        } catch (error) {
-          console.error("❌ Error reloading cleaned PDF:", error);
-          Toast.warning(
-            "Could not reload PDF preview, but deletions will apply on save",
-          );
-        }
-      }
-
-      function displayOCRText(pagesData) {
-        pagesData.forEach((pageData, index) => {
-          const page = pages[index];
-          if (!page) return;
-
-          page.ocrTextBlocks = [];
-          page.ocrLayer.innerHTML = "";
-          page.ocrLayer.style.pointerEvents = "auto";
-
-          pageData.textBlocks.forEach((block) => {
-            const annotation = new TextAnnotation(page, true);
-            annotation.text = block.text;
-            annotation.x = block.x * page.scale;
-            annotation.y = block.y * page.scale;
-
-            const minWidth = 50;
-            annotation.width = Math.max(block.width * page.scale, minWidth);
-
-            const calculatedHeight = block.height * page.scale;
-            const minHeightFromFont = block.fontSize * page.scale * 1.5;
-            annotation.height = Math.max(
-              calculatedHeight,
-              minHeightFromFont,
-              20,
-            );
-
-            annotation.fontSize = Math.round(block.fontSize * page.scale);
-            annotation.fontFamily = block.fontFamily || "Arial";
-            annotation.color = block.color || "#000000";
-
-            annotation.fontWeight = block.fontWeight || "normal";
-            annotation.fontStyle = block.fontStyle || "normal";
-
-            annotation.deletionMarked = false;
-
-            annotation.originalData = {
-              x: block.x,
-              y: block.y,
-              width: block.width,
-              height: block.height,
-            };
-
-            const element = annotation.createElement();
-
-            const textContent = element.querySelector(".text-content");
-            if (textContent) {
-              textContent.style.whiteSpace = "nowrap";
-              textContent.style.overflow = "visible";
-              textContent.style.textOverflow = "clip";
-              textContent.style.display = "block";
-              textContent.style.lineHeight = "1.2";
-            }
-
-            page.ocrLayer.appendChild(element);
-            page.ocrTextBlocks.push(annotation);
-          });
-        });
-      }
-
-      function displayOCRImages(pagesData) {
-        pagesData.forEach((pageData, index) => {
-          const page = pages[index];
-          if (!page) return;
-
-          pageData.images.forEach((img) => {
-            createEditableImage(page, img, pageData.pdfId);
-          });
-        });
-      }
-
-      async function createEditableImage(page, imgInfo, pdfId) {
-        const annotation = new ImageAnnotation(page, "");
-        annotation.x = imgInfo.x * page.scale;
-        annotation.y = imgInfo.y * page.scale;
-        annotation.width = imgInfo.width * page.scale;
-        annotation.height = imgInfo.height * page.scale;
-        annotation.xref = imgInfo.xref;
-        annotation.isOriginal = true;
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/get-pdf-image`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              xref: imgInfo.xref,
-              pageNum: imgInfo.pageNum,
-              pdfId: pdfId,
-            }),
-          });
-
-          if (response.ok) {
-            const blob = await response.blob();
-            const imageUrl = URL.createObjectURL(blob);
-            annotation.imageSrc = imageUrl;
-            annotation.originalImageData = {
-              xref: imgInfo.xref,
-              x: imgInfo.x,
-              y: imgInfo.y,
-              width: imgInfo.width,
-              height: imgInfo.height,
-            };
-
-            const element = annotation.createElement();
-            page.ocrLayer.appendChild(element);
-
-            page.ocrTextBlocks.push(annotation);
-          }
-        } catch (error) {
-          console.error("Error loading image:", error);
-        }
-      }
-
-      // Save PDF with changes
-      saveBtn.addEventListener("click", async () => {
-        if (!pdfFile) {
-          await CustomModal.alert("No PDF loaded", "Notice");
-          return;
-        }
-
-        saveBtn.disabled = true;
-        saveBtn.innerHTML =
-          '<i class="fa fa-spinner fa-spin"></i> <span>Saving...</span>';
-
-        try {
-          const formData = new FormData();
-
-          if (!pdfFile || pdfFile.size === 0) {
-            throw new Error("PDF file is empty or invalid");
-          }
-
-          formData.append("file", pdfFile);
-
-          const annotationsData = await Promise.all(
-            pages.map(async (page) => {
-              const pageAnnotations = [];
-
-              for (const ann of page.annotations) {
-                const annData = {
-                  type: ann.type,
-                  x: ann.x / page.scale,
-                  y: ann.y / page.scale,
-                  width: ann.width / page.scale,
-                  height: ann.height / page.scale,
-                  rotation: ann.rotation || 0,
-                };
-
-                if (ann.type === "text") {
-                  annData.text = ann.text;
-                  annData.fontSize = ann.fontSize / page.scale;
-                  annData.fontFamily = ann.fontFamily;
-                  annData.color = ann.color;
-                  annData.fontWeight = ann.fontWeight;
-                  annData.fontStyle = ann.fontStyle;
-                  annData.textAlign = ann.textAlign || "center";
-                } else if (ann.type === "image") {
-                  if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
-                    try {
-                      const response = await fetch(ann.imageSrc);
-                      const blob = await response.blob();
-                      const base64 = await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => resolve(reader.result);
-                        reader.readAsDataURL(blob);
-                      });
-                      annData.imageData = base64;
-                    } catch (err) {
-                      console.error("Error converting blob to base64:", err);
-                      continue;
-                    }
-                  } else {
-                    annData.imageData = ann.imageSrc;
-                  }
-                } else if (ann.type === "shape") {
-                  annData.shapeType = ann.shapeType;
-                  annData.fillColor = ann.fillColor;
-                  annData.borderColor = ann.borderColor;
-                  annData.borderWidth = ann.borderWidth / page.scale;
-                } else if (ann.type === "drawing") {
-                  const scaledPath = ann.pathData.replace(
-                    /([ML])\s*([\d.]+)\s*([\d.]+)/g,
-                    (match, cmd, x, y) => {
-                      const pdfX = parseFloat(x) / page.scale;
-                      const pdfY = parseFloat(y) / page.scale;
-                      return `${cmd} ${pdfX} ${pdfY}`;
-                    },
-                  );
-                  annData.pathData = scaledPath;
-                  annData.color = ann.color;
-                  annData.strokeWidth = ann.strokeWidth;
-                  annData.brushStyle = ann.brushStyle;
-                }
-
-                pageAnnotations.push(annData);
-              }
-
-              for (const ann of page.ocrTextBlocks) {
-                if (ann.element && ann.element.parentNode) {
-                  const annData = {
-                    type: ann.type,
-                    x: ann.x / page.scale,
-                    y: ann.y / page.scale,
-                    width: ann.width / page.scale,
-                    height: ann.height / page.scale,
-                  };
-
-                  if (ann.type === "text") {
-                    annData.text = ann.text;
-                    annData.fontSize = ann.fontSize / page.scale;
-                    annData.fontFamily = ann.fontFamily;
-                    annData.color = ann.color;
-                    annData.fontWeight = ann.fontWeight;
-                    annData.fontStyle = ann.fontStyle;
-                  } else if (ann.type === "image") {
-                    if (ann.imageSrc && ann.imageSrc.startsWith("blob:")) {
-                      try {
-                        const response = await fetch(ann.imageSrc);
-                        const blob = await response.blob();
-                        const base64 = await new Promise((resolve) => {
-                          const reader = new FileReader();
-                          reader.onloadend = () => resolve(reader.result);
-                          reader.readAsDataURL(blob);
-                        });
-                        annData.imageData = base64;
-                      } catch (err) {
-                        console.error(
-                          "Error converting OCR image blob to base64:",
-                          err,
-                        );
-                        continue;
-                      }
-                    } else {
-                      annData.imageData = ann.imageSrc;
-                    }
-                  }
-
-                  pageAnnotations.push(annData);
-                }
-              }
-
-              let drawingData = null;
-              if (page.hasDrawing) {
-                const ctx = page.drawingCanvas.getContext("2d");
-                const imageData = ctx.getImageData(
-                  0,
-                  0,
-                  page.drawingCanvas.width,
-                  page.drawingCanvas.height,
-                );
-                const hasDrawing = imageData.data.some(
-                  (channel) => channel !== 0,
-                );
-
-                if (hasDrawing) {
-                  drawingData = page.drawingCanvas.toDataURL("image/png");
-                }
-              }
-
-              return {
-                pageNum: page.pageNum,
-                annotations: pageAnnotations,
-                deletedRegions: page.deletedRegions || [],
-                deletedImages: page.deletedImages || [],
-                drawing: drawingData,
-              };
-            }),
-          );
-
-          formData.append("annotations", JSON.stringify(annotationsData));
-
-          const response = await fetch(`${API_BASE_URL}/edit-pdf`, {
-            method: "POST",
-            body: formData,
-          });
-
-          if (response.ok) {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-
-            const savedPdfUrl = url;
-            const fileName = "edited_" + currentFileName.textContent;
-
-            editorContainer.style.display = "none";
-            uploadSection.style.display = "none";
-
-            const noteElement = document.querySelector(".note");
-            if (noteElement) noteElement.style.display = "none";
-
-            let resultSection = document.getElementById("resultSection");
-
-            if (!resultSection) {
-              resultSection = document.createElement("div");
-              resultSection.id = "resultSection";
-              resultSection.className = "result-section";
-
-              const container = document.querySelector(
-                ".merge-tool .container",
-              );
-              container.appendChild(resultSection);
-            }
-
-            const isSmallDevice =
-              window.matchMedia("(max-width: 768px)").matches;
-
-            resultSection.innerHTML = `
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 24px; width: 100%;">
-          <div style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%;">
-            <div style="background: #e8f5e9; padding: 20px; border-radius: 50%; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;">
-              <i class="fa fa-check-circle" style="font-size: 48px; color: #4caf50;"></i>
-            </div>
-            <h2 style="color: #1f2937; margin: 0; font-size: 28px;">PDF Saved Successfully!</h2>
-            <p style="color: #6b7280; margin: 0; font-size: 16px;">Your edited PDF is ready to download and share.</p>
-          </div>
-          
-          <div style="background: white; border-radius: 12px; padding: 24px; width: 100%; max-width: 800px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
-            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px;">
-              <div style="background: #fee2e2; padding: 12px; border-radius: 8px;">
-                <i class="fa fa-file-pdf" style="font-size: 32px; color: #ef4444;"></i>
-              </div>
-              <div style="flex: 1;">
-                <h3 style="color: #1f2937; margin: 0 0 4px 0; font-size: 18px;">${fileName}</h3>
-                <p style="color: #6b7280; margin: 0; font-size: 14px;">${(blob.size / 1024).toFixed(2)} KB • Edited PDF</p>
-              </div>
-            </div>
-            
-            <div style="display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px;">
-              <a href="${savedPdfUrl}" download="${fileName}" 
-                 style="display: inline-flex; align-items: center; gap: 10px; background: #4f46e5; color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer;">
-                <i class="fa fa-download"></i> Download
-              </a>
-              
-              <button onclick="sharePDF('${savedPdfUrl}', '${fileName}')" 
-                      style="display: inline-flex; align-items: center; gap: 10px; background: #10b981; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                <i class="fa fa-share-alt"></i> Share
-              </button>
-              
-              <button onclick="resetPDFEditor()" 
-                      style="display: inline-flex; align-items: center; gap: 10px; background: white; color: #4b5563; border: 1px solid #e5e7eb; padding: 12px 28px; border-radius: 8px; font-weight: 500; cursor: pointer; transition: all 0.2s;">
-                <i class="fa fa-rotate-right"></i> Add Another Watermark
-              </button>
-            </div>
-            
-            <p style="color: #9ca3af; font-size: 14px; text-align: center; margin: 0; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-              <i class="fa fa-clock"></i> Your file will be automatically deleted after 1 hour
-            </p>
-          </div>
-          
-          ${
-            !isSmallDevice
-              ? `
-          <div id="pdfPreview" style="width: 100%; max-width: 900px; margin-top: 20px;">
-            <h3 style="color: #1f2937; margin-bottom: 16px; text-align: left; font-size: 20px;">Preview</h3>
-            <div style="background: white; border-radius: 12px; padding: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border: 1px solid #e5e7eb;">
-              <iframe 
-                id="pdfFrame"
-                src="${savedPdfUrl}"
-                width="100%" 
-                height="600" 
-                style="border-radius: 8px; border: none; display: block;"
-                title="Edited PDF preview"
-              ></iframe>
-            </div>
-          </div>
-          `
-              : ""
-          }
+      <div class="pp-row">
+        <div class="pp-field"><label>Color</label><input type="color" id="dColor" value="#e63946"/></div>
+        <div class="pp-field">
+          <label>Width</label>
+          <select id="dWidth">
+            <option value="1">1 px</option><option value="2" selected>2 px</option>
+            <option value="3">3 px</option><option value="5">5 px</option>
+            <option value="8">8 px</option><option value="12">12 px</option>
+          </select>
         </div>
-      `;
-
-            resultSection.style.display = "block";
-
-            window.sharePDF = function (url, filename) {
-              if (navigator.share) {
-                fetch(url)
-                  .then((res) => res.blob())
-                  .then((blob) => {
-                    const file = new File([blob], filename, {
-                      type: "application/pdf",
-                    });
-                    navigator
-                      .share({
-                        title: "Edited PDF",
-                        text: "Check out my edited PDF",
-                        files: [file],
-                      })
-                      .catch((error) => {
-                        console.log("Share failed:", error);
-                        const textarea = document.createElement("textarea");
-                        textarea.value = url;
-                        document.body.appendChild(textarea);
-                        textarea.select();
-                        document.execCommand("copy");
-                        document.body.removeChild(textarea);
-                        Toast.success("Download link copied to clipboard!");
-                      });
-                  });
-              } else {
-                const textarea = document.createElement("textarea");
-                textarea.value = url;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand("copy");
-                document.body.removeChild(textarea);
-                Toast.success("Download link copied to clipboard!");
-              }
-            };
-
-            window.resetPDFEditor = function () {
-              document.getElementById("resultSection").style.display = "none";
-
-              pdfDoc = null;
-              pdfFile = null;
-              pages = [];
-              currentPageIndex = 0;
-              selectedAnnotation = null;
-              isEditMode = false;
-
-              pdfUpload.value = "";
-
-              editorContainer.style.display = "none";
-              uploadSection.style.display = "flex";
-
-              const noteElement = document.querySelector(".note");
-              if (noteElement) noteElement.style.display = "block";
-
-              canvasContainer.innerHTML = "";
-              thumbnailContainer.innerHTML = "";
-
-              currentFileName.textContent = "document.pdf";
-
-              editPdfBtn.innerHTML =
-                '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-              editPdfBtn.disabled = false;
-              editPdfBtn.classList.remove("active");
-
-              currentTool = null;
-              document
-                .querySelectorAll(".tool-btn")
-                .forEach((btn) => btn.classList.remove("active"));
-
-              saveBtn.style.display = "inline-flex";
-              saveBtn.disabled = false;
-              saveBtn.innerHTML =
-                '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
-
-              pages.forEach((page) => {
-                if (page.drawingCanvas) {
-                  const ctx = page.drawingCanvas.getContext("2d");
-                  ctx.clearRect(
-                    0,
-                    0,
-                    page.drawingCanvas.width,
-                    page.drawingCanvas.height,
-                  );
-                  page.hasDrawing = false;
-                  page.currentDrawingPaths = [];
-                }
-              });
-
-              Toast.success("Ready to edit another PDF");
-            };
-
-            Toast.success("PDF saved successfully!");
-
-            saveBtn.style.display = "none";
-
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            let errorMessage = "Error saving PDF";
-            try {
-              const error = await response.json();
-              errorMessage = error.error || errorMessage;
-            } catch {
-              errorMessage = response.statusText || errorMessage;
-            }
-            Toast.error(errorMessage);
-
-            saveBtn.style.display = "inline-flex";
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          Toast.error("Failed to save PDF: " + error.message);
-
-          saveBtn.style.display = "inline-flex";
-        } finally {
-          saveBtn.disabled = false;
-          saveBtn.innerHTML =
-            '<i class="fa fa-solid fa-floppy-disk"></i> <span>Save PDF</span>';
-        }
-      });
-
-      function switchToPage(index) {
-        currentPageIndex = index;
-
-        pages.forEach((page, i) => {
-          if (i === index) {
-            page.wrapper.classList.add("active");
-          } else {
-            page.wrapper.classList.remove("active");
-          }
-        });
-
-        document.querySelectorAll(".thumbnail-item").forEach((thumb, i) => {
-          if (i === index) {
-            thumb.classList.add("active");
-          } else {
-            thumb.classList.remove("active");
-          }
-        });
-
-        const activeThumb = thumbnailContainer.children[index];
-        if (activeThumb) {
-          activeThumb.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "center",
-          });
-        }
-      }
-
-      function setupDrawing(page) {
-        const canvas = page.drawingCanvas;
-        const ctx = canvas.getContext("2d");
-
-        let isDrawing = false;
-        let points = [];
-        let tempPath = null; // Temporary SVG path for real-time drawing
-
-        function getCoords(e, canvas) {
-          const rect = canvas.getBoundingClientRect();
-          const scaleX = canvas.width / rect.width;
-          const scaleY = canvas.height / rect.height;
-
-          if (e.touches && e.touches.length > 0) {
-            return {
-              canvasX: (e.touches[0].clientX - rect.left) * scaleX,
-              canvasY: (e.touches[0].clientY - rect.top) * scaleY,
-              displayX: e.touches[0].clientX - rect.left,
-              displayY: e.touches[0].clientY - rect.top,
-            };
-          }
-
-          return {
-            canvasX: (e.clientX - rect.left) * scaleX,
-            canvasY: (e.clientY - rect.top) * scaleY,
-            displayX: e.clientX - rect.left,
-            displayY: e.clientY - rect.top,
-          };
-        }
-
-        // Create a temporary SVG element for real-time drawing
-        function createTempDrawingLayer() {
-          // Remove any existing temp layer
-          const existingTemp = page.wrapper.querySelector(
-            ".temp-drawing-layer",
-          );
-          if (existingTemp) existingTemp.remove();
-
-          const tempLayer = document.createElement("div");
-          tempLayer.className = "temp-drawing-layer";
-          tempLayer.style.position = "absolute";
-          tempLayer.style.top = "0";
-          tempLayer.style.left = "0";
-          tempLayer.style.width = "100%";
-          tempLayer.style.height = "100%";
-          tempLayer.style.pointerEvents = "none";
-          tempLayer.style.zIndex = "5";
-
-          const svg = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "svg",
-          );
-          svg.setAttribute("width", "100%");
-          svg.setAttribute("height", "100%");
-          svg.style.position = "absolute";
-          svg.style.top = "0";
-          svg.style.left = "0";
-
-          tempLayer.appendChild(svg);
-          page.wrapper.appendChild(tempLayer);
-
-          return {
-            layer: tempLayer,
-            svg: svg,
-          };
-        }
-
-        // Update the temporary drawing
-        function updateTempDrawing() {
-          if (!tempPath) return;
-
-          if (points.length < 2) return;
-
-          // Build path data
-          let pathData = `M ${points[0].displayX} ${points[0].displayY}`;
-          for (let i = 1; i < points.length; i++) {
-            pathData += ` L ${points[i].displayX} ${points[i].displayY}`;
-          }
-
-          tempPath.setAttribute("d", pathData);
-        }
-
-        function startStroke(e) {
-          if (currentTool !== "draw") return;
-          e.preventDefault();
-
-          isDrawing = true;
-          points = [];
-
-          const coords = getCoords(e, canvas);
-          points.push({
-            canvasX: coords.canvasX,
-            canvasY: coords.canvasY,
-            displayX: coords.displayX,
-            displayY: coords.displayY,
-          });
-
-          // Create temporary drawing layer
-          const temp = createTempDrawingLayer();
-          tempPath = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path",
-          );
-          tempPath.setAttribute("fill", "none");
-          tempPath.setAttribute("stroke", penColor.value);
-          tempPath.setAttribute("stroke-width", parseInt(brushSize.value));
-          tempPath.setAttribute("stroke-linecap", "round");
-          tempPath.setAttribute("stroke-linejoin", "round");
-
-          const brush = brushStyle.value;
-          if (brush === "dotted") {
-            tempPath.setAttribute("stroke-dasharray", "2 4");
-          } else if (brush === "dashed") {
-            tempPath.setAttribute("stroke-dasharray", "9 5");
-          }
-
-          temp.svg.appendChild(tempPath);
-
-          page.hasDrawing = true;
-        }
-
-        function drawStroke(e) {
-          if (!isDrawing || currentTool !== "draw") return;
-          e.preventDefault();
-
-          const coords = getCoords(e, canvas);
-          points.push({
-            canvasX: coords.canvasX,
-            canvasY: coords.canvasY,
-            displayX: coords.displayX,
-            displayY: coords.displayY,
-          });
-
-          // Update the temporary drawing
-          updateTempDrawing();
-        }
-
-        function endStroke(e) {
-          if (!isDrawing) return;
-          e.preventDefault();
-          isDrawing = false;
-
-          if (points.length > 1) {
-            // Calculate bounding box from points with more precision
-            let minX = Infinity,
-              minY = Infinity,
-              maxX = -Infinity,
-              maxY = -Infinity;
-            points.forEach((p) => {
-              minX = Math.min(minX, p.displayX);
-              minY = Math.min(minY, p.displayY);
-              maxX = Math.max(maxX, p.displayX);
-              maxY = Math.max(maxY, p.displayY);
-            });
-
-            // Add padding based on stroke width
-            const strokeWidth = parseInt(brushSize.value);
-            const padding = strokeWidth * 2; // More padding for thicker strokes
-
-            minX = Math.max(0, minX - padding);
-            minY = Math.max(0, minY - padding);
-            maxX = maxX + padding;
-            maxY = maxY + padding;
-
-            // Build path data using absolute coordinates
-            let absolutePathData = `M ${points[0].displayX} ${points[0].displayY}`;
-            for (let i = 1; i < points.length; i++) {
-              absolutePathData += ` L ${points[i].displayX} ${points[i].displayY}`;
-            }
-
-            // Create the annotation
-            const annotation = new DrawingAnnotation(
-              page,
-              absolutePathData,
-              penColor.value,
-              strokeWidth,
-              brushStyle.value,
-            );
-
-            // Set position and size
-            annotation.x = minX;
-            annotation.y = minY;
-            annotation.width = maxX - minX;
-            annotation.height = maxY - minY;
-
-            // Add to page annotation layer
-            const element = annotation.createElement();
-            page.annotationLayer.appendChild(element);
-            page.addAnnotation(annotation);
-
-            page.hasDrawing = true;
-          }
-
-          // Remove temporary drawing layer
-          const tempLayer = page.wrapper.querySelector(".temp-drawing-layer");
-          if (tempLayer) tempLayer.remove();
-          tempPath = null;
-        }
-
-        // Clean up temp layer when switching pages or tools
-        function cleanupTempLayer() {
-          const tempLayer = page.wrapper.querySelector(".temp-drawing-layer");
-          if (tempLayer) tempLayer.remove();
-          tempPath = null;
-        }
-
-        // Add cleanup on page hide
-        page.wrapper.addEventListener("remove", cleanupTempLayer);
-
-        canvas.addEventListener("mousedown", startStroke);
-        canvas.addEventListener("mousemove", drawStroke);
-        canvas.addEventListener("mouseup", endStroke);
-        canvas.addEventListener("mouseleave", (e) => {
-          if (isDrawing) {
-            endStroke(e);
-          }
-        });
-
-        canvas.addEventListener("touchstart", startStroke, { passive: false });
-        canvas.addEventListener("touchmove", drawStroke, { passive: false });
-        canvas.addEventListener("touchend", endStroke, { passive: false });
-        canvas.addEventListener("touchcancel", endStroke, { passive: false });
-      }
-
-      // ============== APPLY DRAWING BUTTON - DEACTIVATES DRAWING MODE ==============
-      applyDrawingBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // Prevent event bubbling
-
-        // ============== DEACTIVATE DRAWING MODE ==============
-        currentTool = null;
-
-        // Remove active class from draw button
-        drawBtn.classList.remove("active");
-
-        // Hide drawing properties panel
-        document.getElementById("drawProperties").style.display = "none";
-
-        // Disable drawing canvas for all pages
-        deactivateDrawingMode(pages);
-
-        Toast.info("Drawing mode deactivated");
-      });
-
-      // Tool handlers
-      addTextBtn.addEventListener("click", (e) => {
-        setTool("text");
-        if (e.target.closest(".tool-btn") === addTextBtn) {
-          addAnnotationToCurrentPage("text");
-        }
-      });
-
-      addImageBtn.addEventListener("click", () => {
-        imageUpload.click();
-      });
-
-      imageUpload.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          setTool("image", event.target.result);
-          addAnnotationToCurrentPage("image", event.target.result);
-        };
-        reader.readAsDataURL(file);
-        imageUpload.value = "";
-      });
-
-      drawBtn.addEventListener("click", () => {
-        // If a drawing annotation is selected, deselect it first
-        if (selectedAnnotation && selectedAnnotation.type === "drawing") {
-          selectedAnnotation.element.classList.remove("selected");
-          selectedAnnotation = null;
-        }
-        // Toggle drawing mode
-        setTool("draw");
-      });
-
-      addShapeBtn.addEventListener("click", (e) => {
-        setTool("shape");
-      });
-
-      document.getElementById("applyShapeBtn").addEventListener("click", () => {
-        addAnnotationToCurrentPage("shape");
-      });
-
-      function setTool(tool, data = null) {
-        // If clicking the same tool button that's already active, deactivate it
-        if (tool === currentTool) {
-          currentTool = null;
-
-          // Remove active class from all tool buttons
-          document.querySelectorAll(".tool-btn").forEach((btn) => {
-            btn.classList.remove("active");
-          });
-
-          // Hide all property panels
-          document.getElementById("textProperties").style.display = "none";
-          document.getElementById("shapeProperties").style.display = "none";
-          document.getElementById("drawProperties").style.display = "none";
-
-          // Disable drawing canvas
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.remove("active");
-            page.drawingCanvas.style.pointerEvents = "none";
-          });
-
-          return;
-        }
-
-        currentTool = tool;
-
-        // Remove active class from all tool buttons
-        document
-          .querySelectorAll(".tool-btn")
-          .forEach((btn) => btn.classList.remove("active"));
-
-        // Hide all property panels
-        document.getElementById("textProperties").style.display = "none";
-        document.getElementById("shapeProperties").style.display = "none";
-        document.getElementById("drawProperties").style.display = "none";
-
-        // Activate the selected tool and show its property panel
-        if (tool === "text") {
-          addTextBtn.classList.add("active");
-          document.getElementById("textProperties").style.display = "block";
-          deactivateDrawingMode(pages);
-        } else if (tool === "draw") {
-          drawBtn.classList.add("active");
-          document.getElementById("drawProperties").style.display = "block";
-
-          // Enable drawing canvas for interaction
-          pages.forEach((page) => {
-            page.drawingCanvas.classList.add("active");
-            page.drawingCanvas.style.pointerEvents = "all";
-          });
-        } else if (tool === "shape") {
-          addShapeBtn.classList.add("active");
-          document.getElementById("shapeProperties").style.display = "block";
-          deactivateDrawingMode(pages);
-        } else if (tool === "image") {
-          addImageBtn.classList.add("active");
-          deactivateDrawingMode(pages);
-        }
-
-        // Deselect any selected annotation
-        if (selectedAnnotation) {
-          selectedAnnotation.element.classList.remove("selected");
-          selectedAnnotation = null;
-        }
-      }
-      // ============== FIXED DOCUMENT CLICK HANDLER ==============
-      document.addEventListener("click", (e) => {
-        // Don't deactivate drawing mode when clicking anywhere
-        if (currentTool === "draw") {
-          return;
-        }
-
-        if (
-          !e.target.closest(".annotation-item") &&
-          !e.target.closest(".tool-btn") &&
-          !e.target.closest(".ocr-text-block") &&
-          !e.target.closest(".properties-dropdown")
-        ) {
-          if (selectedAnnotation) {
-            selectedAnnotation.element.classList.remove("selected");
-            selectedAnnotation = null;
-          }
-
-          // Remove active class from all tool buttons
-          document.querySelectorAll(".tool-btn").forEach((btn) => {
-            btn.classList.remove("active");
-          });
-
-          // Hide all property panels
-          document.getElementById("textProperties").style.display = "none";
-          document.getElementById("shapeProperties").style.display = "none";
-          document.getElementById("drawProperties").style.display = "none";
-
-          // Keep drawing canvas visible if there's a drawing, otherwise hide it
-          deactivateDrawingMode(pages);
-
-          // Reset current tool (but not if it's draw mode!)
-          if (currentTool !== "draw") {
-            currentTool = null;
-          }
-        }
-      });
-
-      function deactivateDrawingMode(pages) {
-        pages.forEach((page) => {
-          // Just clear the canvas - annotations already exist!
-          const ctx = page.drawingCanvas.getContext("2d");
-          ctx.clearRect(
-            0,
-            0,
-            page.drawingCanvas.width,
-            page.drawingCanvas.height,
-          );
-
-          // Reset drawing state
-          page.currentDrawingPaths = [];
-          page.hasDrawing = false;
-
-          // Disable drawing canvas
-          page.drawingCanvas.classList.remove("active");
-          page.drawingCanvas.style.pointerEvents = "none";
-        });
-      }
-
-      function addAnnotationToCurrentPage(type, data = null) {
-        const page = pages[currentPageIndex];
-        let annotation;
-
-        if (type === "text") {
-          annotation = new TextAnnotation(page, false);
-          annotation.fontSize = parseInt(
-            document.getElementById("fontSize").value,
-          );
-          annotation.fontFamily = document.getElementById("fontFamily").value;
-          annotation.color = document.getElementById("textColor").value;
-          annotation.fontWeight = document.getElementById("fontWeight").value;
-          annotation.fontStyle = document.getElementById("fontStyle").value;
-          annotation.textAlign = "center";
-        } else if (type === "image") {
-          annotation = new ImageAnnotation(page, data);
-        } else if (type === "shape") {
-          const shapeType = document.getElementById("shapeType").value;
-          annotation = new ShapeAnnotation(page, shapeType);
-          annotation.fillColor =
-            document.getElementById("shapeFillColor").value;
-          annotation.borderColor =
-            document.getElementById("shapeBorderColor").value;
-          annotation.borderWidth = parseInt(
-            document.getElementById("shapeBorderWidth").value,
-          );
-        }
-
-        if (annotation) {
-          const centerX = page.viewport.width / 2 - annotation.width / 2;
-          const centerY = page.viewport.height / 2 - annotation.height / 2;
-
-          annotation.x = centerX;
-          annotation.y = centerY;
-          const element = annotation.createElement();
-          page.annotationLayer.appendChild(element);
-          page.addAnnotation(annotation);
-          selectAnnotation(annotation);
-        }
-      }
-
-      // ============== FIXED SELECT ANNOTATION - NO DRAWING MODE ACTIVATION ==============
-      function selectAnnotation(annotation) {
-        // Remove selected class from previous annotation
-        if (selectedAnnotation) {
-          selectedAnnotation.element.classList.remove("selected");
-        }
-
-        // Set new selected annotation
-        selectedAnnotation = annotation;
-        annotation.element.classList.add("selected");
-
-        // First, remove active class from all tool buttons
-        document.querySelectorAll(".tool-btn").forEach((btn) => {
-          btn.classList.remove("active");
-        });
-
-        // Hide all property panels first
-        document.getElementById("textProperties").style.display = "none";
-        document.getElementById("shapeProperties").style.display = "none";
-        document.getElementById("drawProperties").style.display = "none";
-
-        // Disable drawing canvas for all pages first
-        pages.forEach((page) => {
-          page.drawingCanvas.classList.remove("active");
-          page.drawingCanvas.style.pointerEvents = "none";
-        });
-
-        // Show the appropriate tool button and property panel based on annotation type
-        if (annotation.type === "text") {
-          addTextBtn.classList.add("active");
-          document.getElementById("textProperties").style.display = "block";
-
-          document.getElementById("fontSize").value = Math.round(
-            annotation.fontSize,
-          );
-          document.getElementById("fontFamily").value = annotation.fontFamily;
-          document.getElementById("textColor").value = annotation.color;
-          document.getElementById("textColorHex").value = annotation.color;
-          document.getElementById("fontWeight").value = annotation.fontWeight;
-          document.getElementById("fontStyle").value = annotation.fontStyle;
-          document.getElementById("textAlign").value =
-            annotation.textAlign || "center";
-
-          currentTool = "text";
-        } else if (annotation.type === "shape") {
-          addShapeBtn.classList.add("active");
-          document.getElementById("shapeProperties").style.display = "block";
-
-          document.getElementById("shapeType").value = annotation.shapeType;
-          document.getElementById("shapeFillColor").value =
-            annotation.fillColor;
-          document.getElementById("shapeFillHex").value = annotation.fillColor;
-          document.getElementById("shapeBorderColor").value =
-            annotation.borderColor;
-          document.getElementById("shapeBorderHex").value =
-            annotation.borderColor;
-          document.getElementById("shapeBorderWidth").value =
-            annotation.borderWidth;
-
-          currentTool = "shape";
-        }
-      }
-
-      // Property change handlers
-      document.getElementById("fontSize").addEventListener("input", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.updateProperty(
-            "fontSize",
-            parseInt(e.target.value),
-          );
-        }
-      });
-
-      document.getElementById("fontFamily").addEventListener("change", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.updateProperty("fontFamily", e.target.value);
-        }
-      });
-
-      document.getElementById("textColor").addEventListener("input", (e) => {
-        document.getElementById("textColorHex").value = e.target.value;
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.updateProperty("color", e.target.value);
-        }
-      });
-
-      document.getElementById("textColorHex").addEventListener("input", (e) => {
-        const color = e.target.value;
-        if (/^#[0-9A-F]{6}$/i.test(color)) {
-          document.getElementById("textColor").value = color;
-          if (selectedAnnotation && selectedAnnotation.type === "text") {
-            selectedAnnotation.updateProperty("color", color);
-          }
-        }
-      });
-
-      document.getElementById("fontWeight").addEventListener("change", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.updateProperty("fontWeight", e.target.value);
-        }
-      });
-
-      document.getElementById("fontStyle").addEventListener("change", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.updateProperty("fontStyle", e.target.value);
-        }
-      });
-
-      document.getElementById("shapeType").addEventListener("change", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "shape") {
-          selectedAnnotation.updateProperty("shapeType", e.target.value);
-        }
-      });
-
-      document
-        .getElementById("shapeFillColor")
-        .addEventListener("input", (e) => {
-          document.getElementById("shapeFillHex").value = e.target.value;
-          if (selectedAnnotation && selectedAnnotation.type === "shape") {
-            selectedAnnotation.updateProperty("fillColor", e.target.value);
-          }
-        });
-
-      document.getElementById("shapeFillHex").addEventListener("input", (e) => {
-        const color = e.target.value;
-        if (/^#[0-9A-F]{6}$/i.test(color)) {
-          document.getElementById("shapeFillColor").value = color;
-          if (selectedAnnotation && selectedAnnotation.type === "shape") {
-            selectedAnnotation.updateProperty("fillColor", color);
-          }
-        }
-      });
-
-      document
-        .getElementById("shapeBorderColor")
-        .addEventListener("input", (e) => {
-          document.getElementById("shapeBorderHex").value = e.target.value;
-          if (selectedAnnotation && selectedAnnotation.type === "shape") {
-            selectedAnnotation.updateProperty("borderColor", e.target.value);
-          }
-        });
-
-      document
-        .getElementById("shapeBorderHex")
-        .addEventListener("input", (e) => {
-          const color = e.target.value;
-          if (/^#[0-9A-F]{6}$/i.test(color)) {
-            document.getElementById("shapeBorderColor").value = color;
-            if (selectedAnnotation && selectedAnnotation.type === "shape") {
-              selectedAnnotation.updateProperty("borderColor", color);
-            }
-          }
-        });
-
-      document
-        .getElementById("shapeBorderWidth")
-        .addEventListener("input", (e) => {
-          if (selectedAnnotation && selectedAnnotation.type === "shape") {
-            selectedAnnotation.updateProperty(
-              "borderWidth",
-              parseInt(e.target.value),
-            );
-          }
-        });
-
-      penColor.addEventListener("input", (e) => {
-        document.getElementById("penColorHex").value = e.target.value;
-      });
-
-      document.getElementById("penColorHex").addEventListener("input", (e) => {
-        const color = e.target.value;
-        if (/^#[0-9A-F]{6}$/i.test(color)) {
-          penColor.value = color;
-        }
-      });
-
-      document.addEventListener("mousemove", (e) => {
-        if (isDragging && selectedAnnotation) {
-          const rect =
-            selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-          const x = e.clientX - rect.left - dragStartX;
-          const y = e.clientY - rect.top - dragStartY;
-          selectedAnnotation.updatePosition(
-            Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
-            Math.max(0, Math.min(y, rect.height - selectedAnnotation.height)),
-          );
-        } else if (isResizing && selectedAnnotation) {
-          const rect =
-            selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-          const mouseX = e.clientX - rect.left;
-          const mouseY = e.clientY - rect.top;
-
-          let newWidth = selectedAnnotation.width;
-          let newHeight = selectedAnnotation.height;
-          let newX = selectedAnnotation.x;
-          let newY = selectedAnnotation.y;
-
-          if (resizeHandle.includes("e")) {
-            newWidth = mouseX - selectedAnnotation.x;
-          }
-          if (resizeHandle.includes("w")) {
-            newWidth =
-              selectedAnnotation.width + (selectedAnnotation.x - mouseX);
-            newX = mouseX;
-          }
-          if (resizeHandle.includes("s")) {
-            newHeight = mouseY - selectedAnnotation.y;
-          }
-          if (resizeHandle.includes("n")) {
-            newHeight =
-              selectedAnnotation.height + (selectedAnnotation.y - mouseY);
-            newY = mouseY;
-          }
-
-          if (newWidth > 20 && newHeight > 20) {
-            selectedAnnotation.updateSize(newWidth, newHeight);
-            if (
-              newX !== selectedAnnotation.x ||
-              newY !== selectedAnnotation.y
-            ) {
-              selectedAnnotation.updatePosition(newX, newY);
-            }
-          }
-        }
-      });
-
-      document.addEventListener("mouseup", () => {
-        isDragging = false;
-        isResizing = false;
-        resizeHandle = null;
-      });
-
-      document.addEventListener(
-        "touchmove",
-        (e) => {
-          if (!isDragging && !isResizing) return;
-
-          e.preventDefault();
-          const touch = e.touches[0];
-
-          if (isDragging && selectedAnnotation) {
-            const rect =
-              selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-            const x = touch.clientX - rect.left - dragStartX;
-            const y = touch.clientY - rect.top - dragStartY;
-            selectedAnnotation.updatePosition(
-              Math.max(0, Math.min(x, rect.width - selectedAnnotation.width)),
-              Math.max(0, Math.min(y, rect.height - selectedAnnotation.height)),
-            );
-          } else if (isResizing && selectedAnnotation) {
-            const rect =
-              selectedAnnotation.page.annotationLayer.getBoundingClientRect();
-            const touchX = touch.clientX - rect.left;
-            const touchY = touch.clientY - rect.top;
-
-            let newWidth = selectedAnnotation.width;
-            let newHeight = selectedAnnotation.height;
-            let newX = selectedAnnotation.x;
-            let newY = selectedAnnotation.y;
-
-            if (resizeHandle.includes("e")) {
-              newWidth = touchX - selectedAnnotation.x;
-            }
-            if (resizeHandle.includes("w")) {
-              newWidth =
-                selectedAnnotation.width + (selectedAnnotation.x - touchX);
-              newX = touchX;
-            }
-            if (resizeHandle.includes("s")) {
-              newHeight = touchY - selectedAnnotation.y;
-            }
-            if (resizeHandle.includes("n")) {
-              newHeight =
-                selectedAnnotation.height + (selectedAnnotation.y - touchY);
-              newY = touchY;
-            }
-
-            if (newWidth > 20 && newHeight > 20) {
-              selectedAnnotation.updateSize(newWidth, newHeight);
-              if (
-                newX !== selectedAnnotation.x ||
-                newY !== selectedAnnotation.y
-              ) {
-                selectedAnnotation.updatePosition(newX, newY);
-              }
-            }
-          }
-        },
-        { passive: false },
-      );
-
-      document.addEventListener(
-        "touchend",
-        () => {
-          isDragging = false;
-          isResizing = false;
-          resizeHandle = null;
-        },
-        { passive: false },
-      );
-
-      undoBtn.addEventListener("click", () => {
-        const currentPage = pages[currentPageIndex];
-        if (currentPage.annotations.length > 0) {
-          const lastAnnotation =
-            currentPage.annotations[currentPage.annotations.length - 1];
-          lastAnnotation.delete();
-          Toast.info("Last annotation removed");
-        }
-      });
-
-      clearAllBtn.addEventListener("click", async () => {
-        const confirmed = await CustomModal.confirm(
-          "Clear all annotations on this page?",
-          "Confirm Action",
-        );
-        if (confirmed) {
-          const currentPage = pages[currentPageIndex];
-          [...currentPage.annotations].forEach((ann) => ann.delete());
-          const ctx = currentPage.drawingCanvas.getContext("2d");
-          ctx.clearRect(
-            0,
-            0,
-            currentPage.drawingCanvas.width,
-            currentPage.drawingCanvas.height,
-          );
-          currentPage.hasDrawing = false;
-          currentPage.currentDrawingPaths = [];
-          selectedAnnotation = null;
-          Toast.success("All annotations cleared");
-        }
-      });
-
-      deleteFileBtn.addEventListener("click", async () => {
-        const confirmed = await CustomModal.confirm(
-          "Remove this PDF and start over? All your changes will be lost.",
-          "Confirm Deletion",
-          "danger",
-        );
-        if (confirmed) {
-          pdfDoc = null;
-          pdfFile = null;
-          pages = [];
-          currentPageIndex = 0;
-          selectedAnnotation = null;
-          isEditMode = false;
-
-          pdfUpload.value = "";
-
-          editorContainer.style.display = "none";
-          uploadSection.style.display = "flex";
-
-          canvasContainer.innerHTML = "";
-          thumbnailContainer.innerHTML = "";
-
-          currentFileName.textContent = "document.pdf";
-
-          editPdfBtn.innerHTML =
-            '<i class="fa fa-pen-to-square"></i> <span>Edit PDF</span>';
-          editPdfBtn.disabled = false;
-          editPdfBtn.classList.remove("active");
-
-          currentTool = null;
-          document
-            .querySelectorAll(".tool-btn")
-            .forEach((btn) => btn.classList.remove("active"));
-
-          Toast.success("PDF removed successfully");
-        }
-      });
-
-      document.querySelectorAll(".properties-dropdown").forEach((dropdown) => {
-        dropdown.addEventListener("click", (e) => {
-          e.stopPropagation();
-        });
-      });
-
-      document.getElementById("textAlign").addEventListener("change", (e) => {
-        if (selectedAnnotation && selectedAnnotation.type === "text") {
-          selectedAnnotation.setTextAlign(e.target.value);
-        }
-      });
-    </script>
-  </body>
+        <div class="pp-field">
+          <label>Style</label>
+          <select id="dStyle">
+            <option value="solid">Solid</option>
+            <option value="dashed">Dashed</option>
+            <option value="dotted">Dotted</option>
+          </select>
+        </div>
+        <div class="pp-field">
+          <label>Opacity %</label>
+          <input type="number" id="dOpacity" min="10" max="100" value="100" style="width:68px"/>
+        </div>
+      </div>
+      <div class="pp-footer">
+        <!--
+          In draw mode: "Apply Drawing" switches back to pointer mode and CLOSES panel.
+          In path-edit mode: "Done Editing" exits path edit and CLOSES panel.
+          Panel only closes via these buttons OR switching to another tool.
+        -->
+        <button class="pp-btn success" id="btnDrawAction">
+          <i class="fa fa-check"></i> <span id="btnDrawActionLabel">Apply Drawing</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Text panel -->
+    <div class="prop-panel" id="ppText">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid var(--border)">
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)">Text Options</span>
+        <span class="text-edit-badge" id="textEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
+      </div>
+      <div class="pp-row">
+        <div class="pp-field"><label>Color</label><input type="color" id="tColor" value="#ffffff"/></div>
+        <div class="pp-field"><label>Size</label><input type="number" id="tSize" min="8" max="96" value="20" style="width:66px"/></div>
+        <div class="pp-field">
+          <label>Font</label>
+          <select id="tFont">
+            <option>Arial</option><option>Georgia</option>
+            <option>Courier New</option><option>Times New Roman</option>
+            <option>Verdana</option><option>Helvetica</option>
+          </select>
+        </div>
+        <div class="pp-field">
+          <label>Weight</label>
+          <select id="tWeight"><option value="normal">Normal</option><option value="bold">Bold</option></select>
+        </div>
+      </div>
+      <div class="pp-footer">
+        <!-- Shown when NOT editing a selected text -->
+        <button class="pp-btn primary" id="btnAddText" style="display:inline-flex">
+          <i class="fa fa-plus"></i> Add Text to Page
+        </button>
+        <!-- Shown when editing a selected text -->
+        <button class="pp-btn success" id="btnDoneEditText" style="display:none">
+          <i class="fa fa-check"></i> Done Editing
+        </button>
+      </div>
+    </div>
+
+    <!-- Shape panel -->
+    <div class="prop-panel" id="ppShape">
+      <div class="pp-title">Shape Options</div>
+      <div class="pp-row">
+        <div class="pp-field">
+          <label>Type</label>
+          <select id="sType">
+            <option value="rect">Rectangle</option><option value="circle">Circle</option>
+            <option value="triangle">Triangle</option><option value="line">Line</option>
+          </select>
+        </div>
+        <div class="pp-field"><label>Fill</label><input type="color" id="sFill" value="#6366f1"/></div>
+        <div class="pp-field"><label>Stroke</label><input type="color" id="sStroke" value="#312e81"/></div>
+        <div class="pp-field"><label>Stroke W</label><input type="number" id="sStrokeW" min="0" max="20" value="2" style="width:62px"/></div>
+      </div>
+      <div class="pp-footer">
+        <button class="pp-btn primary" id="btnAddShape"><i class="fa fa-plus"></i> Add Shape to Page</button>
+      </div>
+    </div>
+
+  </div><!-- /panel-host -->
+
+  <div class="editor-body">
+    <div class="sidebar" id="sidebar"><div class="sb-title">Pages</div></div>
+    <div class="canvas-area" id="canvasArea"></div>
+  </div>
+
+</div>
+
+<input type="file" id="imgInput" accept="image/*" class="hidden"/>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   SETUP
+═══════════════════════════════════════════════════════ */
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const API = 'http://127.0.0.1:8080';
+let pdfDoc = null, pdfFile = null;
+let pages  = [];   // {block, fabricCanvas, scale, pageNum}
+let curIdx = 0;
+let curTool = 'draw'; // default active tool
+
+// Path currently being individually edited
+let editingPath   = null;
+let editingPathFC = null;
+
+// Text object currently being edited via the panel
+let editingText   = null;
+let editingTextFC = null;
+
+/* ═══════════════════════════════════════════════════════
+   CUSTOM MODAL
+═══════════════════════════════════════════════════════ */
+function showModal({title='Notice', msg='', type='info', buttons}){
+  return new Promise(resolve=>{
+    const iconMap={info:{cls:'info',ic:'fa-circle-info'},warn:{cls:'warn',ic:'fa-triangle-exclamation'},danger:{cls:'danger',ic:'fa-circle-exclamation'}};
+    const im=iconMap[type]||iconMap.info;
+    document.getElementById('modalIcon').className=`modal-icon ${im.cls}`;
+    document.getElementById('modalIconI').className=`fa ${im.ic}`;
+    document.getElementById('modalTitle').textContent=title;
+    document.getElementById('modalMsg').textContent=msg;
+    const actions=document.getElementById('modalActions');
+    actions.innerHTML='';
+    buttons.forEach(b=>{
+      const btn=document.createElement('button');
+      btn.className=`modal-btn ${b.cls||'secondary'}`;
+      btn.textContent=b.label;
+      btn.onclick=()=>{ document.getElementById('modalOverlay').classList.remove('show'); resolve(b.value); };
+      actions.appendChild(btn);
+    });
+    document.getElementById('modalOverlay').classList.add('show');
+  });
+}
+const mAlert=(msg,title='Notice')=>showModal({title,msg,type:'info',buttons:[{label:'OK',cls:'primary',value:true}]});
+const mConfirm=(msg,title='Confirm',danger=false)=>showModal({title,msg,type:danger?'danger':'warn',
+  buttons:[{label:'Cancel',cls:'secondary',value:false},{label:'Confirm',cls:danger?'danger':'primary',value:true}]});
+
+/* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+const TICONS={s:'fa-check-circle',e:'fa-exclamation-circle',i:'fa-info-circle'};
+function toast(msg,type='i'){
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<i class="fa ${TICONS[type]||TICONS.i}"></i><span>${msg}</span>`;
+  document.getElementById('toastBox').appendChild(el);
+  setTimeout(()=>{el.style.transition='opacity .3s';el.style.opacity='0';setTimeout(()=>el.remove(),320);},2800);
+}
+
+/* ═══════════════════════════════════════════════════════
+   UPLOAD
+═══════════════════════════════════════════════════════ */
+document.getElementById('fileInput').addEventListener('change',async e=>{
+  const file=e.target.files[0]; if(!file) return;
+  pdfFile=file;
+  document.getElementById('fileName').textContent=file.name;
+  await loadPDF(file);
+});
+
+async function loadPDF(file){
+  const buf=await file.arrayBuffer();
+  pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;
+  pages=[];
+  document.getElementById('sidebar').innerHTML='<div class="sb-title">Pages</div>';
+  document.getElementById('canvasArea').innerHTML='';
+  for(let i=1;i<=pdfDoc.numPages;i++) await buildPage(i);
+  document.getElementById('uploadScreen').style.display='none';
+  document.getElementById('editorScreen').classList.add('show');
+  // Start with draw tool active and panel open
+  switchPage(0);
+  setTool('draw');
+  openPanel('ppDraw');
+  toast(`PDF loaded — ${pdfDoc.numPages} page(s)`,'s');
+}
+
+/* ═══════════════════════════════════════════════════════
+   BUILD PAGE
+   • Measures actual offsetWidth of canvas-area for reliable fit.
+   • Scales to fill width; if height would overflow, scales to height instead.
+   • Enforces a 300px minimum so pages are never tiny.
+═══════════════════════════════════════════════════════ */
+async function buildPage(pageNum){
+  const pdfPage=await pdfDoc.getPage(pageNum);
+  const base=pdfPage.getViewport({scale:1});
+
+  const area=document.getElementById('canvasArea');
+  const areaW=area.offsetWidth  || Math.max(window.innerWidth-parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sb'))-10,300);
+  const areaH=area.offsetHeight || Math.max(window.innerHeight-160,300);
+
+  const pad=32;
+  const maxW=Math.max(areaW-pad,300);
+  const maxH=Math.max(areaH-pad,200);
+
+  let sc=maxW/base.width;
+  if(base.height*sc>maxH) sc=maxH/base.height;
+  sc=Math.max(sc,300/base.width);
+
+  const vp=pdfPage.getViewport({scale:sc});
+  const W=Math.round(vp.width), H=Math.round(vp.height);
+
+  const block=document.createElement('div');
+  block.className='page-block';
+  block.style.cssText=`width:${W}px;height:${H}px;`;
+
+  const pdfCvs=document.createElement('canvas');
+  pdfCvs.className='pdf-bg';
+  pdfCvs.width=W; pdfCvs.height=H;
+  pdfCvs.style.cssText=`width:${W}px;height:${H}px;`;
+  await pdfPage.render({canvasContext:pdfCvs.getContext('2d'),viewport:vp}).promise;
+
+  const fabEl=document.createElement('canvas');
+  fabEl.className='fab-layer'; fabEl.id='fc-'+pageNum;
+  fabEl.width=W; fabEl.height=H;
+  fabEl.style.cssText=`width:${W}px;height:${H}px;`;
+
+  block.appendChild(pdfCvs);
+  block.appendChild(fabEl);
+  document.getElementById('canvasArea').appendChild(block);
+
+  const fc=new fabric.Canvas('fc-'+pageNum,{width:W,height:H,selection:true,preserveObjectStacking:true});
+  fc.setBackgroundColor('rgba(0,0,0,0)',fc.renderAll.bind(fc));
+
+  fc.on('selection:created',()=>onSelect(fc));
+  fc.on('selection:updated',()=>onSelect(fc));
+  fc.on('selection:cleared', ()=>{ hideAnnotBar(); stopPathEdit(); stopTextEdit(); });
+  fc.on('object:moving',    ()=>posAnnotBar(fc));
+  fc.on('object:scaling',   ()=>posAnnotBar(fc));
+  fc.on('object:rotating',  ()=>posAnnotBar(fc));
+
+  // Thumbnail
+  const sbW=Math.max(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sb'))-10,40);
+  const thSc=Math.min(sbW/base.width,0.18);
+  const thVp=pdfPage.getViewport({scale:thSc});
+  const thC=document.createElement('canvas');
+  thC.width=thVp.width; thC.height=thVp.height;
+  await pdfPage.render({canvasContext:thC.getContext('2d'),viewport:thVp}).promise;
+
+  const thItem=document.createElement('div');
+  thItem.className='thumb'; thItem.dataset.idx=pages.length;
+  const pg=document.createElement('div'); pg.className='pg'; pg.textContent='Page '+pageNum;
+  thItem.appendChild(thC); thItem.appendChild(pg);
+  thItem.addEventListener('click',()=>switchPage(+thItem.dataset.idx));
+  document.getElementById('sidebar').appendChild(thItem);
+
+  pages.push({block,pdfCvs,fabricCanvas:fc,scale:sc,pageNum});
+}
+
+/* ═══════════════════════════════════════════════════════
+   PAGE SWITCHING
+═══════════════════════════════════════════════════════ */
+function switchPage(idx){
+  hideAnnotBar(); stopPathEdit(); stopTextEdit();
+  curIdx=idx;
+  pages.forEach((p,i)=>p.block.style.display=(i===idx?'block':'none'));
+  document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  const th=document.querySelectorAll('.thumb')[idx];
+  if(th) th.scrollIntoView({block:'nearest',behavior:'smooth'});
+  applyTool(getFC());
+}
+
+const getFC=()=>pages[curIdx]?.fabricCanvas;
+
+/* ═══════════════════════════════════════════════════════
+   ANNOTATION BAR — shows on any selection
+═══════════════════════════════════════════════════════ */
+const annotBar=document.getElementById('annotBar');
+
+function onSelect(fc){
+  const obj=fc.getActiveObject();
+  // If a different object selected while editing path/text, stop those edits
+  if(editingPath && obj!==editingPath) stopPathEdit();
+  if(editingText && obj!==editingText) stopTextEdit();
+  showAnnotBar(fc);
+}
+
+function showAnnotBar(fc){
+  if(!fc.getActiveObject()){hideAnnotBar();return;}
+  annotBar.classList.add('show');
+  posAnnotBar(fc);
+}
+function hideAnnotBar(){annotBar.classList.remove('show')}
+
+function posAnnotBar(fc){
+  const obj=(fc||getFC())?.getActiveObject?.();
+  if(!obj) return;
+  const block=pages[curIdx]?.block; if(!block) return;
+  const br=block.getBoundingClientRect();
+  const ob=obj.getBoundingRect(true,true);
+  let x=br.left+ob.left+ob.width/2-annotBar.offsetWidth/2;
+  let y=br.top+ob.top-annotBar.offsetHeight-10;
+  x=Math.max(6,Math.min(x,window.innerWidth-annotBar.offsetWidth-6));
+  y=Math.max(6,Math.min(y,window.innerHeight-annotBar.offsetHeight-6));
+  annotBar.style.left=x+'px'; annotBar.style.top=y+'px';
+}
+
+/* ── EDIT ── */
+document.getElementById('abEdit').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const obj=fc.getActiveObject(); if(!obj) return;
+
+  if(obj.type==='i-text'||obj.type==='text'){
+    /*
+      Text editing: open text panel pre-filled with this object's values.
+      Live-update this object as the user changes controls.
+      "Add Text" button hidden; "Done Editing" shown.
+    */
+    startTextEdit(obj,fc);
+
+  } else if(['rect','circle','triangle'].includes(obj.type)){
+    // Shape: pre-fill shape panel, live-update only this object
+    document.getElementById('sFill').value   =obj.fill||'#6366f1';
+    document.getElementById('sStroke').value =obj.stroke||'#312e81';
+    document.getElementById('sStrokeW').value=obj.strokeWidth||2;
+    openPanel('ppShape');
+    const live=()=>{
+      obj.set({fill:document.getElementById('sFill').value,
+               stroke:document.getElementById('sStroke').value,
+               strokeWidth:+document.getElementById('sStrokeW').value||1});
+      fc.renderAll();
+    };
+    ['sFill','sStroke','sStrokeW'].forEach(id=>document.getElementById(id).addEventListener('input',live));
+    toast('Adjust shape properties above','i');
+
+  } else if(obj.type==='path'){
+    // Drawing: open draw panel pre-filled for this specific path only
+    startPathEdit(obj,fc);
+
+  } else {
+    toast('Use handles to resize & rotate','i');
+  }
+});
+
+/* ── ROTATE ── */
+document.getElementById('abRot').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const obj=fc.getActiveObject(); if(!obj) return;
+  obj.rotate((obj.angle||0)+15);
+  fc.requestRenderAll();
+  posAnnotBar(fc);
+  toast('Rotated +15°','i');
+});
+
+/* ── COPY ── */
+document.getElementById('abCopy').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const obj=fc.getActiveObject(); if(!obj) return;
+  obj.clone(cl=>{
+    cl.set({left:obj.left+22,top:obj.top+22});
+    fc.add(cl); fc.setActiveObject(cl); fc.renderAll();
+    showAnnotBar(fc); toast('Copied!','s');
+  });
+});
+
+/* ── DELETE ── */
+document.getElementById('abDel').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  stopPathEdit(); stopTextEdit();
+  fc.getActiveObjects().forEach(o=>fc.remove(o));
+  fc.discardActiveObject(); fc.renderAll();
+  hideAnnotBar(); toast('Deleted','i');
+});
+
+/* ═══════════════════════════════════════════════════════
+   PATH EDIT — individual drawing edit
+   Opens the Draw panel pre-filled for the selected path ONLY.
+   All controls update ONLY this path; no other drawings affected.
+   Panel closes ONLY via "Done Editing" button.
+═══════════════════════════════════════════════════════ */
+function startPathEdit(pathObj,fc){
+  editingPath=pathObj; editingPathFC=fc;
+
+  // Pre-fill with this path's values
+  document.getElementById('dColor').value=pathObj.stroke||'#e63946';
+  const curW=pathObj.strokeWidth||2;
+  const opts=[1,2,3,5,8,12];
+  document.getElementById('dWidth').value=opts.reduce((p,c)=>Math.abs(c-curW)<Math.abs(p-curW)?c:p);
+  document.getElementById('dOpacity').value=Math.round((pathObj.opacity||1)*100);
+  const da=pathObj.strokeDashArray;
+  document.getElementById('dStyle').value=(!da||!da.length)?'solid':(da[1]<=5?'dotted':'dashed');
+
+  document.getElementById('drawEditBadge').classList.add('show');
+  document.getElementById('btnDrawActionLabel').textContent='Done Editing';
+  document.getElementById('btnDrawAction').className='pp-btn primary';
+
+  openPanel('ppDraw');
+  toast('Editing selected drawing — adjust controls above','i');
+}
+
+function stopPathEdit(){
+  if(!editingPath) return;
+  editingPath=null; editingPathFC=null;
+  document.getElementById('drawEditBadge').classList.remove('show');
+  document.getElementById('btnDrawActionLabel').textContent='Apply Drawing';
+  document.getElementById('btnDrawAction').className='pp-btn success';
+}
+
+/* Live sync draw controls → selected path OR the brush */
+function syncDrawControls(){
+  const color=document.getElementById('dColor').value;
+  const width=parseInt(document.getElementById('dWidth').value);
+  const opacity=parseInt(document.getElementById('dOpacity').value)/100;
+  const style=document.getElementById('dStyle').value;
+  const dashArr=style==='dashed'?[10,6]:style==='dotted'?[2,5]:[];
+  if(editingPath&&editingPathFC){
+    // ✅ Only this path is modified
+    editingPath.set({stroke:color,strokeWidth:width,opacity,strokeDashArray:dashArr});
+    editingPathFC.renderAll();
+  } else {
+    syncBrush();
+  }
+}
+['dColor','dWidth','dStyle','dOpacity'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', syncDrawControls);
+  document.getElementById(id).addEventListener('change',syncDrawControls);
+});
+
+/* Draw action button */
+document.getElementById('btnDrawAction').addEventListener('click',()=>{
+  if(editingPath){
+    // Done editing path — close panel, go back to draw mode
+    stopPathEdit();
+    closePanel('ppDraw');
+    // Re-open for draw mode
+    setTool('draw');
+    openPanel('ppDraw');
+    showAnnotBar(getFC());
+    toast('Drawing updated','s');
+  } else {
+    // Apply Drawing — switch to pointer (no active tool) and close panel
+    setTool('none');
+    closePanel('ppDraw');
+    toast('Drawing applied — click any annotation to select it','s');
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   TEXT EDIT — edit selected IText via panel
+   Opens text panel pre-filled for the selected object.
+   Live-updates ONLY that text object.
+═══════════════════════════════════════════════════════ */
+function startTextEdit(textObj,fc){
+  editingText=textObj; editingTextFC=fc;
+
+  // Pre-fill panel with this text's current values
+  document.getElementById('tColor').value  =textObj.fill||'#ffffff';
+  document.getElementById('tSize').value   =Math.round(textObj.fontSize||20);
+  document.getElementById('tFont').value   =textObj.fontFamily||'Arial';
+  document.getElementById('tWeight').value =textObj.fontWeight||'normal';
+
+  // Show "Editing selected" badge, swap buttons
+  document.getElementById('textEditBadge').classList.add('show');
+  document.getElementById('btnAddText').style.display='none';
+  document.getElementById('btnDoneEditText').style.display='inline-flex';
+
+  openPanel('ppText');
+  toast('Editing selected text — adjust controls above','i');
+}
+
+function stopTextEdit(){
+  if(!editingText) return;
+  editingText=null; editingTextFC=null;
+  document.getElementById('textEditBadge').classList.remove('show');
+  document.getElementById('btnAddText').style.display='inline-flex';
+  document.getElementById('btnDoneEditText').style.display='none';
+}
+
+/* Live-update text controls */
+function syncTextControls(){
+  const color=document.getElementById('tColor').value;
+  const size=parseInt(document.getElementById('tSize').value);
+  const family=document.getElementById('tFont').value;
+  const weight=document.getElementById('tWeight').value;
+  if(editingText&&editingTextFC){
+    // ✅ Only the selected text object changes
+    editingText.set({fill:color,fontSize:size,fontFamily:family,fontWeight:weight});
+    editingTextFC.renderAll();
+  }
+}
+['tColor','tSize','tFont','tWeight'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', syncTextControls);
+  document.getElementById(id).addEventListener('change',syncTextControls);
+});
+
+/* Done Editing text */
+document.getElementById('btnDoneEditText').addEventListener('click',()=>{
+  stopTextEdit();
+  closePanel('ppText');
+  showAnnotBar(getFC());
+  toast('Text updated','s');
+});
+
+/* ═══════════════════════════════════════════════════════
+   TOOL MANAGEMENT
+═══════════════════════════════════════════════════════ */
+const TOOL_IDS={draw:'tbDraw',text:'tbText',shape:'tbShape',image:'tbImage'};
+
+function setTool(name){
+  // Leaving draw/text tool cleans up their edit states
+  if(name!=='draw') stopPathEdit();
+  if(name!=='text') stopTextEdit();
+
+  curTool=name;
+  Object.entries(TOOL_IDS).forEach(([t,id])=>
+    document.getElementById(id).classList.toggle('on',t===name)
+  );
+
+  // Close panels that DON'T belong to the new tool
+  // (draw panel stays open until Apply Drawing is clicked)
+  if(name==='text')  { /* text panel managed by its own open/close */ }
+  if(name==='shape') { /* shape panel managed by its own open/close */ }
+  if(name==='none')  { /* no active tool — pointer mode */ }
+
+  applyTool(getFC());
+}
+
+function applyTool(fc){
+  if(!fc) return;
+  fc.isDrawingMode=(curTool==='draw');
+  if(curTool==='draw'){
+    const b=new fabric.PencilBrush(fc);
+    b.color=document.getElementById('dColor').value;
+    b.width=parseInt(document.getElementById('dWidth').value);
+    fc.freeDrawingBrush=b;
+    fc.off('path:created');
+    fc.on('path:created',e=>{
+      const s=document.getElementById('dStyle').value;
+      const o=parseInt(document.getElementById('dOpacity').value)/100;
+      if(s==='dashed') e.path.set({strokeDashArray:[10,6]});
+      if(s==='dotted') e.path.set({strokeDashArray:[2,5]});
+      e.path.set({opacity:o});
+      fc.renderAll();
+    });
+  } else {
+    fc.off('path:created');
+  }
+}
+
+function syncBrush(){
+  const fc=getFC(); if(!fc?.freeDrawingBrush) return;
+  fc.freeDrawingBrush.color=document.getElementById('dColor').value;
+  fc.freeDrawingBrush.width=parseInt(document.getElementById('dWidth').value);
+}
+
+/* ── Panel open/close helpers ── */
+function openPanel(id){
+  // Position under the corresponding toolbar button
+  const btnMap={ppDraw:'tbDraw',ppText:'tbText',ppShape:'tbShape'};
+  const host=document.getElementById('panelHost');
+  const panel=document.getElementById(id);
+  // Close all OTHER panels (not this one)
+  document.querySelectorAll('.prop-panel').forEach(p=>{if(p.id!==id)p.classList.remove('open');});
+  const btnEl=document.getElementById(btnMap[id]);
+  if(btnEl){
+    const bRect=btnEl.getBoundingClientRect();
+    const hRect=host.getBoundingClientRect();
+    const panelW=Math.max(panel.offsetWidth||300,300);
+    let left=bRect.left-hRect.left;
+    left=Math.min(left,Math.max(0,hRect.width-panelW-4));
+    panel.style.left=left+'px';
+  }
+  panel.classList.add('open');
+}
+
+function closePanel(id){
+  document.getElementById(id)?.classList.remove('open');
+}
+
+/* ═══════════════════════════════════════════════════════
+   TOOLBAR WIRING
+═══════════════════════════════════════════════════════ */
+
+/* Draw — clicking toolbar Draw button toggles the panel open/closed;
+   panel only CLOSES via "Apply Drawing" click or switching to another tool */
+document.getElementById('tbDraw').addEventListener('click',()=>{
+  if(curTool==='draw'){
+    // Toggle panel visibility while staying in draw mode
+    document.getElementById('ppDraw').classList.toggle('open');
+  } else {
+    setTool('draw');
+    openPanel('ppDraw');
+  }
+});
+
+/* Text */
+document.getElementById('tbText').addEventListener('click',()=>{
+  if(curTool==='text'){
+    document.getElementById('ppText').classList.toggle('open');
+  } else {
+    stopPathEdit();
+    setTool('text');
+    openPanel('ppText');
+  }
+});
+
+/* Add Text to Page — places IText at centre, no canvas click needed */
+document.getElementById('btnAddText').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const it=new fabric.IText('Double-click to edit',{
+    left:fc.width/2,top:fc.height/2,originX:'center',originY:'center',
+    fontFamily:document.getElementById('tFont').value,
+    fontSize:  parseInt(document.getElementById('tSize').value),
+    fill:      document.getElementById('tColor').value,
+    fontWeight:document.getElementById('tWeight').value,
+    editable:true,
+  });
+  fc.add(it); fc.setActiveObject(it); fc.renderAll();
+  // Switch to pointer mode (none) and close text panel
+  setTool('none');
+  closePanel('ppText');
+  showAnnotBar(fc);
+  toast('Text added — double-click to edit','s');
+});
+
+/* Shape */
+document.getElementById('tbShape').addEventListener('click',()=>{
+  if(curTool==='shape'){
+    document.getElementById('ppShape').classList.toggle('open');
+  } else {
+    stopPathEdit(); stopTextEdit();
+    setTool('shape');
+    openPanel('ppShape');
+  }
+});
+
+document.getElementById('btnAddShape').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const fill=document.getElementById('sFill').value;
+  const str =document.getElementById('sStroke').value;
+  const sw  =parseInt(document.getElementById('sStrokeW').value)||2;
+  const type=document.getElementById('sType').value;
+  const cx=fc.width/2,cy=fc.height/2;
+  let obj;
+  if(type==='rect')     obj=new fabric.Rect({left:cx-75,top:cy-50,width:150,height:100,fill,stroke:str,strokeWidth:sw});
+  else if(type==='circle')   obj=new fabric.Circle({left:cx-60,top:cy-60,radius:60,fill,stroke:str,strokeWidth:sw});
+  else if(type==='triangle') obj=new fabric.Triangle({left:cx-60,top:cy-60,width:120,height:100,fill,stroke:str,strokeWidth:sw});
+  else if(type==='line')     obj=new fabric.Line([cx-80,cy,cx+80,cy],{stroke:str,strokeWidth:sw+1,selectable:true});
+  if(obj){
+    fc.add(obj); fc.setActiveObject(obj); fc.renderAll();
+    setTool('none');
+    closePanel('ppShape');
+    showAnnotBar(fc); toast('Shape added','s');
+  }
+});
+
+/* Image */
+document.getElementById('tbImage').addEventListener('click',()=>{
+  stopPathEdit(); stopTextEdit();
+  setTool('image');
+  // Close any open panels
+  document.querySelectorAll('.prop-panel').forEach(p=>p.classList.remove('open'));
+  document.getElementById('imgInput').click();
+});
+document.getElementById('imgInput').addEventListener('change',e=>{
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    fabric.Image.fromURL(ev.target.result,img=>{
+      const fc=getFC(); if(!fc) return;
+      const max=Math.min(fc.width,fc.height)*0.5;
+      if(img.width>max) img.scaleToWidth(max);
+      img.set({left:fc.width/2-img.getScaledWidth()/2,top:fc.height/2-img.getScaledHeight()/2});
+      fc.add(img); fc.setActiveObject(img); fc.renderAll();
+      setTool('none'); showAnnotBar(fc); toast('Image added','s');
+    });
+  };
+  reader.readAsDataURL(file); e.target.value='';
+});
+
+/* Undo */
+document.getElementById('tbUndo').addEventListener('click',()=>{
+  const fc=getFC(); if(!fc) return;
+  const objs=fc.getObjects();
+  if(objs.length){fc.remove(objs[objs.length-1]);hideAnnotBar();stopPathEdit();stopTextEdit();toast('Undone','i');}
+});
+
+/* Delete (toolbar delegates to annotBar delete) */
+document.getElementById('tbDel').addEventListener('click',()=>document.getElementById('abDel').click());
+
+/* Clear */
+document.getElementById('tbClear').addEventListener('click',async()=>{
+  const ok=await mConfirm('Clear all annotations on this page?','Clear Page');
+  if(!ok) return;
+  const fc=getFC(); if(!fc) return;
+  fc.clear(); fc.setBackgroundColor('rgba(0,0,0,0)',fc.renderAll.bind(fc));
+  hideAnnotBar(); stopPathEdit(); stopTextEdit(); toast('Page cleared','i');
+});
+
+/* Close file */
+document.getElementById('btnClose').addEventListener('click',async()=>{
+  const ok=await mConfirm('Remove this PDF? All edits will be lost.','Remove PDF',true);
+  if(!ok) return;
+  pages.forEach(p=>p.fabricCanvas.dispose());
+  pages=[]; pdfDoc=null; pdfFile=null; curIdx=0;
+  document.getElementById('canvasArea').innerHTML='';
+  document.getElementById('sidebar').innerHTML='<div class="sb-title">Pages</div>';
+  document.getElementById('editorScreen').classList.remove('show');
+  document.getElementById('uploadScreen').style.display='flex';
+  document.getElementById('fileInput').value='';
+  hideAnnotBar();
+  document.querySelectorAll('.prop-panel').forEach(p=>p.classList.remove('open'));
+  stopPathEdit(); stopTextEdit();
+});
+
+/*
+  Outside click:
+  - Draw panel: NEVER closes from outside click — only "Apply Drawing" or switching tool closes it.
+  - Text/Shape panels: close on outside click when not in edit mode.
+*/
+document.addEventListener('click',e=>{
+  if(e.target.closest('.prop-panel')||e.target.closest('.tbtn')||
+     e.target.closest('#annotBar')||e.target.closest('#modalOverlay')) return;
+  // Close text panel on outside click only if not editing a text object
+  if(!editingText) closePanel('ppText');
+  // Close shape panel on outside click
+  closePanel('ppShape');
+  // Draw panel: never close from outside click
+});
+
+/* Keyboard */
+document.addEventListener('keydown',e=>{
+  if((e.key==='Delete'||e.key==='Backspace')&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)){
+    document.getElementById('abDel').click();
+  }
+  if(e.key==='Escape'){
+    if(editingPath){stopPathEdit();closePanel('ppDraw');setTool('draw');openPanel('ppDraw');}
+    else if(editingText){stopTextEdit();closePanel('ppText');}
+    else{closePanel('ppText');closePanel('ppShape');}
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   SAVE PDF
+═══════════════════════════════════════════════════════ */
+document.getElementById('tbSave').addEventListener('click',async()=>{
+  if(!pdfFile){await mAlert('Please load a PDF first.');return;}
+  const btn=document.getElementById('tbSave');
+  btn.disabled=true; btn.innerHTML='<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
+  try{
+    const fd=new FormData(); fd.append('file',pdfFile);
+    const annData=pages.map(p=>({
+      pageNum:p.pageNum,
+      drawing:p.fabricCanvas.getObjects().length?p.fabricCanvas.toDataURL({format:'png',multiplier:1}):null,
+      annotations:[],deletedRegions:[],deletedImages:[],
+    }));
+    fd.append('annotations',JSON.stringify(annData));
+    const res=await fetch(`${API}/edit-pdf`,{method:'POST',body:fd});
+    if(!res.ok) throw new Error(await res.text());
+    const blob=await res.blob();
+    Object.assign(document.createElement('a'),{href:URL.createObjectURL(blob),download:'edited_'+pdfFile.name}).click();
+    toast('PDF saved & downloaded!','s');
+  } catch(err){
+    console.error(err); await mAlert('Save failed: '+err.message,'Error');
+  } finally{
+    btn.disabled=false; btn.innerHTML='<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
+  }
+});
+
+/* Reposition annotBar on resize */
+let _rt;
+window.addEventListener('resize',()=>{
+  clearTimeout(_rt);
+  _rt=setTimeout(()=>{ const fc=getFC(); if(fc?.getActiveObject()) posAnnotBar(fc); },150);
+});
+</script>
+</body>
 </html>

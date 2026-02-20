@@ -1904,6 +1904,8 @@
           fd.append("file", pdfFile);
           const annData = pages.map((p) => ({
             pageNum: p.pageNum,
+            canvasWidth:  p.fabricCanvas.width,
+            canvasHeight: p.fabricCanvas.height,
             drawing: p.fabricCanvas.getObjects().length
               ? p.fabricCanvas.toDataURL({ format: "png", multiplier: 1 })
               : null,

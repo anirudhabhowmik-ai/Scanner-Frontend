@@ -2506,7 +2506,6 @@
             const data = await res.json();
             const textBlocks = data.textBlocks || [];
             const images = data.images || [];
-            console.log(textBlocks, images)
             if (!textBlocks.length && !images.length) {
               toast("No editable content found on this page", "i");
               return;
@@ -2518,7 +2517,6 @@
               const cleanDoc = await pdfjsLib.getDocument({ data: pdfBytes })
                 .promise;
               const cleanPage = await cleanDoc.getPage(pageNum);
-              console.log(cleanPage)
               const vp = cleanPage.getViewport({ scale });
               const ctx = pages[curIdx].pdfCvs.getContext("2d");
               ctx.clearRect(
@@ -2536,7 +2534,10 @@
                 left: tb.x * scale,
                 top: tb.y * scale,
                 fontFamily: tb.fontFamily || "Arial",
-                fontSize: Math.max(6, tb.fontSize * scale),
+                fontSize: Math.max(
+                  6,
+                  (tb.originalHeight ?? tb.height) * scale * 0.88,
+                ),
                 fill: tb.color || "#000000",
                 fontWeight: tb.fontWeight || "normal",
                 fontStyle: tb.fontStyle || "normal",

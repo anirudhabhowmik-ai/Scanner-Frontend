@@ -2506,6 +2506,7 @@
             const data = await res.json();
             const textBlocks = data.textBlocks || [];
             const images = data.images || [];
+            console.log(textBlocks, images)
             if (!textBlocks.length && !images.length) {
               toast("No editable content found on this page", "i");
               return;
@@ -2516,7 +2517,8 @@
               );
               const cleanDoc = await pdfjsLib.getDocument({ data: pdfBytes })
                 .promise;
-              const cleanPage = await cleanDoc.getPage(1);
+              const cleanPage = await cleanDoc.getPage(pageNum);
+              console.log(cleanPage)
               const vp = cleanPage.getViewport({ scale });
               const ctx = pages[curIdx].pdfCvs.getContext("2d");
               ctx.clearRect(

@@ -702,6 +702,7 @@
         }
         .prop-panel {
           min-width: 240px;
+          max-width: 304px;
         }
       }
       @media (max-width: 380px) {
@@ -785,7 +786,7 @@
       <!-- Toolbar: all <button> are flat siblings, none nested -->
       <div class="toolbar">
         <!-- NO Select button — clicking on an annotation selects it directly -->
-        <button class="tbtn on" id="tbDraw">
+        <button class="tbtn" id="tbDraw">
           <i class="fa fa-pencil"></i><span>Draw</span>
         </button>
         <button class="tbtn" id="tbText">
@@ -1152,7 +1153,6 @@
         // Start with draw tool active and panel open
         switchPage(0);
         setTool("draw");
-        openPanel("ppDraw");
         toast(`PDF loaded — ${pdfDoc.numPages} page(s)`, "s");
       }
 

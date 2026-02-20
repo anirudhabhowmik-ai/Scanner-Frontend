@@ -806,6 +806,29 @@
         border: none;
         background: #fff;
       }
+      /* ── Text align buttons ── */
+      .align-btns {
+        display: flex;
+        gap: 2px;
+      }
+      .align-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        background: var(--surface2);
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 11px;
+        transition: all 0.13s;
+        padding: 0;
+      }
+      .align-btn:hover { background: var(--surface); color: var(--text); border-color: #3d4268; }
+      .align-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
       @media (max-width: 640px) {
         .sav-btn span { display: none; }
         .sav-btn { padding: 6px 9px; }
@@ -887,6 +910,9 @@
         </button>
         <button class="tbtn" id="tbImage">
           <i class="fa fa-image"></i><span>Image</span>
+        </button>
+        <button class="tbtn" id="tbEditContent">
+          <i class="fa fa-file-pen"></i><span>Edit Content</span>
         </button>
         <div class="tsep"></div>
         <button class="tbtn" id="tbUndo">
@@ -993,6 +1019,14 @@
                 <option value="normal">Normal</option>
                 <option value="bold">Bold</option>
               </select>
+            </div>
+            <div class="pp-field">
+              <label>Align</label>
+              <div class="align-btns" id="tAlignGroup">
+                <button type="button" class="align-btn on" data-align="left"  title="Left">  <i class="fa fa-align-left"></i></button>
+                <button type="button" class="align-btn"     data-align="center" title="Center"><i class="fa fa-align-center"></i></button>
+                <button type="button" class="align-btn"     data-align="right" title="Right"> <i class="fa fa-align-right"></i></button>
+              </div>
             </div>
           </div>
           <div class="pp-footer">
@@ -1123,8 +1157,6 @@
         <iframe id="savePreview" title="PDF Preview"></iframe>
       </div>
     </div>
-
-    <section id="footer-placeholder"></section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
@@ -1535,6 +1567,11 @@
         document.getElementById("tSize").value = Math.round(textObj.fontSize || 20);
         document.getElementById("tFont").value = textObj.fontFamily || "Arial";
         document.getElementById("tWeight").value = textObj.fontWeight || "normal";
+        // Pre-fill text align
+        const align = textObj.textAlign || "left";
+        document.querySelectorAll("#tAlignGroup .align-btn").forEach(b =>
+          b.classList.toggle("on", b.dataset.align === align)
+        );
 
         document.getElementById("textEditBadge").classList.add("show");
         document.getElementById("btnAddText").style.display = "none";
@@ -1553,19 +1590,33 @@
         document.getElementById("btnDoneEditText").style.display = "none";
       }
 
+      function getTextAlign() {
+        const on = document.querySelector("#tAlignGroup .align-btn.on");
+        return on ? on.dataset.align : "left";
+      }
+
       function syncTextControls() {
-        const color = document.getElementById("tColor").value;
-        const size = parseInt(document.getElementById("tSize").value);
+        const color  = document.getElementById("tColor").value;
+        const size   = parseInt(document.getElementById("tSize").value);
         const family = document.getElementById("tFont").value;
         const weight = document.getElementById("tWeight").value;
+        const align  = getTextAlign();
         if (editingText && editingTextFC) {
-          editingText.set({ fill: color, fontSize: size, fontFamily: family, fontWeight: weight });
+          editingText.set({ fill: color, fontSize: size, fontFamily: family, fontWeight: weight, textAlign: align });
           editingTextFC.renderAll();
         }
       }
       ["tColor", "tSize", "tFont", "tWeight"].forEach((id) => {
         document.getElementById(id).addEventListener("input", syncTextControls);
         document.getElementById(id).addEventListener("change", syncTextControls);
+      });
+      // Align toggle buttons
+      document.querySelectorAll("#tAlignGroup .align-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#tAlignGroup .align-btn").forEach(b => b.classList.remove("on"));
+          btn.classList.add("on");
+          syncTextControls();
+        });
       });
 
       document.getElementById("btnDoneEditText").addEventListener("click", () => {
@@ -1841,6 +1892,7 @@
           fontSize: parseInt(document.getElementById("tSize").value),
           fill: document.getElementById("tColor").value,
           fontWeight: document.getElementById("tWeight").value,
+          textAlign: getTextAlign(),
           editable: true,
         });
         fc.add(it);
@@ -2021,6 +2073,137 @@
             closePanel("ppShape");
             closePanel("ppImage");
           }
+        }
+      });
+
+      /* ═══════════════════════════════════════════════════════
+         EDIT CONTENT
+         Flow:
+           1. Call /extract-edit-content  (backend: Vision OCR + image
+              extraction → redact originals → return data + cleaned PDF)
+           2. Reload the Fabric background with the cleaned PDF page so
+              originals visually disappear
+           3. Place editable IText / fabric.Image objects at the EXACT
+              same positions on the canvas (PDF coords → canvas coords)
+      ═══════════════════════════════════════════════════════ */
+      document.getElementById("tbEditContent").addEventListener("click", async () => {
+        if (!pdfFile) { toast("Load a PDF first", "e"); return; }
+
+        const btn = document.getElementById("tbEditContent");
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i><span>Extracting…</span>';
+
+        try {
+          const pageNum = pages[curIdx].pageNum;
+          const scale   = pages[curIdx].scale;   // PDF pts → canvas px
+          const fc      = getFC();
+
+          // ── 1. Send PDF to backend ──────────────────────────────────
+          const fd = new FormData();
+          fd.append("file", pdfFile);
+          fd.append("pageNum", pageNum);
+
+          const res = await fetch(`${API}/extract-edit-content`, {
+            method: "POST", body: fd
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ error: res.statusText }));
+            throw new Error(err.error || res.statusText);
+          }
+          const data = await res.json();
+          // data = { textBlocks, images, cleanedPagePdf (base64) }
+
+          const textBlocks = data.textBlocks || [];
+          const images     = data.images     || [];   // [{x,y,w,h,dataUrl}, ...]
+
+          if (!textBlocks.length && !images.length) {
+            toast("No editable content found on this page", "i");
+            return;
+          }
+
+          // ── 2. Reload background canvas with cleaned PDF page ───────
+          // The backend returns a single-page cleaned PDF as base64
+          if (data.cleanedPagePdf) {
+            const pdfBytes  = Uint8Array.from(atob(data.cleanedPagePdf), c => c.charCodeAt(0));
+            const cleanDoc  = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
+            const cleanPage = await cleanDoc.getPage(1);
+            const vp        = cleanPage.getViewport({ scale });
+            const ctx       = pages[curIdx].pdfCvs.getContext("2d");
+            ctx.clearRect(0, 0, pages[curIdx].pdfCvs.width, pages[curIdx].pdfCvs.height);
+            await cleanPage.render({ canvasContext: ctx, viewport: vp }).promise;
+          }
+
+          // ── 3. Place editable duplicates on the Fabric canvas ───────
+          let placed = 0;
+
+          // Text blocks → IText objects at exact PDF positions
+          for (const tb of textBlocks) {
+            // PDF coords (points) → canvas coords (pixels)
+            const cx = tb.x * scale;
+            const cy = tb.y * scale;
+            const fs = Math.max(6, tb.fontSize * scale);
+
+            const it = new fabric.IText(tb.text || "", {
+              left:       cx,
+              top:        cy,
+              fontFamily: tb.fontFamily || "Arial",
+              fontSize:   fs,
+              fill:       tb.color     || "#000000",
+              fontWeight: tb.fontWeight || "normal",
+              fontStyle:  tb.fontStyle  || "normal",
+              editable:   true,
+              selectable: true,
+            });
+            fc.add(it);
+            placed++;
+          }
+
+          // Embedded images → fabric.Image at exact PDF positions
+          for (const img of images) {
+            if (!img.dataUrl) continue;
+            await new Promise(resolve => {
+              fabric.Image.fromURL(img.dataUrl, (fimg) => {
+                const cx = img.x * scale;
+                const cy = img.y * scale;
+                const tw = img.width  * scale;
+                const th = img.height * scale;
+                fimg.set({
+                  left:    cx,
+                  top:     cy,
+                  scaleX:  tw / (fimg.width  || 1),
+                  scaleY:  th / (fimg.height || 1),
+                  selectable:   true,
+                  hasControls:  true,
+                });
+                fimg._cornerRadius = 0;
+                fc.add(fimg);
+                placed++;
+                resolve();
+              });
+            });
+          }
+
+          fc.renderAll();
+          setTool("none");
+
+          // Update pdfFile reference to the cleaned version so Save uses it
+          if (data.cleanedPagePdf) {
+            // Rebuild full-PDF bytes with the cleaned page merged back
+            // (backend already returns the full cleaned PDF if available)
+            if (data.cleanedFullPdf) {
+              const bytes = Uint8Array.from(atob(data.cleanedFullPdf), c => c.charCodeAt(0));
+              pdfFile = new File([bytes], pdfFile.name, { type: "application/pdf" });
+            }
+          }
+
+          toast(`${placed} item(s) extracted & placed — originals removed`, "s");
+
+        } catch (err) {
+          console.error(err);
+          toast("Extract failed: " + err.message, "e");
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa fa-file-pen"></i><span>Edit Content</span>';
         }
       });
 

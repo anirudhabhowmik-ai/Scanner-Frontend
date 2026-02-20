@@ -699,6 +699,118 @@
       }
 
       .hidden { display: none !important; }
+
+      /* ══ SAVE RESULT SCREEN ══ */
+      #saveScreen {
+        display: none;
+        flex-direction: column;
+        height: 100vh;
+        width: 100%;
+        background: var(--bg);
+      }
+      #saveScreen.show {
+        display: flex;
+      }
+      .save-topbar {
+        height: var(--fbar);
+        min-height: 52px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 14px;
+        gap: 10px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
+      }
+      .save-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+        flex: 1;
+      }
+      .save-fname {
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 260px;
+      }
+      .save-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .sav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 13px;
+        border: 1.5px solid var(--border);
+        border-radius: 7px;
+        background: transparent;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: inherit;
+        transition: all 0.14s;
+        flex-shrink: 0;
+      }
+      .sav-btn i { font-size: 11px; }
+      .sav-btn:hover {
+        background: var(--surface2);
+        border-color: #3d4268;
+        color: var(--text);
+      }
+      .sav-btn.download {
+        background: var(--success);
+        border-color: var(--success);
+        color: #fff;
+      }
+      .sav-btn.download:hover { background: #059669; border-color: #059669; }
+      .sav-btn.share {
+        background: var(--info);
+        border-color: var(--info);
+        color: #fff;
+      }
+      .sav-btn.share:hover { background: #0ea5e9; border-color: #0ea5e9; }
+      .sav-btn.reset {
+        background: var(--warn);
+        border-color: var(--warn);
+        color: #fff;
+      }
+      .sav-btn.reset:hover { background: #d97706; border-color: #d97706; }
+      .sav-btn.editpdf {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .sav-btn.editpdf:hover { background: var(--accent-h); border-color: var(--accent-h); }
+      .save-preview-wrap {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+        padding: 0;
+      }
+      #savePreview {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #fff;
+      }
+      @media (max-width: 640px) {
+        .sav-btn span { display: none; }
+        .sav-btn { padding: 6px 9px; }
+        .save-fname { max-width: 140px; }
+      }
     </style>
   </head>
   <body>
@@ -779,9 +891,6 @@
         <div class="tsep"></div>
         <button class="tbtn" id="tbUndo">
           <i class="fa fa-rotate-left"></i><span>Undo</span>
-        </button>
-        <button class="tbtn" id="tbDel">
-          <i class="fa fa-trash"></i><span>Delete</span>
         </button>
         <button class="tbtn" id="tbClear">
           <i class="fa fa-eraser"></i><span>Clear</span>
@@ -986,6 +1095,34 @@
     </div>
 
     <input type="file" id="imgInput" accept="image/*" class="hidden" />
+
+    <!-- Save Result Screen -->
+    <div id="saveScreen">
+      <div class="save-topbar">
+        <div class="save-topbar-left">
+          <i class="fa fa-file-pdf" style="color:var(--danger);font-size:15px;"></i>
+          <span class="save-fname" id="saveFname">edited_document.pdf</span>
+        </div>
+        <div class="save-topbar-right">
+          <button class="sav-btn download" id="savDownload">
+            <i class="fa fa-download"></i><span>Download</span>
+          </button>
+          <button class="sav-btn share" id="savShare">
+            <i class="fa fa-share-nodes"></i><span>Share</span>
+          </button>
+          <button class="sav-btn reset" id="savReset">
+            <i class="fa fa-rotate-left"></i><span>Reset</span>
+          </button>
+          <div class="tsep" style="height:22px;"></div>
+          <button class="sav-btn editpdf" id="savEditPdf">
+            <i class="fa fa-pen-to-square"></i><span>Edit PDF</span>
+          </button>
+        </div>
+      </div>
+      <div class="save-preview-wrap">
+        <iframe id="savePreview" title="PDF Preview"></iframe>
+      </div>
+    </div>
 
     <section id="footer-placeholder"></section>
 
@@ -1812,10 +1949,6 @@
         }
       });
 
-      document.getElementById("tbDel").addEventListener("click", () =>
-        document.getElementById("abDel").click()
-      );
-
       document.getElementById("tbClear").addEventListener("click", async () => {
         const ok = await mConfirm("Clear all annotations on this page?", "Clear Page");
         if (!ok) return;
@@ -1892,8 +2025,29 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-         SAVE PDF
+         SAVE PDF — on success, show Save Result screen with
+         full-page PDF preview + Download / Share / Reset / Edit
       ═══════════════════════════════════════════════════════ */
+      let savedBlob = null;
+      let savedObjectURL = null;
+
+      function showSaveScreen(blob, filename) {
+        // Revoke previous object URL to avoid memory leaks
+        if (savedObjectURL) URL.revokeObjectURL(savedObjectURL);
+        savedBlob = blob;
+        savedObjectURL = URL.createObjectURL(blob);
+
+        document.getElementById("saveFname").textContent = filename;
+        document.getElementById("savePreview").src = savedObjectURL;
+
+        document.getElementById("editorScreen").classList.remove("show");
+        document.getElementById("saveScreen").classList.add("show");
+      }
+
+      function hideSaveScreen() {
+        document.getElementById("saveScreen").classList.remove("show");
+      }
+
       document.getElementById("tbSave").addEventListener("click", async () => {
         if (!pdfFile) { await mAlert("Please load a PDF first."); return; }
         const btn = document.getElementById("tbSave");
@@ -1917,11 +2071,9 @@
           const res = await fetch(`${API}/edit-pdf`, { method: "POST", body: fd });
           if (!res.ok) throw new Error(await res.text());
           const blob = await res.blob();
-          Object.assign(document.createElement("a"), {
-            href: URL.createObjectURL(blob),
-            download: "edited_" + pdfFile.name,
-          }).click();
-          toast("PDF saved & downloaded!", "s");
+          const filename = "edited_" + pdfFile.name;
+          showSaveScreen(blob, filename);
+          toast("PDF saved — preview ready!", "s");
         } catch (err) {
           console.error(err);
           await mAlert("Save failed: " + err.message, "Error");
@@ -1929,6 +2081,68 @@
           btn.disabled = false;
           btn.innerHTML = '<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
         }
+      });
+
+      /* ── Save screen: Download ── */
+      document.getElementById("savDownload").addEventListener("click", () => {
+        if (!savedBlob) return;
+        const a = document.createElement("a");
+        a.href = savedObjectURL;
+        a.download = document.getElementById("saveFname").textContent;
+        a.click();
+        toast("Downloading…", "s");
+      });
+
+      /* ── Save screen: Share (Web Share API, fallback = copy link) ── */
+      document.getElementById("savShare").addEventListener("click", async () => {
+        if (!savedBlob) return;
+        const filename = document.getElementById("saveFname").textContent;
+        if (navigator.share && navigator.canShare) {
+          try {
+            const file = new File([savedBlob], filename, { type: "application/pdf" });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({ files: [file], title: filename });
+              return;
+            }
+          } catch (e) { /* fall through */ }
+        }
+        // Fallback: copy the object URL to clipboard
+        try {
+          await navigator.clipboard.writeText(savedObjectURL);
+          toast("Link copied to clipboard!", "s");
+        } catch {
+          toast("Share not supported on this browser", "e");
+        }
+      });
+
+      /* ── Save screen: Reset — go back to upload screen ── */
+      document.getElementById("savReset").addEventListener("click", async () => {
+        const ok = await mConfirm("Start over? The current edited PDF will be discarded.", "Reset", true);
+        if (!ok) return;
+        // Tear down editor state
+        pages.forEach((p) => p.fabricCanvas.dispose());
+        pages = [];
+        pdfDoc = null;
+        pdfFile = null;
+        curIdx = 0;
+        document.getElementById("canvasArea").innerHTML = "";
+        document.getElementById("sidebar").innerHTML = '<div class="sb-title">Pages</div>';
+        document.getElementById("fileInput").value = "";
+        hideAnnotBar();
+        document.querySelectorAll(".prop-panel").forEach((p) => p.classList.remove("open"));
+        stopPathEdit(); stopTextEdit(); stopShapeEdit(); stopImageEdit();
+        hideSaveScreen();
+        document.getElementById("uploadScreen").style.display = "flex";
+        if (savedObjectURL) { URL.revokeObjectURL(savedObjectURL); savedObjectURL = null; }
+        savedBlob = null;
+        toast("Reset — upload a new PDF to start", "i");
+      });
+
+      /* ── Save screen: Edit PDF — go back to the editor ── */
+      document.getElementById("savEditPdf").addEventListener("click", () => {
+        hideSaveScreen();
+        document.getElementById("editorScreen").classList.add("show");
+        toast("Back to editor", "i");
       });
 
       /* Reposition annotBar on resize */

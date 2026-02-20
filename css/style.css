@@ -752,4 +752,11 @@ footer::before {
     padding: 10px 19px;
     font-size: 14px;
   }
+
+  @media (max-width: 386px) {
+    .cta-button{
+      padding: 12px 10px;
+      font-size: 14px;
+    }
+  }
 }

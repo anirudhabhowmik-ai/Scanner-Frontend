@@ -611,14 +611,8 @@
         animation: mPop 0.22s ease;
       }
       @keyframes mPop {
-        from {
-          transform: scale(0.9);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
+        from { transform: scale(0.9); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
       }
       .modal-icon {
         width: 48px;
@@ -630,40 +624,13 @@
         font-size: 22px;
         flex-shrink: 0;
       }
-      .modal-icon.warn {
-        background: rgba(245, 158, 11, 0.15);
-        color: var(--warn);
-      }
-      .modal-icon.info {
-        background: rgba(56, 189, 248, 0.15);
-        color: var(--info);
-      }
-      .modal-icon.danger {
-        background: rgba(244, 63, 94, 0.15);
-        color: var(--danger);
-      }
-      .modal-head {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-      }
-      .modal-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--text);
-        margin-bottom: 4px;
-      }
-      .modal-msg {
-        font-size: 13px;
-        color: var(--muted);
-        line-height: 1.55;
-      }
-      .modal-actions {
-        display: flex;
-        justify-content: flex-end;
-        gap: 8px;
-        padding-top: 4px;
-      }
+      .modal-icon.warn { background: rgba(245, 158, 11, 0.15); color: var(--warn); }
+      .modal-icon.info { background: rgba(56, 189, 248, 0.15); color: var(--info); }
+      .modal-icon.danger { background: rgba(244, 63, 94, 0.15); color: var(--danger); }
+      .modal-head { display: flex; align-items: flex-start; gap: 14px; }
+      .modal-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+      .modal-msg { font-size: 13px; color: var(--muted); line-height: 1.55; }
+      .modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
       .modal-btn {
         padding: 8px 18px;
         border: none;
@@ -674,29 +641,12 @@
         font-family: inherit;
         transition: all 0.14s;
       }
-      .modal-btn.secondary {
-        background: var(--surface2);
-        color: var(--text);
-        border: 1px solid var(--border);
-      }
-      .modal-btn.secondary:hover {
-        border-color: #3d4268;
-        background: #2a2f45;
-      }
-      .modal-btn.primary {
-        background: var(--accent);
-        color: #fff;
-      }
-      .modal-btn.primary:hover {
-        background: var(--accent-h);
-      }
-      .modal-btn.danger {
-        background: var(--danger);
-        color: #fff;
-      }
-      .modal-btn.danger:hover {
-        background: #d9304f;
-      }
+      .modal-btn.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+      .modal-btn.secondary:hover { border-color: #3d4268; background: #2a2f45; }
+      .modal-btn.primary { background: var(--accent); color: #fff; }
+      .modal-btn.primary:hover { background: var(--accent-h); }
+      .modal-btn.danger { background: var(--danger); color: #fff; }
+      .modal-btn.danger:hover { background: #d9304f; }
 
       /* ══ TOASTS ══ */
       #toastBox {
@@ -722,72 +672,33 @@
         border-left: 3px solid var(--accent);
         animation: tin 0.24s ease;
       }
-      .toast.s {
-        border-left-color: var(--success);
-      }
-      .toast.e {
-        border-left-color: var(--danger);
-      }
-      .toast.i {
-        border-left-color: var(--info);
-      }
-      .toast i {
-        font-size: 13px;
-      }
-      .toast.s i {
-        color: var(--success);
-      }
-      .toast.e i {
-        color: var(--danger);
-      }
-      .toast.i i {
-        color: var(--info);
-      }
+      .toast.s { border-left-color: var(--success); }
+      .toast.e { border-left-color: var(--danger); }
+      .toast.i { border-left-color: var(--info); }
+      .toast i { font-size: 13px; }
+      .toast.s i { color: var(--success); }
+      .toast.e i { color: var(--danger); }
+      .toast.i i { color: var(--info); }
       @keyframes tin {
-        from {
-          transform: translateX(110%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
+        from { transform: translateX(110%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
       }
 
       /* ══ RESPONSIVE ══ */
       @media (max-width: 640px) {
-        :root {
-          --sb: 62px;
-        }
-        .tbtn span {
-          display: none;
-        }
-        .tbtn {
-          padding: 6px 8px;
-        }
-        .canvas-area {
-          padding: 10px 6px;
-        }
-        .prop-panel {
-          min-width: 240px;
-          max-width: 304px;
-        }
+        :root { --sb: 62px; }
+        .tbtn span { display: none; }
+        .tbtn { padding: 6px 8px; }
+        .canvas-area { padding: 10px 6px; }
+        .prop-panel { min-width: 240px; max-width: 304px; }
       }
       @media (max-width: 380px) {
-        :root {
-          --sb: 50px;
-        }
-        .sb-title {
-          font-size: 8px;
-        }
-        .canvas-area {
-          padding: 6px 3px;
-        }
+        :root { --sb: 50px; }
+        .sb-title { font-size: 8px; }
+        .canvas-area { padding: 6px 3px; }
       }
 
-      .hidden {
-        display: none !important;
-      }
+      .hidden { display: none !important; }
     </style>
   </head>
   <body>
@@ -883,6 +794,7 @@
 
       <!-- Panel host -->
       <div class="panel-host" id="panelHost">
+
         <!-- Draw panel -->
         <div class="prop-panel" id="ppDraw">
           <div class="pp-header">
@@ -922,14 +834,7 @@
             </div>
             <div class="pp-field">
               <label>Opacity %</label>
-              <input
-                type="number"
-                id="dOpacity"
-                min="10"
-                max="100"
-                value="100"
-                style="width: 68px"
-              />
+              <input type="number" id="dOpacity" min="10" max="100" value="100" style="width:68px" />
             </div>
           </div>
           <div class="pp-footer">
@@ -960,14 +865,7 @@
             </div>
             <div class="pp-field">
               <label>Size</label>
-              <input
-                type="number"
-                id="tSize"
-                min="8"
-                max="96"
-                value="20"
-                style="width: 66px"
-              />
+              <input type="number" id="tSize" min="8" max="96" value="20" style="width:66px" />
             </div>
             <div class="pp-field">
               <label>Font</label>
@@ -989,18 +887,10 @@
             </div>
           </div>
           <div class="pp-footer">
-            <button
-              class="pp-btn primary"
-              id="btnAddText"
-              style="display: inline-flex"
-            >
+            <button class="pp-btn primary" id="btnAddText" style="display:inline-flex">
               <i class="fa fa-plus"></i> Add Text to Page
             </button>
-            <button
-              class="pp-btn success"
-              id="btnDoneEditText"
-              style="display: none"
-            >
+            <button class="pp-btn success" id="btnDoneEditText" style="display:none">
               <i class="fa fa-check"></i> Done Editing
             </button>
           </div>
@@ -1039,31 +929,16 @@
             </div>
             <div class="pp-field">
               <label>Stroke W</label>
-              <input
-                type="number"
-                id="sStrokeW"
-                min="0"
-                max="20"
-                value="2"
-                style="width: 62px"
-              />
+              <input type="number" id="sStrokeW" min="0" max="20" value="2" style="width:62px" />
             </div>
           </div>
           <div class="pp-footer">
             <!-- Add mode button -->
-            <button
-              class="pp-btn primary"
-              id="btnAddShape"
-              style="display: inline-flex"
-            >
+            <button class="pp-btn primary" id="btnAddShape" style="display:inline-flex">
               <i class="fa fa-plus"></i> Add Shape to Page
             </button>
             <!-- Edit mode button -->
-            <button
-              class="pp-btn success"
-              id="btnDoneEditShape"
-              style="display: none"
-            >
+            <button class="pp-btn success" id="btnDoneEditShape" style="display:none">
               <i class="fa fa-check"></i> Done Editing
             </button>
           </div>
@@ -1085,25 +960,11 @@
           <div class="pp-row">
             <div class="pp-field">
               <label>Opacity %</label>
-              <input
-                type="number"
-                id="iOpacity"
-                min="10"
-                max="100"
-                value="100"
-                style="width: 72px"
-              />
+              <input type="number" id="iOpacity" min="10" max="100" value="100" style="width:72px" />
             </div>
             <div class="pp-field">
               <label>Corner Radius</label>
-              <input
-                type="number"
-                id="iRadius"
-                min="0"
-                max="200"
-                value="0"
-                style="width: 80px"
-              />
+              <input type="number" id="iRadius" min="0" max="200" value="0" style="width:80px" />
             </div>
           </div>
           <div class="pp-footer">
@@ -1112,6 +973,7 @@
             </button>
           </div>
         </div>
+
       </div>
       <!-- /panel-host -->
 
@@ -1134,30 +996,20 @@
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
       const API = "http://127.0.0.1:8080";
-      let pdfDoc = null,
-        pdfFile = null;
+      let pdfDoc = null, pdfFile = null;
       let pages = [];
       let curIdx = 0;
       let curTool = "draw";
 
-      let editingPath = null,
-        editingPathFC = null;
-      let editingText = null,
-        editingTextFC = null;
-      let editingShape = null,
-        editingShapeFC = null;
-      let editingImage = null,
-        editingImageFC = null;
+      let editingPath = null, editingPathFC = null;
+      let editingText = null, editingTextFC = null;
+      let editingShape = null, editingShapeFC = null;
+      let editingImage = null, editingImageFC = null;
 
       /* ═══════════════════════════════════════════════════════
          CUSTOM MODAL
       ═══════════════════════════════════════════════════════ */
-      function showModal({
-        title = "Notice",
-        msg = "",
-        type = "info",
-        buttons,
-      }) {
+      function showModal({ title = "Notice", msg = "", type = "info", buttons }) {
         return new Promise((resolve) => {
           const iconMap = {
             info: { cls: "info", ic: "fa-circle-info" },
@@ -1165,8 +1017,7 @@
             danger: { cls: "danger", ic: "fa-circle-exclamation" },
           };
           const im = iconMap[type] || iconMap.info;
-          document.getElementById("modalIcon").className =
-            `modal-icon ${im.cls}`;
+          document.getElementById("modalIcon").className = `modal-icon ${im.cls}`;
           document.getElementById("modalIconI").className = `fa ${im.ic}`;
           document.getElementById("modalTitle").textContent = title;
           document.getElementById("modalMsg").textContent = msg;
@@ -1186,35 +1037,20 @@
         });
       }
       const mAlert = (msg, title = "Notice") =>
-        showModal({
-          title,
-          msg,
-          type: "info",
-          buttons: [{ label: "OK", cls: "primary", value: true }],
-        });
+        showModal({ title, msg, type: "info", buttons: [{ label: "OK", cls: "primary", value: true }] });
       const mConfirm = (msg, title = "Confirm", danger = false) =>
         showModal({
-          title,
-          msg,
-          type: danger ? "danger" : "warn",
+          title, msg, type: danger ? "danger" : "warn",
           buttons: [
             { label: "Cancel", cls: "secondary", value: false },
-            {
-              label: "Confirm",
-              cls: danger ? "danger" : "primary",
-              value: true,
-            },
+            { label: "Confirm", cls: danger ? "danger" : "primary", value: true },
           ],
         });
 
       /* ═══════════════════════════════════════════════════════
          TOAST
       ═══════════════════════════════════════════════════════ */
-      const TICONS = {
-        s: "fa-check-circle",
-        e: "fa-exclamation-circle",
-        i: "fa-info-circle",
-      };
+      const TICONS = { s: "fa-check-circle", e: "fa-exclamation-circle", i: "fa-info-circle" };
       function toast(msg, type = "i") {
         const el = document.createElement("div");
         el.className = `toast ${type}`;
@@ -1230,28 +1066,32 @@
       /* ═══════════════════════════════════════════════════════
          UPLOAD
       ═══════════════════════════════════════════════════════ */
-      document
-        .getElementById("fileInput")
-        .addEventListener("change", async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          pdfFile = file;
-          document.getElementById("fileName").textContent = file.name;
-          await loadPDF(file);
-        });
+      document.getElementById("fileInput").addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        pdfFile = file;
+        document.getElementById("fileName").textContent = file.name;
+        await loadPDF(file);
+      });
 
       async function loadPDF(file) {
         const buf = await file.arrayBuffer();
         pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
         pages = [];
-        document.getElementById("sidebar").innerHTML =
-          '<div class="sb-title">Pages</div>';
-        document.getElementById("canvasArea").innerHTML = "";
-        for (let i = 1; i <= pdfDoc.numPages; i++) await buildPage(i);
+
+        // Show editor shell FIRST so canvas-area has a real clientWidth/clientHeight
         document.getElementById("uploadScreen").style.display = "none";
         document.getElementById("editorScreen").classList.add("show");
+
+        document.getElementById("sidebar").innerHTML = '<div class="sb-title">Pages</div>';
+        document.getElementById("canvasArea").innerHTML = "";
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) await buildPage(i);
+
+        // Start in neutral pointer mode — no tool active, no panel open
+        curTool = "none";
         switchPage(0);
-        setTool("draw");
+
         toast(`PDF loaded — ${pdfDoc.numPages} page(s)`, "s");
       }
 
@@ -1269,16 +1109,10 @@
         const area = document.getElementById("canvasArea");
 
         // Force a layout read; fall back gracefully if area not yet measured
-        const areaW =
-          area.clientWidth ||
-          window.innerWidth -
-            parseInt(
-              getComputedStyle(document.documentElement).getPropertyValue(
-                "--sb",
-              ),
-            ) -
-            10;
-        const areaH = area.clientHeight || window.innerHeight - 160;
+        const areaW = area.clientWidth || (window.innerWidth - parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue("--sb")
+        ) - 10);
+        const areaH = area.clientHeight || (window.innerHeight - 160);
 
         const pad = 48; // breathing room around page
         const maxW = Math.max(areaW - pad, 300);
@@ -1292,8 +1126,7 @@
         sc = Math.max(sc, Math.min(1.5, maxW / base.width));
 
         const vp = pdfPage.getViewport({ scale: sc });
-        const W = Math.round(vp.width),
-          H = Math.round(vp.height);
+        const W = Math.round(vp.width), H = Math.round(vp.height);
 
         const block = document.createElement("div");
         block.className = "page-block";
@@ -1304,10 +1137,7 @@
         pdfCvs.width = W;
         pdfCvs.height = H;
         pdfCvs.style.cssText = `width:${W}px;height:${H}px;`;
-        await pdfPage.render({
-          canvasContext: pdfCvs.getContext("2d"),
-          viewport: vp,
-        }).promise;
+        await pdfPage.render({ canvasContext: pdfCvs.getContext("2d"), viewport: vp }).promise;
 
         const fabEl = document.createElement("canvas");
         fabEl.className = "fab-layer";
@@ -1321,8 +1151,7 @@
         document.getElementById("canvasArea").appendChild(block);
 
         const fc = new fabric.Canvas("fc-" + pageNum, {
-          width: W,
-          height: H,
+          width: W, height: H,
           selection: true,
           preserveObjectStacking: true,
         });
@@ -1345,15 +1174,9 @@
            FIX 2: Use sidebar inner width and clamp scale so landscape
            pages produce a visible (non-zero) thumbnail canvas. */
         const sbEl = document.getElementById("sidebar");
-        const sbInner = Math.max(
-          (sbEl.clientWidth ||
-            parseInt(
-              getComputedStyle(document.documentElement).getPropertyValue(
-                "--sb",
-              ),
-            )) - 10,
-          40,
-        );
+        const sbInner = Math.max((sbEl.clientWidth || parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue("--sb")
+        )) - 10, 40);
 
         // Scale thumbnail to fit sidebar width regardless of orientation
         const thSc = sbInner / base.width;
@@ -1366,10 +1189,7 @@
         thC.height = thH;
         thC.style.width = "100%";
         thC.style.height = "auto";
-        await pdfPage.render({
-          canvasContext: thC.getContext("2d"),
-          viewport: thVp,
-        }).promise;
+        await pdfPage.render({ canvasContext: thC.getContext("2d"), viewport: thVp }).promise;
 
         const thItem = document.createElement("div");
         thItem.className = "thumb";
@@ -1395,12 +1215,8 @@
         stopShapeEdit();
         stopImageEdit();
         curIdx = idx;
-        pages.forEach(
-          (p, i) => (p.block.style.display = i === idx ? "block" : "none"),
-        );
-        document
-          .querySelectorAll(".thumb")
-          .forEach((t, i) => t.classList.toggle("active", i === idx));
+        pages.forEach((p, i) => (p.block.style.display = i === idx ? "block" : "none"));
+        document.querySelectorAll(".thumb").forEach((t, i) => t.classList.toggle("active", i === idx));
         const th = document.querySelectorAll(".thumb")[idx];
         if (th) th.scrollIntoView({ block: "nearest", behavior: "smooth" });
         applyTool(getFC());
@@ -1423,16 +1239,11 @@
       }
 
       function showAnnotBar(fc) {
-        if (!fc.getActiveObject()) {
-          hideAnnotBar();
-          return;
-        }
+        if (!fc.getActiveObject()) { hideAnnotBar(); return; }
         annotBar.classList.add("show");
         posAnnotBar(fc);
       }
-      function hideAnnotBar() {
-        annotBar.classList.remove("show");
-      }
+      function hideAnnotBar() { annotBar.classList.remove("show"); }
 
       function posAnnotBar(fc) {
         const obj = (fc || getFC())?.getActiveObject?.();
@@ -1443,14 +1254,8 @@
         const ob = obj.getBoundingRect(true, true);
         let x = br.left + ob.left + ob.width / 2 - annotBar.offsetWidth / 2;
         let y = br.top + ob.top - annotBar.offsetHeight - 10;
-        x = Math.max(
-          6,
-          Math.min(x, window.innerWidth - annotBar.offsetWidth - 6),
-        );
-        y = Math.max(
-          6,
-          Math.min(y, window.innerHeight - annotBar.offsetHeight - 6),
-        );
+        x = Math.max(6, Math.min(x, window.innerWidth - annotBar.offsetWidth - 6));
+        y = Math.max(6, Math.min(y, window.innerHeight - annotBar.offsetHeight - 6));
         annotBar.style.left = x + "px";
         annotBar.style.top = y + "px";
       }
@@ -1507,10 +1312,7 @@
       document.getElementById("abDel").addEventListener("click", () => {
         const fc = getFC();
         if (!fc) return;
-        stopPathEdit();
-        stopTextEdit();
-        stopShapeEdit();
-        stopImageEdit();
+        stopPathEdit(); stopTextEdit(); stopShapeEdit(); stopImageEdit();
         fc.getActiveObjects().forEach((o) => fc.remove(o));
         fc.discardActiveObject();
         fc.renderAll();
@@ -1529,18 +1331,14 @@
         const curW = pathObj.strokeWidth || 2;
         const opts = [1, 2, 3, 5, 8, 12];
         document.getElementById("dWidth").value = opts.reduce((p, c) =>
-          Math.abs(c - curW) < Math.abs(p - curW) ? c : p,
+          Math.abs(c - curW) < Math.abs(p - curW) ? c : p
         );
-        document.getElementById("dOpacity").value = Math.round(
-          (pathObj.opacity || 1) * 100,
-        );
+        document.getElementById("dOpacity").value = Math.round((pathObj.opacity || 1) * 100);
         const da = pathObj.strokeDashArray;
-        document.getElementById("dStyle").value =
-          !da || !da.length ? "solid" : da[1] <= 5 ? "dotted" : "dashed";
+        document.getElementById("dStyle").value = !da || !da.length ? "solid" : da[1] <= 5 ? "dotted" : "dashed";
 
         document.getElementById("drawEditBadge").classList.add("show");
-        document.getElementById("btnDrawActionLabel").textContent =
-          "Done Editing";
+        document.getElementById("btnDrawActionLabel").textContent = "Done Editing";
         document.getElementById("btnDrawAction").className = "pp-btn primary";
 
         openPanel("ppDraw");
@@ -1552,26 +1350,18 @@
         editingPath = null;
         editingPathFC = null;
         document.getElementById("drawEditBadge").classList.remove("show");
-        document.getElementById("btnDrawActionLabel").textContent =
-          "Apply Drawing";
+        document.getElementById("btnDrawActionLabel").textContent = "Apply Drawing";
         document.getElementById("btnDrawAction").className = "pp-btn success";
       }
 
       function syncDrawControls() {
         const color = document.getElementById("dColor").value;
         const width = parseInt(document.getElementById("dWidth").value);
-        const opacity =
-          parseInt(document.getElementById("dOpacity").value) / 100;
+        const opacity = parseInt(document.getElementById("dOpacity").value) / 100;
         const style = document.getElementById("dStyle").value;
-        const dashArr =
-          style === "dashed" ? [10, 6] : style === "dotted" ? [2, 5] : [];
+        const dashArr = style === "dashed" ? [10, 6] : style === "dotted" ? [2, 5] : [];
         if (editingPath && editingPathFC) {
-          editingPath.set({
-            stroke: color,
-            strokeWidth: width,
-            opacity,
-            strokeDashArray: dashArr,
-          });
+          editingPath.set({ stroke: color, strokeWidth: width, opacity, strokeDashArray: dashArr });
           editingPathFC.renderAll();
         } else {
           syncBrush();
@@ -1579,9 +1369,7 @@
       }
       ["dColor", "dWidth", "dStyle", "dOpacity"].forEach((id) => {
         document.getElementById(id).addEventListener("input", syncDrawControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncDrawControls);
+        document.getElementById(id).addEventListener("change", syncDrawControls);
       });
 
       document.getElementById("btnDrawAction").addEventListener("click", () => {
@@ -1607,17 +1395,13 @@
         editingTextFC = fc;
 
         document.getElementById("tColor").value = textObj.fill || "#ffffff";
-        document.getElementById("tSize").value = Math.round(
-          textObj.fontSize || 20,
-        );
+        document.getElementById("tSize").value = Math.round(textObj.fontSize || 20);
         document.getElementById("tFont").value = textObj.fontFamily || "Arial";
-        document.getElementById("tWeight").value =
-          textObj.fontWeight || "normal";
+        document.getElementById("tWeight").value = textObj.fontWeight || "normal";
 
         document.getElementById("textEditBadge").classList.add("show");
         document.getElementById("btnAddText").style.display = "none";
-        document.getElementById("btnDoneEditText").style.display =
-          "inline-flex";
+        document.getElementById("btnDoneEditText").style.display = "inline-flex";
 
         openPanel("ppText");
         toast("Editing selected text — adjust controls above", "i");
@@ -1638,30 +1422,21 @@
         const family = document.getElementById("tFont").value;
         const weight = document.getElementById("tWeight").value;
         if (editingText && editingTextFC) {
-          editingText.set({
-            fill: color,
-            fontSize: size,
-            fontFamily: family,
-            fontWeight: weight,
-          });
+          editingText.set({ fill: color, fontSize: size, fontFamily: family, fontWeight: weight });
           editingTextFC.renderAll();
         }
       }
       ["tColor", "tSize", "tFont", "tWeight"].forEach((id) => {
         document.getElementById(id).addEventListener("input", syncTextControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncTextControls);
+        document.getElementById(id).addEventListener("change", syncTextControls);
       });
 
-      document
-        .getElementById("btnDoneEditText")
-        .addEventListener("click", () => {
-          stopTextEdit();
-          closePanel("ppText");
-          showAnnotBar(getFC());
-          toast("Text updated", "s");
-        });
+      document.getElementById("btnDoneEditText").addEventListener("click", () => {
+        stopTextEdit();
+        closePanel("ppText");
+        showAnnotBar(getFC());
+        toast("Text updated", "s");
+      });
 
       /* ═══════════════════════════════════════════════════════
          SHAPE EDIT
@@ -1678,21 +1453,14 @@
         document.getElementById("sStroke").value = shapeObj.stroke || "#312e81";
         document.getElementById("sStrokeW").value = shapeObj.strokeWidth || 2;
         // Lock type selector to current shape
-        const typeMap = {
-          rect: "rect",
-          circle: "circle",
-          triangle: "triangle",
-          line: "line",
-        };
-        document.getElementById("sType").value =
-          typeMap[shapeObj.type] || "rect";
+        const typeMap = { rect: "rect", circle: "circle", triangle: "triangle", line: "line" };
+        document.getElementById("sType").value = typeMap[shapeObj.type] || "rect";
         document.getElementById("sType").disabled = true;
 
         // Swap buttons & show badge
         document.getElementById("shapeEditBadge").classList.add("show");
         document.getElementById("btnAddShape").style.display = "none";
-        document.getElementById("btnDoneEditShape").style.display =
-          "inline-flex";
+        document.getElementById("btnDoneEditShape").style.display = "inline-flex";
 
         openPanel("ppShape");
         toast("Editing selected shape — adjust controls above", "i");
@@ -1719,22 +1487,16 @@
         }
       }
       ["sFill", "sStroke", "sStrokeW"].forEach((id) => {
-        document
-          .getElementById(id)
-          .addEventListener("input", syncShapeControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncShapeControls);
+        document.getElementById(id).addEventListener("input", syncShapeControls);
+        document.getElementById(id).addEventListener("change", syncShapeControls);
       });
 
-      document
-        .getElementById("btnDoneEditShape")
-        .addEventListener("click", () => {
-          stopShapeEdit();
-          closePanel("ppShape");
-          showAnnotBar(getFC());
-          toast("Shape updated", "s");
-        });
+      document.getElementById("btnDoneEditShape").addEventListener("click", () => {
+        stopShapeEdit();
+        closePanel("ppShape");
+        showAnnotBar(getFC());
+        toast("Shape updated", "s");
+      });
 
       /* ═══════════════════════════════════════════════════════
          IMAGE EDIT — opacity & corner radius
@@ -1748,9 +1510,7 @@
         editingImageFC = fc;
 
         // Pre-fill with current values
-        document.getElementById("iOpacity").value = Math.round(
-          (imgObj.opacity || 1) * 100,
-        );
+        document.getElementById("iOpacity").value = Math.round((imgObj.opacity || 1) * 100);
         // Retrieve stored radius (if any)
         document.getElementById("iRadius").value = imgObj._cornerRadius || 0;
 
@@ -1772,47 +1532,43 @@
         if (radius <= 0) {
           imgObj.set("clipPath", null);
         } else {
-          // Create a rounded-rect clip path matching the image's scaled dimensions
-          const w = imgObj.getScaledWidth();
-          const h = imgObj.getScaledHeight();
+          // ClipPath lives in the object's LOCAL (unscaled) coordinate space.
+          // Use the image's natural pixel dimensions, not getScaledWidth().
+          const w = imgObj.width  || imgObj.getScaledWidth();
+          const h = imgObj.height || imgObj.getScaledHeight();
+          const r = Math.min(radius, w / 2, h / 2);
           const clip = new fabric.Rect({
             width: w,
             height: h,
-            rx: Math.min(radius, w / 2, h / 2),
-            ry: Math.min(radius, w / 2, h / 2),
+            rx: r,
+            ry: r,
             originX: "center",
             originY: "center",
+            absolutePositioned: false,
           });
           imgObj.set("clipPath", clip);
         }
-        fc.renderAll();
+        fc.requestRenderAll();
       }
 
       function syncImageControls() {
         if (!editingImage || !editingImageFC) return;
-        const opacity =
-          parseInt(document.getElementById("iOpacity").value) / 100;
+        const opacity = parseInt(document.getElementById("iOpacity").value) / 100;
         const radius = parseInt(document.getElementById("iRadius").value) || 0;
         editingImage.set({ opacity: Math.max(0.1, Math.min(1, opacity)) });
         applyImageRadius(editingImage, editingImageFC, radius);
       }
       ["iOpacity", "iRadius"].forEach((id) => {
-        document
-          .getElementById(id)
-          .addEventListener("input", syncImageControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncImageControls);
+        document.getElementById(id).addEventListener("input", syncImageControls);
+        document.getElementById(id).addEventListener("change", syncImageControls);
       });
 
-      document
-        .getElementById("btnDoneEditImage")
-        .addEventListener("click", () => {
-          stopImageEdit();
-          closePanel("ppImage");
-          showAnnotBar(getFC());
-          toast("Image updated", "s");
-        });
+      document.getElementById("btnDoneEditImage").addEventListener("click", () => {
+        stopImageEdit();
+        closePanel("ppImage");
+        showAnnotBar(getFC());
+        toast("Image updated", "s");
+      });
 
       /* ═══════════════════════════════════════════════════════
          TOOL MANAGEMENT
@@ -1827,12 +1583,14 @@
       function setTool(name) {
         if (name !== "draw") stopPathEdit();
         if (name !== "text") stopTextEdit();
-        if (name !== "shape") stopShapeEdit();
-        if (name !== "image") stopImageEdit();
+        // Only stop shape/image edits when switching to a real different tool
+        // (not "none" — "none" is pointer mode after adding objects)
+        if (name !== "shape" && name !== "none") stopShapeEdit();
+        if (name !== "image" && name !== "none") stopImageEdit();
 
         curTool = name;
         Object.entries(TOOL_IDS).forEach(([t, id]) =>
-          document.getElementById(id).classList.toggle("on", t === name),
+          document.getElementById(id).classList.toggle("on", t === name)
         );
         applyTool(getFC());
       }
@@ -1863,19 +1621,12 @@
         const fc = getFC();
         if (!fc?.freeDrawingBrush) return;
         fc.freeDrawingBrush.color = document.getElementById("dColor").value;
-        fc.freeDrawingBrush.width = parseInt(
-          document.getElementById("dWidth").value,
-        );
+        fc.freeDrawingBrush.width = parseInt(document.getElementById("dWidth").value);
       }
 
       /* ── Panel helpers ── */
       function openPanel(id) {
-        const btnMap = {
-          ppDraw: "tbDraw",
-          ppText: "tbText",
-          ppShape: "tbShape",
-          ppImage: "tbImage",
-        };
+        const btnMap = { ppDraw: "tbDraw", ppText: "tbText", ppShape: "tbShape", ppImage: "tbImage" };
         const host = document.getElementById("panelHost");
         const panel = document.getElementById(id);
         document.querySelectorAll(".prop-panel").forEach((p) => {
@@ -1982,44 +1733,16 @@
         const str = document.getElementById("sStroke").value;
         const sw = parseInt(document.getElementById("sStrokeW").value) || 2;
         const type = document.getElementById("sType").value;
-        const cx = fc.width / 2,
-          cy = fc.height / 2;
+        const cx = fc.width / 2, cy = fc.height / 2;
         let obj;
         if (type === "rect")
-          obj = new fabric.Rect({
-            left: cx - 75,
-            top: cy - 50,
-            width: 150,
-            height: 100,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
-          });
+          obj = new fabric.Rect({ left: cx - 75, top: cy - 50, width: 150, height: 100, fill, stroke: str, strokeWidth: sw });
         else if (type === "circle")
-          obj = new fabric.Circle({
-            left: cx - 60,
-            top: cy - 60,
-            radius: 60,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
-          });
+          obj = new fabric.Circle({ left: cx - 60, top: cy - 60, radius: 60, fill, stroke: str, strokeWidth: sw });
         else if (type === "triangle")
-          obj = new fabric.Triangle({
-            left: cx - 60,
-            top: cy - 60,
-            width: 120,
-            height: 100,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
-          });
+          obj = new fabric.Triangle({ left: cx - 60, top: cy - 60, width: 120, height: 100, fill, stroke: str, strokeWidth: sw });
         else if (type === "line")
-          obj = new fabric.Line([cx - 80, cy, cx + 80, cy], {
-            stroke: str,
-            strokeWidth: sw + 1,
-            selectable: true,
-          });
+          obj = new fabric.Line([cx - 80, cy, cx + 80, cy], { stroke: str, strokeWidth: sw + 1, selectable: true });
         if (obj) {
           fc.add(obj);
           fc.setActiveObject(obj);
@@ -2038,9 +1761,7 @@
         stopShapeEdit();
         stopImageEdit();
         setTool("image");
-        document
-          .querySelectorAll(".prop-panel")
-          .forEach((p) => p.classList.remove("open"));
+        document.querySelectorAll(".prop-panel").forEach((p) => p.classList.remove("open"));
         document.getElementById("imgInput").click();
       });
       document.getElementById("imgInput").addEventListener("change", (e) => {
@@ -2061,16 +1782,14 @@
             fc.add(img);
             fc.setActiveObject(img);
             fc.renderAll();
-            setTool("none");
-            // Auto-open image panel so user can adjust immediately
-            openPanel("ppImage");
-            document.getElementById("iOpacity").value = 100;
-            document.getElementById("iRadius").value = 0;
-            document.getElementById("imageEditBadge").classList.add("show");
-            editingImage = img;
-            editingImageFC = fc;
+            // Pointer mode — no tool active, no panel opened
+            curTool = "none";
+            Object.entries(TOOL_IDS).forEach(([, id]) =>
+              document.getElementById(id).classList.remove("on")
+            );
+            applyTool(fc);
             showAnnotBar(fc);
-            toast("Image added — adjust opacity & corner radius above", "s");
+            toast("Image added — click Edit to adjust opacity & corner radius", "s");
           });
         };
         reader.readAsDataURL(file);
@@ -2093,59 +1812,39 @@
         }
       });
 
-      document
-        .getElementById("tbDel")
-        .addEventListener("click", () =>
-          document.getElementById("abDel").click(),
-        );
+      document.getElementById("tbDel").addEventListener("click", () =>
+        document.getElementById("abDel").click()
+      );
 
       document.getElementById("tbClear").addEventListener("click", async () => {
-        const ok = await mConfirm(
-          "Clear all annotations on this page?",
-          "Clear Page",
-        );
+        const ok = await mConfirm("Clear all annotations on this page?", "Clear Page");
         if (!ok) return;
         const fc = getFC();
         if (!fc) return;
         fc.clear();
         fc.setBackgroundColor("rgba(0,0,0,0)", fc.renderAll.bind(fc));
         hideAnnotBar();
-        stopPathEdit();
-        stopTextEdit();
-        stopShapeEdit();
-        stopImageEdit();
+        stopPathEdit(); stopTextEdit(); stopShapeEdit(); stopImageEdit();
         toast("Page cleared", "i");
       });
 
-      document
-        .getElementById("btnClose")
-        .addEventListener("click", async () => {
-          const ok = await mConfirm(
-            "Remove this PDF? All edits will be lost.",
-            "Remove PDF",
-            true,
-          );
-          if (!ok) return;
-          pages.forEach((p) => p.fabricCanvas.dispose());
-          pages = [];
-          pdfDoc = null;
-          pdfFile = null;
-          curIdx = 0;
-          document.getElementById("canvasArea").innerHTML = "";
-          document.getElementById("sidebar").innerHTML =
-            '<div class="sb-title">Pages</div>';
-          document.getElementById("editorScreen").classList.remove("show");
-          document.getElementById("uploadScreen").style.display = "flex";
-          document.getElementById("fileInput").value = "";
-          hideAnnotBar();
-          document
-            .querySelectorAll(".prop-panel")
-            .forEach((p) => p.classList.remove("open"));
-          stopPathEdit();
-          stopTextEdit();
-          stopShapeEdit();
-          stopImageEdit();
-        });
+      document.getElementById("btnClose").addEventListener("click", async () => {
+        const ok = await mConfirm("Remove this PDF? All edits will be lost.", "Remove PDF", true);
+        if (!ok) return;
+        pages.forEach((p) => p.fabricCanvas.dispose());
+        pages = [];
+        pdfDoc = null;
+        pdfFile = null;
+        curIdx = 0;
+        document.getElementById("canvasArea").innerHTML = "";
+        document.getElementById("sidebar").innerHTML = '<div class="sb-title">Pages</div>';
+        document.getElementById("editorScreen").classList.remove("show");
+        document.getElementById("uploadScreen").style.display = "flex";
+        document.getElementById("fileInput").value = "";
+        hideAnnotBar();
+        document.querySelectorAll(".prop-panel").forEach((p) => p.classList.remove("open"));
+        stopPathEdit(); stopTextEdit(); stopShapeEdit(); stopImageEdit();
+      });
 
       /* Outside click */
       document.addEventListener("click", (e) => {
@@ -2154,8 +1853,7 @@
           e.target.closest(".tbtn") ||
           e.target.closest("#annotBar") ||
           e.target.closest("#modalOverlay")
-        )
-          return;
+        ) return;
         if (!editingText) closePanel("ppText");
         if (!editingShape) closePanel("ppShape");
         if (!editingImage) closePanel("ppImage");
@@ -2166,9 +1864,7 @@
       document.addEventListener("keydown", (e) => {
         if (
           (e.key === "Delete" || e.key === "Backspace") &&
-          !["INPUT", "TEXTAREA", "SELECT"].includes(
-            document.activeElement.tagName,
-          )
+          !["INPUT", "TEXTAREA", "SELECT"].includes(document.activeElement.tagName)
         ) {
           document.getElementById("abDel").click();
         }
@@ -2199,14 +1895,10 @@
          SAVE PDF
       ═══════════════════════════════════════════════════════ */
       document.getElementById("tbSave").addEventListener("click", async () => {
-        if (!pdfFile) {
-          await mAlert("Please load a PDF first.");
-          return;
-        }
+        if (!pdfFile) { await mAlert("Please load a PDF first."); return; }
         const btn = document.getElementById("tbSave");
         btn.disabled = true;
-        btn.innerHTML =
-          '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
+        btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
         try {
           const fd = new FormData();
           fd.append("file", pdfFile);
@@ -2220,10 +1912,7 @@
             deletedImages: [],
           }));
           fd.append("annotations", JSON.stringify(annData));
-          const res = await fetch(`${API}/edit-pdf`, {
-            method: "POST",
-            body: fd,
-          });
+          const res = await fetch(`${API}/edit-pdf`, { method: "POST", body: fd });
           if (!res.ok) throw new Error(await res.text());
           const blob = await res.blob();
           Object.assign(document.createElement("a"), {
@@ -2236,8 +1925,7 @@
           await mAlert("Save failed: " + err.message, "Error");
         } finally {
           btn.disabled = false;
-          btn.innerHTML =
-            '<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
+          btn.innerHTML = '<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
         }
       });
 

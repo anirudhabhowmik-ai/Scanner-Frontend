@@ -12,7 +12,6 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="./css/style.css" />
 
     <style>
       *,
@@ -178,7 +177,6 @@
         display: none;
       }
 
-      /* Flat standalone buttons — never nested inside another button */
       .tbtn {
         display: inline-flex;
         align-items: center;
@@ -229,7 +227,7 @@
         min-width: 4px;
       }
 
-      /* ══ PANEL HOST — sibling of toolbar ══ */
+      /* ══ PANEL HOST ══ */
       .panel-host {
         position: relative;
         z-index: 300;
@@ -251,6 +249,44 @@
       .prop-panel.open {
         display: flex;
       }
+
+      /* ── Panel header with close button ── */
+      .pp-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .pp-header-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .pp-header-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--muted);
+      }
+      .pp-close {
+        background: none;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        font-size: 13px;
+        padding: 3px 6px;
+        border-radius: 5px;
+        transition: all 0.14s;
+        line-height: 1;
+        flex-shrink: 0;
+      }
+      .pp-close:hover {
+        color: var(--danger);
+        background: rgba(244, 63, 94, 0.12);
+      }
+
       .pp-title {
         font-size: 11px;
         font-weight: 700;
@@ -369,6 +405,38 @@
         display: inline-flex;
       }
 
+      /* Shape edit badge */
+      .shape-edit-badge {
+        font-size: 10px;
+        background: rgba(99, 102, 241, 0.15);
+        color: var(--accent);
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: none;
+        align-items: center;
+        gap: 4px;
+      }
+      .shape-edit-badge.show {
+        display: inline-flex;
+      }
+
+      /* Image edit badge */
+      .image-edit-badge {
+        font-size: 10px;
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--success);
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-weight: 700;
+        display: none;
+        align-items: center;
+        gap: 4px;
+      }
+      .image-edit-badge.show {
+        display: inline-flex;
+      }
+
       /* ══ EDITOR BODY ══ */
       .editor-body {
         display: flex;
@@ -377,7 +445,7 @@
         min-height: 0;
       }
 
-      /* ══ SIDEBAR — always visible, shrinks responsively ══ */
+      /* ══ SIDEBAR ══ */
       .sidebar {
         width: var(--sb);
         min-width: var(--sb);
@@ -783,9 +851,8 @@
         </button>
       </div>
 
-      <!-- Toolbar: all <button> are flat siblings, none nested -->
+      <!-- Toolbar -->
       <div class="toolbar">
-        <!-- NO Select button — clicking on an annotation selects it directly -->
         <button class="tbtn" id="tbDraw">
           <i class="fa fa-pencil"></i><span>Draw</span>
         </button>
@@ -814,37 +881,25 @@
         </button>
       </div>
 
-      <!-- Panel host: sibling of toolbar, never inside a button -->
+      <!-- Panel host -->
       <div class="panel-host" id="panelHost">
         <!-- Draw panel -->
         <div class="prop-panel" id="ppDraw">
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding-bottom: 8px;
-              border-bottom: 1px solid var(--border);
-            "
-          >
-            <span
-              style="
-                font-size: 11px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.6px;
-                color: var(--muted);
-              "
-              >Drawing Options</span
-            >
-            <span class="edit-badge" id="drawEditBadge"
-              ><i class="fa fa-pen"></i> Editing selected</span
-            >
+          <div class="pp-header">
+            <div class="pp-header-left">
+              <span class="pp-header-title">Drawing Options</span>
+              <span class="edit-badge" id="drawEditBadge">
+                <i class="fa fa-pen"></i> Editing selected
+              </span>
+            </div>
+            <button class="pp-close" id="ppDrawClose" title="Close panel">
+              <i class="fa fa-xmark"></i>
+            </button>
           </div>
           <div class="pp-row">
             <div class="pp-field">
-              <label>Color</label
-              ><input type="color" id="dColor" value="#e63946" />
+              <label>Color</label>
+              <input type="color" id="dColor" value="#e63946" />
             </div>
             <div class="pp-field">
               <label>Width</label>
@@ -878,11 +933,6 @@
             </div>
           </div>
           <div class="pp-footer">
-            <!--
-          In draw mode: "Apply Drawing" switches back to pointer mode and CLOSES panel.
-          In path-edit mode: "Done Editing" exits path edit and CLOSES panel.
-          Panel only closes via these buttons OR switching to another tool.
-        -->
             <button class="pp-btn success" id="btnDrawAction">
               <i class="fa fa-check"></i>
               <span id="btnDrawActionLabel">Apply Drawing</span>
@@ -892,37 +942,25 @@
 
         <!-- Text panel -->
         <div class="prop-panel" id="ppText">
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding-bottom: 8px;
-              border-bottom: 1px solid var(--border);
-            "
-          >
-            <span
-              style="
-                font-size: 11px;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.6px;
-                color: var(--muted);
-              "
-              >Text Options</span
-            >
-            <span class="text-edit-badge" id="textEditBadge"
-              ><i class="fa fa-pen"></i> Editing selected</span
-            >
+          <div class="pp-header">
+            <div class="pp-header-left">
+              <span class="pp-header-title">Text Options</span>
+              <span class="text-edit-badge" id="textEditBadge">
+                <i class="fa fa-pen"></i> Editing selected
+              </span>
+            </div>
+            <button class="pp-close" id="ppTextClose" title="Close panel">
+              <i class="fa fa-xmark"></i>
+            </button>
           </div>
           <div class="pp-row">
             <div class="pp-field">
-              <label>Color</label
-              ><input type="color" id="tColor" value="#ffffff" />
+              <label>Color</label>
+              <input type="color" id="tColor" value="#ffffff" />
             </div>
             <div class="pp-field">
-              <label>Size</label
-              ><input
+              <label>Size</label>
+              <input
                 type="number"
                 id="tSize"
                 min="8"
@@ -951,7 +989,6 @@
             </div>
           </div>
           <div class="pp-footer">
-            <!-- Shown when NOT editing a selected text -->
             <button
               class="pp-btn primary"
               id="btnAddText"
@@ -959,7 +996,6 @@
             >
               <i class="fa fa-plus"></i> Add Text to Page
             </button>
-            <!-- Shown when editing a selected text -->
             <button
               class="pp-btn success"
               id="btnDoneEditText"
@@ -972,7 +1008,17 @@
 
         <!-- Shape panel -->
         <div class="prop-panel" id="ppShape">
-          <div class="pp-title">Shape Options</div>
+          <div class="pp-header">
+            <div class="pp-header-left">
+              <span class="pp-header-title">Shape Options</span>
+              <span class="shape-edit-badge" id="shapeEditBadge">
+                <i class="fa fa-pen"></i> Editing selected
+              </span>
+            </div>
+            <button class="pp-close" id="ppShapeClose" title="Close panel">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
           <div class="pp-row">
             <div class="pp-field">
               <label>Type</label>
@@ -984,16 +1030,16 @@
               </select>
             </div>
             <div class="pp-field">
-              <label>Fill</label
-              ><input type="color" id="sFill" value="#6366f1" />
+              <label>Fill</label>
+              <input type="color" id="sFill" value="#6366f1" />
             </div>
             <div class="pp-field">
-              <label>Stroke</label
-              ><input type="color" id="sStroke" value="#312e81" />
+              <label>Stroke</label>
+              <input type="color" id="sStroke" value="#312e81" />
             </div>
             <div class="pp-field">
-              <label>Stroke W</label
-              ><input
+              <label>Stroke W</label>
+              <input
                 type="number"
                 id="sStrokeW"
                 min="0"
@@ -1004,8 +1050,65 @@
             </div>
           </div>
           <div class="pp-footer">
-            <button class="pp-btn primary" id="btnAddShape">
+            <!-- Add mode button -->
+            <button
+              class="pp-btn primary"
+              id="btnAddShape"
+              style="display: inline-flex"
+            >
               <i class="fa fa-plus"></i> Add Shape to Page
+            </button>
+            <!-- Edit mode button -->
+            <button
+              class="pp-btn success"
+              id="btnDoneEditShape"
+              style="display: none"
+            >
+              <i class="fa fa-check"></i> Done Editing
+            </button>
+          </div>
+        </div>
+
+        <!-- Image panel -->
+        <div class="prop-panel" id="ppImage">
+          <div class="pp-header">
+            <div class="pp-header-left">
+              <span class="pp-header-title">Image Options</span>
+              <span class="image-edit-badge" id="imageEditBadge">
+                <i class="fa fa-pen"></i> Editing selected
+              </span>
+            </div>
+            <button class="pp-close" id="ppImageClose" title="Close panel">
+              <i class="fa fa-xmark"></i>
+            </button>
+          </div>
+          <div class="pp-row">
+            <div class="pp-field">
+              <label>Opacity %</label>
+              <input
+                type="number"
+                id="iOpacity"
+                min="10"
+                max="100"
+                value="100"
+                style="width: 72px"
+              />
+            </div>
+            <div class="pp-field">
+              <label>Corner Radius</label>
+              <input
+                type="number"
+                id="iRadius"
+                min="0"
+                max="200"
+                value="0"
+                style="width: 80px"
+              />
+            </div>
+          </div>
+          <div class="pp-footer">
+            <button class="pp-btn success" id="btnDoneEditImage">
+              <i class="fa fa-check"></i> Done Editing
             </button>
           </div>
         </div>
@@ -1024,34 +1127,31 @@
 
     <section id="footer-placeholder"></section>
 
-    <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
     <script>
-      /* ═══════════════════════════════════════════════════════
-   SETUP
-═══════════════════════════════════════════════════════ */
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
       const API = "http://127.0.0.1:8080";
       let pdfDoc = null,
         pdfFile = null;
-      let pages = []; // {block, fabricCanvas, scale, pageNum}
+      let pages = [];
       let curIdx = 0;
-      let curTool = "draw"; // default active tool
+      let curTool = "draw";
 
-      // Path currently being individually edited
-      let editingPath = null;
-      let editingPathFC = null;
-
-      // Text object currently being edited via the panel
-      let editingText = null;
-      let editingTextFC = null;
+      let editingPath = null,
+        editingPathFC = null;
+      let editingText = null,
+        editingTextFC = null;
+      let editingShape = null,
+        editingShapeFC = null;
+      let editingImage = null,
+        editingImageFC = null;
 
       /* ═══════════════════════════════════════════════════════
-   CUSTOM MODAL
-═══════════════════════════════════════════════════════ */
+         CUSTOM MODAL
+      ═══════════════════════════════════════════════════════ */
       function showModal({
         title = "Notice",
         msg = "",
@@ -1108,8 +1208,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-   TOAST
-═══════════════════════════════════════════════════════ */
+         TOAST
+      ═══════════════════════════════════════════════════════ */
       const TICONS = {
         s: "fa-check-circle",
         e: "fa-exclamation-circle",
@@ -1128,8 +1228,8 @@
       }
 
       /* ═══════════════════════════════════════════════════════
-   UPLOAD
-═══════════════════════════════════════════════════════ */
+         UPLOAD
+      ═══════════════════════════════════════════════════════ */
       document
         .getElementById("fileInput")
         .addEventListener("change", async (e) => {
@@ -1150,45 +1250,46 @@
         for (let i = 1; i <= pdfDoc.numPages; i++) await buildPage(i);
         document.getElementById("uploadScreen").style.display = "none";
         document.getElementById("editorScreen").classList.add("show");
-        // Start with draw tool active and panel open
         switchPage(0);
         setTool("draw");
         toast(`PDF loaded — ${pdfDoc.numPages} page(s)`, "s");
       }
 
       /* ═══════════════════════════════════════════════════════
-   BUILD PAGE
-   • Measures actual offsetWidth of canvas-area for reliable fit.
-   • Scales to fill width; if height would overflow, scales to height instead.
-   • Enforces a 300px minimum so pages are never tiny.
-═══════════════════════════════════════════════════════ */
+         BUILD PAGE
+         FIX 1: Portrait PDFs — use a higher minimum scale so they
+                fill the available width on desktop screens.
+         FIX 2: Landscape thumbnails — compute thumb scale from
+                actual page dimensions so wide pages always render.
+      ═══════════════════════════════════════════════════════ */
       async function buildPage(pageNum) {
         const pdfPage = await pdfDoc.getPage(pageNum);
         const base = pdfPage.getViewport({ scale: 1 });
 
         const area = document.getElementById("canvasArea");
-        const areaW =
-          area.offsetWidth ||
-          Math.max(
-            window.innerWidth -
-              parseInt(
-                getComputedStyle(document.documentElement).getPropertyValue(
-                  "--sb",
-                ),
-              ) -
-              10,
-            300,
-          );
-        const areaH =
-          area.offsetHeight || Math.max(window.innerHeight - 160, 300);
 
-        const pad = 32;
+        // Force a layout read; fall back gracefully if area not yet measured
+        const areaW =
+          area.clientWidth ||
+          window.innerWidth -
+            parseInt(
+              getComputedStyle(document.documentElement).getPropertyValue(
+                "--sb",
+              ),
+            ) -
+            10;
+        const areaH = area.clientHeight || window.innerHeight - 160;
+
+        const pad = 48; // breathing room around page
         const maxW = Math.max(areaW - pad, 300);
         const maxH = Math.max(areaH - pad, 200);
 
+        // Scale to fill width first (portrait-friendly), then clamp to height
         let sc = maxW / base.width;
         if (base.height * sc > maxH) sc = maxH / base.height;
-        sc = Math.max(sc, 300 / base.width);
+
+        // Minimum 1.0 scale so portrait A4 pages are never tiny on large screens
+        sc = Math.max(sc, Math.min(1.5, maxW / base.width));
 
         const vp = pdfPage.getViewport({ scale: sc });
         const W = Math.round(vp.width),
@@ -1233,23 +1334,38 @@
           hideAnnotBar();
           stopPathEdit();
           stopTextEdit();
+          stopShapeEdit();
+          stopImageEdit();
         });
         fc.on("object:moving", () => posAnnotBar(fc));
         fc.on("object:scaling", () => posAnnotBar(fc));
         fc.on("object:rotating", () => posAnnotBar(fc));
 
-        // Thumbnail
-        const sbW = Math.max(
-          parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue("--sb"),
-          ) - 10,
+        /* ── Thumbnail ──
+           FIX 2: Use sidebar inner width and clamp scale so landscape
+           pages produce a visible (non-zero) thumbnail canvas. */
+        const sbEl = document.getElementById("sidebar");
+        const sbInner = Math.max(
+          (sbEl.clientWidth ||
+            parseInt(
+              getComputedStyle(document.documentElement).getPropertyValue(
+                "--sb",
+              ),
+            )) - 10,
           40,
         );
-        const thSc = Math.min(sbW / base.width, 0.18);
+
+        // Scale thumbnail to fit sidebar width regardless of orientation
+        const thSc = sbInner / base.width;
         const thVp = pdfPage.getViewport({ scale: thSc });
+        const thW = Math.max(Math.round(thVp.width), 1);
+        const thH = Math.max(Math.round(thVp.height), 1);
+
         const thC = document.createElement("canvas");
-        thC.width = thVp.width;
-        thC.height = thVp.height;
+        thC.width = thW;
+        thC.height = thH;
+        thC.style.width = "100%";
+        thC.style.height = "auto";
         await pdfPage.render({
           canvasContext: thC.getContext("2d"),
           viewport: thVp,
@@ -1270,12 +1386,14 @@
       }
 
       /* ═══════════════════════════════════════════════════════
-   PAGE SWITCHING
-═══════════════════════════════════════════════════════ */
+         PAGE SWITCHING
+      ═══════════════════════════════════════════════════════ */
       function switchPage(idx) {
         hideAnnotBar();
         stopPathEdit();
         stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
         curIdx = idx;
         pages.forEach(
           (p, i) => (p.block.style.display = i === idx ? "block" : "none"),
@@ -1291,15 +1409,16 @@
       const getFC = () => pages[curIdx]?.fabricCanvas;
 
       /* ═══════════════════════════════════════════════════════
-   ANNOTATION BAR — shows on any selection
-═══════════════════════════════════════════════════════ */
+         ANNOTATION BAR
+      ═══════════════════════════════════════════════════════ */
       const annotBar = document.getElementById("annotBar");
 
       function onSelect(fc) {
         const obj = fc.getActiveObject();
-        // If a different object selected while editing path/text, stop those edits
         if (editingPath && obj !== editingPath) stopPathEdit();
         if (editingText && obj !== editingText) stopTextEdit();
+        if (editingShape && obj !== editingShape) stopShapeEdit();
+        if (editingImage && obj !== editingImage) stopImageEdit();
         showAnnotBar(fc);
       }
 
@@ -1344,33 +1463,13 @@
         if (!obj) return;
 
         if (obj.type === "i-text" || obj.type === "text") {
-          /*
-      Text editing: open text panel pre-filled with this object's values.
-      Live-update this object as the user changes controls.
-      "Add Text" button hidden; "Done Editing" shown.
-    */
           startTextEdit(obj, fc);
-        } else if (["rect", "circle", "triangle"].includes(obj.type)) {
-          // Shape: pre-fill shape panel, live-update only this object
-          document.getElementById("sFill").value = obj.fill || "#6366f1";
-          document.getElementById("sStroke").value = obj.stroke || "#312e81";
-          document.getElementById("sStrokeW").value = obj.strokeWidth || 2;
-          openPanel("ppShape");
-          const live = () => {
-            obj.set({
-              fill: document.getElementById("sFill").value,
-              stroke: document.getElementById("sStroke").value,
-              strokeWidth: +document.getElementById("sStrokeW").value || 1,
-            });
-            fc.renderAll();
-          };
-          ["sFill", "sStroke", "sStrokeW"].forEach((id) =>
-            document.getElementById(id).addEventListener("input", live),
-          );
-          toast("Adjust shape properties above", "i");
+        } else if (["rect", "circle", "triangle", "line"].includes(obj.type)) {
+          startShapeEdit(obj, fc);
         } else if (obj.type === "path") {
-          // Drawing: open draw panel pre-filled for this specific path only
           startPathEdit(obj, fc);
+        } else if (obj.type === "image") {
+          startImageEdit(obj, fc);
         } else {
           toast("Use handles to resize & rotate", "i");
         }
@@ -1410,6 +1509,8 @@
         if (!fc) return;
         stopPathEdit();
         stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
         fc.getActiveObjects().forEach((o) => fc.remove(o));
         fc.discardActiveObject();
         fc.renderAll();
@@ -1418,16 +1519,12 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-   PATH EDIT — individual drawing edit
-   Opens the Draw panel pre-filled for the selected path ONLY.
-   All controls update ONLY this path; no other drawings affected.
-   Panel closes ONLY via "Done Editing" button.
-═══════════════════════════════════════════════════════ */
+         PATH EDIT
+      ═══════════════════════════════════════════════════════ */
       function startPathEdit(pathObj, fc) {
         editingPath = pathObj;
         editingPathFC = fc;
 
-        // Pre-fill with this path's values
         document.getElementById("dColor").value = pathObj.stroke || "#e63946";
         const curW = pathObj.strokeWidth || 2;
         const opts = [1, 2, 3, 5, 8, 12];
@@ -1460,7 +1557,6 @@
         document.getElementById("btnDrawAction").className = "pp-btn success";
       }
 
-      /* Live sync draw controls → selected path OR the brush */
       function syncDrawControls() {
         const color = document.getElementById("dColor").value;
         const width = parseInt(document.getElementById("dWidth").value);
@@ -1470,7 +1566,6 @@
         const dashArr =
           style === "dashed" ? [10, 6] : style === "dotted" ? [2, 5] : [];
         if (editingPath && editingPathFC) {
-          // ✅ Only this path is modified
           editingPath.set({
             stroke: color,
             strokeWidth: width,
@@ -1489,19 +1584,15 @@
           .addEventListener("change", syncDrawControls);
       });
 
-      /* Draw action button */
       document.getElementById("btnDrawAction").addEventListener("click", () => {
         if (editingPath) {
-          // Done editing path — close panel, go back to draw mode
           stopPathEdit();
           closePanel("ppDraw");
-          // Re-open for draw mode
           setTool("draw");
           openPanel("ppDraw");
           showAnnotBar(getFC());
           toast("Drawing updated", "s");
         } else {
-          // Apply Drawing — switch to pointer (no active tool) and close panel
           setTool("none");
           closePanel("ppDraw");
           toast("Drawing applied — click any annotation to select it", "s");
@@ -1509,15 +1600,12 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-   TEXT EDIT — edit selected IText via panel
-   Opens text panel pre-filled for the selected object.
-   Live-updates ONLY that text object.
-═══════════════════════════════════════════════════════ */
+         TEXT EDIT
+      ═══════════════════════════════════════════════════════ */
       function startTextEdit(textObj, fc) {
         editingText = textObj;
         editingTextFC = fc;
 
-        // Pre-fill panel with this text's current values
         document.getElementById("tColor").value = textObj.fill || "#ffffff";
         document.getElementById("tSize").value = Math.round(
           textObj.fontSize || 20,
@@ -1526,7 +1614,6 @@
         document.getElementById("tWeight").value =
           textObj.fontWeight || "normal";
 
-        // Show "Editing selected" badge, swap buttons
         document.getElementById("textEditBadge").classList.add("show");
         document.getElementById("btnAddText").style.display = "none";
         document.getElementById("btnDoneEditText").style.display =
@@ -1545,14 +1632,12 @@
         document.getElementById("btnDoneEditText").style.display = "none";
       }
 
-      /* Live-update text controls */
       function syncTextControls() {
         const color = document.getElementById("tColor").value;
         const size = parseInt(document.getElementById("tSize").value);
         const family = document.getElementById("tFont").value;
         const weight = document.getElementById("tWeight").value;
         if (editingText && editingTextFC) {
-          // ✅ Only the selected text object changes
           editingText.set({
             fill: color,
             fontSize: size,
@@ -1569,7 +1654,6 @@
           .addEventListener("change", syncTextControls);
       });
 
-      /* Done Editing text */
       document
         .getElementById("btnDoneEditText")
         .addEventListener("click", () => {
@@ -1580,8 +1664,159 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-   TOOL MANAGEMENT
-═══════════════════════════════════════════════════════ */
+         SHAPE EDIT
+         FIX 3: Show "Done Editing" button and "Editing selected"
+                badge when editing an existing shape; "Add Shape"
+                is hidden in edit mode.
+      ═══════════════════════════════════════════════════════ */
+      function startShapeEdit(shapeObj, fc) {
+        editingShape = shapeObj;
+        editingShapeFC = fc;
+
+        // Pre-fill panel with current shape values
+        document.getElementById("sFill").value = shapeObj.fill || "#6366f1";
+        document.getElementById("sStroke").value = shapeObj.stroke || "#312e81";
+        document.getElementById("sStrokeW").value = shapeObj.strokeWidth || 2;
+        // Lock type selector to current shape
+        const typeMap = {
+          rect: "rect",
+          circle: "circle",
+          triangle: "triangle",
+          line: "line",
+        };
+        document.getElementById("sType").value =
+          typeMap[shapeObj.type] || "rect";
+        document.getElementById("sType").disabled = true;
+
+        // Swap buttons & show badge
+        document.getElementById("shapeEditBadge").classList.add("show");
+        document.getElementById("btnAddShape").style.display = "none";
+        document.getElementById("btnDoneEditShape").style.display =
+          "inline-flex";
+
+        openPanel("ppShape");
+        toast("Editing selected shape — adjust controls above", "i");
+      }
+
+      function stopShapeEdit() {
+        if (!editingShape) return;
+        editingShape = null;
+        editingShapeFC = null;
+        document.getElementById("shapeEditBadge").classList.remove("show");
+        document.getElementById("btnAddShape").style.display = "inline-flex";
+        document.getElementById("btnDoneEditShape").style.display = "none";
+        document.getElementById("sType").disabled = false;
+      }
+
+      function syncShapeControls() {
+        if (editingShape && editingShapeFC) {
+          editingShape.set({
+            fill: document.getElementById("sFill").value,
+            stroke: document.getElementById("sStroke").value,
+            strokeWidth: +document.getElementById("sStrokeW").value || 1,
+          });
+          editingShapeFC.renderAll();
+        }
+      }
+      ["sFill", "sStroke", "sStrokeW"].forEach((id) => {
+        document
+          .getElementById(id)
+          .addEventListener("input", syncShapeControls);
+        document
+          .getElementById(id)
+          .addEventListener("change", syncShapeControls);
+      });
+
+      document
+        .getElementById("btnDoneEditShape")
+        .addEventListener("click", () => {
+          stopShapeEdit();
+          closePanel("ppShape");
+          showAnnotBar(getFC());
+          toast("Shape updated", "s");
+        });
+
+      /* ═══════════════════════════════════════════════════════
+         IMAGE EDIT — opacity & corner radius
+         FIX 4: New image edit panel with opacity and radius.
+                Corner radius uses Fabric clipPath trick for
+                rounded corners since fabric.Image doesn't have
+                rx/ry natively.
+      ═══════════════════════════════════════════════════════ */
+      function startImageEdit(imgObj, fc) {
+        editingImage = imgObj;
+        editingImageFC = fc;
+
+        // Pre-fill with current values
+        document.getElementById("iOpacity").value = Math.round(
+          (imgObj.opacity || 1) * 100,
+        );
+        // Retrieve stored radius (if any)
+        document.getElementById("iRadius").value = imgObj._cornerRadius || 0;
+
+        document.getElementById("imageEditBadge").classList.add("show");
+        openPanel("ppImage");
+        toast("Editing image — adjust opacity & corner radius above", "i");
+      }
+
+      function stopImageEdit() {
+        if (!editingImage) return;
+        editingImage = null;
+        editingImageFC = null;
+        document.getElementById("imageEditBadge").classList.remove("show");
+      }
+
+      function applyImageRadius(imgObj, fc, radius) {
+        // Store radius on the object for later retrieval
+        imgObj._cornerRadius = radius;
+        if (radius <= 0) {
+          imgObj.set("clipPath", null);
+        } else {
+          // Create a rounded-rect clip path matching the image's scaled dimensions
+          const w = imgObj.getScaledWidth();
+          const h = imgObj.getScaledHeight();
+          const clip = new fabric.Rect({
+            width: w,
+            height: h,
+            rx: Math.min(radius, w / 2, h / 2),
+            ry: Math.min(radius, w / 2, h / 2),
+            originX: "center",
+            originY: "center",
+          });
+          imgObj.set("clipPath", clip);
+        }
+        fc.renderAll();
+      }
+
+      function syncImageControls() {
+        if (!editingImage || !editingImageFC) return;
+        const opacity =
+          parseInt(document.getElementById("iOpacity").value) / 100;
+        const radius = parseInt(document.getElementById("iRadius").value) || 0;
+        editingImage.set({ opacity: Math.max(0.1, Math.min(1, opacity)) });
+        applyImageRadius(editingImage, editingImageFC, radius);
+      }
+      ["iOpacity", "iRadius"].forEach((id) => {
+        document
+          .getElementById(id)
+          .addEventListener("input", syncImageControls);
+        document
+          .getElementById(id)
+          .addEventListener("change", syncImageControls);
+      });
+
+      document
+        .getElementById("btnDoneEditImage")
+        .addEventListener("click", () => {
+          stopImageEdit();
+          closePanel("ppImage");
+          showAnnotBar(getFC());
+          toast("Image updated", "s");
+        });
+
+      /* ═══════════════════════════════════════════════════════
+         TOOL MANAGEMENT
+      ═══════════════════════════════════════════════════════ */
       const TOOL_IDS = {
         draw: "tbDraw",
         text: "tbText",
@@ -1590,27 +1825,15 @@
       };
 
       function setTool(name) {
-        // Leaving draw/text tool cleans up their edit states
         if (name !== "draw") stopPathEdit();
         if (name !== "text") stopTextEdit();
+        if (name !== "shape") stopShapeEdit();
+        if (name !== "image") stopImageEdit();
 
         curTool = name;
         Object.entries(TOOL_IDS).forEach(([t, id]) =>
           document.getElementById(id).classList.toggle("on", t === name),
         );
-
-        // Close panels that DON'T belong to the new tool
-        // (draw panel stays open until Apply Drawing is clicked)
-        if (name === "text") {
-          /* text panel managed by its own open/close */
-        }
-        if (name === "shape") {
-          /* shape panel managed by its own open/close */
-        }
-        if (name === "none") {
-          /* no active tool — pointer mode */
-        }
-
         applyTool(getFC());
       }
 
@@ -1645,17 +1868,16 @@
         );
       }
 
-      /* ── Panel open/close helpers ── */
+      /* ── Panel helpers ── */
       function openPanel(id) {
-        // Position under the corresponding toolbar button
         const btnMap = {
           ppDraw: "tbDraw",
           ppText: "tbText",
           ppShape: "tbShape",
+          ppImage: "tbImage",
         };
         const host = document.getElementById("panelHost");
         const panel = document.getElementById(id);
-        // Close all OTHER panels (not this one)
         document.querySelectorAll(".prop-panel").forEach((p) => {
           if (p.id !== id) p.classList.remove("open");
         });
@@ -1675,15 +1897,33 @@
         document.getElementById(id)?.classList.remove("open");
       }
 
-      /* ═══════════════════════════════════════════════════════
-   TOOLBAR WIRING
-═══════════════════════════════════════════════════════ */
+      /* ── Panel close buttons ── */
+      document.getElementById("ppDrawClose").addEventListener("click", () => {
+        if (editingPath) {
+          stopPathEdit();
+          setTool("draw");
+        }
+        closePanel("ppDraw");
+      });
+      document.getElementById("ppTextClose").addEventListener("click", () => {
+        stopTextEdit();
+        closePanel("ppText");
+      });
+      document.getElementById("ppShapeClose").addEventListener("click", () => {
+        stopShapeEdit();
+        closePanel("ppShape");
+      });
+      document.getElementById("ppImageClose").addEventListener("click", () => {
+        stopImageEdit();
+        closePanel("ppImage");
+      });
 
-      /* Draw — clicking toolbar Draw button toggles the panel open/closed;
-   panel only CLOSES via "Apply Drawing" click or switching to another tool */
+      /* ═══════════════════════════════════════════════════════
+         TOOLBAR WIRING
+      ═══════════════════════════════════════════════════════ */
+
       document.getElementById("tbDraw").addEventListener("click", () => {
         if (curTool === "draw") {
-          // Toggle panel visibility while staying in draw mode
           document.getElementById("ppDraw").classList.toggle("open");
         } else {
           setTool("draw");
@@ -1691,7 +1931,6 @@
         }
       });
 
-      /* Text */
       document.getElementById("tbText").addEventListener("click", () => {
         if (curTool === "text") {
           document.getElementById("ppText").classList.toggle("open");
@@ -1702,7 +1941,6 @@
         }
       });
 
-      /* Add Text to Page — places IText at centre, no canvas click needed */
       document.getElementById("btnAddText").addEventListener("click", () => {
         const fc = getFC();
         if (!fc) return;
@@ -1720,14 +1958,12 @@
         fc.add(it);
         fc.setActiveObject(it);
         fc.renderAll();
-        // Switch to pointer mode (none) and close text panel
         setTool("none");
         closePanel("ppText");
         showAnnotBar(fc);
         toast("Text added — double-click to edit", "s");
       });
 
-      /* Shape */
       document.getElementById("tbShape").addEventListener("click", () => {
         if (curTool === "shape") {
           document.getElementById("ppShape").classList.toggle("open");
@@ -1799,8 +2035,9 @@
       document.getElementById("tbImage").addEventListener("click", () => {
         stopPathEdit();
         stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
         setTool("image");
-        // Close any open panels
         document
           .querySelectorAll(".prop-panel")
           .forEach((p) => p.classList.remove("open"));
@@ -1820,12 +2057,20 @@
               left: fc.width / 2 - img.getScaledWidth() / 2,
               top: fc.height / 2 - img.getScaledHeight() / 2,
             });
+            img._cornerRadius = 0;
             fc.add(img);
             fc.setActiveObject(img);
             fc.renderAll();
             setTool("none");
+            // Auto-open image panel so user can adjust immediately
+            openPanel("ppImage");
+            document.getElementById("iOpacity").value = 100;
+            document.getElementById("iRadius").value = 0;
+            document.getElementById("imageEditBadge").classList.add("show");
+            editingImage = img;
+            editingImageFC = fc;
             showAnnotBar(fc);
-            toast("Image added", "s");
+            toast("Image added — adjust opacity & corner radius above", "s");
           });
         };
         reader.readAsDataURL(file);
@@ -1842,18 +2087,18 @@
           hideAnnotBar();
           stopPathEdit();
           stopTextEdit();
+          stopShapeEdit();
+          stopImageEdit();
           toast("Undone", "i");
         }
       });
 
-      /* Delete (toolbar delegates to annotBar delete) */
       document
         .getElementById("tbDel")
         .addEventListener("click", () =>
           document.getElementById("abDel").click(),
         );
 
-      /* Clear */
       document.getElementById("tbClear").addEventListener("click", async () => {
         const ok = await mConfirm(
           "Clear all annotations on this page?",
@@ -1867,10 +2112,11 @@
         hideAnnotBar();
         stopPathEdit();
         stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
         toast("Page cleared", "i");
       });
 
-      /* Close file */
       document
         .getElementById("btnClose")
         .addEventListener("click", async () => {
@@ -1897,13 +2143,11 @@
             .forEach((p) => p.classList.remove("open"));
           stopPathEdit();
           stopTextEdit();
+          stopShapeEdit();
+          stopImageEdit();
         });
 
-      /*
-  Outside click:
-  - Draw panel: NEVER closes from outside click — only "Apply Drawing" or switching tool closes it.
-  - Text/Shape panels: close on outside click when not in edit mode.
-*/
+      /* Outside click */
       document.addEventListener("click", (e) => {
         if (
           e.target.closest(".prop-panel") ||
@@ -1912,10 +2156,9 @@
           e.target.closest("#modalOverlay")
         )
           return;
-        // Close text panel on outside click only if not editing a text object
         if (!editingText) closePanel("ppText");
-        // Close shape panel on outside click
-        closePanel("ppShape");
+        if (!editingShape) closePanel("ppShape");
+        if (!editingImage) closePanel("ppImage");
         // Draw panel: never close from outside click
       });
 
@@ -1938,16 +2181,23 @@
           } else if (editingText) {
             stopTextEdit();
             closePanel("ppText");
+          } else if (editingShape) {
+            stopShapeEdit();
+            closePanel("ppShape");
+          } else if (editingImage) {
+            stopImageEdit();
+            closePanel("ppImage");
           } else {
             closePanel("ppText");
             closePanel("ppShape");
+            closePanel("ppImage");
           }
         }
       });
 
       /* ═══════════════════════════════════════════════════════
-   SAVE PDF
-═══════════════════════════════════════════════════════ */
+         SAVE PDF
+      ═══════════════════════════════════════════════════════ */
       document.getElementById("tbSave").addEventListener("click", async () => {
         if (!pdfFile) {
           await mAlert("Please load a PDF first.");

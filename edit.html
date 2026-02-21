@@ -13,8 +13,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
 
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="stylesheet" href="./css/edit.css">
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/edit.css" />
   </head>
   <body>
     <section id="header-placeholder"></section>
@@ -1497,6 +1497,19 @@
       /* ═══════════════════════════════════════════════════════
          EDIT CONTENT
       ═══════════════════════════════════════════════════════ */
+      // ═══════════════════════════════════════════════════════
+      // EDIT CONTENT — Fixed version
+      // Two bugs fixed:
+      //
+      // FIX 1 (Layer order): Images must be placed on the Fabric canvas BEFORE text
+      //   blocks. Fabric renders objects in insertion order, so whatever is added
+      //   last appears on top. The original PDF always has images behind text, but
+      //   the old code added text first and images second — images ended up on top.
+      //
+      // FIX 2 (White logo area): Handled in edit_pdf.py (fill=None for image
+      //   redactions so the blue footer bar vector is not painted over).
+      // ═══════════════════════════════════════════════════════
+
       document
         .getElementById("tbEditContent")
         .addEventListener("click", async () => {
@@ -1551,24 +1564,10 @@
                 .promise;
             }
             let placed = 0;
-            for (const tb of textBlocks) {
-              const it = new fabric.IText(tb.text || "", {
-                left: tb.x * scale,
-                top: tb.y * scale,
-                fontFamily: tb.fontFamily || "Arial",
-                fontSize: Math.max(
-                  6,
-                  (tb.originalHeight ?? tb.height) * scale * 0.88,
-                ),
-                fill: tb.color || "#000000",
-                fontWeight: tb.fontWeight || "normal",
-                fontStyle: tb.fontStyle || "normal",
-                editable: true,
-                selectable: true,
-              });
-              fc.add(it);
-              placed++;
-            }
+
+            // ── FIX 1: Add IMAGES first so they render at the bottom of the
+            // Fabric stack, then add TEXT on top — matching the original PDF
+            // layer order (image background → text foreground).
             for (const img of images) {
               if (!img.dataUrl) continue;
               await new Promise((resolve) => {
@@ -1588,6 +1587,26 @@
                 });
               });
             }
+
+            for (const tb of textBlocks) {
+              const it = new fabric.IText(tb.text || "", {
+                left: tb.x * scale,
+                top: tb.y * scale,
+                fontFamily: tb.fontFamily || "Arial",
+                fontSize: Math.max(
+                  6,
+                  (tb.originalHeight ?? tb.height) * scale * 0.88,
+                ),
+                fill: tb.color || "#000000",
+                fontWeight: tb.fontWeight || "normal",
+                fontStyle: tb.fontStyle || "normal",
+                editable: true,
+                selectable: true,
+              });
+              fc.add(it);
+              placed++;
+            }
+
             fc.renderAll();
             setTool("none");
             if (data.cleanedFullPdf) {
@@ -1661,6 +1680,7 @@
             body: fd,
           });
           if (!res.ok) throw new Error(await res.text());
+          annotBar.classList.remove("show");
           const blob = await res.blob();
           showSaveScreen(blob, "edited_" + pdfFile.name);
           toast("PDF saved — preview ready!", "s");

@@ -1563,52 +1563,90 @@
               await cleanPage.render({ canvasContext: ctx, viewport: vp })
                 .promise;
             }
-            let placed = 0;
-
-            // ── FIX 1: Add IMAGES first so they render at the bottom of the
-            // Fabric stack, then add TEXT on top — matching the original PDF
-            // layer order (image background → text foreground).
-            for (const img of images) {
-              if (!img.dataUrl) continue;
-              await new Promise((resolve) => {
-                fabric.Image.fromURL(img.dataUrl, (fimg) => {
-                  fimg.set({
-                    left: img.x * scale,
-                    top: img.y * scale,
-                    scaleX: (img.width * scale) / (fimg.width || 1),
-                    scaleY: (img.height * scale) / (fimg.height || 1),
-                    selectable: true,
-                    hasControls: true,
-                  });
-                  fimg._cornerRadius = 0;
-                  fc.add(fimg);
-                  placed++;
-                  resolve();
-                });
-              });
-            }
-
-            for (const tb of textBlocks) {
-              const it = new fabric.IText(tb.text || "", {
-                left: tb.x * scale,
-                top: tb.y * scale,
-                fontFamily: tb.fontFamily || "Arial",
-                fontSize: Math.max(
-                  6,
-                  (tb.originalHeight ?? tb.height) * scale * 0.88,
-                ),
-                fill: tb.color || "#000000",
-                fontWeight: tb.fontWeight || "normal",
-                fontStyle: tb.fontStyle || "normal",
-                editable: true,
-                selectable: true,
-              });
-              fc.add(it);
-              placed++;
-            }
-
-            fc.renderAll();
+            // In edit.html, inside the tbEditContent click handler,
             setTool("none");
+applyTool(fc);
+
+let placed = 0;
+
+// ── Add IMAGES first (below text in Fabric stack) ────────────────────────────
+for (const img of images) {
+  if (!img.dataUrl) continue;
+
+  await new Promise((resolve) => {
+    // crossOrigin must be null (not "anonymous") for data: URLs in Fabric 5.x
+    // to correctly bind pointer/mouse events to the image object.
+    fabric.Image.fromURL(
+      img.dataUrl,
+      (fimg) => {
+        if (!fimg || !fimg.width) {
+          console.warn("Image load failed:", img.xref);
+          resolve();
+          return;
+        }
+
+        const destW = img.width  * scale;
+        const destH = img.height * scale;
+
+        fimg.set({
+          left:           img.x * scale,
+          top:            img.y * scale,
+          scaleX:         destW / fimg.width,
+          scaleY:         destH / fimg.height,
+          selectable:     true,
+          hasControls:    true,
+          hasBorders:     true,
+          evented:        true,
+          lockUniScaling: false,
+          objectCaching:  false,
+        });
+        fimg._cornerRadius = 0;
+
+        fc.add(fimg);
+
+        // CRITICAL: call setCoords() INSIDE the callback, after fc.add(),
+        // so Fabric calculates hit-test boundaries while the image element
+        // is guaranteed to be fully loaded and positioned.
+        fimg.setCoords();
+
+        placed++;
+        resolve();
+      },
+      { crossOrigin: null }   // null = no crossOrigin attribute on <img> element
+    );
+  });
+}
+
+// ── Add TEXT on top ───────────────────────────────────────────────────────────
+for (const tb of textBlocks) {
+  const it = new fabric.IText(tb.text || "", {
+    left:          tb.x * scale,
+    top:           tb.y * scale,
+    fontFamily:    tb.fontFamily || "Arial",
+    fontSize:      Math.max(6, (tb.originalHeight ?? tb.height) * scale * 0.88),
+    fill:          tb.color      || "#000000",
+    fontWeight:    tb.fontWeight || "normal",
+    fontStyle:     tb.fontStyle  || "normal",
+    editable:      true,
+    selectable:    true,
+    hasControls:   true,
+    evented:       true,
+    objectCaching: false,
+  });
+  fc.add(it);
+  it.setCoords();
+  placed++;
+}
+
+fc.requestRenderAll();
+
+            // Force Fabric to recalculate object boundaries so click-hit-testing works
+            // on all objects including the newly added image
+            fc.getObjects().forEach((obj) => {
+              obj.setCoords();
+            });
+            fc.requestRenderAll();
+
             if (data.cleanedFullPdf) {
               const bytes = Uint8Array.from(atob(data.cleanedFullPdf), (c) =>
                 c.charCodeAt(0),

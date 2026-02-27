@@ -1688,16 +1688,15 @@
           await mAlert("Please load a PDF first.");
           return;
         }
-
         const btn = document.getElementById("tbSave");
         btn.disabled = true;
         btn.innerHTML =
           '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
-
         try {
           const fd = new FormData();
           fd.append("file", pdfFile);
 
+          // Replace the entire annData map inside tbSave click handler:
           const annData = pages.map((p) => {
             const fc = p.fabricCanvas;
 
@@ -1706,21 +1705,23 @@
               .map((obj) => {
                 const type = obj.type;
 
+                // getBoundingRect(true, true) always returns the TRUE top-left
+                // corner in canvas pixel space, regardless of originX/originY.
+                // This is the ONLY correct way to get position for all object types.
                 const br = obj.getBoundingRect(true, true);
                 const left = br.left;
                 const top = br.top;
                 const width = br.width;
                 const height = br.height;
 
-                // ───────── TEXT ─────────
                 if (type === "i-text" || type === "text") {
                   return {
                     type: "text",
                     text: obj.text,
                     x: left,
                     y: top,
-                    width,
-                    height,
+                    width: width,
+                    height: height,
                     fontSize: obj.fontSize,
                     fontFamily: obj.fontFamily,
                     color: obj.fill,
@@ -1728,15 +1729,13 @@
                     fontStyle: obj.fontStyle,
                     textAlign: obj.textAlign,
                     lineHeight: obj.lineHeight || 1.2,
+                    pdfYDown: obj._pdfYDown || false,
                   };
-                }
-
-                // ───────── IMAGE ─────────
-                else if (type === "image") {
+                } else if (type === "image") {
                   let src =
                     obj.originalSrc || (obj.getSrc ? obj.getSrc() : null);
-                  if (!src && obj._element?.src) src = obj._element.src;
-
+                  if (!src && obj._element && obj._element.src)
+                    src = obj._element.src;
                   return {
                     type: "image",
                     x: left,
@@ -1744,11 +1743,9 @@
                     width,
                     height,
                     imageData: src,
+                    pdfYDown: obj._pdfYDown || false,
                   };
-                }
-
-                // ───────── SHAPES ─────────
-                else if (
+                } else if (
                   ["rect", "circle", "triangle", "line"].includes(type)
                 ) {
                   const shapeMap = {
@@ -1757,7 +1754,6 @@
                     triangle: "triangle",
                     line: "line",
                   };
-
                   return {
                     type: "shape",
                     shapeType: shapeMap[type],
@@ -1769,35 +1765,55 @@
                     borderColor: obj.stroke,
                     borderWidth: obj.strokeWidth,
                   };
-                }
+                } else if (type === "path") {
+                  // ── Serialize freehand drawing path ──────────────────────
+                  // Fabric stores path as array of commands e.g. [["M",x,y],["L",x,y],...]
+                  // Convert to SVG path string for the backend
+                  let pathStr = "";
+                  if (obj.path && Array.isArray(obj.path)) {
+                    pathStr = obj.path.map((cmd) => cmd.join(" ")).join(" ");
+                  }
+                  if (!pathStr) return null;
 
-                // ───────── DRAWING (FIXED) ─────────
-                else if (type === "path") {
-                  if (!obj.path || !Array.isArray(obj.path)) return null;
+                  // Path coords are in Fabric's own coordinate space (relative to
+                  // the path object's origin). We need to offset by the object's
+                  // true top-left position on the canvas.
+                  // Fabric path objects have their own internal coordinate system
+                  // centered at the path's bounding box center.
+                  // We translate all points by adding the object's canvas position.
+                  const pathLeft = obj.left; // center X when originX=center, else left X
+                  const pathTop = obj.top; // center Y when originY=center, else top Y
 
-                  const pathStr = obj.path
+                  // Re-serialize with canvas-space coordinates
+                  // Fabric paths use originX:"center" by default, so obj.left/top is center
+                  const cx_offset = obj.left - (obj.width * obj.scaleX) / 2;
+                  const cy_offset = obj.top - (obj.height * obj.scaleY) / 2;
+
+                  const translatedPath = obj.path.map((cmd) => {
+                    const c = [...cmd];
+                    if (c[0] === "M" || c[0] === "L") {
+                      c[1] = c[1] * obj.scaleX + cx_offset;
+                      c[2] = c[2] * obj.scaleY + cy_offset;
+                    } else if (c[0] === "Q") {
+                      c[1] = c[1] * obj.scaleX + cx_offset;
+                      c[2] = c[2] * obj.scaleY + cy_offset;
+                      c[3] = c[3] * obj.scaleX + cx_offset;
+                      c[4] = c[4] * obj.scaleY + cy_offset;
+                    }
+                    return c;
+                  });
+
+                  const translatedPathStr = translatedPath
                     .map((cmd) => cmd.join(" "))
                     .join(" ");
 
                   return {
                     type: "drawing",
-
-                    // Send RAW path
-                    pathData: pathStr,
-
-                    // Send transform separately
-                    left: obj.left,
-                    top: obj.top,
-                    scaleX: obj.scaleX || 1,
-                    scaleY: obj.scaleY || 1,
-
+                    pathData: translatedPathStr,
                     color: obj.stroke || "#000000",
-                    strokeWidth: obj.strokeWidth || 2,
+                    strokeWidth: (obj.strokeWidth || 2) * obj.scaleX,
                     opacity: obj.opacity || 1,
                     dashArray: obj.strokeDashArray || [],
-
-                    canvasWidth: fc.width,
-                    canvasHeight: fc.height,
                   };
                 }
 
@@ -1809,6 +1825,7 @@
               pageNum: p.pageNum,
               canvasWidth: fc.width,
               canvasHeight: fc.height,
+              drawing: null,
               annotations,
               deletedRegions: [],
               deletedImages: [],
@@ -1817,18 +1834,16 @@
 
           fd.append("annotations", JSON.stringify(annData));
 
+          fd.append("annotations", JSON.stringify(annData));
+
           const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,
           });
-
           if (!res.ok) throw new Error(await res.text());
-
           annotBar.classList.remove("show");
-
           const blob = await res.blob();
           showSaveScreen(blob, "edited_" + pdfFile.name);
-
           toast("PDF saved — preview ready!", "s");
         } catch (err) {
           console.error(err);

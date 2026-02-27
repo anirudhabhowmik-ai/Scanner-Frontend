@@ -1684,12 +1684,19 @@
         document.getElementById("saveScreen").classList.remove("show");
       }
 
+      /* ═══════════════════════════════════════════════════════
+   SAVE PDF — Fixed to prevent content duplication
+═══════════════════════════════════════════════════════ */
+      /* ═══════════════════════════════════════════════════════
+   SAVE PDF — Only send drawing data when there are edits
+═══════════════════════════════════════════════════════ */
       document.getElementById("tbSave").addEventListener("click", async () => {
         if (!pdfFile) {
           await mAlert("Please load a PDF first.");
           return;
         }
 
+        debugLog("=".repeat(50));
         debugLog("Starting save process...");
 
         const btn = document.getElementById("tbSave");
@@ -1701,50 +1708,83 @@
           const fd = new FormData();
           fd.append("file", pdfFile);
 
-          // Create annotations data in the format the server expects
-          const annData = pages.map((p) => {
+          // Create annotations data for all pages
+          const annData = [];
+
+          for (let i = 0; i < pages.length; i++) {
+            const p = pages[i];
             const fc = p.fabricCanvas;
             const objects = fc.getObjects();
 
-            debugLog(`Page ${p.pageNum} has ${objects.length} objects`);
+            // Detect page orientation
+            const isPortrait = fc.height > fc.width;
+            debugLog(`\n--- Processing page ${i + 1} ---`);
+            debugLog(
+              `Canvas dimensions: ${fc.width} x ${fc.height} - ${isPortrait ? "PORTRAIT" : "LANDSCAPE"}`,
+            );
+            debugLog(`Page has ${objects.length} objects`);
 
-            // Generate a PNG of the current canvas state (this is what the server expects)
             let drawingDataUrl = null;
+            let deletedRegions = [];
+            let deletedImages = [];
+
+            // CRITICAL FIX: Only generate drawing data if there are actual edits
             if (objects.length > 0) {
+              debugLog("Page has edits - generating composite drawing");
+
               // Create a temporary canvas to composite the drawing
               const tempCanvas = document.createElement("canvas");
               tempCanvas.width = fc.width;
               tempCanvas.height = fc.height;
               const tempCtx = tempCanvas.getContext("2d");
 
-              // Draw the PDF background first (to maintain visual)
-              const pdfCvs = p.pdfCvs;
-              tempCtx.drawImage(pdfCvs, 0, 0, fc.width, fc.height);
+              // Draw the PDF background first
+              tempCtx.drawImage(p.pdfCvs, 0, 0, fc.width, fc.height);
 
-              // Then draw the Fabric canvas on top
-              tempCtx.drawImage(fc.getElement(), 0, 0, fc.width, fc.height);
+              // Force Fabric to render all objects
+              fc.renderAll();
 
+              // Draw the Fabric overlay on top
+              const fabricCanvasElement = fc.getElement();
+              tempCtx.drawImage(fabricCanvasElement, 0, 0, fc.width, fc.height);
+
+              // Convert to PNG data URL
               drawingDataUrl = tempCanvas.toDataURL("image/png");
               debugLog(
-                `Generated drawing for page ${p.pageNum}, data URL length:`,
-                drawingDataUrl.length,
+                `Generated composite drawing: ${drawingDataUrl.length} bytes`,
               );
+
+              // Mark the entire page for redaction to remove original content
+              deletedRegions.push({
+                x: 0,
+                y: 0,
+                width: fc.width,
+                height: fc.height,
+              });
+            } else {
+              debugLog(
+                "No edits on this page - sending original PDF content only",
+              );
+              // For pages with no edits, send null drawing data
+              // This tells the server to keep the original PDF content
+              drawingDataUrl = null;
             }
 
-            return {
+            annData.push({
               pageNum: p.pageNum,
               canvasWidth: fc.width,
               canvasHeight: fc.height,
-              drawing: drawingDataUrl, // This is what the server expects
-              annotations: [], // Keep empty array for compatibility
-              deletedRegions: [],
-              deletedImages: [],
-            };
-          });
+              drawing: drawingDataUrl, // Will be null for pages with no edits
+              annotations: [],
+              deletedRegions: deletedRegions,
+              deletedImages: deletedImages,
+            });
+          }
 
-          debugLog("Sending annotation data for", annData.length, "pages");
+          debugLog(`\nSending annotation data for ${annData.length} pages`);
           fd.append("annotations", JSON.stringify(annData));
 
+          debugLog("Sending request to server...");
           const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,
@@ -1761,6 +1801,7 @@
           annotBar.classList.remove("show");
           const blob = await res.blob();
           debugLog("Received blob of size:", blob.size);
+          debugLog("=".repeat(50));
 
           showSaveScreen(blob, "edited_" + pdfFile.name);
           toast("PDF saved — preview ready!", "s");

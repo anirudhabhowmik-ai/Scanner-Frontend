@@ -1448,6 +1448,25 @@
           stopTextEdit();
           stopShapeEdit();
           stopImageEdit();
+
+          // Reset tool selection
+          curTool = "none";
+
+          // Remove 'on' class from all tool buttons
+          Object.values(TOOL_IDS).forEach((id) => {
+            document.getElementById(id)?.classList.remove("on");
+          });
+
+          // Reset drawing mode on any remaining canvas (none should exist)
+          const fc = getFC();
+          if (fc) {
+            fc.isDrawingMode = false;
+          }
+
+          // Clear any active selections
+          if (document.activeElement) {
+            document.activeElement.blur();
+          }
         });
 
       /* Outside click */

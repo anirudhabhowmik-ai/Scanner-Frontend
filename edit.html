@@ -1572,16 +1572,22 @@
             // ── Add IMAGES first (below text in Fabric stack) ────────────────────────────
             for (const img of images) {
               if (!img.dataUrl) continue;
+
               await new Promise((resolve) => {
+                // crossOrigin must be null (not "anonymous") for data: URLs in Fabric 5.x
+                // to correctly bind pointer/mouse events to the image object.
                 fabric.Image.fromURL(
                   img.dataUrl,
                   (fimg) => {
                     if (!fimg || !fimg.width) {
+                      console.warn("Image load failed:", img.xref);
                       resolve();
                       return;
                     }
+
                     const destW = img.width * scale;
                     const destH = img.height * scale;
+
                     fimg.set({
                       left: img.x * scale,
                       top: img.y * scale,
@@ -1595,13 +1601,18 @@
                       objectCaching: false,
                     });
                     fimg._cornerRadius = 0;
-                    fimg._pdfYDown = true; // mark as PDF Y-down origin
+
                     fc.add(fimg);
+
+                    // CRITICAL: call setCoords() INSIDE the callback, after fc.add(),
+                    // so Fabric calculates hit-test boundaries while the image element
+                    // is guaranteed to be fully loaded and positioned.
                     fimg.setCoords();
+
                     placed++;
                     resolve();
                   },
-                  { crossOrigin: null },
+                  { crossOrigin: null }, // null = no crossOrigin attribute on <img> element
                 );
               });
             }
@@ -1610,7 +1621,7 @@
             for (const tb of textBlocks) {
               const it = new fabric.IText(tb.text || "", {
                 left: tb.x * scale,
-                top: tb.y * scale, // tb.y is PDF Y-down (top of page = 0)
+                top: tb.y * scale,
                 fontFamily: tb.fontFamily || "Arial",
                 fontSize: Math.max(
                   6,
@@ -1625,8 +1636,6 @@
                 evented: true,
                 objectCaching: false,
               });
-              // Store that this object uses PDF Y-down coordinates
-              it._pdfYDown = true;
               fc.add(it);
               it.setCoords();
               placed++;
@@ -1695,134 +1704,18 @@
         try {
           const fd = new FormData();
           fd.append("file", pdfFile);
-
-          // Replace the entire annData map inside tbSave click handler:
-          const annData = pages.map((p) => {
-            const fc = p.fabricCanvas;
-
-            const annotations = fc
-              .getObjects()
-              .map((obj) => {
-                const type = obj.type;
-
-                // getBoundingRect(true, true) always returns the TRUE top-left
-                // corner in canvas pixel space, regardless of originX/originY.
-                // This is the ONLY correct way to get position for all object types.
-                const br = obj.getBoundingRect(true, true);
-                const left = br.left;
-                const top = br.top;
-                const width = br.width;
-                const height = br.height;
-
-                if (type === "i-text" || type === "text") {
-                  return {
-                    type: "text",
-                    text: obj.text,
-                    x: left,
-                    y: top,
-                    width: width,
-                    height: height,
-                    fontSize: obj.fontSize,
-                    fontFamily: obj.fontFamily,
-                    color: obj.fill,
-                    fontWeight: obj.fontWeight,
-                    fontStyle: obj.fontStyle,
-                    textAlign: obj.textAlign,
-                    lineHeight: obj.lineHeight || 1.2,
-                    pdfYDown: obj._pdfYDown || false,
-                  };
-                } else if (type === "image") {
-                  let src =
-                    obj.originalSrc || (obj.getSrc ? obj.getSrc() : null);
-                  if (!src && obj._element && obj._element.src)
-                    src = obj._element.src;
-                  return {
-                    type: "image",
-                    x: left,
-                    y: top,
-                    width,
-                    height,
-                    imageData: src,
-                    pdfYDown: obj._pdfYDown || false,
-                  };
-                } else if (
-                  ["rect", "circle", "triangle", "line"].includes(type)
-                ) {
-                  const shapeMap = {
-                    rect: "rectangle",
-                    circle: "circle",
-                    triangle: "triangle",
-                    line: "line",
-                  };
-                  return {
-                    type: "shape",
-                    shapeType: shapeMap[type],
-                    x: left,
-                    y: top,
-                    width,
-                    height,
-                    fillColor: obj.fill,
-                    borderColor: obj.stroke,
-                    borderWidth: obj.strokeWidth,
-                  };
-                } else if (type === "path") {
-                  let pathStr = "";
-                  if (obj.path && Array.isArray(obj.path)) {
-                    pathStr = obj.path.map((cmd) => cmd.join(" ")).join(" ");
-                  }
-                  if (!pathStr) return null;
-
-                  const pathLeft = obj.left; // center X when originX=center, else left X
-                  const pathTop = obj.top; // center Y when originY=center, else top Y
-
-                  const cx_offset = obj.left - (obj.width * obj.scaleX) / 2;
-                  const cy_offset = obj.top - (obj.height * obj.scaleY) / 2;
-
-                  const translatedPath = obj.path.map((cmd) => {
-                    const c = [...cmd];
-                    if (c[0] === "M" || c[0] === "L") {
-                      c[1] = c[1] * obj.scaleX + cx_offset;
-                      c[2] = c[2] * obj.scaleY + cy_offset;
-                    } else if (c[0] === "Q") {
-                      c[1] = c[1] * obj.scaleX + cx_offset;
-                      c[2] = c[2] * obj.scaleY + cy_offset;
-                      c[3] = c[3] * obj.scaleX + cx_offset;
-                      c[4] = c[4] * obj.scaleY + cy_offset;
-                    }
-                    return c;
-                  });
-
-                  const translatedPathStr = translatedPath
-                    .map((cmd) => cmd.join(" "))
-                    .join(" ");
-
-                  return {
-                    type: "drawing",
-                    pathData: translatedPathStr,
-                    color: obj.stroke || "#000000",
-                    strokeWidth: (obj.strokeWidth || 2) * obj.scaleX,
-                    opacity: obj.opacity || 1,
-                    dashArray: obj.strokeDashArray || [],
-                  };
-                }
-
-                return null;
-              })
-              .filter(Boolean);
-
-            return {
-              pageNum: p.pageNum,
-              canvasWidth: fc.width,
-              canvasHeight: fc.height,
-              drawing: null,
-              annotations,
-              deletedRegions: [],
-              deletedImages: [],
-            };
-          });
-
+          const annData = pages.map((p) => ({
+            pageNum: p.pageNum,
+            canvasWidth: p.fabricCanvas.width,
+            canvasHeight: p.fabricCanvas.height,
+            drawing: p.fabricCanvas.getObjects().length
+              ? p.fabricCanvas.toDataURL({ format: "png", multiplier: 1 })
+              : null,
+            annotations: [],
+            deletedRegions: [],
+            deletedImages: [],
+          }));
           fd.append("annotations", JSON.stringify(annData));
-
           const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,

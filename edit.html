@@ -1834,8 +1834,6 @@
 
           fd.append("annotations", JSON.stringify(annData));
 
-          fd.append("annotations", JSON.stringify(annData));
-
           const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,

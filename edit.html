@@ -1766,26 +1766,15 @@
                     borderWidth: obj.strokeWidth,
                   };
                 } else if (type === "path") {
-                  // ── Serialize freehand drawing path ──────────────────────
-                  // Fabric stores path as array of commands e.g. [["M",x,y],["L",x,y],...]
-                  // Convert to SVG path string for the backend
                   let pathStr = "";
                   if (obj.path && Array.isArray(obj.path)) {
                     pathStr = obj.path.map((cmd) => cmd.join(" ")).join(" ");
                   }
                   if (!pathStr) return null;
 
-                  // Path coords are in Fabric's own coordinate space (relative to
-                  // the path object's origin). We need to offset by the object's
-                  // true top-left position on the canvas.
-                  // Fabric path objects have their own internal coordinate system
-                  // centered at the path's bounding box center.
-                  // We translate all points by adding the object's canvas position.
                   const pathLeft = obj.left; // center X when originX=center, else left X
                   const pathTop = obj.top; // center Y when originY=center, else top Y
 
-                  // Re-serialize with canvas-space coordinates
-                  // Fabric paths use originX:"center" by default, so obj.left/top is center
                   const cx_offset = obj.left - (obj.width * obj.scaleX) / 2;
                   const cy_offset = obj.top - (obj.height * obj.scaleY) / 2;
 

@@ -438,27 +438,33 @@
       let editingImage = null,
         editingImageFC = null;
 
+      // Debug mode - set to true to see console logs
+      const DEBUG = true;
+
+      function debugLog(...args) {
+        if (DEBUG) console.log("[DEBUG]", ...args);
+      }
+
       /* ═══════════════════════════════════════════════════════
-         HELPERS — wait for one animation frame (layout flush)
-      ═══════════════════════════════════════════════════════ */
+     HELPERS — wait for one animation frame (layout flush)
+  ═══════════════════════════════════════════════════════ */
       const nextFrame = () => new Promise((r) => requestAnimationFrame(r));
 
       /** Read the --sb CSS variable as a pixel number reliably */
       function getSidebarInnerWidth() {
         const sbEl = document.getElementById("sidebar");
-        // offsetWidth is available after first layout; fall back to CSS var
         const w =
           sbEl.offsetWidth ||
           parseInt(
             getComputedStyle(document.documentElement).getPropertyValue("--sb"),
           ) ||
           96;
-        return Math.max(w - 12, 40); // subtract padding, minimum 40
+        return Math.max(w - 12, 40);
       }
 
       /* ═══════════════════════════════════════════════════════
-         CUSTOM MODAL
-      ═══════════════════════════════════════════════════════ */
+     CUSTOM MODAL
+  ═══════════════════════════════════════════════════════ */
       function showModal({
         title = "Notice",
         msg = "",
@@ -515,8 +521,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-         TOAST
-      ═══════════════════════════════════════════════════════ */
+     TOAST
+  ═══════════════════════════════════════════════════════ */
       const TICONS = {
         s: "fa-check-circle",
         e: "fa-exclamation-circle",
@@ -535,8 +541,8 @@
       }
 
       /* ═══════════════════════════════════════════════════════
-         LOADING OVERLAY
-      ═══════════════════════════════════════════════════════ */
+     LOADING OVERLAY
+  ═══════════════════════════════════════════════════════ */
       function showLoading(text = "Loading PDF…", progress = "") {
         document.querySelector("#loadingOverlay .loading-text").textContent =
           text;
@@ -551,8 +557,8 @@
       }
 
       /* ═══════════════════════════════════════════════════════
-         UPLOAD
-      ═══════════════════════════════════════════════════════ */
+     UPLOAD
+  ═══════════════════════════════════════════════════════ */
       document
         .getElementById("fileInput")
         .addEventListener("change", async (e) => {
@@ -564,27 +570,26 @@
         });
 
       async function loadPDF(file) {
+        debugLog("Loading PDF:", file.name);
         showLoading("Parsing PDF…", "");
-        await nextFrame(); // let overlay paint before heavy work
+        await nextFrame();
 
         const buf = await file.arrayBuffer();
         pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
         pages = [];
 
-        // ── FIX 1: Show the editor shell and flush layout BEFORE
-        //           building any page. This ensures sidebar/canvas
-        //           dimensions are non-zero when we read them.
         document.getElementById("uploadScreen").style.display = "none";
         document.getElementById("editorScreen").classList.add("show");
         document.getElementById("sidebar").innerHTML =
           '<div class="sb-title">Pages</div>';
         document.getElementById("canvasArea").innerHTML = "";
 
-        // Wait two frames so the browser completes flex layout
         await nextFrame();
         await nextFrame();
 
         const total = pdfDoc.numPages;
+        debugLog("Total pages:", total);
+
         for (let i = 1; i <= total; i++) {
           updateLoadingProgress(`Page ${i} of ${total}`);
           await buildPage(i);
@@ -597,14 +602,14 @@
       }
 
       /* ═══════════════════════════════════════════════════════
-         BUILD PAGE
-      ═══════════════════════════════════════════════════════ */
+     BUILD PAGE
+  ═══════════════════════════════════════════════════════ */
       async function buildPage(pageNum) {
+        debugLog("Building page:", pageNum);
         const pdfPage = await pdfDoc.getPage(pageNum);
         const base = pdfPage.getViewport({ scale: 1 });
 
         const area = document.getElementById("canvasArea");
-        // ── FIX 2: Use offsetWidth (post-layout) with safe fallback
         const areaW =
           area.offsetWidth ||
           Math.max(window.innerWidth - getSidebarInnerWidth() - 20, 300);
@@ -669,10 +674,7 @@
         fc.on("object:scaling", () => posAnnotBar(fc));
         fc.on("object:rotating", () => posAnnotBar(fc));
 
-        // ── FIX 3: Thumbnail — use getSidebarInnerWidth() which reads
-        //           offsetWidth AFTER the layout flush above.
         const sbInner = getSidebarInnerWidth();
-        // Scale so the thumbnail fits the sidebar width exactly
         const thSc = sbInner / base.width;
         const thVp = pdfPage.getViewport({ scale: thSc });
         const thW = Math.max(Math.round(thVp.width), 1);
@@ -681,7 +683,6 @@
         const thC = document.createElement("canvas");
         thC.width = thW;
         thC.height = thH;
-        // CSS: fill sidebar width, height scales naturally
         thC.style.width = "100%";
         thC.style.height = "auto";
         thC.style.display = "block";
@@ -702,12 +703,14 @@
         document.getElementById("sidebar").appendChild(thItem);
 
         pages.push({ block, pdfCvs, fabricCanvas: fc, scale: sc, pageNum });
+        debugLog("Page built:", pageNum, "Dimensions:", W, "x", H);
       }
 
       /* ═══════════════════════════════════════════════════════
-         PAGE SWITCHING
-      ═══════════════════════════════════════════════════════ */
+     PAGE SWITCHING
+  ═══════════════════════════════════════════════════════ */
       function switchPage(idx) {
+        debugLog("Switching to page:", idx);
         hideAnnotBar();
         stopPathEdit();
         stopTextEdit();
@@ -728,8 +731,8 @@
       const getFC = () => pages[curIdx]?.fabricCanvas;
 
       /* ═══════════════════════════════════════════════════════
-         ANNOTATION BAR
-      ═══════════════════════════════════════════════════════ */
+     ANNOTATION BAR
+  ═══════════════════════════════════════════════════════ */
       const annotBar = document.getElementById("annotBar");
 
       function onSelect(fc) {
@@ -829,8 +832,8 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-         PATH EDIT
-      ═══════════════════════════════════════════════════════ */
+     PATH EDIT
+  ═══════════════════════════════════════════════════════ */
       function startPathEdit(pathObj, fc) {
         editingPath = pathObj;
         editingPathFC = fc;
@@ -907,8 +910,8 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-         TEXT EDIT
-      ═══════════════════════════════════════════════════════ */
+     TEXT EDIT
+  ═══════════════════════════════════════════════════════ */
       function startTextEdit(textObj, fc) {
         editingText = textObj;
         editingTextFC = fc;
@@ -988,8 +991,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-         SHAPE EDIT
-      ═══════════════════════════════════════════════════════ */
+     SHAPE EDIT
+  ═══════════════════════════════════════════════════════ */
       function startShapeEdit(shapeObj, fc) {
         editingShape = shapeObj;
         editingShapeFC = fc;
@@ -1052,8 +1055,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-         IMAGE EDIT
-      ═══════════════════════════════════════════════════════ */
+     IMAGE EDIT
+  ═══════════════════════════════════════════════════════ */
       function startImageEdit(imgObj, fc) {
         editingImage = imgObj;
         editingImageFC = fc;
@@ -1124,8 +1127,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-         TOOL MANAGEMENT
-      ═══════════════════════════════════════════════════════ */
+     TOOL MANAGEMENT
+  ═══════════════════════════════════════════════════════ */
       const TOOL_IDS = {
         draw: "tbDraw",
         text: "tbText",
@@ -1226,8 +1229,8 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-         TOOLBAR WIRING
-      ═══════════════════════════════════════════════════════ */
+     TOOLBAR WIRING
+  ═══════════════════════════════════════════════════════ */
       document.getElementById("tbDraw").addEventListener("click", () => {
         if (curTool === "draw")
           document.getElementById("ppDraw").classList.toggle("open");
@@ -1495,21 +1498,8 @@
       });
 
       /* ═══════════════════════════════════════════════════════
-         EDIT CONTENT
-      ═══════════════════════════════════════════════════════ */
-      // ═══════════════════════════════════════════════════════
-      // EDIT CONTENT — Fixed version
-      // Two bugs fixed:
-      //
-      // FIX 1 (Layer order): Images must be placed on the Fabric canvas BEFORE text
-      //   blocks. Fabric renders objects in insertion order, so whatever is added
-      //   last appears on top. The original PDF always has images behind text, but
-      //   the old code added text first and images second — images ended up on top.
-      //
-      // FIX 2 (White logo area): Handled in edit_pdf.py (fill=None for image
-      //   redactions so the blue footer bar vector is not painted over).
-      // ═══════════════════════════════════════════════════════
-
+     EDIT CONTENT — Fixed version with proper layering
+  ═══════════════════════════════════════════════════════ */
       document
         .getElementById("tbEditContent")
         .addEventListener("click", async () => {
@@ -1528,23 +1518,32 @@
             const fd = new FormData();
             fd.append("file", pdfFile);
             fd.append("pageNum", pageNum);
+
+            debugLog("Extracting content for page:", pageNum);
+
             const res = await fetch(`${API}/extract-edit-content`, {
               method: "POST",
               body: fd,
             });
+
             if (!res.ok) {
               const err = await res
                 .json()
                 .catch(() => ({ error: res.statusText }));
               throw new Error(err.error || res.statusText);
             }
+
             const data = await res.json();
+            debugLog("Extracted data:", data);
+
             const textBlocks = data.textBlocks || [];
             const images = data.images || [];
+
             if (!textBlocks.length && !images.length) {
               toast("No editable content found on this page", "i");
               return;
             }
+
             if (data.cleanedPagePdf) {
               const pdfBytes = Uint8Array.from(atob(data.cleanedPagePdf), (c) =>
                 c.charCodeAt(0),
@@ -1563,19 +1562,17 @@
               await cleanPage.render({ canvasContext: ctx, viewport: vp })
                 .promise;
             }
-            // In edit.html, inside the tbEditContent click handler,
+
             setTool("none");
             applyTool(fc);
 
             let placed = 0;
 
-            // ── Add IMAGES first (below text in Fabric stack) ────────────────────────────
+            // Add IMAGES first (bottom layer)
             for (const img of images) {
               if (!img.dataUrl) continue;
 
               await new Promise((resolve) => {
-                // crossOrigin must be null (not "anonymous") for data: URLs in Fabric 5.x
-                // to correctly bind pointer/mouse events to the image object.
                 fabric.Image.fromURL(
                   img.dataUrl,
                   (fimg) => {
@@ -1603,21 +1600,17 @@
                     fimg._cornerRadius = 0;
 
                     fc.add(fimg);
-
-                    // CRITICAL: call setCoords() INSIDE the callback, after fc.add(),
-                    // so Fabric calculates hit-test boundaries while the image element
-                    // is guaranteed to be fully loaded and positioned.
                     fimg.setCoords();
 
                     placed++;
                     resolve();
                   },
-                  { crossOrigin: null }, // null = no crossOrigin attribute on <img> element
+                  { crossOrigin: null },
                 );
               });
             }
 
-            // ── Add TEXT on top ───────────────────────────────────────────────────────────
+            // Add TEXT on top (above images)
             for (const tb of textBlocks) {
               const it = new fabric.IText(tb.text || "", {
                 left: tb.x * scale,
@@ -1643,8 +1636,6 @@
 
             fc.requestRenderAll();
 
-            // Force Fabric to recalculate object boundaries so click-hit-testing works
-            // on all objects including the newly added image
             fc.getObjects().forEach((obj) => {
               obj.setCoords();
             });
@@ -1658,6 +1649,7 @@
                 type: "application/pdf",
               });
             }
+
             toast(
               `${placed} item(s) extracted & placed — originals removed`,
               "s",
@@ -1673,8 +1665,8 @@
         });
 
       /* ═══════════════════════════════════════════════════════
-         SAVE PDF
-      ═══════════════════════════════════════════════════════ */
+     SAVE PDF — Fixed to match original working version
+  ═══════════════════════════════════════════════════════ */
       let savedBlob = null,
         savedObjectURL = null;
 
@@ -1697,36 +1689,84 @@
           await mAlert("Please load a PDF first.");
           return;
         }
+
+        debugLog("Starting save process...");
+
         const btn = document.getElementById("tbSave");
         btn.disabled = true;
         btn.innerHTML =
           '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
+
         try {
           const fd = new FormData();
           fd.append("file", pdfFile);
-          const annData = pages.map((p) => ({
-            pageNum: p.pageNum,
-            canvasWidth: p.fabricCanvas.width,
-            canvasHeight: p.fabricCanvas.height,
-            drawing: p.fabricCanvas.getObjects().length
-              ? p.fabricCanvas.toDataURL({ format: "png", multiplier: 1 })
-              : null,
-            annotations: [],
-            deletedRegions: [],
-            deletedImages: [],
-          }));
+
+          // Create annotations data in the format the server expects
+          const annData = pages.map((p) => {
+            const fc = p.fabricCanvas;
+            const objects = fc.getObjects();
+
+            debugLog(`Page ${p.pageNum} has ${objects.length} objects`);
+
+            // Generate a PNG of the current canvas state (this is what the server expects)
+            let drawingDataUrl = null;
+            if (objects.length > 0) {
+              // Create a temporary canvas to composite the drawing
+              const tempCanvas = document.createElement("canvas");
+              tempCanvas.width = fc.width;
+              tempCanvas.height = fc.height;
+              const tempCtx = tempCanvas.getContext("2d");
+
+              // Draw the PDF background first (to maintain visual)
+              const pdfCvs = p.pdfCvs;
+              tempCtx.drawImage(pdfCvs, 0, 0, fc.width, fc.height);
+
+              // Then draw the Fabric canvas on top
+              tempCtx.drawImage(fc.getElement(), 0, 0, fc.width, fc.height);
+
+              drawingDataUrl = tempCanvas.toDataURL("image/png");
+              debugLog(
+                `Generated drawing for page ${p.pageNum}, data URL length:`,
+                drawingDataUrl.length,
+              );
+            }
+
+            return {
+              pageNum: p.pageNum,
+              canvasWidth: fc.width,
+              canvasHeight: fc.height,
+              drawing: drawingDataUrl, // This is what the server expects
+              annotations: [], // Keep empty array for compatibility
+              deletedRegions: [],
+              deletedImages: [],
+            };
+          });
+
+          debugLog("Sending annotation data for", annData.length, "pages");
           fd.append("annotations", JSON.stringify(annData));
+
           const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,
           });
-          if (!res.ok) throw new Error(await res.text());
+
+          debugLog("Save response status:", res.status);
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            debugLog("Save error response:", errorText);
+            throw new Error(errorText);
+          }
+
           annotBar.classList.remove("show");
           const blob = await res.blob();
+          debugLog("Received blob of size:", blob.size);
+
           showSaveScreen(blob, "edited_" + pdfFile.name);
           toast("PDF saved — preview ready!", "s");
         } catch (err) {
-          console.error(err);
+          console.error("Save error:", err);
+          debugLog("Save error details:", err.message);
           await mAlert("Save failed: " + err.message, "Error");
         } finally {
           btn.disabled = false;

@@ -1,1923 +1,1801 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PDF Editor | PDFMaster</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
 
-    <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/edit.css" />
-  </head>
-  <body>
-    <section id="header-placeholder"></section>
-    <div id="toastBox"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Editor | PDFMaster</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- Loading overlay (shown while PDF pages render) -->
-    <div id="loadingOverlay">
-      <div class="loading-spinner"></div>
-      <div class="loading-text">Loading PDF…</div>
-      <div class="loading-progress" id="loadingProgress"></div>
-    </div>
+  <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/edit.css" />
+</head>
 
-    <!-- Custom modal -->
-    <div id="modalOverlay">
-      <div class="modal-box">
-        <div class="modal-head">
-          <div class="modal-icon" id="modalIcon">
-            <i id="modalIconI" class="fa fa-circle-info"></i>
-          </div>
-          <div>
-            <div class="modal-title" id="modalTitle">Notice</div>
-            <div class="modal-msg" id="modalMsg"></div>
-          </div>
+<body>
+  <section id="header-placeholder"></section>
+  <div id="toastBox"></div>
+
+  <!-- Loading overlay (shown while PDF pages render) -->
+  <div id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading PDF…</div>
+    <div class="loading-progress" id="loadingProgress"></div>
+  </div>
+
+  <!-- Custom modal -->
+  <div id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div class="modal-icon" id="modalIcon">
+          <i id="modalIconI" class="fa fa-circle-info"></i>
         </div>
-        <div class="modal-actions" id="modalActions"></div>
+        <div>
+          <div class="modal-title" id="modalTitle">Notice</div>
+          <div class="modal-msg" id="modalMsg"></div>
+        </div>
       </div>
+      <div class="modal-actions" id="modalActions"></div>
     </div>
+  </div>
 
-    <!-- Annotation bar -->
-    <div id="annotBar">
-      <button class="ab-btn edit" id="abEdit">
-        <i class="fa fa-pen"></i> Edit
+  <!-- Annotation bar -->
+  <div id="annotBar">
+    <button class="ab-btn edit" id="abEdit">
+      <i class="fa fa-pen"></i> Edit
+    </button>
+    <div class="ab-sep"></div>
+    <button class="ab-btn rot" id="abRot">
+      <i class="fa fa-rotate-right"></i> Rotate
+    </button>
+    <div class="ab-sep"></div>
+    <button class="ab-btn copy" id="abCopy">
+      <i class="fa fa-copy"></i> Copy
+    </button>
+    <div class="ab-sep"></div>
+    <button class="ab-btn del" id="abDel">
+      <i class="fa fa-trash"></i> Delete
+    </button>
+  </div>
+
+  <!-- Upload -->
+  <div id="uploadScreen">
+    <label class="upload-card" for="fileInput">
+      <div class="ico"><i class="fa fa-file-pdf"></i></div>
+      <h2>Upload PDF to Edit</h2>
+      <p>Click to browse or drag &amp; drop<br />your PDF file here</p>
+      <span class="badge">Editing happens entirely in your browser</span>
+    </label>
+    <input type="file" id="fileInput" accept=".pdf" class="hidden" />
+  </div>
+
+  <!-- Editor -->
+  <div id="editorScreen">
+    <div class="file-bar">
+      <i class="fa fa-file-pdf ficon"></i>
+      <span class="fname" id="fileName">document.pdf</span>
+      <button class="xbtn" id="btnClose" title="Remove file">
+        <i class="fa fa-xmark"></i>
       </button>
-      <div class="ab-sep"></div>
-      <button class="ab-btn rot" id="abRot">
-        <i class="fa fa-rotate-right"></i> Rotate
+    </div>
+
+    <div class="toolbar">
+      <button class="tbtn" id="tbDraw">
+        <i class="fa fa-pencil"></i><span>Draw</span>
       </button>
-      <div class="ab-sep"></div>
-      <button class="ab-btn copy" id="abCopy">
-        <i class="fa fa-copy"></i> Copy
+      <button class="tbtn" id="tbText">
+        <i class="fa fa-font"></i><span>Add Text</span>
       </button>
-      <div class="ab-sep"></div>
-      <button class="ab-btn del" id="abDel">
-        <i class="fa fa-trash"></i> Delete
+      <button class="tbtn" id="tbShape">
+        <i class="fa fa-shapes"></i><span>Shape</span>
+      </button>
+      <button class="tbtn" id="tbImage">
+        <i class="fa fa-image"></i><span>Image</span>
+      </button>
+      <button class="tbtn" id="tbEditContent">
+        <i class="fa fa-file-pen"></i><span>Edit Content</span>
+      </button>
+      <div class="tsep"></div>
+      <button class="tbtn" id="tbUndo">
+        <i class="fa fa-rotate-left"></i><span>Undo</span>
+      </button>
+      <button class="tbtn" id="tbClear">
+        <i class="fa fa-eraser"></i><span>Clear</span>
+      </button>
+      <div class="tgap"></div>
+      <button class="tbtn cta" id="tbSave">
+        <i class="fa fa-floppy-disk"></i><span>Save PDF</span>
       </button>
     </div>
 
-    <!-- Upload -->
-    <div id="uploadScreen">
-      <label class="upload-card" for="fileInput">
-        <div class="ico"><i class="fa fa-file-pdf"></i></div>
-        <h2>Upload PDF to Edit</h2>
-        <p>Click to browse or drag &amp; drop<br />your PDF file here</p>
-        <span class="badge">Editing happens entirely in your browser</span>
-      </label>
-      <input type="file" id="fileInput" accept=".pdf" class="hidden" />
-    </div>
-
-    <!-- Editor -->
-    <div id="editorScreen">
-      <div class="file-bar">
-        <i class="fa fa-file-pdf ficon"></i>
-        <span class="fname" id="fileName">document.pdf</span>
-        <button class="xbtn" id="btnClose" title="Remove file">
-          <i class="fa fa-xmark"></i>
-        </button>
-      </div>
-
-      <div class="toolbar">
-        <button class="tbtn" id="tbDraw">
-          <i class="fa fa-pencil"></i><span>Draw</span>
-        </button>
-        <button class="tbtn" id="tbText">
-          <i class="fa fa-font"></i><span>Add Text</span>
-        </button>
-        <button class="tbtn" id="tbShape">
-          <i class="fa fa-shapes"></i><span>Shape</span>
-        </button>
-        <button class="tbtn" id="tbImage">
-          <i class="fa fa-image"></i><span>Image</span>
-        </button>
-        <button class="tbtn" id="tbEditContent">
-          <i class="fa fa-file-pen"></i><span>Edit Content</span>
-        </button>
-        <div class="tsep"></div>
-        <button class="tbtn" id="tbUndo">
-          <i class="fa fa-rotate-left"></i><span>Undo</span>
-        </button>
-        <button class="tbtn" id="tbClear">
-          <i class="fa fa-eraser"></i><span>Clear</span>
-        </button>
-        <div class="tgap"></div>
-        <button class="tbtn cta" id="tbSave">
-          <i class="fa fa-floppy-disk"></i><span>Save PDF</span>
-        </button>
-      </div>
-
-      <!-- Panel host -->
-      <div class="panel-host" id="panelHost">
-        <!-- Draw panel -->
-        <div class="prop-panel" id="ppDraw">
-          <div class="pp-header">
-            <div class="pp-header-left">
-              <span class="pp-header-title">Drawing Options</span>
-              <span class="edit-badge" id="drawEditBadge"
-                ><i class="fa fa-pen"></i> Editing selected</span
-              >
-            </div>
-            <button class="pp-close" id="ppDrawClose" title="Close panel">
-              <i class="fa fa-xmark"></i>
-            </button>
+    <!-- Panel host -->
+    <div class="panel-host" id="panelHost">
+      <!-- Draw panel -->
+      <div class="prop-panel" id="ppDraw">
+        <div class="pp-header">
+          <div class="pp-header-left">
+            <span class="pp-header-title">Drawing Options</span>
+            <span class="edit-badge" id="drawEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
           </div>
-          <div class="pp-row">
-            <div class="pp-field">
-              <label>Color</label>
-              <input type="color" id="dColor" value="#e63946" />
-            </div>
-            <div class="pp-field">
-              <label>Width</label>
-              <select id="dWidth">
-                <option value="1">1 px</option>
-                <option value="2" selected>2 px</option>
-                <option value="3">3 px</option>
-                <option value="5">5 px</option>
-                <option value="8">8 px</option>
-                <option value="12">12 px</option>
-              </select>
-            </div>
-            <div class="pp-field">
-              <label>Style</label>
-              <select id="dStyle">
-                <option value="solid">Solid</option>
-                <option value="dashed">Dashed</option>
-                <option value="dotted">Dotted</option>
-              </select>
-            </div>
-            <div class="pp-field">
-              <label>Opacity %</label>
-              <input
-                type="number"
-                id="dOpacity"
-                min="10"
-                max="100"
-                value="100"
-                style="width: 68px"
-              />
-            </div>
-          </div>
-          <div class="pp-footer">
-            <button class="pp-btn success" id="btnDrawAction">
-              <i class="fa fa-check"></i>
-              <span id="btnDrawActionLabel">Apply Drawing</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Text panel -->
-        <div class="prop-panel" id="ppText">
-          <div class="pp-header">
-            <div class="pp-header-left">
-              <span class="pp-header-title">Text Options</span>
-              <span class="text-edit-badge" id="textEditBadge"
-                ><i class="fa fa-pen"></i> Editing selected</span
-              >
-            </div>
-            <button class="pp-close" id="ppTextClose" title="Close panel">
-              <i class="fa fa-xmark"></i>
-            </button>
-          </div>
-          <div class="pp-row">
-            <div class="pp-field">
-              <label>Color</label
-              ><input type="color" id="tColor" value="#ffffff" />
-            </div>
-            <div class="pp-field">
-              <label>Size</label
-              ><input
-                type="number"
-                id="tSize"
-                min="8"
-                max="96"
-                value="20"
-                style="width: 66px"
-              />
-            </div>
-            <div class="pp-field">
-              <label>Font</label>
-              <select id="tFont">
-                <option>Arial</option>
-                <option>Georgia</option>
-                <option>Courier New</option>
-                <option>Times New Roman</option>
-                <option>Verdana</option>
-                <option>Helvetica</option>
-              </select>
-            </div>
-            <div class="pp-field">
-              <label>Weight</label>
-              <select id="tWeight">
-                <option value="normal">Normal</option>
-                <option value="bold">Bold</option>
-              </select>
-            </div>
-            <div class="pp-field">
-              <label>Align</label>
-              <div class="align-btns" id="tAlignGroup">
-                <button
-                  type="button"
-                  class="align-btn on"
-                  data-align="left"
-                  title="Left"
-                >
-                  <i class="fa fa-align-left"></i>
-                </button>
-                <button
-                  type="button"
-                  class="align-btn"
-                  data-align="center"
-                  title="Center"
-                >
-                  <i class="fa fa-align-center"></i>
-                </button>
-                <button
-                  type="button"
-                  class="align-btn"
-                  data-align="right"
-                  title="Right"
-                >
-                  <i class="fa fa-align-right"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="pp-footer">
-            <button
-              class="pp-btn primary"
-              id="btnAddText"
-              style="display: inline-flex"
-            >
-              <i class="fa fa-plus"></i> Add Text to Page
-            </button>
-            <button
-              class="pp-btn success"
-              id="btnDoneEditText"
-              style="display: none"
-            >
-              <i class="fa fa-check"></i> Done Editing
-            </button>
-          </div>
-        </div>
-
-        <!-- Shape panel -->
-        <div class="prop-panel" id="ppShape">
-          <div class="pp-header">
-            <div class="pp-header-left">
-              <span class="pp-header-title">Shape Options</span>
-              <span class="shape-edit-badge" id="shapeEditBadge"
-                ><i class="fa fa-pen"></i> Editing selected</span
-              >
-            </div>
-            <button class="pp-close" id="ppShapeClose" title="Close panel">
-              <i class="fa fa-xmark"></i>
-            </button>
-          </div>
-          <div class="pp-row">
-            <div class="pp-field">
-              <label>Type</label>
-              <select id="sType">
-                <option value="rect">Rectangle</option>
-                <option value="circle">Circle</option>
-                <option value="triangle">Triangle</option>
-                <option value="line">Line</option>
-              </select>
-            </div>
-            <div class="pp-field">
-              <label>Fill</label
-              ><input type="color" id="sFill" value="#6366f1" />
-            </div>
-            <div class="pp-field">
-              <label>Stroke</label
-              ><input type="color" id="sStroke" value="#312e81" />
-            </div>
-            <div class="pp-field">
-              <label>Stroke W</label
-              ><input
-                type="number"
-                id="sStrokeW"
-                min="0"
-                max="20"
-                value="2"
-                style="width: 62px"
-              />
-            </div>
-          </div>
-          <div class="pp-footer">
-            <button
-              class="pp-btn primary"
-              id="btnAddShape"
-              style="display: inline-flex"
-            >
-              <i class="fa fa-plus"></i> Add Shape to Page
-            </button>
-            <button
-              class="pp-btn success"
-              id="btnDoneEditShape"
-              style="display: none"
-            >
-              <i class="fa fa-check"></i> Done Editing
-            </button>
-          </div>
-        </div>
-
-        <!-- Image panel -->
-        <div class="prop-panel" id="ppImage">
-          <div class="pp-header">
-            <div class="pp-header-left">
-              <span class="pp-header-title">Image Options</span>
-              <span class="image-edit-badge" id="imageEditBadge"
-                ><i class="fa fa-pen"></i> Editing selected</span
-              >
-            </div>
-            <button class="pp-close" id="ppImageClose" title="Close panel">
-              <i class="fa fa-xmark"></i>
-            </button>
-          </div>
-          <div class="pp-row">
-            <div class="pp-field">
-              <label>Opacity %</label
-              ><input
-                type="number"
-                id="iOpacity"
-                min="10"
-                max="100"
-                value="100"
-                style="width: 72px"
-              />
-            </div>
-            <div class="pp-field">
-              <label>Corner Radius</label
-              ><input
-                type="number"
-                id="iRadius"
-                min="0"
-                max="200"
-                value="0"
-                style="width: 80px"
-              />
-            </div>
-          </div>
-          <div class="pp-footer">
-            <button class="pp-btn success" id="btnDoneEditImage">
-              <i class="fa fa-check"></i> Done Editing
-            </button>
-          </div>
-        </div>
-      </div>
-      <!-- /panel-host -->
-
-      <div class="editor-body">
-        <div class="sidebar" id="sidebar">
-          <div class="sb-title">Pages</div>
-        </div>
-        <div class="canvas-area" id="canvasArea"></div>
-      </div>
-    </div>
-
-    <input type="file" id="imgInput" accept="image/*" class="hidden" />
-
-    <!-- Save Result Screen -->
-    <div id="saveScreen">
-      <div class="save-topbar">
-        <div class="save-topbar-left">
-          <i
-            class="fa fa-file-pdf"
-            style="color: var(--danger); font-size: 15px"
-          ></i>
-          <span class="save-fname" id="saveFname">edited_document.pdf</span>
-        </div>
-        <div class="save-topbar-right">
-          <button class="sav-btn download" id="savDownload">
-            <i class="fa fa-download"></i><span>Download</span>
+          <button class="pp-close" id="ppDrawClose" title="Close panel">
+            <i class="fa fa-xmark"></i>
           </button>
-          <button class="sav-btn share" id="savShare">
-            <i class="fa fa-share-nodes"></i><span>Share</span>
-          </button>
-          <button class="sav-btn reset" id="savReset">
-            <i class="fa fa-rotate-left"></i><span>Reset</span>
-          </button>
-          <div class="tsep" style="height: 22px"></div>
-          <button class="sav-btn editpdf" id="savEditPdf">
-            <i class="fa fa-pen-to-square"></i><span>Edit PDF</span>
+        </div>
+        <div class="pp-row">
+          <div class="pp-field">
+            <label>Color</label>
+            <input type="color" id="dColor" value="#e63946" />
+          </div>
+          <div class="pp-field">
+            <label>Width</label>
+            <select id="dWidth">
+              <option value="1">1 px</option>
+              <option value="2" selected>2 px</option>
+              <option value="3">3 px</option>
+              <option value="5">5 px</option>
+              <option value="8">8 px</option>
+              <option value="12">12 px</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label>Style</label>
+            <select id="dStyle">
+              <option value="solid">Solid</option>
+              <option value="dashed">Dashed</option>
+              <option value="dotted">Dotted</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label>Opacity %</label>
+            <input type="number" id="dOpacity" min="10" max="100" value="100" style="width: 68px" />
+          </div>
+        </div>
+        <div class="pp-footer">
+          <button class="pp-btn success" id="btnDrawAction">
+            <i class="fa fa-check"></i>
+            <span id="btnDrawActionLabel">Apply Drawing</span>
           </button>
         </div>
       </div>
-      <div class="save-preview-wrap">
-        <iframe id="savePreview" title="PDF Preview"></iframe>
+
+      <!-- Text panel -->
+      <div class="prop-panel" id="ppText">
+        <div class="pp-header">
+          <div class="pp-header-left">
+            <span class="pp-header-title">Text Options</span>
+            <span class="text-edit-badge" id="textEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
+          </div>
+          <button class="pp-close" id="ppTextClose" title="Close panel">
+            <i class="fa fa-xmark"></i>
+          </button>
+        </div>
+        <div class="pp-row">
+          <div class="pp-field">
+            <label>Color</label><input type="color" id="tColor" value="#ffffff" />
+          </div>
+          <div class="pp-field">
+            <label>Size</label><input type="number" id="tSize" min="8" max="96" value="20" style="width: 66px" />
+          </div>
+          <div class="pp-field">
+            <label>Font</label>
+            <select id="tFont">
+              <option>Arial</option>
+              <option>Georgia</option>
+              <option>Courier New</option>
+              <option>Times New Roman</option>
+              <option>Verdana</option>
+              <option>Helvetica</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label>Weight</label>
+            <select id="tWeight">
+              <option value="normal">Normal</option>
+              <option value="bold">Bold</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label>Align</label>
+            <div class="align-btns" id="tAlignGroup">
+              <button type="button" class="align-btn on" data-align="left" title="Left">
+                <i class="fa fa-align-left"></i>
+              </button>
+              <button type="button" class="align-btn" data-align="center" title="Center">
+                <i class="fa fa-align-center"></i>
+              </button>
+              <button type="button" class="align-btn" data-align="right" title="Right">
+                <i class="fa fa-align-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="pp-footer">
+          <button class="pp-btn primary" id="btnAddText" style="display: inline-flex">
+            <i class="fa fa-plus"></i> Add Text to Page
+          </button>
+          <button class="pp-btn success" id="btnDoneEditText" style="display: none">
+            <i class="fa fa-check"></i> Done Editing
+          </button>
+        </div>
+      </div>
+
+      <!-- Shape panel -->
+      <div class="prop-panel" id="ppShape">
+        <div class="pp-header">
+          <div class="pp-header-left">
+            <span class="pp-header-title">Shape Options</span>
+            <span class="shape-edit-badge" id="shapeEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
+          </div>
+          <button class="pp-close" id="ppShapeClose" title="Close panel">
+            <i class="fa fa-xmark"></i>
+          </button>
+        </div>
+        <div class="pp-row">
+          <div class="pp-field">
+            <label>Type</label>
+            <select id="sType">
+              <option value="rect">Rectangle</option>
+              <option value="circle">Circle</option>
+              <option value="triangle">Triangle</option>
+              <option value="line">Line</option>
+            </select>
+          </div>
+          <div class="pp-field">
+            <label>Fill</label><input type="color" id="sFill" value="#6366f1" />
+          </div>
+          <div class="pp-field">
+            <label>Stroke</label><input type="color" id="sStroke" value="#312e81" />
+          </div>
+          <div class="pp-field">
+            <label>Stroke W</label><input type="number" id="sStrokeW" min="0" max="20" value="2" style="width: 62px" />
+          </div>
+        </div>
+        <div class="pp-footer">
+          <button class="pp-btn primary" id="btnAddShape" style="display: inline-flex">
+            <i class="fa fa-plus"></i> Add Shape to Page
+          </button>
+          <button class="pp-btn success" id="btnDoneEditShape" style="display: none">
+            <i class="fa fa-check"></i> Done Editing
+          </button>
+        </div>
+      </div>
+
+      <!-- Image panel -->
+      <div class="prop-panel" id="ppImage">
+        <div class="pp-header">
+          <div class="pp-header-left">
+            <span class="pp-header-title">Image Options</span>
+            <span class="image-edit-badge" id="imageEditBadge"><i class="fa fa-pen"></i> Editing selected</span>
+          </div>
+          <button class="pp-close" id="ppImageClose" title="Close panel">
+            <i class="fa fa-xmark"></i>
+          </button>
+        </div>
+        <div class="pp-row">
+          <div class="pp-field">
+            <label>Opacity %</label><input type="number" id="iOpacity" min="10" max="100" value="100"
+              style="width: 72px" />
+          </div>
+          <div class="pp-field">
+            <label>Corner Radius</label><input type="number" id="iRadius" min="0" max="200" value="0"
+              style="width: 80px" />
+          </div>
+        </div>
+        <div class="pp-footer">
+          <button class="pp-btn success" id="btnDoneEditImage">
+            <i class="fa fa-check"></i> Done Editing
+          </button>
+        </div>
       </div>
     </div>
+    <!-- /panel-host -->
 
-    <section id="footer-placeholder"></section>
-    <script src="./js/app.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
-    <script>
-      pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+    <div class="editor-body">
+      <div class="sidebar" id="sidebar">
+        <div class="sb-title">Pages</div>
+      </div>
+      <div class="canvas-area" id="canvasArea"></div>
+    </div>
+  </div>
 
-      const API = "http://127.0.0.1:8080";
-      let pdfDoc = null,
-        pdfFile = null;
-      let pages = [];
-      let curIdx = 0;
-      let curTool = "draw";
+  <input type="file" id="imgInput" accept="image/*" class="hidden" />
 
-      let editingPath = null,
-        editingPathFC = null;
-      let editingText = null,
-        editingTextFC = null;
-      let editingShape = null,
-        editingShapeFC = null;
-      let editingImage = null,
-        editingImageFC = null;
+  <!-- Save Result Screen -->
+  <div id="saveScreen">
+    <div class="save-topbar">
+      <div class="save-topbar-left">
+        <i class="fa fa-file-pdf" style="color: var(--danger); font-size: 15px"></i>
+        <span class="save-fname" id="saveFname">edited_document.pdf</span>
+      </div>
+      <div class="save-topbar-right">
+        <button class="sav-btn download" id="savDownload">
+          <i class="fa fa-download"></i><span>Download</span>
+        </button>
+        <button class="sav-btn share" id="savShare">
+          <i class="fa fa-share-nodes"></i><span>Share</span>
+        </button>
+        <button class="sav-btn reset" id="savReset">
+          <i class="fa fa-rotate-left"></i><span>Reset</span>
+        </button>
+        <div class="tsep" style="height: 22px"></div>
+        <button class="sav-btn editpdf" id="savEditPdf">
+          <i class="fa fa-pen-to-square"></i><span>Edit PDF</span>
+        </button>
+      </div>
+    </div>
+    <div class="save-preview-wrap">
+      <iframe id="savePreview" title="PDF Preview"></iframe>
+    </div>
+  </div>
 
-      // Debug mode - set to true to see console logs
-      const DEBUG = true;
+  <section id="footer-placeholder"></section>
+  <script src="./js/app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-      function debugLog(...args) {
-        if (DEBUG) console.log("[DEBUG]", ...args);
-      }
+    const API = "http://127.0.0.1:8080";
+    let pdfDoc = null,
+      pdfFile = null;
+    let pages = [];
+    let curIdx = 0;
+    let curTool = "draw";
 
-      /* ═══════════════════════════════════════════════════════
-     HELPERS — wait for one animation frame (layout flush)
-  ═══════════════════════════════════════════════════════ */
-      const nextFrame = () => new Promise((r) => requestAnimationFrame(r));
+    let editingPath = null,
+      editingPathFC = null;
+    let editingText = null,
+      editingTextFC = null;
+    let editingShape = null,
+      editingShapeFC = null;
+    let editingImage = null,
+      editingImageFC = null;
 
-      /** Read the --sb CSS variable as a pixel number reliably */
-      function getSidebarInnerWidth() {
-        const sbEl = document.getElementById("sidebar");
-        const w =
-          sbEl.offsetWidth ||
-          parseInt(
-            getComputedStyle(document.documentElement).getPropertyValue("--sb"),
-          ) ||
-          96;
-        return Math.max(w - 12, 40);
-      }
+    // Debug mode - set to true to see console logs
+    const DEBUG = true;
 
-      /* ═══════════════════════════════════════════════════════
-     CUSTOM MODAL
-  ═══════════════════════════════════════════════════════ */
-      function showModal({
-        title = "Notice",
-        msg = "",
-        type = "info",
-        buttons,
-      }) {
-        return new Promise((resolve) => {
-          const iconMap = {
-            info: { cls: "info", ic: "fa-circle-info" },
-            warn: { cls: "warn", ic: "fa-triangle-exclamation" },
-            danger: { cls: "danger", ic: "fa-circle-exclamation" },
+    /* ═══════════════════════════════════════════════════════
+   HELPERS — wait for one animation frame (layout flush)
+═══════════════════════════════════════════════════════ */
+    const nextFrame = () => new Promise((r) => requestAnimationFrame(r));
+
+    /** Read the --sb CSS variable as a pixel number reliably */
+    function getSidebarInnerWidth() {
+      const sbEl = document.getElementById("sidebar");
+      const w =
+        sbEl.offsetWidth ||
+        parseInt(
+          getComputedStyle(document.documentElement).getPropertyValue("--sb"),
+        ) ||
+        96;
+      return Math.max(w - 12, 40);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+   CUSTOM MODAL
+═══════════════════════════════════════════════════════ */
+    function showModal({
+      title = "Notice",
+      msg = "",
+      type = "info",
+      buttons,
+    }) {
+      return new Promise((resolve) => {
+        const iconMap = {
+          info: { cls: "info", ic: "fa-circle-info" },
+          warn: { cls: "warn", ic: "fa-triangle-exclamation" },
+          danger: { cls: "danger", ic: "fa-circle-exclamation" },
+        };
+        const im = iconMap[type] || iconMap.info;
+        document.getElementById("modalIcon").className =
+          `modal-icon ${im.cls}`;
+        document.getElementById("modalIconI").className = `fa ${im.ic}`;
+        document.getElementById("modalTitle").textContent = title;
+        document.getElementById("modalMsg").textContent = msg;
+        const actions = document.getElementById("modalActions");
+        actions.innerHTML = "";
+        buttons.forEach((b) => {
+          const btn = document.createElement("button");
+          btn.className = `modal-btn ${b.cls || "secondary"}`;
+          btn.textContent = b.label;
+          btn.onclick = () => {
+            document.getElementById("modalOverlay").classList.remove("show");
+            resolve(b.value);
           };
-          const im = iconMap[type] || iconMap.info;
-          document.getElementById("modalIcon").className =
-            `modal-icon ${im.cls}`;
-          document.getElementById("modalIconI").className = `fa ${im.ic}`;
-          document.getElementById("modalTitle").textContent = title;
-          document.getElementById("modalMsg").textContent = msg;
-          const actions = document.getElementById("modalActions");
-          actions.innerHTML = "";
-          buttons.forEach((b) => {
-            const btn = document.createElement("button");
-            btn.className = `modal-btn ${b.cls || "secondary"}`;
-            btn.textContent = b.label;
-            btn.onclick = () => {
-              document.getElementById("modalOverlay").classList.remove("show");
-              resolve(b.value);
-            };
-            actions.appendChild(btn);
-          });
-          document.getElementById("modalOverlay").classList.add("show");
+          actions.appendChild(btn);
         });
-      }
-      const mAlert = (msg, title = "Notice") =>
-        showModal({
-          title,
-          msg,
-          type: "info",
-          buttons: [{ label: "OK", cls: "primary", value: true }],
-        });
-      const mConfirm = (msg, title = "Confirm", danger = false) =>
-        showModal({
-          title,
-          msg,
-          type: danger ? "danger" : "warn",
-          buttons: [
-            { label: "Cancel", cls: "secondary", value: false },
-            {
-              label: "Confirm",
-              cls: danger ? "danger" : "primary",
-              value: true,
-            },
-          ],
-        });
+        document.getElementById("modalOverlay").classList.add("show");
+      });
+    }
+    const mAlert = (msg, title = "Notice") =>
+      showModal({
+        title,
+        msg,
+        type: "info",
+        buttons: [{ label: "OK", cls: "primary", value: true }],
+      });
+    const mConfirm = (msg, title = "Confirm", danger = false) =>
+      showModal({
+        title,
+        msg,
+        type: danger ? "danger" : "warn",
+        buttons: [
+          { label: "Cancel", cls: "secondary", value: false },
+          {
+            label: "Confirm",
+            cls: danger ? "danger" : "primary",
+            value: true,
+          },
+        ],
+      });
 
-      /* ═══════════════════════════════════════════════════════
-     TOAST
-  ═══════════════════════════════════════════════════════ */
-      const TICONS = {
-        s: "fa-check-circle",
-        e: "fa-exclamation-circle",
-        i: "fa-info-circle",
-      };
-      function toast(msg, type = "i") {
-        const el = document.createElement("div");
-        el.className = `toast ${type}`;
-        el.innerHTML = `<i class="fa ${TICONS[type] || TICONS.i}"></i><span>${msg}</span>`;
-        document.getElementById("toastBox").appendChild(el);
-        setTimeout(() => {
-          el.style.transition = "opacity .3s";
-          el.style.opacity = "0";
-          setTimeout(() => el.remove(), 320);
-        }, 2800);
+    /* ═══════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════ */
+    const TICONS = {
+      s: "fa-check-circle",
+      e: "fa-exclamation-circle",
+      i: "fa-info-circle",
+    };
+    function toast(msg, type = "i") {
+      const el = document.createElement("div");
+      el.className = `toast ${type}`;
+      el.innerHTML = `<i class="fa ${TICONS[type] || TICONS.i}"></i><span>${msg}</span>`;
+      document.getElementById("toastBox").appendChild(el);
+      setTimeout(() => {
+        el.style.transition = "opacity .3s";
+        el.style.opacity = "0";
+        setTimeout(() => el.remove(), 320);
+      }, 2800);
+    }
+
+    /* ═══════════════════════════════════════════════════════
+   LOADING OVERLAY
+═══════════════════════════════════════════════════════ */
+    function showLoading(text = "Loading PDF…", progress = "") {
+      document.querySelector("#loadingOverlay .loading-text").textContent =
+        text;
+      document.getElementById("loadingProgress").textContent = progress;
+      document.getElementById("loadingOverlay").classList.add("show");
+    }
+    function updateLoadingProgress(text) {
+      document.getElementById("loadingProgress").textContent = text;
+    }
+    function hideLoading() {
+      document.getElementById("loadingOverlay").classList.remove("show");
+    }
+
+    /* ═══════════════════════════════════════════════════════
+   UPLOAD
+═══════════════════════════════════════════════════════ */
+    document
+      .getElementById("fileInput")
+      .addEventListener("change", async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        pdfFile = file;
+        document.getElementById("fileName").textContent = file.name;
+        await loadPDF(file);
+      });
+
+    async function loadPDF(file) {
+      showLoading("Parsing PDF…", "");
+      await nextFrame();
+
+      const buf = await file.arrayBuffer();
+      pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
+      pages = [];
+
+      document.getElementById("uploadScreen").style.display = "none";
+      document.getElementById("editorScreen").classList.add("show");
+      document.getElementById("sidebar").innerHTML =
+        '<div class="sb-title">Pages</div>';
+      document.getElementById("canvasArea").innerHTML = "";
+
+      await nextFrame();
+      await nextFrame();
+
+      const total = pdfDoc.numPages;
+
+      for (let i = 1; i <= total; i++) {
+        updateLoadingProgress(`Page ${i} of ${total}`);
+        await buildPage(i);
       }
 
-      /* ═══════════════════════════════════════════════════════
-     LOADING OVERLAY
-  ═══════════════════════════════════════════════════════ */
-      function showLoading(text = "Loading PDF…", progress = "") {
-        document.querySelector("#loadingOverlay .loading-text").textContent =
-          text;
-        document.getElementById("loadingProgress").textContent = progress;
-        document.getElementById("loadingOverlay").classList.add("show");
-      }
-      function updateLoadingProgress(text) {
-        document.getElementById("loadingProgress").textContent = text;
-      }
-      function hideLoading() {
-        document.getElementById("loadingOverlay").classList.remove("show");
-      }
+      curTool = "none";
+      switchPage(0);
+      hideLoading();
+      toast(`PDF loaded — ${total} page(s)`, "s");
+    }
 
-      /* ═══════════════════════════════════════════════════════
-     UPLOAD
-  ═══════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════
+   BUILD PAGE
+═══════════════════════════════════════════════════════ */
+    async function buildPage(pageNum) {
+      const pdfPage = await pdfDoc.getPage(pageNum);
+      const base = pdfPage.getViewport({ scale: 1 });
+
+      const area = document.getElementById("canvasArea");
+      const areaW =
+        area.offsetWidth ||
+        Math.max(window.innerWidth - getSidebarInnerWidth() - 20, 300);
+      const areaH =
+        area.offsetHeight || Math.max(window.innerHeight - 160, 200);
+
+      const pad = 48;
+      const maxW = Math.max(areaW - pad, 300);
+      const maxH = Math.max(areaH - pad, 200);
+
+      let sc = maxW / base.width;
+      if (base.height * sc > maxH) sc = maxH / base.height;
+      sc = Math.max(sc, Math.min(1.5, maxW / base.width));
+
+      const vp = pdfPage.getViewport({ scale: sc });
+      const W = Math.round(vp.width);
+      const H = Math.round(vp.height);
+
+      const block = document.createElement("div");
+      block.className = "page-block";
+      block.style.cssText = `width:${W}px;height:${H}px;`;
+
+      const pdfCvs = document.createElement("canvas");
+      pdfCvs.className = "pdf-bg";
+      pdfCvs.width = W;
+      pdfCvs.height = H;
+      pdfCvs.style.cssText = `width:${W}px;height:${H}px;`;
+      await pdfPage.render({
+        canvasContext: pdfCvs.getContext("2d"),
+        viewport: vp,
+      }).promise;
+
+      const fabEl = document.createElement("canvas");
+      fabEl.className = "fab-layer";
+      fabEl.id = "fc-" + pageNum;
+      fabEl.width = W;
+      fabEl.height = H;
+      fabEl.style.cssText = `width:${W}px;height:${H}px;`;
+
+      block.appendChild(pdfCvs);
+      block.appendChild(fabEl);
+      document.getElementById("canvasArea").appendChild(block);
+
+      const fc = new fabric.Canvas("fc-" + pageNum, {
+        width: W,
+        height: H,
+        selection: true,
+        preserveObjectStacking: true,
+      });
+      fc.setBackgroundColor("rgba(0,0,0,0)", fc.renderAll.bind(fc));
+
+      fc.on("selection:created", () => onSelect(fc));
+      fc.on("selection:updated", () => onSelect(fc));
+      fc.on("selection:cleared", () => {
+        hideAnnotBar();
+        stopPathEdit();
+        stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
+      });
+      fc.on("object:moving", () => posAnnotBar(fc));
+      fc.on("object:scaling", () => posAnnotBar(fc));
+      fc.on("object:rotating", () => posAnnotBar(fc));
+
+      const sbInner = getSidebarInnerWidth();
+      const thSc = sbInner / base.width;
+      const thVp = pdfPage.getViewport({ scale: thSc });
+      const thW = Math.max(Math.round(thVp.width), 1);
+      const thH = Math.max(Math.round(thVp.height), 1);
+
+      const thC = document.createElement("canvas");
+      thC.width = thW;
+      thC.height = thH;
+      thC.style.width = "100%";
+      thC.style.height = "auto";
+      thC.style.display = "block";
+      await pdfPage.render({
+        canvasContext: thC.getContext("2d"),
+        viewport: thVp,
+      }).promise;
+
+      const thItem = document.createElement("div");
+      thItem.className = "thumb";
+      thItem.dataset.idx = pages.length;
+      const pg = document.createElement("div");
+      pg.className = "pg";
+      pg.textContent = "Page " + pageNum;
+      thItem.appendChild(thC);
+      thItem.appendChild(pg);
+      thItem.addEventListener("click", () => switchPage(+thItem.dataset.idx));
+      document.getElementById("sidebar").appendChild(thItem);
+
+      pages.push({ block, pdfCvs, fabricCanvas: fc, scale: sc, pageNum });
+    }
+
+    /* ═══════════════════════════════════════════════════════
+   PAGE SWITCHING
+═══════════════════════════════════════════════════════ */
+    function switchPage(idx) {
+      hideAnnotBar();
+      stopPathEdit();
+      stopTextEdit();
+      stopShapeEdit();
+      stopImageEdit();
+      curIdx = idx;
+      pages.forEach(
+        (p, i) => (p.block.style.display = i === idx ? "block" : "none"),
+      );
       document
-        .getElementById("fileInput")
-        .addEventListener("change", async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-          pdfFile = file;
-          document.getElementById("fileName").textContent = file.name;
-          await loadPDF(file);
-        });
+        .querySelectorAll(".thumb")
+        .forEach((t, i) => t.classList.toggle("active", i === idx));
+      const th = document.querySelectorAll(".thumb")[idx];
+      if (th) th.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      applyTool(getFC());
+    }
 
-      async function loadPDF(file) {
-        debugLog("Loading PDF:", file.name);
-        showLoading("Parsing PDF…", "");
-        await nextFrame();
+    const getFC = () => pages[curIdx]?.fabricCanvas;
 
-        const buf = await file.arrayBuffer();
-        pdfDoc = await pdfjsLib.getDocument({ data: buf }).promise;
-        pages = [];
+    /* ═══════════════════════════════════════════════════════
+   ANNOTATION BAR
+═══════════════════════════════════════════════════════ */
+    const annotBar = document.getElementById("annotBar");
 
-        document.getElementById("uploadScreen").style.display = "none";
-        document.getElementById("editorScreen").classList.add("show");
-        document.getElementById("sidebar").innerHTML =
-          '<div class="sb-title">Pages</div>';
-        document.getElementById("canvasArea").innerHTML = "";
+    function onSelect(fc) {
+      const obj = fc.getActiveObject();
+      if (editingPath && obj !== editingPath) stopPathEdit();
+      if (editingText && obj !== editingText) stopTextEdit();
+      if (editingShape && obj !== editingShape) stopShapeEdit();
+      if (editingImage && obj !== editingImage) stopImageEdit();
+      showAnnotBar(fc);
+    }
 
-        await nextFrame();
-        await nextFrame();
-
-        const total = pdfDoc.numPages;
-        debugLog("Total pages:", total);
-
-        for (let i = 1; i <= total; i++) {
-          updateLoadingProgress(`Page ${i} of ${total}`);
-          await buildPage(i);
-        }
-
-        curTool = "none";
-        switchPage(0);
-        hideLoading();
-        toast(`PDF loaded — ${total} page(s)`, "s");
-      }
-
-      /* ═══════════════════════════════════════════════════════
-     BUILD PAGE
-  ═══════════════════════════════════════════════════════ */
-      async function buildPage(pageNum) {
-        debugLog("Building page:", pageNum);
-        const pdfPage = await pdfDoc.getPage(pageNum);
-        const base = pdfPage.getViewport({ scale: 1 });
-
-        const area = document.getElementById("canvasArea");
-        const areaW =
-          area.offsetWidth ||
-          Math.max(window.innerWidth - getSidebarInnerWidth() - 20, 300);
-        const areaH =
-          area.offsetHeight || Math.max(window.innerHeight - 160, 200);
-
-        const pad = 48;
-        const maxW = Math.max(areaW - pad, 300);
-        const maxH = Math.max(areaH - pad, 200);
-
-        let sc = maxW / base.width;
-        if (base.height * sc > maxH) sc = maxH / base.height;
-        sc = Math.max(sc, Math.min(1.5, maxW / base.width));
-
-        const vp = pdfPage.getViewport({ scale: sc });
-        const W = Math.round(vp.width);
-        const H = Math.round(vp.height);
-
-        const block = document.createElement("div");
-        block.className = "page-block";
-        block.style.cssText = `width:${W}px;height:${H}px;`;
-
-        const pdfCvs = document.createElement("canvas");
-        pdfCvs.className = "pdf-bg";
-        pdfCvs.width = W;
-        pdfCvs.height = H;
-        pdfCvs.style.cssText = `width:${W}px;height:${H}px;`;
-        await pdfPage.render({
-          canvasContext: pdfCvs.getContext("2d"),
-          viewport: vp,
-        }).promise;
-
-        const fabEl = document.createElement("canvas");
-        fabEl.className = "fab-layer";
-        fabEl.id = "fc-" + pageNum;
-        fabEl.width = W;
-        fabEl.height = H;
-        fabEl.style.cssText = `width:${W}px;height:${H}px;`;
-
-        block.appendChild(pdfCvs);
-        block.appendChild(fabEl);
-        document.getElementById("canvasArea").appendChild(block);
-
-        const fc = new fabric.Canvas("fc-" + pageNum, {
-          width: W,
-          height: H,
-          selection: true,
-          preserveObjectStacking: true,
-        });
-        fc.setBackgroundColor("rgba(0,0,0,0)", fc.renderAll.bind(fc));
-
-        fc.on("selection:created", () => onSelect(fc));
-        fc.on("selection:updated", () => onSelect(fc));
-        fc.on("selection:cleared", () => {
-          hideAnnotBar();
-          stopPathEdit();
-          stopTextEdit();
-          stopShapeEdit();
-          stopImageEdit();
-        });
-        fc.on("object:moving", () => posAnnotBar(fc));
-        fc.on("object:scaling", () => posAnnotBar(fc));
-        fc.on("object:rotating", () => posAnnotBar(fc));
-
-        const sbInner = getSidebarInnerWidth();
-        const thSc = sbInner / base.width;
-        const thVp = pdfPage.getViewport({ scale: thSc });
-        const thW = Math.max(Math.round(thVp.width), 1);
-        const thH = Math.max(Math.round(thVp.height), 1);
-
-        const thC = document.createElement("canvas");
-        thC.width = thW;
-        thC.height = thH;
-        thC.style.width = "100%";
-        thC.style.height = "auto";
-        thC.style.display = "block";
-        await pdfPage.render({
-          canvasContext: thC.getContext("2d"),
-          viewport: thVp,
-        }).promise;
-
-        const thItem = document.createElement("div");
-        thItem.className = "thumb";
-        thItem.dataset.idx = pages.length;
-        const pg = document.createElement("div");
-        pg.className = "pg";
-        pg.textContent = "Page " + pageNum;
-        thItem.appendChild(thC);
-        thItem.appendChild(pg);
-        thItem.addEventListener("click", () => switchPage(+thItem.dataset.idx));
-        document.getElementById("sidebar").appendChild(thItem);
-
-        pages.push({ block, pdfCvs, fabricCanvas: fc, scale: sc, pageNum });
-        debugLog("Page built:", pageNum, "Dimensions:", W, "x", H);
-      }
-
-      /* ═══════════════════════════════════════════════════════
-     PAGE SWITCHING
-  ═══════════════════════════════════════════════════════ */
-      function switchPage(idx) {
-        debugLog("Switching to page:", idx);
+    function showAnnotBar(fc) {
+      if (!fc.getActiveObject()) {
         hideAnnotBar();
-        stopPathEdit();
-        stopTextEdit();
-        stopShapeEdit();
-        stopImageEdit();
-        curIdx = idx;
-        pages.forEach(
-          (p, i) => (p.block.style.display = i === idx ? "block" : "none"),
-        );
-        document
-          .querySelectorAll(".thumb")
-          .forEach((t, i) => t.classList.toggle("active", i === idx));
-        const th = document.querySelectorAll(".thumb")[idx];
-        if (th) th.scrollIntoView({ block: "nearest", behavior: "smooth" });
-        applyTool(getFC());
+        return;
       }
+      annotBar.classList.add("show");
+      posAnnotBar(fc);
+    }
+    function hideAnnotBar() {
+      annotBar.classList.remove("show");
+    }
 
-      const getFC = () => pages[curIdx]?.fabricCanvas;
+    function posAnnotBar(fc) {
+      const obj = (fc || getFC())?.getActiveObject?.();
+      if (!obj) return;
+      const block = pages[curIdx]?.block;
+      if (!block) return;
+      const br = block.getBoundingClientRect();
+      const ob = obj.getBoundingRect(true, true);
+      let x = br.left + ob.left + ob.width / 2 - annotBar.offsetWidth / 2;
+      let y = br.top + ob.top - annotBar.offsetHeight - 10;
+      x = Math.max(
+        6,
+        Math.min(x, window.innerWidth - annotBar.offsetWidth - 6),
+      );
+      y = Math.max(
+        6,
+        Math.min(y, window.innerHeight - annotBar.offsetHeight - 6),
+      );
+      annotBar.style.left = x + "px";
+      annotBar.style.top = y + "px";
+    }
 
-      /* ═══════════════════════════════════════════════════════
-     ANNOTATION BAR
-  ═══════════════════════════════════════════════════════ */
-      const annotBar = document.getElementById("annotBar");
+    document.getElementById("abEdit").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const obj = fc.getActiveObject();
+      if (!obj) return;
+      if (obj.type === "i-text" || obj.type === "text")
+        startTextEdit(obj, fc);
+      else if (["rect", "circle", "triangle", "line"].includes(obj.type))
+        startShapeEdit(obj, fc);
+      else if (obj.type === "path") startPathEdit(obj, fc);
+      else if (obj.type === "image") startImageEdit(obj, fc);
+      else toast("Use handles to resize & rotate", "i");
+    });
 
-      function onSelect(fc) {
-        const obj = fc.getActiveObject();
-        if (editingPath && obj !== editingPath) stopPathEdit();
-        if (editingText && obj !== editingText) stopTextEdit();
-        if (editingShape && obj !== editingShape) stopShapeEdit();
-        if (editingImage && obj !== editingImage) stopImageEdit();
-        showAnnotBar(fc);
-      }
+    document.getElementById("abRot").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const obj = fc.getActiveObject();
+      if (!obj) return;
+      obj.rotate((obj.angle || 0) + 15);
+      fc.requestRenderAll();
+      posAnnotBar(fc);
+      toast("Rotated +15°", "i");
+    });
 
-      function showAnnotBar(fc) {
-        if (!fc.getActiveObject()) {
-          hideAnnotBar();
-          return;
-        }
-        annotBar.classList.add("show");
-        posAnnotBar(fc);
-      }
-      function hideAnnotBar() {
-        annotBar.classList.remove("show");
-      }
-
-      function posAnnotBar(fc) {
-        const obj = (fc || getFC())?.getActiveObject?.();
-        if (!obj) return;
-        const block = pages[curIdx]?.block;
-        if (!block) return;
-        const br = block.getBoundingClientRect();
-        const ob = obj.getBoundingRect(true, true);
-        let x = br.left + ob.left + ob.width / 2 - annotBar.offsetWidth / 2;
-        let y = br.top + ob.top - annotBar.offsetHeight - 10;
-        x = Math.max(
-          6,
-          Math.min(x, window.innerWidth - annotBar.offsetWidth - 6),
-        );
-        y = Math.max(
-          6,
-          Math.min(y, window.innerHeight - annotBar.offsetHeight - 6),
-        );
-        annotBar.style.left = x + "px";
-        annotBar.style.top = y + "px";
-      }
-
-      document.getElementById("abEdit").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const obj = fc.getActiveObject();
-        if (!obj) return;
-        if (obj.type === "i-text" || obj.type === "text")
-          startTextEdit(obj, fc);
-        else if (["rect", "circle", "triangle", "line"].includes(obj.type))
-          startShapeEdit(obj, fc);
-        else if (obj.type === "path") startPathEdit(obj, fc);
-        else if (obj.type === "image") startImageEdit(obj, fc);
-        else toast("Use handles to resize & rotate", "i");
-      });
-
-      document.getElementById("abRot").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const obj = fc.getActiveObject();
-        if (!obj) return;
-        obj.rotate((obj.angle || 0) + 15);
-        fc.requestRenderAll();
-        posAnnotBar(fc);
-        toast("Rotated +15°", "i");
-      });
-
-      document.getElementById("abCopy").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const obj = fc.getActiveObject();
-        if (!obj) return;
-        obj.clone((cl) => {
-          cl.set({ left: obj.left + 22, top: obj.top + 22 });
-          fc.add(cl);
-          fc.setActiveObject(cl);
-          fc.renderAll();
-          showAnnotBar(fc);
-          toast("Copied!", "s");
-        });
-      });
-
-      document.getElementById("abDel").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        stopPathEdit();
-        stopTextEdit();
-        stopShapeEdit();
-        stopImageEdit();
-        fc.getActiveObjects().forEach((o) => fc.remove(o));
-        fc.discardActiveObject();
+    document.getElementById("abCopy").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const obj = fc.getActiveObject();
+      if (!obj) return;
+      obj.clone((cl) => {
+        cl.set({ left: obj.left + 22, top: obj.top + 22 });
+        fc.add(cl);
+        fc.setActiveObject(cl);
         fc.renderAll();
-        hideAnnotBar();
-        toast("Deleted", "i");
+        showAnnotBar(fc);
+        toast("Copied!", "s");
       });
+    });
 
-      /* ═══════════════════════════════════════════════════════
-     PATH EDIT
-  ═══════════════════════════════════════════════════════ */
-      function startPathEdit(pathObj, fc) {
-        editingPath = pathObj;
-        editingPathFC = fc;
-        document.getElementById("dColor").value = pathObj.stroke || "#e63946";
-        const curW = pathObj.strokeWidth || 2;
-        const opts = [1, 2, 3, 5, 8, 12];
-        document.getElementById("dWidth").value = opts.reduce((p, c) =>
-          Math.abs(c - curW) < Math.abs(p - curW) ? c : p,
-        );
-        document.getElementById("dOpacity").value = Math.round(
-          (pathObj.opacity || 1) * 100,
-        );
-        const da = pathObj.strokeDashArray;
-        document.getElementById("dStyle").value =
-          !da || !da.length ? "solid" : da[1] <= 5 ? "dotted" : "dashed";
-        document.getElementById("drawEditBadge").classList.add("show");
-        document.getElementById("btnDrawActionLabel").textContent =
-          "Done Editing";
-        document.getElementById("btnDrawAction").className = "pp-btn primary";
+    document.getElementById("abDel").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      stopPathEdit();
+      stopTextEdit();
+      stopShapeEdit();
+      stopImageEdit();
+      fc.getActiveObjects().forEach((o) => fc.remove(o));
+      fc.discardActiveObject();
+      fc.renderAll();
+      hideAnnotBar();
+      toast("Deleted", "i");
+    });
+
+    /* ═══════════════════════════════════════════════════════
+   PATH EDIT
+═══════════════════════════════════════════════════════ */
+    function startPathEdit(pathObj, fc) {
+      editingPath = pathObj;
+      editingPathFC = fc;
+      document.getElementById("dColor").value = pathObj.stroke || "#e63946";
+      const curW = pathObj.strokeWidth || 2;
+      const opts = [1, 2, 3, 5, 8, 12];
+      document.getElementById("dWidth").value = opts.reduce((p, c) =>
+        Math.abs(c - curW) < Math.abs(p - curW) ? c : p,
+      );
+      document.getElementById("dOpacity").value = Math.round(
+        (pathObj.opacity || 1) * 100,
+      );
+      const da = pathObj.strokeDashArray;
+      document.getElementById("dStyle").value =
+        !da || !da.length ? "solid" : da[1] <= 5 ? "dotted" : "dashed";
+      document.getElementById("drawEditBadge").classList.add("show");
+      document.getElementById("btnDrawActionLabel").textContent =
+        "Done Editing";
+      document.getElementById("btnDrawAction").className = "pp-btn primary";
+      openPanel("ppDraw");
+      toast("Editing selected drawing — adjust controls above", "i");
+    }
+
+    function stopPathEdit() {
+      if (!editingPath) return;
+      editingPath = null;
+      editingPathFC = null;
+      document.getElementById("drawEditBadge").classList.remove("show");
+      document.getElementById("btnDrawActionLabel").textContent =
+        "Apply Drawing";
+      document.getElementById("btnDrawAction").className = "pp-btn success";
+    }
+
+    function syncDrawControls() {
+      const color = document.getElementById("dColor").value;
+      const width = parseInt(document.getElementById("dWidth").value);
+      const opacity =
+        parseInt(document.getElementById("dOpacity").value) / 100;
+      const style = document.getElementById("dStyle").value;
+      const dashArr =
+        style === "dashed" ? [10, 6] : style === "dotted" ? [2, 5] : [];
+      if (editingPath && editingPathFC) {
+        editingPath.set({
+          stroke: color,
+          strokeWidth: width,
+          opacity,
+          strokeDashArray: dashArr,
+        });
+        editingPathFC.renderAll();
+      } else {
+        syncBrush();
+      }
+    }
+    ["dColor", "dWidth", "dStyle", "dOpacity"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", syncDrawControls);
+      document
+        .getElementById(id)
+        .addEventListener("change", syncDrawControls);
+    });
+
+    document.getElementById("btnDrawAction").addEventListener("click", () => {
+      if (editingPath) {
+        stopPathEdit();
+        closePanel("ppDraw");
+        setTool("draw");
         openPanel("ppDraw");
-        toast("Editing selected drawing — adjust controls above", "i");
+        showAnnotBar(getFC());
+        toast("Drawing updated", "s");
+      } else {
+        setTool("none");
+        closePanel("ppDraw");
+        toast("Drawing applied — click any annotation to select it", "s");
       }
+    });
 
-      function stopPathEdit() {
-        if (!editingPath) return;
-        editingPath = null;
-        editingPathFC = null;
-        document.getElementById("drawEditBadge").classList.remove("show");
-        document.getElementById("btnDrawActionLabel").textContent =
-          "Apply Drawing";
-        document.getElementById("btnDrawAction").className = "pp-btn success";
+    /* ═══════════════════════════════════════════════════════
+   TEXT EDIT
+═══════════════════════════════════════════════════════ */
+    function startTextEdit(textObj, fc) {
+      editingText = textObj;
+      editingTextFC = fc;
+      document.getElementById("tColor").value = textObj.fill || "#ffffff";
+      document.getElementById("tSize").value = Math.round(
+        textObj.fontSize || 20,
+      );
+      document.getElementById("tFont").value = textObj.fontFamily || "Arial";
+      document.getElementById("tWeight").value =
+        textObj.fontWeight || "normal";
+      const align = textObj.textAlign || "left";
+      document
+        .querySelectorAll("#tAlignGroup .align-btn")
+        .forEach((b) => b.classList.toggle("on", b.dataset.align === align));
+      document.getElementById("textEditBadge").classList.add("show");
+      document.getElementById("btnAddText").style.display = "none";
+      document.getElementById("btnDoneEditText").style.display =
+        "inline-flex";
+      openPanel("ppText");
+      toast("Editing selected text — adjust controls above", "i");
+    }
+
+    function stopTextEdit() {
+      if (!editingText) return;
+      editingText = null;
+      editingTextFC = null;
+      document.getElementById("textEditBadge").classList.remove("show");
+      document.getElementById("btnAddText").style.display = "inline-flex";
+      document.getElementById("btnDoneEditText").style.display = "none";
+    }
+
+    function getTextAlign() {
+      const on = document.querySelector("#tAlignGroup .align-btn.on");
+      return on ? on.dataset.align : "left";
+    }
+
+    function syncTextControls() {
+      const color = document.getElementById("tColor").value;
+      const size = parseInt(document.getElementById("tSize").value);
+      const family = document.getElementById("tFont").value;
+      const weight = document.getElementById("tWeight").value;
+      const align = getTextAlign();
+      if (editingText && editingTextFC) {
+        editingText.set({
+          fill: color,
+          fontSize: size,
+          fontFamily: family,
+          fontWeight: weight,
+          textAlign: align,
+        });
+        editingTextFC.renderAll();
       }
-
-      function syncDrawControls() {
-        const color = document.getElementById("dColor").value;
-        const width = parseInt(document.getElementById("dWidth").value);
-        const opacity =
-          parseInt(document.getElementById("dOpacity").value) / 100;
-        const style = document.getElementById("dStyle").value;
-        const dashArr =
-          style === "dashed" ? [10, 6] : style === "dotted" ? [2, 5] : [];
-        if (editingPath && editingPathFC) {
-          editingPath.set({
-            stroke: color,
-            strokeWidth: width,
-            opacity,
-            strokeDashArray: dashArr,
-          });
-          editingPathFC.renderAll();
-        } else {
-          syncBrush();
-        }
-      }
-      ["dColor", "dWidth", "dStyle", "dOpacity"].forEach((id) => {
-        document.getElementById(id).addEventListener("input", syncDrawControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncDrawControls);
-      });
-
-      document.getElementById("btnDrawAction").addEventListener("click", () => {
-        if (editingPath) {
-          stopPathEdit();
-          closePanel("ppDraw");
-          setTool("draw");
-          openPanel("ppDraw");
-          showAnnotBar(getFC());
-          toast("Drawing updated", "s");
-        } else {
-          setTool("none");
-          closePanel("ppDraw");
-          toast("Drawing applied — click any annotation to select it", "s");
-        }
-      });
-
-      /* ═══════════════════════════════════════════════════════
-     TEXT EDIT
-  ═══════════════════════════════════════════════════════ */
-      function startTextEdit(textObj, fc) {
-        editingText = textObj;
-        editingTextFC = fc;
-        document.getElementById("tColor").value = textObj.fill || "#ffffff";
-        document.getElementById("tSize").value = Math.round(
-          textObj.fontSize || 20,
-        );
-        document.getElementById("tFont").value = textObj.fontFamily || "Arial";
-        document.getElementById("tWeight").value =
-          textObj.fontWeight || "normal";
-        const align = textObj.textAlign || "left";
+    }
+    ["tColor", "tSize", "tFont", "tWeight"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", syncTextControls);
+      document
+        .getElementById(id)
+        .addEventListener("change", syncTextControls);
+    });
+    document.querySelectorAll("#tAlignGroup .align-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         document
           .querySelectorAll("#tAlignGroup .align-btn")
-          .forEach((b) => b.classList.toggle("on", b.dataset.align === align));
-        document.getElementById("textEditBadge").classList.add("show");
-        document.getElementById("btnAddText").style.display = "none";
-        document.getElementById("btnDoneEditText").style.display =
-          "inline-flex";
-        openPanel("ppText");
-        toast("Editing selected text — adjust controls above", "i");
-      }
-
-      function stopTextEdit() {
-        if (!editingText) return;
-        editingText = null;
-        editingTextFC = null;
-        document.getElementById("textEditBadge").classList.remove("show");
-        document.getElementById("btnAddText").style.display = "inline-flex";
-        document.getElementById("btnDoneEditText").style.display = "none";
-      }
-
-      function getTextAlign() {
-        const on = document.querySelector("#tAlignGroup .align-btn.on");
-        return on ? on.dataset.align : "left";
-      }
-
-      function syncTextControls() {
-        const color = document.getElementById("tColor").value;
-        const size = parseInt(document.getElementById("tSize").value);
-        const family = document.getElementById("tFont").value;
-        const weight = document.getElementById("tWeight").value;
-        const align = getTextAlign();
-        if (editingText && editingTextFC) {
-          editingText.set({
-            fill: color,
-            fontSize: size,
-            fontFamily: family,
-            fontWeight: weight,
-            textAlign: align,
-          });
-          editingTextFC.renderAll();
-        }
-      }
-      ["tColor", "tSize", "tFont", "tWeight"].forEach((id) => {
-        document.getElementById(id).addEventListener("input", syncTextControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncTextControls);
+          .forEach((b) => b.classList.remove("on"));
+        btn.classList.add("on");
+        syncTextControls();
       });
-      document.querySelectorAll("#tAlignGroup .align-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll("#tAlignGroup .align-btn")
-            .forEach((b) => b.classList.remove("on"));
-          btn.classList.add("on");
-          syncTextControls();
-        });
-      });
+    });
 
-      document
-        .getElementById("btnDoneEditText")
-        .addEventListener("click", () => {
-          stopTextEdit();
-          closePanel("ppText");
-          showAnnotBar(getFC());
-          toast("Text updated", "s");
-        });
-
-      /* ═══════════════════════════════════════════════════════
-     SHAPE EDIT
-  ═══════════════════════════════════════════════════════ */
-      function startShapeEdit(shapeObj, fc) {
-        editingShape = shapeObj;
-        editingShapeFC = fc;
-        document.getElementById("sFill").value = shapeObj.fill || "#6366f1";
-        document.getElementById("sStroke").value = shapeObj.stroke || "#312e81";
-        document.getElementById("sStrokeW").value = shapeObj.strokeWidth || 2;
-        const typeMap = {
-          rect: "rect",
-          circle: "circle",
-          triangle: "triangle",
-          line: "line",
-        };
-        document.getElementById("sType").value =
-          typeMap[shapeObj.type] || "rect";
-        document.getElementById("sType").disabled = true;
-        document.getElementById("shapeEditBadge").classList.add("show");
-        document.getElementById("btnAddShape").style.display = "none";
-        document.getElementById("btnDoneEditShape").style.display =
-          "inline-flex";
-        openPanel("ppShape");
-        toast("Editing selected shape — adjust controls above", "i");
-      }
-
-      function stopShapeEdit() {
-        if (!editingShape) return;
-        editingShape = null;
-        editingShapeFC = null;
-        document.getElementById("shapeEditBadge").classList.remove("show");
-        document.getElementById("btnAddShape").style.display = "inline-flex";
-        document.getElementById("btnDoneEditShape").style.display = "none";
-        document.getElementById("sType").disabled = false;
-      }
-
-      function syncShapeControls() {
-        if (editingShape && editingShapeFC) {
-          editingShape.set({
-            fill: document.getElementById("sFill").value,
-            stroke: document.getElementById("sStroke").value,
-            strokeWidth: +document.getElementById("sStrokeW").value || 1,
-          });
-          editingShapeFC.renderAll();
-        }
-      }
-      ["sFill", "sStroke", "sStrokeW"].forEach((id) => {
-        document
-          .getElementById(id)
-          .addEventListener("input", syncShapeControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncShapeControls);
-      });
-
-      document
-        .getElementById("btnDoneEditShape")
-        .addEventListener("click", () => {
-          stopShapeEdit();
-          closePanel("ppShape");
-          showAnnotBar(getFC());
-          toast("Shape updated", "s");
-        });
-
-      /* ═══════════════════════════════════════════════════════
-     IMAGE EDIT
-  ═══════════════════════════════════════════════════════ */
-      function startImageEdit(imgObj, fc) {
-        editingImage = imgObj;
-        editingImageFC = fc;
-        document.getElementById("iOpacity").value = Math.round(
-          (imgObj.opacity || 1) * 100,
-        );
-        document.getElementById("iRadius").value = imgObj._cornerRadius || 0;
-        document.getElementById("imageEditBadge").classList.add("show");
-        openPanel("ppImage");
-        toast("Editing image — adjust opacity & corner radius above", "i");
-      }
-
-      function stopImageEdit() {
-        if (!editingImage) return;
-        editingImage = null;
-        editingImageFC = null;
-        document.getElementById("imageEditBadge").classList.remove("show");
-      }
-
-      function applyImageRadius(imgObj, fc, radius) {
-        imgObj._cornerRadius = radius;
-        if (radius <= 0) {
-          imgObj.set("clipPath", null);
-        } else {
-          const w = imgObj.width || imgObj.getScaledWidth();
-          const h = imgObj.height || imgObj.getScaledHeight();
-          const r = Math.min(radius, w / 2, h / 2);
-          imgObj.set(
-            "clipPath",
-            new fabric.Rect({
-              width: w,
-              height: h,
-              rx: r,
-              ry: r,
-              originX: "center",
-              originY: "center",
-              absolutePositioned: false,
-            }),
-          );
-        }
-        fc.requestRenderAll();
-      }
-
-      function syncImageControls() {
-        if (!editingImage || !editingImageFC) return;
-        const opacity =
-          parseInt(document.getElementById("iOpacity").value) / 100;
-        const radius = parseInt(document.getElementById("iRadius").value) || 0;
-        editingImage.set({ opacity: Math.max(0.1, Math.min(1, opacity)) });
-        applyImageRadius(editingImage, editingImageFC, radius);
-      }
-      ["iOpacity", "iRadius"].forEach((id) => {
-        document
-          .getElementById(id)
-          .addEventListener("input", syncImageControls);
-        document
-          .getElementById(id)
-          .addEventListener("change", syncImageControls);
-      });
-
-      document
-        .getElementById("btnDoneEditImage")
-        .addEventListener("click", () => {
-          stopImageEdit();
-          closePanel("ppImage");
-          showAnnotBar(getFC());
-          toast("Image updated", "s");
-        });
-
-      /* ═══════════════════════════════════════════════════════
-     TOOL MANAGEMENT
-  ═══════════════════════════════════════════════════════ */
-      const TOOL_IDS = {
-        draw: "tbDraw",
-        text: "tbText",
-        shape: "tbShape",
-        image: "tbImage",
-      };
-
-      function setTool(name) {
-        if (name !== "draw") stopPathEdit();
-        if (name !== "text") stopTextEdit();
-        if (name !== "shape" && name !== "none") stopShapeEdit();
-        if (name !== "image" && name !== "none") stopImageEdit();
-        curTool = name;
-        Object.entries(TOOL_IDS).forEach(([t, id]) =>
-          document.getElementById(id).classList.toggle("on", t === name),
-        );
-        applyTool(getFC());
-      }
-
-      function applyTool(fc) {
-        if (!fc) return;
-        fc.isDrawingMode = curTool === "draw";
-        if (curTool === "draw") {
-          const b = new fabric.PencilBrush(fc);
-          b.color = document.getElementById("dColor").value;
-          b.width = parseInt(document.getElementById("dWidth").value);
-          fc.freeDrawingBrush = b;
-          fc.off("path:created");
-          fc.on("path:created", (e) => {
-            const s = document.getElementById("dStyle").value;
-            const o = parseInt(document.getElementById("dOpacity").value) / 100;
-            if (s === "dashed") e.path.set({ strokeDashArray: [10, 6] });
-            if (s === "dotted") e.path.set({ strokeDashArray: [2, 5] });
-            e.path.set({ opacity: o });
-            fc.renderAll();
-          });
-        } else {
-          fc.off("path:created");
-        }
-      }
-
-      function syncBrush() {
-        const fc = getFC();
-        if (!fc?.freeDrawingBrush) return;
-        fc.freeDrawingBrush.color = document.getElementById("dColor").value;
-        fc.freeDrawingBrush.width = parseInt(
-          document.getElementById("dWidth").value,
-        );
-      }
-
-      /* ── Panel helpers ── */
-      function openPanel(id) {
-        const btnMap = {
-          ppDraw: "tbDraw",
-          ppText: "tbText",
-          ppShape: "tbShape",
-          ppImage: "tbImage",
-        };
-        const host = document.getElementById("panelHost");
-        const panel = document.getElementById(id);
-        document.querySelectorAll(".prop-panel").forEach((p) => {
-          if (p.id !== id) p.classList.remove("open");
-        });
-        const btnEl = document.getElementById(btnMap[id]);
-        if (btnEl) {
-          const bRect = btnEl.getBoundingClientRect();
-          const hRect = host.getBoundingClientRect();
-          const panelW = Math.max(panel.offsetWidth || 300, 300);
-          let left = bRect.left - hRect.left;
-          left = Math.min(left, Math.max(0, hRect.width - panelW - 4));
-          panel.style.left = left + "px";
-        }
-        panel.classList.add("open");
-      }
-
-      function closePanel(id) {
-        document.getElementById(id)?.classList.remove("open");
-      }
-
-      document.getElementById("ppDrawClose").addEventListener("click", () => {
-        if (editingPath) {
-          stopPathEdit();
-          setTool("draw");
-        }
-        closePanel("ppDraw");
-      });
-      document.getElementById("ppTextClose").addEventListener("click", () => {
+    document
+      .getElementById("btnDoneEditText")
+      .addEventListener("click", () => {
         stopTextEdit();
         closePanel("ppText");
+        showAnnotBar(getFC());
+        toast("Text updated", "s");
       });
-      document.getElementById("ppShapeClose").addEventListener("click", () => {
+
+    /* ═══════════════════════════════════════════════════════
+   SHAPE EDIT
+═══════════════════════════════════════════════════════ */
+    function startShapeEdit(shapeObj, fc) {
+      editingShape = shapeObj;
+      editingShapeFC = fc;
+      document.getElementById("sFill").value = shapeObj.fill || "#6366f1";
+      document.getElementById("sStroke").value = shapeObj.stroke || "#312e81";
+      document.getElementById("sStrokeW").value = shapeObj.strokeWidth || 2;
+      const typeMap = {
+        rect: "rect",
+        circle: "circle",
+        triangle: "triangle",
+        line: "line",
+      };
+      document.getElementById("sType").value =
+        typeMap[shapeObj.type] || "rect";
+      document.getElementById("sType").disabled = true;
+      document.getElementById("shapeEditBadge").classList.add("show");
+      document.getElementById("btnAddShape").style.display = "none";
+      document.getElementById("btnDoneEditShape").style.display =
+        "inline-flex";
+      openPanel("ppShape");
+      toast("Editing selected shape — adjust controls above", "i");
+    }
+
+    function stopShapeEdit() {
+      if (!editingShape) return;
+      editingShape = null;
+      editingShapeFC = null;
+      document.getElementById("shapeEditBadge").classList.remove("show");
+      document.getElementById("btnAddShape").style.display = "inline-flex";
+      document.getElementById("btnDoneEditShape").style.display = "none";
+      document.getElementById("sType").disabled = false;
+    }
+
+    function syncShapeControls() {
+      if (editingShape && editingShapeFC) {
+        editingShape.set({
+          fill: document.getElementById("sFill").value,
+          stroke: document.getElementById("sStroke").value,
+          strokeWidth: +document.getElementById("sStrokeW").value || 1,
+        });
+        editingShapeFC.renderAll();
+      }
+    }
+    ["sFill", "sStroke", "sStrokeW"].forEach((id) => {
+      document
+        .getElementById(id)
+        .addEventListener("input", syncShapeControls);
+      document
+        .getElementById(id)
+        .addEventListener("change", syncShapeControls);
+    });
+
+    document
+      .getElementById("btnDoneEditShape")
+      .addEventListener("click", () => {
         stopShapeEdit();
         closePanel("ppShape");
+        showAnnotBar(getFC());
+        toast("Shape updated", "s");
       });
-      document.getElementById("ppImageClose").addEventListener("click", () => {
+
+    /* ═══════════════════════════════════════════════════════
+   IMAGE EDIT
+═══════════════════════════════════════════════════════ */
+    function startImageEdit(imgObj, fc) {
+      editingImage = imgObj;
+      editingImageFC = fc;
+      document.getElementById("iOpacity").value = Math.round(
+        (imgObj.opacity || 1) * 100,
+      );
+      document.getElementById("iRadius").value = imgObj._cornerRadius || 0;
+      document.getElementById("imageEditBadge").classList.add("show");
+      openPanel("ppImage");
+      toast("Editing image — adjust opacity & corner radius above", "i");
+    }
+
+    function stopImageEdit() {
+      if (!editingImage) return;
+      editingImage = null;
+      editingImageFC = null;
+      document.getElementById("imageEditBadge").classList.remove("show");
+    }
+
+    function applyImageRadius(imgObj, fc, radius) {
+      imgObj._cornerRadius = radius;
+      if (radius <= 0) {
+        imgObj.set("clipPath", null);
+      } else {
+        const w = imgObj.width || imgObj.getScaledWidth();
+        const h = imgObj.height || imgObj.getScaledHeight();
+        const r = Math.min(radius, w / 2, h / 2);
+        imgObj.set(
+          "clipPath",
+          new fabric.Rect({
+            width: w,
+            height: h,
+            rx: r,
+            ry: r,
+            originX: "center",
+            originY: "center",
+            absolutePositioned: false,
+          }),
+        );
+      }
+      fc.requestRenderAll();
+    }
+
+    function syncImageControls() {
+      if (!editingImage || !editingImageFC) return;
+      const opacity =
+        parseInt(document.getElementById("iOpacity").value) / 100;
+      const radius = parseInt(document.getElementById("iRadius").value) || 0;
+      editingImage.set({ opacity: Math.max(0.1, Math.min(1, opacity)) });
+      applyImageRadius(editingImage, editingImageFC, radius);
+    }
+    ["iOpacity", "iRadius"].forEach((id) => {
+      document
+        .getElementById(id)
+        .addEventListener("input", syncImageControls);
+      document
+        .getElementById(id)
+        .addEventListener("change", syncImageControls);
+    });
+
+    document
+      .getElementById("btnDoneEditImage")
+      .addEventListener("click", () => {
         stopImageEdit();
         closePanel("ppImage");
+        showAnnotBar(getFC());
+        toast("Image updated", "s");
       });
 
-      /* ═══════════════════════════════════════════════════════
-     TOOLBAR WIRING
-  ═══════════════════════════════════════════════════════ */
-      document.getElementById("tbDraw").addEventListener("click", () => {
-        if (curTool === "draw")
-          document.getElementById("ppDraw").classList.toggle("open");
-        else {
-          setTool("draw");
-          openPanel("ppDraw");
-        }
-      });
+    /* ═══════════════════════════════════════════════════════
+   TOOL MANAGEMENT
+═══════════════════════════════════════════════════════ */
+    const TOOL_IDS = {
+      draw: "tbDraw",
+      text: "tbText",
+      shape: "tbShape",
+      image: "tbImage",
+    };
 
-      document.getElementById("tbText").addEventListener("click", () => {
-        if (curTool === "text")
-          document.getElementById("ppText").classList.toggle("open");
-        else {
-          stopPathEdit();
-          setTool("text");
-          openPanel("ppText");
-        }
-      });
+    function setTool(name) {
+      if (name !== "draw") stopPathEdit();
+      if (name !== "text") stopTextEdit();
+      if (name !== "shape" && name !== "none") stopShapeEdit();
+      if (name !== "image" && name !== "none") stopImageEdit();
+      curTool = name;
+      Object.entries(TOOL_IDS).forEach(([t, id]) =>
+        document.getElementById(id).classList.toggle("on", t === name),
+      );
+      applyTool(getFC());
+    }
 
-      document.getElementById("btnAddText").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const it = new fabric.IText("Double-click to edit", {
-          left: fc.width / 2,
-          top: fc.height / 2,
-          originX: "center",
-          originY: "center",
-          fontFamily: document.getElementById("tFont").value,
-          fontSize: parseInt(document.getElementById("tSize").value),
-          fill: document.getElementById("tColor").value,
-          fontWeight: document.getElementById("tWeight").value,
-          textAlign: getTextAlign(),
-          editable: true,
+    function applyTool(fc) {
+      if (!fc) return;
+      fc.isDrawingMode = curTool === "draw";
+      if (curTool === "draw") {
+        const b = new fabric.PencilBrush(fc);
+        b.color = document.getElementById("dColor").value;
+        b.width = parseInt(document.getElementById("dWidth").value);
+        fc.freeDrawingBrush = b;
+        fc.off("path:created");
+        fc.on("path:created", (e) => {
+          const s = document.getElementById("dStyle").value;
+          const o = parseInt(document.getElementById("dOpacity").value) / 100;
+          if (s === "dashed") e.path.set({ strokeDashArray: [10, 6] });
+          if (s === "dotted") e.path.set({ strokeDashArray: [2, 5] });
+          e.path.set({ opacity: o });
+          fc.renderAll();
         });
-        fc.add(it);
-        fc.setActiveObject(it);
+      } else {
+        fc.off("path:created");
+      }
+    }
+
+    function syncBrush() {
+      const fc = getFC();
+      if (!fc?.freeDrawingBrush) return;
+      fc.freeDrawingBrush.color = document.getElementById("dColor").value;
+      fc.freeDrawingBrush.width = parseInt(
+        document.getElementById("dWidth").value,
+      );
+    }
+
+    /* ── Panel helpers ── */
+    function openPanel(id) {
+      const btnMap = {
+        ppDraw: "tbDraw",
+        ppText: "tbText",
+        ppShape: "tbShape",
+        ppImage: "tbImage",
+      };
+      const host = document.getElementById("panelHost");
+      const panel = document.getElementById(id);
+      document.querySelectorAll(".prop-panel").forEach((p) => {
+        if (p.id !== id) p.classList.remove("open");
+      });
+      const btnEl = document.getElementById(btnMap[id]);
+      if (btnEl) {
+        const bRect = btnEl.getBoundingClientRect();
+        const hRect = host.getBoundingClientRect();
+        const panelW = Math.max(panel.offsetWidth || 300, 300);
+        let left = bRect.left - hRect.left;
+        left = Math.min(left, Math.max(0, hRect.width - panelW - 4));
+        panel.style.left = left + "px";
+      }
+      panel.classList.add("open");
+    }
+
+    function closePanel(id) {
+      document.getElementById(id)?.classList.remove("open");
+    }
+
+    document.getElementById("ppDrawClose").addEventListener("click", () => {
+      if (editingPath) {
+        stopPathEdit();
+        setTool("draw");
+      }
+      closePanel("ppDraw");
+    });
+    document.getElementById("ppTextClose").addEventListener("click", () => {
+      stopTextEdit();
+      closePanel("ppText");
+    });
+    document.getElementById("ppShapeClose").addEventListener("click", () => {
+      stopShapeEdit();
+      closePanel("ppShape");
+    });
+    document.getElementById("ppImageClose").addEventListener("click", () => {
+      stopImageEdit();
+      closePanel("ppImage");
+    });
+
+    /* ═══════════════════════════════════════════════════════
+   TOOLBAR WIRING
+═══════════════════════════════════════════════════════ */
+    document.getElementById("tbDraw").addEventListener("click", () => {
+      if (curTool === "draw")
+        document.getElementById("ppDraw").classList.toggle("open");
+      else {
+        setTool("draw");
+        openPanel("ppDraw");
+      }
+    });
+
+    document.getElementById("tbText").addEventListener("click", () => {
+      if (curTool === "text")
+        document.getElementById("ppText").classList.toggle("open");
+      else {
+        stopPathEdit();
+        setTool("text");
+        openPanel("ppText");
+      }
+    });
+
+    document.getElementById("btnAddText").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const it = new fabric.IText("Double-click to edit", {
+        left: fc.width / 2,
+        top: fc.height / 2,
+        originX: "center",
+        originY: "center",
+        fontFamily: document.getElementById("tFont").value,
+        fontSize: parseInt(document.getElementById("tSize").value),
+        fill: document.getElementById("tColor").value,
+        fontWeight: document.getElementById("tWeight").value,
+        textAlign: getTextAlign(),
+        editable: true,
+      });
+      fc.add(it);
+      fc.setActiveObject(it);
+      fc.renderAll();
+      setTool("none");
+      closePanel("ppText");
+      showAnnotBar(fc);
+      toast("Text added — double-click to edit", "s");
+    });
+
+    document.getElementById("tbShape").addEventListener("click", () => {
+      if (curTool === "shape")
+        document.getElementById("ppShape").classList.toggle("open");
+      else {
+        stopPathEdit();
+        stopTextEdit();
+        setTool("shape");
+        openPanel("ppShape");
+      }
+    });
+
+    document.getElementById("btnAddShape").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const fill = document.getElementById("sFill").value;
+      const str = document.getElementById("sStroke").value;
+      const sw = parseInt(document.getElementById("sStrokeW").value) || 2;
+      const type = document.getElementById("sType").value;
+      const cx = fc.width / 2,
+        cy = fc.height / 2;
+      let obj;
+      if (type === "rect")
+        obj = new fabric.Rect({
+          left: cx - 75,
+          top: cy - 50,
+          width: 150,
+          height: 100,
+          fill,
+          stroke: str,
+          strokeWidth: sw,
+        });
+      else if (type === "circle")
+        obj = new fabric.Circle({
+          left: cx - 60,
+          top: cy - 60,
+          radius: 60,
+          fill,
+          stroke: str,
+          strokeWidth: sw,
+        });
+      else if (type === "triangle")
+        obj = new fabric.Triangle({
+          left: cx - 60,
+          top: cy - 60,
+          width: 120,
+          height: 100,
+          fill,
+          stroke: str,
+          strokeWidth: sw,
+        });
+      else if (type === "line")
+        obj = new fabric.Line([cx - 80, cy, cx + 80, cy], {
+          stroke: str,
+          strokeWidth: sw + 1,
+          selectable: true,
+        });
+      if (obj) {
+        fc.add(obj);
+        fc.setActiveObject(obj);
         fc.renderAll();
         setTool("none");
-        closePanel("ppText");
+        closePanel("ppShape");
         showAnnotBar(fc);
-        toast("Text added — double-click to edit", "s");
-      });
+        toast("Shape added", "s");
+      }
+    });
 
-      document.getElementById("tbShape").addEventListener("click", () => {
-        if (curTool === "shape")
-          document.getElementById("ppShape").classList.toggle("open");
-        else {
-          stopPathEdit();
-          stopTextEdit();
-          setTool("shape");
-          openPanel("ppShape");
-        }
-      });
+    document.getElementById("tbImage").addEventListener("click", () => {
+      stopPathEdit();
+      stopTextEdit();
+      stopShapeEdit();
+      stopImageEdit();
+      setTool("image");
+      document
+        .querySelectorAll(".prop-panel")
+        .forEach((p) => p.classList.remove("open"));
+      document.getElementById("imgInput").click();
+    });
 
-      document.getElementById("btnAddShape").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const fill = document.getElementById("sFill").value;
-        const str = document.getElementById("sStroke").value;
-        const sw = parseInt(document.getElementById("sStrokeW").value) || 2;
-        const type = document.getElementById("sType").value;
-        const cx = fc.width / 2,
-          cy = fc.height / 2;
-        let obj;
-        if (type === "rect")
-          obj = new fabric.Rect({
-            left: cx - 75,
-            top: cy - 50,
-            width: 150,
-            height: 100,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
+    document.getElementById("imgInput").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        fabric.Image.fromURL(ev.target.result, (img) => {
+          const fc = getFC();
+          if (!fc) return;
+          const max = Math.min(fc.width, fc.height) * 0.5;
+          if (img.width > max) img.scaleToWidth(max);
+          img.set({
+            left: fc.width / 2 - img.getScaledWidth() / 2,
+            top: fc.height / 2 - img.getScaledHeight() / 2,
           });
-        else if (type === "circle")
-          obj = new fabric.Circle({
-            left: cx - 60,
-            top: cy - 60,
-            radius: 60,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
-          });
-        else if (type === "triangle")
-          obj = new fabric.Triangle({
-            left: cx - 60,
-            top: cy - 60,
-            width: 120,
-            height: 100,
-            fill,
-            stroke: str,
-            strokeWidth: sw,
-          });
-        else if (type === "line")
-          obj = new fabric.Line([cx - 80, cy, cx + 80, cy], {
-            stroke: str,
-            strokeWidth: sw + 1,
-            selectable: true,
-          });
-        if (obj) {
-          fc.add(obj);
-          fc.setActiveObject(obj);
+          img._cornerRadius = 0;
+          fc.add(img);
+          fc.setActiveObject(img);
           fc.renderAll();
-          setTool("none");
-          closePanel("ppShape");
+          curTool = "none";
+          Object.entries(TOOL_IDS).forEach(([, id]) =>
+            document.getElementById(id).classList.remove("on"),
+          );
+          applyTool(fc);
           showAnnotBar(fc);
-          toast("Shape added", "s");
-        }
-      });
+          toast(
+            "Image added — click Edit to adjust opacity & corner radius",
+            "s",
+          );
+        });
+      };
+      reader.readAsDataURL(file);
+      e.target.value = "";
+    });
 
-      document.getElementById("tbImage").addEventListener("click", () => {
+    document.getElementById("tbUndo").addEventListener("click", () => {
+      const fc = getFC();
+      if (!fc) return;
+      const objs = fc.getObjects();
+      if (objs.length) {
+        fc.remove(objs[objs.length - 1]);
+        hideAnnotBar();
         stopPathEdit();
         stopTextEdit();
         stopShapeEdit();
         stopImageEdit();
-        setTool("image");
+        toast("Undone", "i");
+      }
+    });
+
+    document.getElementById("tbClear").addEventListener("click", async () => {
+      const ok = await mConfirm(
+        "Clear all annotations on this page?",
+        "Clear Page",
+      );
+      if (!ok) return;
+      const fc = getFC();
+      if (!fc) return;
+      fc.clear();
+      fc.setBackgroundColor("rgba(0,0,0,0)", fc.renderAll.bind(fc));
+      hideAnnotBar();
+      stopPathEdit();
+      stopTextEdit();
+      stopShapeEdit();
+      stopImageEdit();
+      toast("Page cleared", "i");
+    });
+
+    document
+      .getElementById("btnClose")
+      .addEventListener("click", async () => {
+        const ok = await mConfirm(
+          "Remove this PDF? All edits will be lost.",
+          "Remove PDF",
+          true,
+        );
+        if (!ok) return;
+        pages.forEach((p) => p.fabricCanvas.dispose());
+        pages = [];
+        pdfDoc = null;
+        pdfFile = null;
+        curIdx = 0;
+        document.getElementById("canvasArea").innerHTML = "";
+        document.getElementById("sidebar").innerHTML =
+          '<div class="sb-title">Pages</div>';
+        document.getElementById("editorScreen").classList.remove("show");
+        document.getElementById("uploadScreen").style.display = "flex";
+        document.getElementById("fileInput").value = "";
+        hideAnnotBar();
         document
           .querySelectorAll(".prop-panel")
           .forEach((p) => p.classList.remove("open"));
-        document.getElementById("imgInput").click();
-      });
-
-      document.getElementById("imgInput").addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (ev) => {
-          fabric.Image.fromURL(ev.target.result, (img) => {
-            const fc = getFC();
-            if (!fc) return;
-            const max = Math.min(fc.width, fc.height) * 0.5;
-            if (img.width > max) img.scaleToWidth(max);
-            img.set({
-              left: fc.width / 2 - img.getScaledWidth() / 2,
-              top: fc.height / 2 - img.getScaledHeight() / 2,
-            });
-            img._cornerRadius = 0;
-            fc.add(img);
-            fc.setActiveObject(img);
-            fc.renderAll();
-            curTool = "none";
-            Object.entries(TOOL_IDS).forEach(([, id]) =>
-              document.getElementById(id).classList.remove("on"),
-            );
-            applyTool(fc);
-            showAnnotBar(fc);
-            toast(
-              "Image added — click Edit to adjust opacity & corner radius",
-              "s",
-            );
-          });
-        };
-        reader.readAsDataURL(file);
-        e.target.value = "";
-      });
-
-      document.getElementById("tbUndo").addEventListener("click", () => {
-        const fc = getFC();
-        if (!fc) return;
-        const objs = fc.getObjects();
-        if (objs.length) {
-          fc.remove(objs[objs.length - 1]);
-          hideAnnotBar();
-          stopPathEdit();
-          stopTextEdit();
-          stopShapeEdit();
-          stopImageEdit();
-          toast("Undone", "i");
-        }
-      });
-
-      document.getElementById("tbClear").addEventListener("click", async () => {
-        const ok = await mConfirm(
-          "Clear all annotations on this page?",
-          "Clear Page",
-        );
-        if (!ok) return;
-        const fc = getFC();
-        if (!fc) return;
-        fc.clear();
-        fc.setBackgroundColor("rgba(0,0,0,0)", fc.renderAll.bind(fc));
-        hideAnnotBar();
         stopPathEdit();
         stopTextEdit();
         stopShapeEdit();
         stopImageEdit();
-        toast("Page cleared", "i");
-      });
 
-      document
-        .getElementById("btnClose")
-        .addEventListener("click", async () => {
-          const ok = await mConfirm(
-            "Remove this PDF? All edits will be lost.",
-            "Remove PDF",
-            true,
-          );
-          if (!ok) return;
-          pages.forEach((p) => p.fabricCanvas.dispose());
-          pages = [];
-          pdfDoc = null;
-          pdfFile = null;
-          curIdx = 0;
-          document.getElementById("canvasArea").innerHTML = "";
-          document.getElementById("sidebar").innerHTML =
-            '<div class="sb-title">Pages</div>';
-          document.getElementById("editorScreen").classList.remove("show");
-          document.getElementById("uploadScreen").style.display = "flex";
-          document.getElementById("fileInput").value = "";
-          hideAnnotBar();
-          document
-            .querySelectorAll(".prop-panel")
-            .forEach((p) => p.classList.remove("open"));
-          stopPathEdit();
-          stopTextEdit();
-          stopShapeEdit();
-          stopImageEdit();
+        // Reset tool selection
+        curTool = "none";
 
-          // Reset tool selection
-          curTool = "none";
-
-          // Remove 'on' class from all tool buttons
-          Object.values(TOOL_IDS).forEach((id) => {
-            document.getElementById(id)?.classList.remove("on");
-          });
-
-          // Reset drawing mode on any remaining canvas (none should exist)
-          const fc = getFC();
-          if (fc) {
-            fc.isDrawingMode = false;
-          }
-
-          // Clear any active selections
-          if (document.activeElement) {
-            document.activeElement.blur();
-          }
+        // Remove 'on' class from all tool buttons
+        Object.values(TOOL_IDS).forEach((id) => {
+          document.getElementById(id)?.classList.remove("on");
         });
 
-      /* Outside click */
-      document.addEventListener("click", (e) => {
-        if (
-          e.target.closest(".prop-panel") ||
-          e.target.closest(".tbtn") ||
-          e.target.closest("#annotBar") ||
-          e.target.closest("#modalOverlay")
+        // Reset drawing mode on any remaining canvas (none should exist)
+        const fc = getFC();
+        if (fc) {
+          fc.isDrawingMode = false;
+        }
+
+        // Clear any active selections
+        if (document.activeElement) {
+          document.activeElement.blur();
+        }
+      });
+
+    /* Outside click */
+    document.addEventListener("click", (e) => {
+      if (
+        e.target.closest(".prop-panel") ||
+        e.target.closest(".tbtn") ||
+        e.target.closest("#annotBar") ||
+        e.target.closest("#modalOverlay")
+      )
+        return;
+      if (!editingText) closePanel("ppText");
+      if (!editingShape) closePanel("ppShape");
+      if (!editingImage) closePanel("ppImage");
+    });
+
+    /* Keyboard */
+    document.addEventListener("keydown", (e) => {
+      if (
+        (e.key === "Delete" || e.key === "Backspace") &&
+        !["INPUT", "TEXTAREA", "SELECT"].includes(
+          document.activeElement.tagName,
         )
-          return;
-        if (!editingText) closePanel("ppText");
-        if (!editingShape) closePanel("ppShape");
-        if (!editingImage) closePanel("ppImage");
-      });
-
-      /* Keyboard */
-      document.addEventListener("keydown", (e) => {
-        if (
-          (e.key === "Delete" || e.key === "Backspace") &&
-          !["INPUT", "TEXTAREA", "SELECT"].includes(
-            document.activeElement.tagName,
-          )
-        ) {
-          document.getElementById("abDel").click();
-        }
-        if (e.key === "Escape") {
-          if (editingPath) {
-            stopPathEdit();
-            closePanel("ppDraw");
-            setTool("draw");
-            openPanel("ppDraw");
-          } else if (editingText) {
-            stopTextEdit();
-            closePanel("ppText");
-          } else if (editingShape) {
-            stopShapeEdit();
-            closePanel("ppShape");
-          } else if (editingImage) {
-            stopImageEdit();
-            closePanel("ppImage");
-          } else {
-            closePanel("ppText");
-            closePanel("ppShape");
-            closePanel("ppImage");
-          }
-        }
-      });
-
-      /* ═══════════════════════════════════════════════════════
-     EDIT CONTENT — Fixed version with proper layering
-  ═══════════════════════════════════════════════════════ */
-      document
-        .getElementById("tbEditContent")
-        .addEventListener("click", async () => {
-          if (!pdfFile) {
-            toast("Load a PDF first", "e");
-            return;
-          }
-          const btn = document.getElementById("tbEditContent");
-          btn.disabled = true;
-          btn.innerHTML =
-            '<i class="fa fa-spinner fa-spin"></i><span>Extracting…</span>';
-          try {
-            const pageNum = pages[curIdx].pageNum;
-            const scale = pages[curIdx].scale;
-            const fc = getFC();
-            const fd = new FormData();
-            fd.append("file", pdfFile);
-            fd.append("pageNum", pageNum);
-
-            debugLog("Extracting content for page:", pageNum);
-
-            const res = await fetch(`${API}/extract-edit-content`, {
-              method: "POST",
-              body: fd,
-            });
-
-            if (!res.ok) {
-              const err = await res
-                .json()
-                .catch(() => ({ error: res.statusText }));
-              throw new Error(err.error || res.statusText);
-            }
-
-            const data = await res.json();
-            debugLog("Extracted data:", data);
-
-            const textBlocks = data.textBlocks || [];
-            const images = data.images || [];
-
-            if (!textBlocks.length && !images.length) {
-              toast("No editable content found on this page", "i");
-              return;
-            }
-
-            if (data.cleanedPagePdf) {
-              const pdfBytes = Uint8Array.from(atob(data.cleanedPagePdf), (c) =>
-                c.charCodeAt(0),
-              );
-              const cleanDoc = await pdfjsLib.getDocument({ data: pdfBytes })
-                .promise;
-              const cleanPage = await cleanDoc.getPage(pageNum);
-              const vp = cleanPage.getViewport({ scale });
-              const ctx = pages[curIdx].pdfCvs.getContext("2d");
-              ctx.clearRect(
-                0,
-                0,
-                pages[curIdx].pdfCvs.width,
-                pages[curIdx].pdfCvs.height,
-              );
-              await cleanPage.render({ canvasContext: ctx, viewport: vp })
-                .promise;
-            }
-
-            setTool("none");
-            applyTool(fc);
-
-            let placed = 0;
-
-            // Add IMAGES first (bottom layer)
-            for (const img of images) {
-              if (!img.dataUrl) continue;
-
-              await new Promise((resolve) => {
-                fabric.Image.fromURL(
-                  img.dataUrl,
-                  (fimg) => {
-                    if (!fimg || !fimg.width) {
-                      console.warn("Image load failed:", img.xref);
-                      resolve();
-                      return;
-                    }
-
-                    const destW = img.width * scale;
-                    const destH = img.height * scale;
-
-                    fimg.set({
-                      left: img.x * scale,
-                      top: img.y * scale,
-                      scaleX: destW / fimg.width,
-                      scaleY: destH / fimg.height,
-                      selectable: true,
-                      hasControls: true,
-                      hasBorders: true,
-                      evented: true,
-                      lockUniScaling: false,
-                      objectCaching: false,
-                    });
-                    fimg._cornerRadius = 0;
-
-                    fc.add(fimg);
-                    fimg.setCoords();
-
-                    placed++;
-                    resolve();
-                  },
-                  { crossOrigin: null },
-                );
-              });
-            }
-
-            // Add TEXT on top (above images)
-            for (const tb of textBlocks) {
-              const it = new fabric.IText(tb.text || "", {
-                left: tb.x * scale,
-                top: tb.y * scale,
-                fontFamily: tb.fontFamily || "Arial",
-                fontSize: Math.max(
-                  6,
-                  (tb.originalHeight ?? tb.height) * scale * 0.88,
-                ),
-                fill: tb.color || "#000000",
-                fontWeight: tb.fontWeight || "normal",
-                fontStyle: tb.fontStyle || "normal",
-                editable: true,
-                selectable: true,
-                hasControls: true,
-                evented: true,
-                objectCaching: false,
-              });
-              fc.add(it);
-              it.setCoords();
-              placed++;
-            }
-
-            fc.requestRenderAll();
-
-            fc.getObjects().forEach((obj) => {
-              obj.setCoords();
-            });
-            fc.requestRenderAll();
-
-            if (data.cleanedFullPdf) {
-              const bytes = Uint8Array.from(atob(data.cleanedFullPdf), (c) =>
-                c.charCodeAt(0),
-              );
-              pdfFile = new File([bytes], pdfFile.name, {
-                type: "application/pdf",
-              });
-            }
-
-            toast(
-              `${placed} item(s) extracted & placed — originals removed`,
-              "s",
-            );
-          } catch (err) {
-            console.error(err);
-            toast("Extract failed: " + err.message, "e");
-          } finally {
-            btn.disabled = false;
-            btn.innerHTML =
-              '<i class="fa fa-file-pen"></i><span>Edit Content</span>';
-          }
-        });
-
-      /* ═══════════════════════════════════════════════════════
-     SAVE PDF — Fixed to match original working version
-  ═══════════════════════════════════════════════════════ */
-      let savedBlob = null,
-        savedObjectURL = null;
-
-      function showSaveScreen(blob, filename) {
-        if (savedObjectURL) URL.revokeObjectURL(savedObjectURL);
-        savedBlob = blob;
-        savedObjectURL = URL.createObjectURL(blob);
-        document.getElementById("saveFname").textContent = filename;
-        document.getElementById("savePreview").src = savedObjectURL;
-        document.getElementById("editorScreen").classList.remove("show");
-        document.getElementById("saveScreen").classList.add("show");
+      ) {
+        document.getElementById("abDel").click();
       }
-
-      function hideSaveScreen() {
-        document.getElementById("saveScreen").classList.remove("show");
+      if (e.key === "Escape") {
+        if (editingPath) {
+          stopPathEdit();
+          closePanel("ppDraw");
+          setTool("draw");
+          openPanel("ppDraw");
+        } else if (editingText) {
+          stopTextEdit();
+          closePanel("ppText");
+        } else if (editingShape) {
+          stopShapeEdit();
+          closePanel("ppShape");
+        } else if (editingImage) {
+          stopImageEdit();
+          closePanel("ppImage");
+        } else {
+          closePanel("ppText");
+          closePanel("ppShape");
+          closePanel("ppImage");
+        }
       }
+    });
 
-      /* ═══════════════════════════════════════════════════════
-   SAVE PDF — Fixed to prevent content duplication
+    /* ═══════════════════════════════════════════════════════
+   EDIT CONTENT — Fixed version with proper layering
 ═══════════════════════════════════════════════════════ */
-      /* ═══════════════════════════════════════════════════════
-   SAVE PDF — Only send drawing data when there are edits
-═══════════════════════════════════════════════════════ */
-      document.getElementById("tbSave").addEventListener("click", async () => {
+    document
+      .getElementById("tbEditContent")
+      .addEventListener("click", async () => {
         if (!pdfFile) {
-          await mAlert("Please load a PDF first.");
+          toast("Load a PDF first", "e");
           return;
         }
-
-        debugLog("=".repeat(50));
-        debugLog("Starting save process...");
-
-        const btn = document.getElementById("tbSave");
+        const btn = document.getElementById("tbEditContent");
         btn.disabled = true;
         btn.innerHTML =
-          '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
-
+          '<i class="fa fa-spinner fa-spin"></i><span>Extracting…</span>';
         try {
+          const pageNum = pages[curIdx].pageNum;
+          const scale = pages[curIdx].scale;
+          const fc = getFC();
           const fd = new FormData();
           fd.append("file", pdfFile);
+          fd.append("pageNum", pageNum);
 
-          // Create annotations data for all pages
-          const annData = [];
 
-          for (let i = 0; i < pages.length; i++) {
-            const p = pages[i];
-            const fc = p.fabricCanvas;
-            const objects = fc.getObjects();
-
-            // Detect page orientation
-            const isPortrait = fc.height > fc.width;
-            debugLog(`\n--- Processing page ${i + 1} ---`);
-            debugLog(
-              `Canvas dimensions: ${fc.width} x ${fc.height} - ${isPortrait ? "PORTRAIT" : "LANDSCAPE"}`,
-            );
-            debugLog(`Page has ${objects.length} objects`);
-
-            let drawingDataUrl = null;
-            let deletedRegions = [];
-            let deletedImages = [];
-
-            // CRITICAL FIX: Only generate drawing data if there are actual edits
-            if (objects.length > 0) {
-              debugLog("Page has edits - generating composite drawing");
-
-              // Create a temporary canvas to composite the drawing
-              const tempCanvas = document.createElement("canvas");
-              tempCanvas.width = fc.width;
-              tempCanvas.height = fc.height;
-              const tempCtx = tempCanvas.getContext("2d");
-
-              // Draw the PDF background first
-              tempCtx.drawImage(p.pdfCvs, 0, 0, fc.width, fc.height);
-
-              // Force Fabric to render all objects
-              fc.renderAll();
-
-              // Draw the Fabric overlay on top
-              const fabricCanvasElement = fc.getElement();
-              tempCtx.drawImage(fabricCanvasElement, 0, 0, fc.width, fc.height);
-
-              // Convert to PNG data URL
-              drawingDataUrl = tempCanvas.toDataURL("image/png");
-              debugLog(
-                `Generated composite drawing: ${drawingDataUrl.length} bytes`,
-              );
-
-              // Mark the entire page for redaction to remove original content
-              deletedRegions.push({
-                x: 0,
-                y: 0,
-                width: fc.width,
-                height: fc.height,
-              });
-            } else {
-              debugLog(
-                "No edits on this page - sending original PDF content only",
-              );
-              // For pages with no edits, send null drawing data
-              // This tells the server to keep the original PDF content
-              drawingDataUrl = null;
-            }
-
-            annData.push({
-              pageNum: p.pageNum,
-              canvasWidth: fc.width,
-              canvasHeight: fc.height,
-              drawing: drawingDataUrl, // Will be null for pages with no edits
-              annotations: [],
-              deletedRegions: deletedRegions,
-              deletedImages: deletedImages,
-            });
-          }
-
-          debugLog(`\nSending annotation data for ${annData.length} pages`);
-          fd.append("annotations", JSON.stringify(annData));
-
-          debugLog("Sending request to server...");
-          const res = await fetch(`${API}/edit-pdf`, {
+          const res = await fetch(`${API}/extract-edit-content`, {
             method: "POST",
             body: fd,
           });
 
-          debugLog("Save response status:", res.status);
-
           if (!res.ok) {
-            const errorText = await res.text();
-            debugLog("Save error response:", errorText);
-            throw new Error(errorText);
+            const err = await res
+              .json()
+              .catch(() => ({ error: res.statusText }));
+            throw new Error(err.error || res.statusText);
           }
 
-          annotBar.classList.remove("show");
-          const blob = await res.blob();
-          debugLog("Received blob of size:", blob.size);
-          debugLog("=".repeat(50));
+          const data = await res.json();
 
-          showSaveScreen(blob, "edited_" + pdfFile.name);
-          toast("PDF saved — preview ready!", "s");
+          const textBlocks = data.textBlocks || [];
+          const images = data.images || [];
+
+          if (!textBlocks.length && !images.length) {
+            toast("No editable content found on this page", "i");
+            return;
+          }
+
+          if (data.cleanedPagePdf) {
+            const pdfBytes = Uint8Array.from(atob(data.cleanedPagePdf), (c) =>
+              c.charCodeAt(0),
+            );
+            const cleanDoc = await pdfjsLib.getDocument({ data: pdfBytes })
+              .promise;
+            const cleanPage = await cleanDoc.getPage(pageNum);
+            const vp = cleanPage.getViewport({ scale });
+            const ctx = pages[curIdx].pdfCvs.getContext("2d");
+            ctx.clearRect(
+              0,
+              0,
+              pages[curIdx].pdfCvs.width,
+              pages[curIdx].pdfCvs.height,
+            );
+            await cleanPage.render({ canvasContext: ctx, viewport: vp })
+              .promise;
+          }
+
+          setTool("none");
+          applyTool(fc);
+
+          let placed = 0;
+
+          // Add IMAGES first (bottom layer)
+          for (const img of images) {
+            if (!img.dataUrl) continue;
+
+            await new Promise((resolve) => {
+              fabric.Image.fromURL(
+                img.dataUrl,
+                (fimg) => {
+                  if (!fimg || !fimg.width) {
+                    console.warn("Image load failed:", img.xref);
+                    resolve();
+                    return;
+                  }
+
+                  const destW = img.width * scale;
+                  const destH = img.height * scale;
+
+                  fimg.set({
+                    left: img.x * scale,
+                    top: img.y * scale,
+                    scaleX: destW / fimg.width,
+                    scaleY: destH / fimg.height,
+                    selectable: true,
+                    hasControls: true,
+                    hasBorders: true,
+                    evented: true,
+                    lockUniScaling: false,
+                    objectCaching: false,
+                  });
+                  fimg._cornerRadius = 0;
+
+                  fc.add(fimg);
+                  fimg.setCoords();
+
+                  placed++;
+                  resolve();
+                },
+                { crossOrigin: null },
+              );
+            });
+          }
+
+          // Add TEXT on top (above images)
+          for (const tb of textBlocks) {
+            const it = new fabric.IText(tb.text || "", {
+              left: tb.x * scale,
+              top: tb.y * scale,
+              fontFamily: tb.fontFamily || "Arial",
+              fontSize: Math.max(
+                6,
+                (tb.originalHeight ?? tb.height) * scale * 0.88,
+              ),
+              fill: tb.color || "#000000",
+              fontWeight: tb.fontWeight || "normal",
+              fontStyle: tb.fontStyle || "normal",
+              editable: true,
+              selectable: true,
+              hasControls: true,
+              evented: true,
+              objectCaching: false,
+            });
+            fc.add(it);
+            it.setCoords();
+            placed++;
+          }
+
+          fc.requestRenderAll();
+
+          fc.getObjects().forEach((obj) => {
+            obj.setCoords();
+          });
+          fc.requestRenderAll();
+
+          if (data.cleanedFullPdf) {
+            const bytes = Uint8Array.from(atob(data.cleanedFullPdf), (c) =>
+              c.charCodeAt(0),
+            );
+            pdfFile = new File([bytes], pdfFile.name, {
+              type: "application/pdf",
+            });
+          }
+
+          toast(
+            `${placed} item(s) extracted & placed — originals removed`,
+            "s",
+          );
         } catch (err) {
-          console.error("Save error:", err);
-          debugLog("Save error details:", err.message);
-          await mAlert("Save failed: " + err.message, "Error");
+          console.error(err);
+          toast("Extract failed: " + err.message, "e");
         } finally {
           btn.disabled = false;
           btn.innerHTML =
-            '<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
+            '<i class="fa fa-file-pen"></i><span>Edit Content</span>';
         }
       });
 
-      document.getElementById("savDownload").addEventListener("click", () => {
+    /* ═══════════════════════════════════════════════════════
+   SAVE PDF — Fixed to match original working version
+═══════════════════════════════════════════════════════ */
+    let savedBlob = null,
+      savedObjectURL = null;
+
+    function showSaveScreen(blob, filename) {
+      if (savedObjectURL) URL.revokeObjectURL(savedObjectURL);
+      savedBlob = blob;
+      savedObjectURL = URL.createObjectURL(blob);
+      document.getElementById("saveFname").textContent = filename;
+      document.getElementById("savePreview").src = savedObjectURL;
+      document.getElementById("editorScreen").classList.remove("show");
+      document.getElementById("saveScreen").classList.add("show");
+    }
+
+    function hideSaveScreen() {
+      document.getElementById("saveScreen").classList.remove("show");
+    }
+
+    /* ═══════════════════════════════════════════════════════
+ SAVE PDF — Fixed to prevent content duplication
+═══════════════════════════════════════════════════════ */
+    /* ═══════════════════════════════════════════════════════
+ SAVE PDF — Only send drawing data when there are edits
+═══════════════════════════════════════════════════════ */
+    document.getElementById("tbSave").addEventListener("click", async () => {
+      if (!pdfFile) {
+        await mAlert("Please load a PDF first.");
+        return;
+      }
+
+      const btn = document.getElementById("tbSave");
+      btn.disabled = true;
+      btn.innerHTML =
+        '<i class="fa fa-spinner fa-spin"></i><span>Saving…</span>';
+
+      try {
+        const fd = new FormData();
+        fd.append("file", pdfFile);
+
+        // Create annotations data for all pages
+        const annData = [];
+
+        for (let i = 0; i < pages.length; i++) {
+          const p = pages[i];
+          const fc = p.fabricCanvas;
+          const objects = fc.getObjects();
+
+          // Detect page orientation
+          const isPortrait = fc.height > fc.width;
+          let drawingDataUrl = null;
+          let deletedRegions = [];
+          let deletedImages = [];
+
+          // CRITICAL FIX: Only generate drawing data if there are actual edits
+          if (objects.length > 0) {
+            // Create a temporary canvas to composite the drawing
+            const tempCanvas = document.createElement("canvas");
+            tempCanvas.width = fc.width;
+            tempCanvas.height = fc.height;
+            const tempCtx = tempCanvas.getContext("2d");
+
+            // Draw the PDF background first
+            tempCtx.drawImage(p.pdfCvs, 0, 0, fc.width, fc.height);
+
+            // Force Fabric to render all objects
+            fc.renderAll();
+
+            // Draw the Fabric overlay on top
+            const fabricCanvasElement = fc.getElement();
+            tempCtx.drawImage(fabricCanvasElement, 0, 0, fc.width, fc.height);
+
+            // Convert to PNG data URL
+            drawingDataUrl = tempCanvas.toDataURL("image/png");
+
+            // Mark the entire page for redaction to remove original content
+            deletedRegions.push({
+              x: 0,
+              y: 0,
+              width: fc.width,
+              height: fc.height,
+            });
+          } else {
+            drawingDataUrl = null;
+          }
+
+          annData.push({
+            pageNum: p.pageNum,
+            canvasWidth: fc.width,
+            canvasHeight: fc.height,
+            drawing: drawingDataUrl, // Will be null for pages with no edits
+            annotations: [],
+            deletedRegions: deletedRegions,
+            deletedImages: deletedImages,
+          });
+        }
+
+        fd.append("annotations", JSON.stringify(annData));
+
+        const res = await fetch(`${API}/edit-pdf`, {
+          method: "POST",
+          body: fd,
+        });
+
+
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(errorText);
+        }
+
+        annotBar.classList.remove("show");
+        const blob = await res.blob();
+
+        showSaveScreen(blob, "edited_" + pdfFile.name);
+        toast("PDF saved — preview ready!", "s");
+      } catch (err) {
+        console.error("Save error:", err);
+        await mAlert("Save failed: " + err.message, "Error");
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML =
+          '<i class="fa fa-floppy-disk"></i><span>Save PDF</span>';
+      }
+    });
+
+    document.getElementById("savDownload").addEventListener("click", () => {
+      if (!savedBlob) return;
+      const a = document.createElement("a");
+      a.href = savedObjectURL;
+      a.download = document.getElementById("saveFname").textContent;
+      a.click();
+      toast("Downloading…", "s");
+    });
+
+    document
+      .getElementById("savShare")
+      .addEventListener("click", async () => {
         if (!savedBlob) return;
-        const a = document.createElement("a");
-        a.href = savedObjectURL;
-        a.download = document.getElementById("saveFname").textContent;
-        a.click();
-        toast("Downloading…", "s");
-      });
-
-      document
-        .getElementById("savShare")
-        .addEventListener("click", async () => {
-          if (!savedBlob) return;
-          const filename = document.getElementById("saveFname").textContent;
-          if (navigator.share && navigator.canShare) {
-            try {
-              const file = new File([savedBlob], filename, {
-                type: "application/pdf",
-              });
-              if (navigator.canShare({ files: [file] })) {
-                await navigator.share({ files: [file], title: filename });
-                return;
-              }
-            } catch (e) {}
-          }
+        const filename = document.getElementById("saveFname").textContent;
+        if (navigator.share && navigator.canShare) {
           try {
-            await navigator.clipboard.writeText(savedObjectURL);
-            toast("Link copied to clipboard!", "s");
-          } catch {
-            toast("Share not supported on this browser", "e");
-          }
-        });
+            const file = new File([savedBlob], filename, {
+              type: "application/pdf",
+            });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({ files: [file], title: filename });
+              return;
+            }
+          } catch (e) { }
+        }
+        try {
+          await navigator.clipboard.writeText(savedObjectURL);
+          toast("Link copied to clipboard!", "s");
+        } catch {
+          toast("Share not supported on this browser", "e");
+        }
+      });
 
-      document
-        .getElementById("savReset")
-        .addEventListener("click", async () => {
-          const ok = await mConfirm(
-            "Start over? The current edited PDF will be discarded.",
-            "Reset",
-            true,
-          );
-          if (!ok) return;
-          pages.forEach((p) => p.fabricCanvas.dispose());
-          pages = [];
-          pdfDoc = null;
-          pdfFile = null;
-          curIdx = 0;
-          document.getElementById("canvasArea").innerHTML = "";
-          document.getElementById("sidebar").innerHTML =
-            '<div class="sb-title">Pages</div>';
-          document.getElementById("fileInput").value = "";
-          hideAnnotBar();
-          document
-            .querySelectorAll(".prop-panel")
-            .forEach((p) => p.classList.remove("open"));
-          stopPathEdit();
-          stopTextEdit();
-          stopShapeEdit();
-          stopImageEdit();
-          hideSaveScreen();
-          document.getElementById("uploadScreen").style.display = "flex";
-          if (savedObjectURL) {
-            URL.revokeObjectURL(savedObjectURL);
-            savedObjectURL = null;
-          }
-          savedBlob = null;
-          toast("Reset — upload a new PDF to start", "i");
-        });
-
-      document.getElementById("savEditPdf").addEventListener("click", () => {
+    document
+      .getElementById("savReset")
+      .addEventListener("click", async () => {
+        const ok = await mConfirm(
+          "Start over? The current edited PDF will be discarded.",
+          "Reset",
+          true,
+        );
+        if (!ok) return;
+        pages.forEach((p) => p.fabricCanvas.dispose());
+        pages = [];
+        pdfDoc = null;
+        pdfFile = null;
+        curIdx = 0;
+        document.getElementById("canvasArea").innerHTML = "";
+        document.getElementById("sidebar").innerHTML =
+          '<div class="sb-title">Pages</div>';
+        document.getElementById("fileInput").value = "";
+        hideAnnotBar();
+        document
+          .querySelectorAll(".prop-panel")
+          .forEach((p) => p.classList.remove("open"));
+        stopPathEdit();
+        stopTextEdit();
+        stopShapeEdit();
+        stopImageEdit();
         hideSaveScreen();
-        document.getElementById("editorScreen").classList.add("show");
-        toast("Back to editor", "i");
+        document.getElementById("uploadScreen").style.display = "flex";
+        if (savedObjectURL) {
+          URL.revokeObjectURL(savedObjectURL);
+          savedObjectURL = null;
+        }
+        savedBlob = null;
+        toast("Reset — upload a new PDF to start", "i");
       });
 
-      let _rt;
-      window.addEventListener("resize", () => {
-        clearTimeout(_rt);
-        _rt = setTimeout(() => {
-          const fc = getFC();
-          if (fc?.getActiveObject()) posAnnotBar(fc);
-        }, 150);
-      });
-    </script>
-  </body>
+    document.getElementById("savEditPdf").addEventListener("click", () => {
+      hideSaveScreen();
+      document.getElementById("editorScreen").classList.add("show");
+      toast("Back to editor", "i");
+    });
+
+    let _rt;
+    window.addEventListener("resize", () => {
+      clearTimeout(_rt);
+      _rt = setTimeout(() => {
+        const fc = getFC();
+        if (fc?.getActiveObject()) posAnnotBar(fc);
+      }, 150);
+    });
+  </script>
+</body>
+
 </html>

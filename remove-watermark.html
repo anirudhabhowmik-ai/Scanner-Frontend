@@ -174,18 +174,25 @@
         box-sizing: border-box;
         pointer-events: auto;
       }
+
+      /* DEFAULT: fully transparent — content is readable */
       .watermark-overlay.type-text,
       .watermark-overlay.type-image {
-        background: rgba(239, 68, 68, 0.15);
-        outline: 2px solid rgba(239, 68, 68, 0.3);
+        background: transparent;
+        outline: 2px solid transparent;
         outline-offset: -2px;
       }
+
+      /* HOVER: reveal red highlight so user knows it's clickable */
       .watermark-overlay.type-text:hover,
       .watermark-overlay.type-image:hover {
         outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.25) !important;
         z-index: 90;
+        cursor: pointer;
       }
+
+      /* SELECTED: bold red border + shows delete icon */
       .watermark-overlay.selected {
         outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.3) !important;
@@ -774,12 +781,10 @@
       const fileNameLink = document.getElementById("fileNameLink");
 
       let currentFile = null;
-      let detectedItems = []; // all items detected so far across all pages
+      let detectedItems = [];
       let selectedItems = new Set();
       let pageRenderScales = {};
       let detectingPages = new Set();
-      // Track which pages have already been detected so we know whether
-      // to show the Detect button or the overlays after a re-render.
       let detectedPageNums = new Set();
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
@@ -822,10 +827,10 @@
         fileList.innerHTML = "";
         const li = document.createElement("li");
         li.innerHTML = `<i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
-          <span>${currentFile.name}</span>
-          <button class="delete-file" aria-label="Remove ${currentFile.name}">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>`;
+      <span>${currentFile.name}</span>
+      <button class="delete-file" aria-label="Remove ${currentFile.name}">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>`;
         fileList.appendChild(li);
       }
 
@@ -955,7 +960,6 @@
           canvasContainer.appendChild(canvas);
           card.appendChild(canvasContainer);
 
-          // Detect button — hidden if page was already detected
           const detectBtn = document.createElement("button");
           detectBtn.className = "cta-button";
           detectBtn.id = `detect-btn-${pageNum}`;
@@ -965,8 +969,6 @@
           detectBtn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
           detectBtn.onclick = () => detectPageWatermarks(pageNum);
 
-          // If this page was already detected (e.g. after a resize re-render),
-          // hide the button and redraw its overlays immediately.
           if (detectedPageNums.has(pageNum)) {
             detectBtn.style.display = "none";
           }
@@ -981,8 +983,6 @@
 
       // ── Per-page detection ──────────────────────────────────────────────────
 
-      // silent=true → called programmatically after image deletion (no button interaction)
-      // silent=false → called by user clicking the Detect button
       async function detectPageWatermarks(pageNum, silent = false) {
         if (detectingPages.has(pageNum)) return;
         detectingPages.add(pageNum);
@@ -990,7 +990,6 @@
         const btn = document.getElementById(`detect-btn-${pageNum}`);
 
         if (!silent) {
-          // User-initiated: show spinner on the detect button
           if (btn) {
             btn.disabled = true;
             btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
@@ -1015,26 +1014,24 @@
           const data = await res.json();
           const pageItems = data.items || [];
 
-          // Assign sequential numeric IDs
           const idOffset = detectedItems.length;
           pageItems.forEach((item, i) => {
             item.id = idOffset + i;
           });
 
-          // Replace any previous detections for this page
           detectedItems = detectedItems.filter((i) => i.page !== pageNum);
           detectedItems.push(...pageItems);
           detectedPageNums.add(pageNum);
 
-          // Draw overlays: images first (lower z-index), then text on top
           const container = document.getElementById(
             `canvas-container-${pageNum}`,
           );
-          // Clear any stale overlays before drawing fresh ones
           if (container) {
-            container
-              .querySelectorAll(".watermark-overlay")
-              .forEach((el) => el.remove());
+            // Clear ALL stale overlays before drawing fresh ones
+            container.querySelectorAll(".watermark-overlay").forEach((el) => {
+              el.style.pointerEvents = "none";
+              el.remove();
+            });
             const dScale = pageRenderScales[pageNum] || 1;
             pageItems
               .filter((i) => i.type === "image")
@@ -1048,7 +1045,6 @@
               );
           }
 
-          // Always hide the detect button after detection
           if (btn) btn.style.display = "none";
 
           if (!silent) {
@@ -1089,7 +1085,6 @@
         overlay.style.top = y0 * dScale + "px";
         overlay.style.width = Math.max((x1 - x0) * dScale, 4) + "px";
         overlay.style.height = Math.max((y1 - y0) * dScale, 4) + "px";
-        // Text overlays sit above image overlays
         overlay.style.zIndex = item.type === "text" ? "20" : "10";
 
         const label = document.createElement("div");
@@ -1151,17 +1146,31 @@
         updateSelectionInfo();
       }
 
+      // ── Helper: nuke all overlays for a page from the DOM ──────────────────
+
+      function clearPageOverlays(pageNum) {
+        // Primary: remove from canvas container
+        const canvasContainer = document.getElementById(
+          `canvas-container-${pageNum}`,
+        );
+        if (canvasContainer) {
+          canvasContainer
+            .querySelectorAll(".watermark-overlay")
+            .forEach((el) => {
+              el.style.pointerEvents = "none";
+              el.remove();
+            });
+        }
+        // Safety net: remove any orphaned overlays anywhere in the DOM
+        document
+          .querySelectorAll(`.watermark-overlay[data-page-num="${pageNum}"]`)
+          .forEach((el) => {
+            el.style.pointerEvents = "none";
+            el.remove();
+          });
+      }
+
       // ── Re-render a single page then restore overlays ───────────────────────
-      //
-      // KEY FIX: After the backend removes an image watermark it also
-      // re-inserts any text that was sitting on top of that image.
-      // The re-inserted text has the SAME bounding boxes as before, so we
-      // can simply redraw the overlays using the existing detectedItems data
-      // — no need to re-detect the page.
-      //
-      // Exception: if the removed item was itself an image, the image overlay
-      // must be removed from detectedItems (already done before this call)
-      // and only the remaining items are redrawn.
 
       async function reRenderPage(pageNum) {
         const fileURL = URL.createObjectURL(currentFile);
@@ -1192,10 +1201,14 @@
         const canvasContainer = document.getElementById(
           `canvas-container-${pageNum}`,
         );
-        canvasContainer.innerHTML = "";
+
+        // Wipe everything — canvas + any lingering overlay divs
+        while (canvasContainer.firstChild) {
+          canvasContainer.removeChild(canvasContainer.firstChild);
+        }
         canvasContainer.appendChild(canvas);
 
-        // Redraw surviving overlays in the correct z-order
+        // Redraw only surviving overlays (empty if detectedItems was cleared)
         const remaining = detectedItems.filter((i) => i.page === pageNum);
         remaining
           .filter((i) => i.type === "image")
@@ -1255,26 +1268,20 @@
           });
 
           if (wasImage) {
-            // IMAGE deleted:
-            // 1. Remove ALL overlay divs for this page from the DOM immediately
-            //    so the deleted image box disappears right away.
-            // 2. Clear detectedItems for the page (stale after image deletion).
-            // 3. Re-render the canvas from the updated PDF.
-            // 4. Re-detect to get fresh bboxes for any re-inserted text.
-            const canvasContainer = document.getElementById(
-              `canvas-container-${pageNum}`,
-            );
-            if (canvasContainer) {
-              canvasContainer
-                .querySelectorAll(".watermark-overlay")
-                .forEach((el) => el.remove());
-            }
+            // 1. Immediately disable hover + remove ALL overlay divs for this page
+            clearPageOverlays(pageNum);
+
+            // 2. Clear stale detectedItems for this page
             detectedItems = detectedItems.filter((i) => i.page !== pageNum);
             detectedPageNums.delete(pageNum);
-            await reRenderPage(pageNum); // redraws canvas (no overlays since detectedItems cleared)
-            await detectPageWatermarks(pageNum, true); // silent: called after image deletion
+
+            // 3. Re-render canvas (no overlays drawn — detectedItems is empty for page)
+            await reRenderPage(pageNum);
+
+            // 4. Re-detect silently to get fresh items and draw new overlays
+            await detectPageWatermarks(pageNum, true);
           } else {
-            // TEXT deleted — just redraw canvas + surviving overlays from detectedItems.
+            // Text deleted — redraw canvas + surviving overlays from detectedItems
             await reRenderPage(pageNum);
           }
 
@@ -1340,7 +1347,6 @@
             type: "application/pdf",
           });
 
-          // Track which affected pages had image watermarks removed
           const imageRemovedPages = new Set(
             itemsToRemove.filter((i) => i.type === "image").map((i) => i.page),
           );
@@ -1354,19 +1360,20 @@
 
           for (const pn of affectedPages) {
             if (imageRemovedPages.has(pn)) {
-              // IMAGE deleted on this page — remove overlay divs immediately,
-              // clear stale detectedItems, re-render canvas, then re-detect.
-              const cc = document.getElementById(`canvas-container-${pn}`);
-              if (cc)
-                cc.querySelectorAll(".watermark-overlay").forEach((el) =>
-                  el.remove(),
-                );
+              // 1. Immediately disable hover + remove ALL overlay divs for this page
+              clearPageOverlays(pn);
+
+              // 2. Clear stale detectedItems and page tracking
               detectedItems = detectedItems.filter((i) => i.page !== pn);
               detectedPageNums.delete(pn);
+
+              // 3. Re-render canvas (no overlays — detectedItems empty for page)
               await reRenderPage(pn);
+
+              // 4. Re-detect silently
               await detectPageWatermarks(pn, true);
             } else {
-              // Text-only deletions — existing bboxes still accurate, just redraw.
+              // Text-only deletions — redraw canvas + surviving overlays
               await reRenderPage(pn);
             }
           }
@@ -1423,11 +1430,8 @@
           const prevDetected = [...detectedItems];
           const prevDetectedNums = new Set(detectedPageNums);
 
-          // Re-render all pages (renderPDFPages clears pageRenderScales
-          // but detectedPageNums is checked inside to restore detect buttons)
           await renderPDFPages(currentFile);
 
-          // Restore detectedItems and redraw overlays for already-detected pages
           detectedItems = prevDetected;
           detectedPageNums = prevDetectedNums;
 

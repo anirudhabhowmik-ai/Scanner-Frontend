@@ -787,6 +787,11 @@
       let detectingPages = new Set();
       let detectedPageNums = new Set();
 
+      // KEY FIX: track bboxes that were successfully deleted so we can
+      // filter them out if re-detect somehow still finds them
+      // Structure: Map<pageNum, Array<bbox>>
+      let deletedBboxes = new Map();
+
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
@@ -813,13 +818,29 @@
       function hideLoading() {
         loadingOverlay.classList.remove("show");
       }
-
       function updateSelectionInfo() {
         const n = selectedItems.size;
         selectionInfo.textContent =
           n === 0
             ? "No items selected"
             : `${n} item${n > 1 ? "s" : ""} selected`;
+      }
+
+      // Check if a bbox matches any known-deleted bbox (within 2px tolerance)
+      function isDeletedBbox(pageNum, bbox, tol = 2) {
+        const list = deletedBboxes.get(pageNum) || [];
+        return list.some(
+          (d) =>
+            Math.abs(d[0] - bbox[0]) <= tol &&
+            Math.abs(d[1] - bbox[1]) <= tol &&
+            Math.abs(d[2] - bbox[2]) <= tol &&
+            Math.abs(d[3] - bbox[3]) <= tol,
+        );
+      }
+
+      function recordDeletedBbox(pageNum, bbox) {
+        if (!deletedBboxes.has(pageNum)) deletedBboxes.set(pageNum, []);
+        deletedBboxes.get(pageNum).push(bbox);
       }
 
       function renderFileList() {
@@ -845,6 +866,7 @@
         pageRenderScales = {};
         detectingPages.clear();
         detectedPageNums.clear();
+        deletedBboxes.clear();
 
         fileList.style.display = "none";
         fileList.innerHTML = "";
@@ -884,7 +906,7 @@
         return Math.max(maxWidth, 200) / pdfPageWidth;
       }
 
-      // ── Upload: render pages, no auto-detect ────────────────────────────────
+      // ── Upload ──────────────────────────────────────────────────────────────
 
       pdfUpload.onchange = async (e) => {
         const file = e.target.files[0];
@@ -896,6 +918,7 @@
         pageRenderScales = {};
         detectingPages.clear();
         detectedPageNums.clear();
+        deletedBboxes.clear();
 
         uploadSection.style.display = "none";
         renderFileList();
@@ -988,12 +1011,9 @@
         detectingPages.add(pageNum);
 
         const btn = document.getElementById(`detect-btn-${pageNum}`);
-
-        if (!silent) {
-          if (btn) {
-            btn.disabled = true;
-            btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
-          }
+        if (!silent && btn) {
+          btn.disabled = true;
+          btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
         }
         clearError();
 
@@ -1012,7 +1032,21 @@
           }
 
           const data = await res.json();
-          const pageItems = data.items || [];
+          let pageItems = data.items || [];
+
+          // ── SAFETY FILTER: remove any items whose bbox matches a known-deleted bbox ──
+          // This is the definitive guard against ghost overlays if backend
+          // still returns a shape that was visually removed (e.g. older PyMuPDF)
+          pageItems = pageItems.filter((item) => {
+            if (item.type === "text") return true; // never filter text
+            if (isDeletedBbox(pageNum, item.bbox)) {
+              console.log(
+                `Filtered ghost item at bbox=${item.bbox} page=${pageNum}`,
+              );
+              return false;
+            }
+            return true;
+          });
 
           const idOffset = detectedItems.length;
           pageItems.forEach((item, i) => {
@@ -1023,16 +1057,21 @@
           detectedItems.push(...pageItems);
           detectedPageNums.add(pageNum);
 
+          // Wipe ALL stale overlays then draw fresh ones
           const container = document.getElementById(
             `canvas-container-${pageNum}`,
           );
           if (container) {
-            // Clear ALL stale overlays before drawing fresh ones
             container.querySelectorAll(".watermark-overlay").forEach((el) => {
               el.style.pointerEvents = "none";
               el.remove();
             });
             const dScale = pageRenderScales[pageNum] || 1;
+            pageItems
+              .filter((i) => i.type === "vector")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
             pageItems
               .filter((i) => i.type === "image")
               .forEach((item) =>
@@ -1074,25 +1113,28 @@
         overlay.dataset.pageNum = item.page;
         overlay.setAttribute("role", "button");
         overlay.setAttribute("tabindex", "0");
-        overlay.setAttribute(
-          "aria-label",
-          item.type === "text"
-            ? `Text: ${(item.text || "").substring(0, 30)}. Click to select.`
-            : "Image. Click to select.",
-        );
+
+        let ariaLabel = "Image. Click to select.";
+        if (item.type === "text")
+          ariaLabel = `Text: ${(item.text || "").substring(0, 30)}. Click to select.`;
+        else if (item.type === "vector")
+          ariaLabel = "Shape/graphic. Click to select.";
+        overlay.setAttribute("aria-label", ariaLabel);
 
         overlay.style.left = x0 * dScale + "px";
         overlay.style.top = y0 * dScale + "px";
         overlay.style.width = Math.max((x1 - x0) * dScale, 4) + "px";
         overlay.style.height = Math.max((y1 - y0) * dScale, 4) + "px";
-        overlay.style.zIndex = item.type === "text" ? "20" : "10";
+        if (item.type === "text") overlay.style.zIndex = "20";
+        else if (item.type === "image") overlay.style.zIndex = "15";
+        else overlay.style.zIndex = "10";
 
         const label = document.createElement("div");
         label.className = "overlay-label";
-        label.textContent =
-          item.type === "text"
-            ? `Text: ${(item.text || "").substring(0, 30)}`
-            : "Image";
+        if (item.type === "text")
+          label.textContent = `Text: ${(item.text || "").substring(0, 30)}`;
+        else if (item.type === "vector") label.textContent = "Shape/Graphic";
+        else label.textContent = "Image";
         overlay.appendChild(label);
 
         const deleteIcon = document.createElement("div");
@@ -1146,10 +1188,9 @@
         updateSelectionInfo();
       }
 
-      // ── Helper: nuke all overlays for a page from the DOM ──────────────────
+      // ── Helper: nuke all overlays for a page instantly ──────────────────────
 
       function clearPageOverlays(pageNum) {
-        // Primary: remove from canvas container
         const canvasContainer = document.getElementById(
           `canvas-container-${pageNum}`,
         );
@@ -1161,7 +1202,7 @@
               el.remove();
             });
         }
-        // Safety net: remove any orphaned overlays anywhere in the DOM
+        // Safety net: orphaned overlays anywhere in DOM
         document
           .querySelectorAll(`.watermark-overlay[data-page-num="${pageNum}"]`)
           .forEach((el) => {
@@ -1170,7 +1211,7 @@
           });
       }
 
-      // ── Re-render a single page then restore overlays ───────────────────────
+      // ── Re-render a single page canvas ─────────────────────────────────────
 
       async function reRenderPage(pageNum) {
         const fileURL = URL.createObjectURL(currentFile);
@@ -1202,7 +1243,7 @@
           `canvas-container-${pageNum}`,
         );
 
-        // Wipe everything — canvas + any lingering overlay divs
+        // Wipe everything — canvas + any lingering overlays
         while (canvasContainer.firstChild) {
           canvasContainer.removeChild(canvasContainer.firstChild);
         }
@@ -1210,6 +1251,11 @@
 
         // Redraw only surviving overlays (empty if detectedItems was cleared)
         const remaining = detectedItems.filter((i) => i.page === pageNum);
+        remaining
+          .filter((i) => i.type === "vector")
+          .forEach((item) =>
+            canvasContainer.appendChild(createOverlay(item, dScale)),
+          );
         remaining
           .filter((i) => i.type === "image")
           .forEach((item) =>
@@ -1221,7 +1267,6 @@
             canvasContainer.appendChild(createOverlay(item, dScale)),
           );
 
-        // Keep detect button hidden — page is already detected
         const btn = document.getElementById(`detect-btn-${pageNum}`);
         if (btn) btn.style.display = "none";
 
@@ -1258,30 +1303,35 @@
           });
 
           const pageNum = item.page;
-          const wasImage = item.type === "image";
+          const needsReDetect = item.type === "image" || item.type === "vector";
 
-          // Remove this item from detectedItems and selectedItems
+          // Record the deleted bbox BEFORE clearing detectedItems
+          if (needsReDetect) {
+            recordDeletedBbox(pageNum, item.bbox);
+          }
+
+          // Remove from state
           detectedItems = detectedItems.filter((i) => i.id !== itemId);
           selectedItems.delete(itemId);
           detectedItems.forEach((it, idx) => {
             it.id = idx;
           });
 
-          if (wasImage) {
-            // 1. Immediately disable hover + remove ALL overlay divs for this page
+          if (needsReDetect) {
+            // 1. Kill ALL overlays for this page immediately
             clearPageOverlays(pageNum);
 
-            // 2. Clear stale detectedItems for this page
+            // 2. Clear stale data for this page
             detectedItems = detectedItems.filter((i) => i.page !== pageNum);
             detectedPageNums.delete(pageNum);
 
-            // 3. Re-render canvas (no overlays drawn — detectedItems is empty for page)
+            // 3. Re-render canvas from updated PDF
             await reRenderPage(pageNum);
 
-            // 4. Re-detect silently to get fresh items and draw new overlays
+            // 4. Re-detect silently — deletedBboxes filter will block any ghost items
             await detectPageWatermarks(pageNum, true);
           } else {
-            // Text deleted — redraw canvas + surviving overlays from detectedItems
+            // Text deleted — just redraw canvas + surviving overlays
             await reRenderPage(pageNum);
           }
 
@@ -1347,11 +1397,21 @@
             type: "application/pdf",
           });
 
-          const imageRemovedPages = new Set(
-            itemsToRemove.filter((i) => i.type === "image").map((i) => i.page),
+          // Pages that had image OR vector removals need full re-detect
+          const reDetectPages = new Set(
+            itemsToRemove
+              .filter((i) => i.type === "image" || i.type === "vector")
+              .map((i) => i.page),
           );
 
-          // Remove all selected items from detectedItems
+          // Record all deleted bboxes BEFORE clearing detectedItems
+          itemsToRemove.forEach((item) => {
+            if (item.type === "image" || item.type === "vector") {
+              recordDeletedBbox(item.page, item.bbox);
+            }
+          });
+
+          // Remove all selected items from state
           detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
           detectedItems.forEach((it, idx) => {
             it.id = idx;
@@ -1359,21 +1419,21 @@
           selectedItems.clear();
 
           for (const pn of affectedPages) {
-            if (imageRemovedPages.has(pn)) {
-              // 1. Immediately disable hover + remove ALL overlay divs for this page
+            if (reDetectPages.has(pn)) {
+              // 1. Kill ALL overlays immediately
               clearPageOverlays(pn);
 
-              // 2. Clear stale detectedItems and page tracking
+              // 2. Clear stale data
               detectedItems = detectedItems.filter((i) => i.page !== pn);
               detectedPageNums.delete(pn);
 
-              // 3. Re-render canvas (no overlays — detectedItems empty for page)
+              // 3. Re-render canvas
               await reRenderPage(pn);
 
-              // 4. Re-detect silently
+              // 4. Re-detect silently — deletedBboxes filter blocks ghost items
               await detectPageWatermarks(pn, true);
             } else {
-              // Text-only deletions — redraw canvas + surviving overlays
+              // Text-only — redraw surviving overlays
               await reRenderPage(pn);
             }
           }
@@ -1442,6 +1502,11 @@
             if (!container) continue;
             const dScale = pageRenderScales[pageNum] || 1;
             const items = detectedItems.filter((i) => i.page === pageNum);
+            items
+              .filter((i) => i.type === "vector")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
             items
               .filter((i) => i.type === "image")
               .forEach((item) =>

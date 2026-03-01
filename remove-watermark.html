@@ -755,8 +755,8 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const DETECT_PAGE_URL = `http://127.0.0.1:8080/detect-page-watermarks`;
-      const REMOVE_URL = `http://127.0.0.1:8080/remove-watermark`;
+      const DETECT_PAGE_URL = `${BACKEND_BASE_URL}/detect-page-watermarks`;
+      const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
 
       const pdfUpload = document.getElementById("pdfUpload");
       const uploadSection = document.getElementById("uploadSection");

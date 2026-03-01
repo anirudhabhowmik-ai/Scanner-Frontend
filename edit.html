@@ -352,15 +352,10 @@
     let editingImage = null,
       editingImageFC = null;
 
-    // Debug mode - set to true to see console logs
     const DEBUG = true;
 
-    /* ═══════════════════════════════════════════════════════
-   HELPERS — wait for one animation frame (layout flush)
-═══════════════════════════════════════════════════════ */
     const nextFrame = () => new Promise((r) => requestAnimationFrame(r));
 
-    /** Read the --sb CSS variable as a pixel number reliably */
     function getSidebarInnerWidth() {
       const sbEl = document.getElementById("sidebar");
       const w =
@@ -1353,22 +1348,14 @@
         stopTextEdit();
         stopShapeEdit();
         stopImageEdit();
-
-        // Reset tool selection
         curTool = "none";
-
-        // Remove 'on' class from all tool buttons
         Object.values(TOOL_IDS).forEach((id) => {
           document.getElementById(id)?.classList.remove("on");
         });
-
-        // Reset drawing mode on any remaining canvas (none should exist)
         const fc = getFC();
         if (fc) {
           fc.isDrawingMode = false;
         }
-
-        // Clear any active selections
         if (document.activeElement) {
           document.activeElement.blur();
         }
@@ -1422,7 +1409,7 @@
     });
 
     /* ═══════════════════════════════════════════════════════
-   EDIT CONTENT — Fixed version with proper layering
+   EDIT CONTENT
 ═══════════════════════════════════════════════════════ */
     document
       .getElementById("tbEditContent")
@@ -1442,7 +1429,6 @@
           const fd = new FormData();
           fd.append("file", pdfFile);
           fd.append("pageNum", pageNum);
-
 
           const res = await fetch(`${API}/extract-edit-content`, {
             method: "POST",
@@ -1534,14 +1520,29 @@
 
           // Add TEXT on top (above images)
           for (const tb of textBlocks) {
+            /*
+             * FONT SIZE FIX
+             * =============
+             * The backend sends `tb.fontSize` which is the PDF design size in
+             * points (e.g. 12 for a 12pt font).  The canvas is rendered at
+             * `scale` pixels-per-point, so the correct pixel size is simply:
+             *
+             *   fontSize_px = tb.fontSize * scale
+             *
+             * The old formula used `tb.originalHeight * scale * 0.80` which
+             * is wrong because:
+             *   - bbox height ≠ font size (bbox only covers ink extent of the
+             *     specific glyphs on that line — all-caps lines are shorter,
+             *     descenders are cut off, etc.)
+             *   - the 0.80 multiplier makes an already-wrong value even smaller
+             */
+            const fontSize = Math.max(6, (tb.fontSize || 12) * scale);
+
             const it = new fabric.IText(tb.text || "", {
               left: tb.x * scale,
               top: tb.y * scale,
               fontFamily: tb.fontFamily || "Arial",
-              fontSize: Math.max(
-                6,
-                (tb.originalHeight ?? tb.height) * scale * 0.80,
-              ),
+              fontSize: fontSize,
               fill: tb.color || "#000000",
               fontWeight: tb.fontWeight || "normal",
               fontStyle: tb.fontStyle || "normal",
@@ -1587,7 +1588,7 @@
       });
 
     /* ═══════════════════════════════════════════════════════
-   SAVE PDF — Fixed to match original working version
+   SAVE PDF
 ═══════════════════════════════════════════════════════ */
     let savedBlob = null,
       savedObjectURL = null;
@@ -1606,12 +1607,6 @@
       document.getElementById("saveScreen").classList.remove("show");
     }
 
-    /* ═══════════════════════════════════════════════════════
- SAVE PDF — Fixed to prevent content duplication
-═══════════════════════════════════════════════════════ */
-    /* ═══════════════════════════════════════════════════════
- SAVE PDF — Only send drawing data when there are edits
-═══════════════════════════════════════════════════════ */
     document.getElementById("tbSave").addEventListener("click", async () => {
       if (!pdfFile) {
         await mAlert("Please load a PDF first.");
@@ -1627,7 +1622,6 @@
         const fd = new FormData();
         fd.append("file", pdfFile);
 
-        // Create annotations data for all pages
         const annData = [];
 
         for (let i = 0; i < pages.length; i++) {
@@ -1635,34 +1629,23 @@
           const fc = p.fabricCanvas;
           const objects = fc.getObjects();
 
-          // Detect page orientation
-          const isPortrait = fc.height > fc.width;
           let drawingDataUrl = null;
           let deletedRegions = [];
           let deletedImages = [];
 
-          // CRITICAL FIX: Only generate drawing data if there are actual edits
           if (objects.length > 0) {
-            // Create a temporary canvas to composite the drawing
             const tempCanvas = document.createElement("canvas");
             tempCanvas.width = fc.width;
             tempCanvas.height = fc.height;
             const tempCtx = tempCanvas.getContext("2d");
 
-            // Draw the PDF background first
             tempCtx.drawImage(p.pdfCvs, 0, 0, fc.width, fc.height);
-
-            // Force Fabric to render all objects
             fc.renderAll();
-
-            // Draw the Fabric overlay on top
             const fabricCanvasElement = fc.getElement();
             tempCtx.drawImage(fabricCanvasElement, 0, 0, fc.width, fc.height);
 
-            // Convert to PNG data URL
             drawingDataUrl = tempCanvas.toDataURL("image/png");
 
-            // Mark the entire page for redaction to remove original content
             deletedRegions.push({
               x: 0,
               y: 0,
@@ -1677,7 +1660,7 @@
             pageNum: p.pageNum,
             canvasWidth: fc.width,
             canvasHeight: fc.height,
-            drawing: drawingDataUrl, // Will be null for pages with no edits
+            drawing: drawingDataUrl,
             annotations: [],
             deletedRegions: deletedRegions,
             deletedImages: deletedImages,
@@ -1690,7 +1673,6 @@
           method: "POST",
           body: fd,
         });
-
 
         if (!res.ok) {
           const errorText = await res.text();

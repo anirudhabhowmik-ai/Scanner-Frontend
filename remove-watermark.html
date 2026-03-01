@@ -1661,533 +1661,616 @@
     <section id="footer-placeholder"></section>
 
     <script src="./js/app.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script>
-  const DETECT_PAGE_URL = `${BACKEND_BASE_URL}/detect-page-watermarks`;
-  const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      const DETECT_PAGE_URL = `${BACKEND_BASE_URL}/detect-page-watermarks`;
+      const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
 
-  const pdfUpload     = document.getElementById("pdfUpload");
-  const uploadSection = document.getElementById("uploadSection");
-  const fileList      = document.getElementById("fileList");
-  const pagesGrid     = document.getElementById("pagesGrid");
-  const controlPanel  = document.getElementById("controlPanel");
-  const selectionInfo = document.getElementById("selectionInfo");
-  const clearBtn      = document.getElementById("clearBtn");
-  const deleteBtn     = document.getElementById("deleteBtn");
-  const removeBtn     = document.getElementById("removeBtn");
-  const errorMsg      = document.getElementById("errorMsg");
-  const successMsg    = document.getElementById("successMsg");
-  const loadingOverlay= document.getElementById("loadingOverlay");
-  const resultBtns    = document.getElementById("resultBtns");
-  const downloadBtn   = document.getElementById("downloadBtn");
-  const shareBtn      = document.getElementById("shareBtn");
-  const resetBtn      = document.getElementById("resetBtn");
-  const noteBox       = document.getElementById("noteBox");
-  const pdfPreview    = document.getElementById("pdfPreview");
-  const pdfFrame      = document.getElementById("pdfFrame");
-  const fileNameLink  = document.getElementById("fileNameLink");
+      const pdfUpload = document.getElementById("pdfUpload");
+      const uploadSection = document.getElementById("uploadSection");
+      const fileList = document.getElementById("fileList");
+      const pagesGrid = document.getElementById("pagesGrid");
+      const controlPanel = document.getElementById("controlPanel");
+      const selectionInfo = document.getElementById("selectionInfo");
+      const clearBtn = document.getElementById("clearBtn");
+      const deleteBtn = document.getElementById("deleteBtn");
+      const removeBtn = document.getElementById("removeBtn");
+      const errorMsg = document.getElementById("errorMsg");
+      const successMsg = document.getElementById("successMsg");
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      const resultBtns = document.getElementById("resultBtns");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const noteBox = document.getElementById("noteBox");
+      const pdfPreview = document.getElementById("pdfPreview");
+      const pdfFrame = document.getElementById("pdfFrame");
+      const fileNameLink = document.getElementById("fileNameLink");
 
-  let currentFile      = null;
-  let detectedItems    = [];
-  let selectedItems    = new Set();
-  let pageRenderScales = {};
-  let detectingPages   = new Set();
+      let currentFile = null;
+      let detectedItems = [];
+      let selectedItems = new Set();
+      let pageRenderScales = {};
+      let detectingPages = new Set();
 
-  pdfjsLib.GlobalWorkerOptions.workerSrc =
-    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-  // ── Utilities ──────────────────────────────────────────────────────────────
+      // ── Utilities ──────────────────────────────────────────────────────────────
 
-  function showError(msg) {
-    errorMsg.textContent = msg;
-    errorMsg.style.display = "inline-block";
-    successMsg.classList.remove("show");
-  }
-  function clearError() { errorMsg.style.display = "none"; }
-  function showSuccess(msg) {
-    successMsg.textContent = msg;
-    successMsg.classList.add("show");
-    clearError();
-    setTimeout(() => successMsg.classList.remove("show"), 3000);
-  }
-  function showLoading() { loadingOverlay.classList.add("show"); }
-  function hideLoading() { loadingOverlay.classList.remove("show"); }
+      function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = "inline-block";
+        successMsg.classList.remove("show");
+      }
+      function clearError() {
+        errorMsg.style.display = "none";
+      }
+      function showSuccess(msg) {
+        successMsg.textContent = msg;
+        successMsg.classList.add("show");
+        clearError();
+        setTimeout(() => successMsg.classList.remove("show"), 3000);
+      }
+      function showLoading() {
+        loadingOverlay.classList.add("show");
+      }
+      function hideLoading() {
+        loadingOverlay.classList.remove("show");
+      }
 
-  function updateSelectionInfo() {
-    const n = selectedItems.size;
-    selectionInfo.textContent = n === 0
-      ? "No items selected"
-      : `${n} item${n > 1 ? "s" : ""} selected`;
-  }
+      function updateSelectionInfo() {
+        const n = selectedItems.size;
+        selectionInfo.textContent =
+          n === 0
+            ? "No items selected"
+            : `${n} item${n > 1 ? "s" : ""} selected`;
+      }
 
-  function renderFileList() {
-    fileList.style.display = "block";
-    fileList.innerHTML = "";
-    const li = document.createElement("li");
-    li.innerHTML = `<i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
+      function renderFileList() {
+        fileList.style.display = "block";
+        fileList.innerHTML = "";
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
       <span>${currentFile.name}</span>
       <button class="delete-file" aria-label="Remove ${currentFile.name}">
         <i class="fa fa-times" aria-hidden="true"></i>
       </button>`;
-    fileList.appendChild(li);
-  }
-
-  fileList.addEventListener("click", (e) => {
-    if (e.target.closest(".delete-file")) resetApplication();
-  });
-
-  function resetApplication() {
-    currentFile = null;
-    detectedItems = [];
-    selectedItems.clear();
-    pageRenderScales = {};
-    detectingPages.clear();
-
-    fileList.style.display      = "none";
-    fileList.innerHTML          = "";
-    uploadSection.style.display = "block";
-    pagesGrid.style.display     = "none";
-    pagesGrid.innerHTML         = "";
-    controlPanel.style.display  = "none";
-    resultBtns.style.display    = "none";
-    pdfPreview.style.display    = "none";
-    noteBox.style.display       = "block";
-    pdfUpload.value             = "";
-
-    clearError();
-    successMsg.classList.remove("show");
-    pdfFrame.src = "";
-
-    if (downloadBtn.href && downloadBtn.href.startsWith("blob:"))
-      URL.revokeObjectURL(downloadBtn.href);
-    if (shareBtn.href && shareBtn.href.startsWith("blob:"))
-      URL.revokeObjectURL(shareBtn.href);
-    downloadBtn.href = "#";
-    shareBtn.href    = "#";
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-
-  // ── Scale helper ───────────────────────────────────────────────────────────
-
-  function calculateDisplayScale(pdfPageWidth) {
-    const container = pagesGrid.closest(".container");
-    const cw = container ? container.clientWidth : window.innerWidth;
-    let maxWidth;
-    if      (window.innerWidth < 480) maxWidth = Math.min(cw - 40, 320);
-    else if (window.innerWidth < 768) maxWidth = Math.min(cw - 60, 480);
-    else if (window.innerWidth < 970) maxWidth = Math.min(cw - 80, 700);
-    else                              maxWidth = Math.min(cw - 100, 800);
-    return Math.max(maxWidth, 200) / pdfPageWidth;
-  }
-
-  // ── Upload: render pages only, no detect ──────────────────────────────────
-
-  pdfUpload.onchange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    clearError();
-    currentFile = file;
-    selectedItems.clear();
-    detectedItems = [];
-    pageRenderScales = {};
-    detectingPages.clear();
-
-    uploadSection.style.display = "none";
-    renderFileList();
-    showLoading();
-
-    try {
-      await renderPDFPages(file);
-      hideLoading();
-      controlPanel.style.display = "block";
-      pagesGrid.style.display    = "flex";
-    } catch (err) {
-      hideLoading();
-      showError("Error loading PDF: " + err.message);
-      resetApplication();
-    }
-  };
-
-  // ── Render all pages with per-page Detect button ───────────────────────────
-
-  async function renderPDFPages(file) {
-    pagesGrid.innerHTML  = "";
-    pageRenderScales     = {};
-
-    const fileURL = URL.createObjectURL(file);
-    const pdf = await pdfjsLib.getDocument({
-      url: fileURL,
-      cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
-      cMapPacked: true,
-      verbosity: 0,
-    }).promise;
-
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      const page      = await pdf.getPage(pageNum);
-      const vp        = page.getViewport({ scale: 1 });
-      const dScale    = calculateDisplayScale(vp.width);
-      pageRenderScales[pageNum] = dScale;
-
-      const rScale    = dScale * (window.devicePixelRatio || 2);
-      const rVp       = page.getViewport({ scale: rScale });
-      const canvas    = document.createElement("canvas");
-      canvas.width    = rVp.width;
-      canvas.height   = rVp.height;
-      await page.render({
-        canvasContext: canvas.getContext("2d", { alpha: false }),
-        viewport: rVp
-      }).promise;
-      canvas.style.width  = (vp.width  * dScale) + "px";
-      canvas.style.height = (vp.height * dScale) + "px";
-
-      const card = document.createElement("div");
-      card.className       = "page-card";
-      card.dataset.pageNum = pageNum;
-
-      const badge = document.createElement("div");
-      badge.className   = "page-number-badge";
-      badge.textContent = `Page ${pageNum}`;
-      card.appendChild(badge);
-
-      const canvasContainer = document.createElement("div");
-      canvasContainer.className = "page-canvas-container";
-      canvasContainer.id        = `canvas-container-${pageNum}`;
-      canvasContainer.appendChild(canvas);
-      card.appendChild(canvasContainer);
-
-      // FIX 1: button hidden after detection — created visible, hidden on success
-      const detectBtn = document.createElement("button");
-      detectBtn.className   = "cta-button";
-      detectBtn.id          = `detect-btn-${pageNum}`;
-      detectBtn.style.cssText =
-        "margin-top:12px;width:100%;padding:10px;font-size:14px;" +
-        "display:flex;align-items:center;justify-content:center;gap:8px;";
-      detectBtn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
-      detectBtn.onclick   = () => detectPageWatermarks(pageNum);
-      card.appendChild(detectBtn);
-
-      pagesGrid.appendChild(card);
-      page.cleanup();
-    }
-
-    URL.revokeObjectURL(fileURL);
-  }
-
-  // ── Per-page detection ─────────────────────────────────────────────────────
-
-  async function detectPageWatermarks(pageNum) {
-    if (detectingPages.has(pageNum)) return;
-    detectingPages.add(pageNum);
-
-    const btn = document.getElementById(`detect-btn-${pageNum}`);
-    btn.disabled  = true;
-    btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
-    clearError();
-
-    try {
-      const formData = new FormData();
-      formData.append("file", currentFile);
-      formData.append("page", pageNum);
-
-      const res = await fetch(DETECT_PAGE_URL, { method: "POST", body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Detection failed");
+        fileList.appendChild(li);
       }
 
-      const data      = await res.json();
-      const pageItems = data.items || [];
+      fileList.addEventListener("click", (e) => {
+        if (e.target.closest(".delete-file")) resetApplication();
+      });
 
-      // Assign unique IDs
-      const idOffset = detectedItems.length;
-      pageItems.forEach((item, i) => { item.id = idOffset + i; });
+      function resetApplication() {
+        currentFile = null;
+        detectedItems = [];
+        selectedItems.clear();
+        pageRenderScales = {};
+        detectingPages.clear();
 
-      // Replace previous detections for this page
-      detectedItems = detectedItems.filter(i => i.page !== pageNum);
-      detectedItems.push(...pageItems);
+        fileList.style.display = "none";
+        fileList.innerHTML = "";
+        uploadSection.style.display = "block";
+        pagesGrid.style.display = "none";
+        pagesGrid.innerHTML = "";
+        controlPanel.style.display = "none";
+        resultBtns.style.display = "none";
+        pdfPreview.style.display = "none";
+        noteBox.style.display = "block";
+        pdfUpload.value = "";
 
-      // FIX 2: render image overlays first, text overlays on top
-      const container  = document.getElementById(`canvas-container-${pageNum}`);
-      container.querySelectorAll(".watermark-overlay").forEach(el => el.remove());
-      const dScale     = pageRenderScales[pageNum] || 1;
-      pageItems.filter(i => i.type === "image").forEach(item => container.appendChild(createOverlay(item, dScale)));
-      pageItems.filter(i => i.type === "text").forEach(item  => container.appendChild(createOverlay(item, dScale)));
+        clearError();
+        successMsg.classList.remove("show");
+        pdfFrame.src = "";
 
-      // FIX 1: hide the detect button entirely after detection
-      btn.style.display = "none";
+        if (downloadBtn.href && downloadBtn.href.startsWith("blob:"))
+          URL.revokeObjectURL(downloadBtn.href);
+        if (shareBtn.href && shareBtn.href.startsWith("blob:"))
+          URL.revokeObjectURL(shareBtn.href);
+        downloadBtn.href = "#";
+        shareBtn.href = "#";
 
-      showSuccess(`Page ${pageNum}: ${pageItems.length} item${pageItems.length !== 1 ? "s" : ""} detected`);
-    } catch (err) {
-      btn.disabled  = false;
-      btn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
-      showError(`Page ${pageNum}: ${err.message}`);
-    } finally {
-      detectingPages.delete(pageNum);
-    }
-  }
-
-  // ── Create overlay ─────────────────────────────────────────────────────────
-
-  function createOverlay(item, dScale) {
-    const [x0, y0, x1, y1] = item.bbox;
-
-    const overlay = document.createElement("div");
-    overlay.className       = `watermark-overlay type-${item.type}`;
-    overlay.dataset.itemId  = item.id;
-    overlay.dataset.pageNum = item.page;
-    overlay.setAttribute("role",     "button");
-    overlay.setAttribute("tabindex", "0");
-    overlay.setAttribute("aria-label",
-      item.type === "text"
-        ? `Text: ${(item.text || "").substring(0, 30)}. Click to select.`
-        : "Image. Click to select.");
-
-    overlay.style.left   = (x0 * dScale) + "px";
-    overlay.style.top    = (y0 * dScale) + "px";
-    overlay.style.width  = Math.max((x1 - x0) * dScale, 4) + "px";
-    overlay.style.height = Math.max((y1 - y0) * dScale, 4) + "px";
-    // FIX 2: explicit z-index so text is always clickable above images
-    overlay.style.zIndex = item.type === "text" ? "20" : "10";
-
-    const label       = document.createElement("div");
-    label.className   = "overlay-label";
-    label.textContent = item.type === "text"
-      ? `Text: ${(item.text || "").substring(0, 30)}`
-      : "Image";
-    overlay.appendChild(label);
-
-    const deleteIcon     = document.createElement("div");
-    deleteIcon.className = "delete-icon";
-    deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
-    deleteIcon.setAttribute("role",     "button");
-    deleteIcon.setAttribute("tabindex", "0");
-    overlay.appendChild(deleteIcon);
-
-    overlay.onclick = (e) => {
-      if (e.target.closest(".delete-icon")) return;
-      toggleSelection(item.id, overlay);
-    };
-    overlay.onkeydown = (e) => {
-      if ((e.key === "Enter" || e.key === " ") && !e.target.closest(".delete-icon")) {
-        e.preventDefault();
-        toggleSelection(item.id, overlay);
-      }
-    };
-    deleteIcon.onclick = (e) => {
-      e.stopPropagation();
-      deleteSingleWatermark(item.id);
-    };
-    deleteIcon.onkeydown = (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        e.stopPropagation();
-        deleteSingleWatermark(item.id);
-      }
-    };
-
-    return overlay;
-  }
-
-  // ── Selection ──────────────────────────────────────────────────────────────
-
-  function toggleSelection(itemId, overlay) {
-    if (selectedItems.has(itemId)) {
-      selectedItems.delete(itemId);
-      overlay.classList.remove("selected");
-      overlay.setAttribute("aria-pressed", "false");
-    } else {
-      selectedItems.add(itemId);
-      overlay.classList.add("selected");
-      overlay.setAttribute("aria-pressed", "true");
-      clearError();
-    }
-    updateSelectionInfo();
-  }
-
-  // ── Delete single (X button) ───────────────────────────────────────────────
-
-  async function deleteSingleWatermark(itemId) {
-    const item = detectedItems.find(i => i.id === itemId);
-    if (!item) return;
-    showLoading(); clearError();
-
-    try {
-      const formData = new FormData();
-      formData.append("files", currentFile);
-      formData.append("watermarks", JSON.stringify([item]));
-
-      const res = await fetch(REMOVE_URL, { method: "POST", body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to remove");
+        window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      const blob  = await res.blob();
-      currentFile = new File([blob], currentFile.name, { type: "application/pdf" });
+      // ── Scale helper ───────────────────────────────────────────────────────────
 
-      const pageNum = item.page;
-      detectedItems = detectedItems.filter(i => i.id !== itemId);
-      selectedItems.delete(itemId);
-      detectedItems.forEach((it, idx) => { it.id = idx; });
-
-      await reRenderPage(pageNum);
-      updateSelectionInfo();
-      hideLoading();
-      showSuccess("Watermark removed");
-    } catch (err) {
-      hideLoading();
-      showError("Error: " + err.message);
-    }
-  }
-
-  // ── Re-render single page ─────────────────────────────────────────────────
-
-  async function reRenderPage(pageNum) {
-    const fileURL = URL.createObjectURL(currentFile);
-    const pdf = await pdfjsLib.getDocument({
-      url: fileURL,
-      cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
-      cMapPacked: true,
-      verbosity: 0,
-    }).promise;
-
-    const page   = await pdf.getPage(pageNum);
-    const vp     = page.getViewport({ scale: 1 });
-    const dScale = calculateDisplayScale(vp.width);
-    pageRenderScales[pageNum] = dScale;
-
-    const rScale = dScale * (window.devicePixelRatio || 2);
-    const rVp    = page.getViewport({ scale: rScale });
-    const canvas = document.createElement("canvas");
-    canvas.width  = rVp.width;
-    canvas.height = rVp.height;
-    await page.render({
-      canvasContext: canvas.getContext("2d", { alpha: false }),
-      viewport: rVp
-    }).promise;
-    canvas.style.width  = (vp.width  * dScale) + "px";
-    canvas.style.height = (vp.height * dScale) + "px";
-
-    const canvasContainer = document.getElementById(`canvas-container-${pageNum}`);
-    canvasContainer.innerHTML = "";
-    canvasContainer.appendChild(canvas);
-
-    // FIX 2: image overlays behind text overlays
-    const remaining = detectedItems.filter(i => i.page === pageNum);
-    remaining.filter(i => i.type === "image").forEach(item => canvasContainer.appendChild(createOverlay(item, dScale)));
-    remaining.filter(i => i.type === "text").forEach(item  => canvasContainer.appendChild(createOverlay(item, dScale)));
-
-    // Keep detect button hidden — page already detected
-    const btn = document.getElementById(`detect-btn-${pageNum}`);
-    if (btn) btn.style.display = "none";
-
-    page.cleanup();
-    URL.revokeObjectURL(fileURL);
-  }
-
-  // ── Clear selection ────────────────────────────────────────────────────────
-
-  clearBtn.onclick = () => {
-    const selected = document.querySelectorAll(".watermark-overlay.selected");
-    if (!selected.length) { showError("No items selected to clear"); return; }
-    selectedItems.clear();
-    selected.forEach(el => {
-      el.classList.remove("selected");
-      el.setAttribute("aria-pressed", "false");
-    });
-    updateSelectionInfo();
-    clearError();
-  };
-
-  // ── Delete selected batch ──────────────────────────────────────────────────
-
-  deleteBtn.onclick = async () => {
-    if (!selectedItems.size) { showError("Please select items to delete first!"); return; }
-    showLoading(); clearError();
-
-    try {
-      const itemsToRemove = Array.from(selectedItems)
-        .map(id => detectedItems.find(i => i.id === id))
-        .filter(Boolean);
-      const affectedPages = [...new Set(itemsToRemove.map(i => i.page))];
-
-      const formData = new FormData();
-      formData.append("files", currentFile);
-      formData.append("watermarks", JSON.stringify(itemsToRemove));
-
-      const res = await fetch(REMOVE_URL, { method: "POST", body: formData });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to delete");
+      function calculateDisplayScale(pdfPageWidth) {
+        const container = pagesGrid.closest(".container");
+        const cw = container ? container.clientWidth : window.innerWidth;
+        let maxWidth;
+        if (window.innerWidth < 480) maxWidth = Math.min(cw - 40, 320);
+        else if (window.innerWidth < 768) maxWidth = Math.min(cw - 60, 480);
+        else if (window.innerWidth < 970) maxWidth = Math.min(cw - 80, 700);
+        else maxWidth = Math.min(cw - 100, 800);
+        return Math.max(maxWidth, 200) / pdfPageWidth;
       }
 
-      const blob  = await res.blob();
-      currentFile = new File([blob], currentFile.name, { type: "application/pdf" });
+      // ── Upload: render pages only, no detect ──────────────────────────────────
 
-      detectedItems = detectedItems.filter(i => !selectedItems.has(i.id));
-      detectedItems.forEach((it, idx) => { it.id = idx; });
-      selectedItems.clear();
+      pdfUpload.onchange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        clearError();
+        currentFile = file;
+        selectedItems.clear();
+        detectedItems = [];
+        pageRenderScales = {};
+        detectingPages.clear();
 
-      for (const pn of affectedPages) await reRenderPage(pn);
-      updateSelectionInfo();
-      hideLoading();
-      showSuccess(`Deleted ${itemsToRemove.length} watermark${itemsToRemove.length !== 1 ? "s" : ""}`);
-    } catch (err) {
-      hideLoading();
-      showError("Error: " + err.message);
-    }
-  };
+        uploadSection.style.display = "none";
+        renderFileList();
+        showLoading();
 
-  // ── Save Changes ───────────────────────────────────────────────────────────
+        try {
+          await renderPDFPages(file);
+          hideLoading();
+          controlPanel.style.display = "block";
+          pagesGrid.style.display = "flex";
+        } catch (err) {
+          hideLoading();
+          showError("Error loading PDF: " + err.message);
+          resetApplication();
+        }
+      };
 
-  removeBtn.onclick = () => {
-    const url = URL.createObjectURL(currentFile);
-    downloadBtn.href     = url;
-    downloadBtn.download = "cleaned.pdf";
-    shareBtn.href        = url;
+      // ── Render all pages with per-page Detect button ───────────────────────────
 
-    uploadSection.style.display = "none";
-    fileList.style.display      = "none";
-    pagesGrid.style.display     = "none";
-    controlPanel.style.display  = "none";
-    noteBox.style.display       = "none";
-    resultBtns.style.display    = "block";
+      async function renderPDFPages(file) {
+        pagesGrid.innerHTML = "";
+        pageRenderScales = {};
 
-    const isSmall = window.matchMedia("(max-width: 768px)").matches;
-    if (!isSmall) { pdfFrame.src = url; pdfPreview.style.display = "block"; }
-    fileNameLink.onclick = (e) => {
-      e.preventDefault();
-      isSmall ? window.open(url, "_blank") : pdfPreview.scrollIntoView({ behavior: "smooth" });
-    };
-  };
+        const fileURL = URL.createObjectURL(file);
+        const pdf = await pdfjsLib.getDocument({
+          url: fileURL,
+          cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+          cMapPacked: true,
+          verbosity: 0,
+        }).promise;
 
-  resetBtn.onclick = () => resetApplication();
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const vp = page.getViewport({ scale: 1 });
+          const dScale = calculateDisplayScale(vp.width);
+          pageRenderScales[pageNum] = dScale;
 
-  // ── Resize: re-render preserving detections ────────────────────────────────
+          const rScale = dScale * (window.devicePixelRatio || 2);
+          const rVp = page.getViewport({ scale: rScale });
+          const canvas = document.createElement("canvas");
+          canvas.width = rVp.width;
+          canvas.height = rVp.height;
+          await page.render({
+            canvasContext: canvas.getContext("2d", { alpha: false }),
+            viewport: rVp,
+          }).promise;
+          canvas.style.width = vp.width * dScale + "px";
+          canvas.style.height = vp.height * dScale + "px";
 
-  let resizeTimeout;
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(async () => {
-      if (!currentFile || pagesGrid.style.display === "none") return;
-      const prevDetected = [...detectedItems];
-      await renderPDFPages(currentFile);
-      detectedItems = prevDetected;
+          const card = document.createElement("div");
+          card.className = "page-card";
+          card.dataset.pageNum = pageNum;
 
-      const detectedPageNums = new Set(detectedItems.map(i => i.page));
-      for (const pageNum of detectedPageNums) {
-        const container = document.getElementById(`canvas-container-${pageNum}`);
-        if (!container) continue;
-        const dScale  = pageRenderScales[pageNum] || 1;
-        const items   = detectedItems.filter(i => i.page === pageNum);
-        items.filter(i => i.type === "image").forEach(item => container.appendChild(createOverlay(item, dScale)));
-        items.filter(i => i.type === "text").forEach(item  => container.appendChild(createOverlay(item, dScale)));
+          const badge = document.createElement("div");
+          badge.className = "page-number-badge";
+          badge.textContent = `Page ${pageNum}`;
+          card.appendChild(badge);
+
+          const canvasContainer = document.createElement("div");
+          canvasContainer.className = "page-canvas-container";
+          canvasContainer.id = `canvas-container-${pageNum}`;
+          canvasContainer.appendChild(canvas);
+          card.appendChild(canvasContainer);
+
+          // FIX 1: button hidden after detection — created visible, hidden on success
+          const detectBtn = document.createElement("button");
+          detectBtn.className = "cta-button";
+          detectBtn.id = `detect-btn-${pageNum}`;
+          detectBtn.style.cssText =
+            "margin-top:12px;width:100%;padding:10px;font-size:14px;" +
+            "display:flex;align-items:center;justify-content:center;gap:8px;";
+          detectBtn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
+          detectBtn.onclick = () => detectPageWatermarks(pageNum);
+          card.appendChild(detectBtn);
+
+          pagesGrid.appendChild(card);
+          page.cleanup();
+        }
+
+        URL.revokeObjectURL(fileURL);
+      }
+
+      // ── Per-page detection ─────────────────────────────────────────────────────
+
+      async function detectPageWatermarks(pageNum) {
+        if (detectingPages.has(pageNum)) return;
+        detectingPages.add(pageNum);
+
+        const btn = document.getElementById(`detect-btn-${pageNum}`);
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
+        clearError();
+
+        try {
+          const formData = new FormData();
+          formData.append("file", currentFile);
+          formData.append("page", pageNum);
+
+          const res = await fetch(DETECT_PAGE_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || "Detection failed");
+          }
+
+          const data = await res.json();
+          const pageItems = data.items || [];
+
+          // Assign unique IDs
+          const idOffset = detectedItems.length;
+          pageItems.forEach((item, i) => {
+            item.id = idOffset + i;
+          });
+
+          // Replace previous detections for this page
+          detectedItems = detectedItems.filter((i) => i.page !== pageNum);
+          detectedItems.push(...pageItems);
+
+          // FIX 2: render image overlays first, text overlays on top
+          const container = document.getElementById(
+            `canvas-container-${pageNum}`,
+          );
+          container
+            .querySelectorAll(".watermark-overlay")
+            .forEach((el) => el.remove());
+          const dScale = pageRenderScales[pageNum] || 1;
+          pageItems
+            .filter((i) => i.type === "image")
+            .forEach((item) =>
+              container.appendChild(createOverlay(item, dScale)),
+            );
+          pageItems
+            .filter((i) => i.type === "text")
+            .forEach((item) =>
+              container.appendChild(createOverlay(item, dScale)),
+            );
+
+          // FIX 1: hide the detect button entirely after detection
+          btn.style.display = "none";
+
+          showSuccess(
+            `Page ${pageNum}: ${pageItems.length} item${pageItems.length !== 1 ? "s" : ""} detected`,
+          );
+        } catch (err) {
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
+          showError(`Page ${pageNum}: ${err.message}`);
+        } finally {
+          detectingPages.delete(pageNum);
+        }
+      }
+
+      // ── Create overlay ─────────────────────────────────────────────────────────
+
+      function createOverlay(item, dScale) {
+        const [x0, y0, x1, y1] = item.bbox;
+
+        const overlay = document.createElement("div");
+        overlay.className = `watermark-overlay type-${item.type}`;
+        overlay.dataset.itemId = item.id;
+        overlay.dataset.pageNum = item.page;
+        overlay.setAttribute("role", "button");
+        overlay.setAttribute("tabindex", "0");
+        overlay.setAttribute(
+          "aria-label",
+          item.type === "text"
+            ? `Text: ${(item.text || "").substring(0, 30)}. Click to select.`
+            : "Image. Click to select.",
+        );
+
+        overlay.style.left = x0 * dScale + "px";
+        overlay.style.top = y0 * dScale + "px";
+        overlay.style.width = Math.max((x1 - x0) * dScale, 4) + "px";
+        overlay.style.height = Math.max((y1 - y0) * dScale, 4) + "px";
+        // FIX 2: explicit z-index so text is always clickable above images
+        overlay.style.zIndex = item.type === "text" ? "20" : "10";
+
+        const label = document.createElement("div");
+        label.className = "overlay-label";
+        label.textContent =
+          item.type === "text"
+            ? `Text: ${(item.text || "").substring(0, 30)}`
+            : "Image";
+        overlay.appendChild(label);
+
+        const deleteIcon = document.createElement("div");
+        deleteIcon.className = "delete-icon";
+        deleteIcon.innerHTML = '<i class="fa fa-times"></i>';
+        deleteIcon.setAttribute("role", "button");
+        deleteIcon.setAttribute("tabindex", "0");
+        overlay.appendChild(deleteIcon);
+
+        overlay.onclick = (e) => {
+          if (e.target.closest(".delete-icon")) return;
+          toggleSelection(item.id, overlay);
+        };
+        overlay.onkeydown = (e) => {
+          if (
+            (e.key === "Enter" || e.key === " ") &&
+            !e.target.closest(".delete-icon")
+          ) {
+            e.preventDefault();
+            toggleSelection(item.id, overlay);
+          }
+        };
+        deleteIcon.onclick = (e) => {
+          e.stopPropagation();
+          deleteSingleWatermark(item.id);
+        };
+        deleteIcon.onkeydown = (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteSingleWatermark(item.id);
+          }
+        };
+
+        return overlay;
+      }
+
+      // ── Selection ──────────────────────────────────────────────────────────────
+
+      function toggleSelection(itemId, overlay) {
+        if (selectedItems.has(itemId)) {
+          selectedItems.delete(itemId);
+          overlay.classList.remove("selected");
+          overlay.setAttribute("aria-pressed", "false");
+        } else {
+          selectedItems.add(itemId);
+          overlay.classList.add("selected");
+          overlay.setAttribute("aria-pressed", "true");
+          clearError();
+        }
+        updateSelectionInfo();
+      }
+
+      // ── Delete single (X button) ───────────────────────────────────────────────
+
+      async function deleteSingleWatermark(itemId) {
+        const item = detectedItems.find((i) => i.id === itemId);
+        if (!item) return;
+        showLoading();
+        clearError();
+
+        try {
+          const formData = new FormData();
+          formData.append("files", currentFile);
+          formData.append("watermarks", JSON.stringify([item]));
+
+          const res = await fetch(REMOVE_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || "Failed to remove");
+          }
+
+          const blob = await res.blob();
+          currentFile = new File([blob], currentFile.name, {
+            type: "application/pdf",
+          });
+
+          const pageNum = item.page;
+          detectedItems = detectedItems.filter((i) => i.id !== itemId);
+          selectedItems.delete(itemId);
+          detectedItems.forEach((it, idx) => {
+            it.id = idx;
+          });
+
+          await reRenderPage(pageNum);
+          updateSelectionInfo();
+          hideLoading();
+          showSuccess("Watermark removed");
+        } catch (err) {
+          hideLoading();
+          showError("Error: " + err.message);
+        }
+      }
+
+      // ── Re-render single page ─────────────────────────────────────────────────
+
+      async function reRenderPage(pageNum) {
+        const fileURL = URL.createObjectURL(currentFile);
+        const pdf = await pdfjsLib.getDocument({
+          url: fileURL,
+          cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+          cMapPacked: true,
+          verbosity: 0,
+        }).promise;
+
+        const page = await pdf.getPage(pageNum);
+        const vp = page.getViewport({ scale: 1 });
+        const dScale = calculateDisplayScale(vp.width);
+        pageRenderScales[pageNum] = dScale;
+
+        const rScale = dScale * (window.devicePixelRatio || 2);
+        const rVp = page.getViewport({ scale: rScale });
+        const canvas = document.createElement("canvas");
+        canvas.width = rVp.width;
+        canvas.height = rVp.height;
+        await page.render({
+          canvasContext: canvas.getContext("2d", { alpha: false }),
+          viewport: rVp,
+        }).promise;
+        canvas.style.width = vp.width * dScale + "px";
+        canvas.style.height = vp.height * dScale + "px";
+
+        const canvasContainer = document.getElementById(
+          `canvas-container-${pageNum}`,
+        );
+        canvasContainer.innerHTML = "";
+        canvasContainer.appendChild(canvas);
+
+        // FIX 2: image overlays behind text overlays
+        const remaining = detectedItems.filter((i) => i.page === pageNum);
+        remaining
+          .filter((i) => i.type === "image")
+          .forEach((item) =>
+            canvasContainer.appendChild(createOverlay(item, dScale)),
+          );
+        remaining
+          .filter((i) => i.type === "text")
+          .forEach((item) =>
+            canvasContainer.appendChild(createOverlay(item, dScale)),
+          );
+
+        // Keep detect button hidden — page already detected
         const btn = document.getElementById(`detect-btn-${pageNum}`);
         if (btn) btn.style.display = "none";
+
+        page.cleanup();
+        URL.revokeObjectURL(fileURL);
       }
-    }, 300);
-  });
-</script>
+
+      // ── Clear selection ────────────────────────────────────────────────────────
+
+      clearBtn.onclick = () => {
+        const selected = document.querySelectorAll(
+          ".watermark-overlay.selected",
+        );
+        if (!selected.length) {
+          showError("No items selected to clear");
+          return;
+        }
+        selectedItems.clear();
+        selected.forEach((el) => {
+          el.classList.remove("selected");
+          el.setAttribute("aria-pressed", "false");
+        });
+        updateSelectionInfo();
+        clearError();
+      };
+
+      // ── Delete selected batch ──────────────────────────────────────────────────
+
+      deleteBtn.onclick = async () => {
+        if (!selectedItems.size) {
+          showError("Please select items to delete first!");
+          return;
+        }
+        showLoading();
+        clearError();
+
+        try {
+          const itemsToRemove = Array.from(selectedItems)
+            .map((id) => detectedItems.find((i) => i.id === id))
+            .filter(Boolean);
+          const affectedPages = [...new Set(itemsToRemove.map((i) => i.page))];
+
+          const formData = new FormData();
+          formData.append("files", currentFile);
+          formData.append("watermarks", JSON.stringify(itemsToRemove));
+
+          const res = await fetch(REMOVE_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || "Failed to delete");
+          }
+
+          const blob = await res.blob();
+          currentFile = new File([blob], currentFile.name, {
+            type: "application/pdf",
+          });
+
+          detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
+          detectedItems.forEach((it, idx) => {
+            it.id = idx;
+          });
+          selectedItems.clear();
+
+          for (const pn of affectedPages) await reRenderPage(pn);
+          updateSelectionInfo();
+          hideLoading();
+          showSuccess(
+            `Deleted ${itemsToRemove.length} watermark${itemsToRemove.length !== 1 ? "s" : ""}`,
+          );
+        } catch (err) {
+          hideLoading();
+          showError("Error: " + err.message);
+        }
+      };
+
+      // ── Save Changes ───────────────────────────────────────────────────────────
+
+      removeBtn.onclick = () => {
+        const url = URL.createObjectURL(currentFile);
+        downloadBtn.href = url;
+        downloadBtn.download = "cleaned.pdf";
+        shareBtn.href = url;
+
+        uploadSection.style.display = "none";
+        fileList.style.display = "none";
+        pagesGrid.style.display = "none";
+        controlPanel.style.display = "none";
+        noteBox.style.display = "none";
+        resultBtns.style.display = "block";
+
+        const isSmall = window.matchMedia("(max-width: 768px)").matches;
+        if (!isSmall) {
+          pdfFrame.src = url;
+          pdfPreview.style.display = "block";
+        }
+        fileNameLink.onclick = (e) => {
+          e.preventDefault();
+          isSmall
+            ? window.open(url, "_blank")
+            : pdfPreview.scrollIntoView({ behavior: "smooth" });
+        };
+      };
+
+      resetBtn.onclick = () => resetApplication();
+
+      // ── Resize: re-render preserving detections ────────────────────────────────
+
+      let resizeTimeout;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(async () => {
+          if (!currentFile || pagesGrid.style.display === "none") return;
+          const prevDetected = [...detectedItems];
+          await renderPDFPages(currentFile);
+          detectedItems = prevDetected;
+
+          const detectedPageNums = new Set(detectedItems.map((i) => i.page));
+          for (const pageNum of detectedPageNums) {
+            const container = document.getElementById(
+              `canvas-container-${pageNum}`,
+            );
+            if (!container) continue;
+            const dScale = pageRenderScales[pageNum] || 1;
+            const items = detectedItems.filter((i) => i.page === pageNum);
+            items
+              .filter((i) => i.type === "image")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
+            items
+              .filter((i) => i.type === "text")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
+            const btn = document.getElementById(`detect-btn-${pageNum}`);
+            if (btn) btn.style.display = "none";
+          }
+        }, 300);
+      });
+    </script>
   </body>
 </html>

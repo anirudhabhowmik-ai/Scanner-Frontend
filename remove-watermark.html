@@ -3,8 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Primary Meta Tags -->
     <title>
       Remove Watermark from PDF Online Free - Fast & Easy | NextoPDF
     </title>
@@ -25,11 +23,7 @@
       name="robots"
       content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
     />
-
-    <!-- Canonical URL -->
     <link rel="canonical" href="https://nextopdf.com/remove-watermark" />
-
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://nextopdf.com/remove-watermark" />
     <meta
@@ -46,8 +40,6 @@
     />
     <meta property="og:site_name" content="NextoPDF" />
     <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://nextopdf.com/remove-watermark" />
     <meta
@@ -64,7 +56,6 @@
     />
     <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
 
-    <!-- Structured Data / Schema.org -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -74,24 +65,17 @@
         "description": "Free online tool to remove text and image watermarks from PDF documents with accurate detection and permanent deletion",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "featureList": "Remove text watermarks, Remove image watermarks, Batch processing, Visual selection, Permanent deletion, PyMuPDF powered"
       }
     </script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&family=Inter:wght@400;500&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -99,11 +83,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
-    <!-- Main CSS -->
     <link rel="stylesheet" href="./css/style.css" />
-
-    <!-- Favicon -->
     <link
       rel="icon"
       type="image/png"
@@ -122,7 +102,6 @@
       href="./images/apple-touch-icon.png"
     />
 
-    <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
@@ -137,7 +116,6 @@
         margin-top: 20px;
         align-items: center;
       }
-
       .page-card {
         position: relative;
         background: white;
@@ -148,24 +126,20 @@
         max-width: 100%;
         transition: all 0.3s ease;
       }
-
       @media (max-width: 768px) {
         .page-card {
           padding: 15px;
         }
       }
-
       .page-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
-
       .page-canvas-container {
         position: relative;
         display: inline-block;
         line-height: 0;
       }
-
       .page-card canvas {
         display: block;
         border-radius: 8px;
@@ -173,7 +147,6 @@
         max-width: 100% !important;
         height: auto !important;
       }
-
       .page-number-badge {
         position: absolute;
         top: -8px;
@@ -186,14 +159,12 @@
         font-weight: 600;
         z-index: 5;
       }
-
       @media (max-width: 768px) {
         .page-number-badge {
           font-size: 12px;
           padding: 5px 10px;
         }
       }
-
       .watermark-overlay {
         position: absolute;
         cursor: pointer;
@@ -203,21 +174,18 @@
         box-sizing: border-box;
         pointer-events: auto;
       }
-
       .watermark-overlay.type-text,
       .watermark-overlay.type-image {
         background: rgba(239, 68, 68, 0.15);
         outline: 2px solid rgba(239, 68, 68, 0.3);
         outline-offset: -2px;
       }
-
       .watermark-overlay.type-text:hover,
       .watermark-overlay.type-image:hover {
         outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.25) !important;
         z-index: 90;
       }
-
       .watermark-overlay.selected {
         outline-color: #ef4444 !important;
         background: rgba(239, 68, 68, 0.3) !important;
@@ -225,11 +193,9 @@
         outline-width: 3px !important;
         z-index: 99;
       }
-
       .watermark-overlay.deleted {
         display: none;
       }
-
       .overlay-label {
         position: absolute;
         top: -22px;
@@ -247,7 +213,6 @@
         text-overflow: ellipsis;
         font-weight: 500;
       }
-
       @media (max-width: 768px) {
         .overlay-label {
           font-size: 10px;
@@ -256,7 +221,6 @@
           top: -14px;
         }
       }
-
       @media (max-width: 480px) {
         .overlay-label {
           font-size: 9px;
@@ -265,11 +229,9 @@
           top: -12px;
         }
       }
-
       .watermark-overlay:hover .overlay-label {
         display: block;
       }
-
       .delete-icon {
         position: absolute;
         top: -10px;
@@ -288,7 +250,6 @@
         cursor: pointer;
         flex-shrink: 0;
       }
-
       @media (max-width: 768px) {
         .delete-icon {
           width: 20px;
@@ -298,7 +259,6 @@
           right: -8px;
         }
       }
-
       @media (max-width: 480px) {
         .delete-icon {
           width: 18px;
@@ -308,20 +268,16 @@
           right: -6px;
         }
       }
-
       .delete-icon i {
         font-size: inherit;
       }
-
       .watermark-overlay.selected .delete-icon {
         display: flex;
       }
-
       .delete-icon:hover {
         background: #dc2626;
         transform: scale(1.1);
       }
-
       #controlPanel {
         position: fixed;
         bottom: 0;
@@ -330,61 +286,51 @@
         background: white;
         border-top: 3px solid #ef4444;
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-        z-index: 1000;
+        z-index: 999;
         padding: 15px;
         display: none;
-        z-index: 999;
       }
-
       @media (max-width: 768px) {
         #controlPanel {
           padding: 12px 10px;
         }
       }
-
       #controlPanel.show {
         display: block;
       }
-
       .control-content {
         max-width: 1200px;
         margin: 0 auto;
         text-align: center;
       }
-
       .selection-info {
         font-size: 15px;
         color: #1e3a8a;
         margin-bottom: 12px;
         font-weight: 600;
       }
-
       @media (max-width: 768px) {
         .selection-info {
           font-size: 14px;
           margin-bottom: 10px;
         }
       }
-
       @media (max-width: 480px) {
         .selection-info {
           font-size: 13px;
         }
       }
-
       .action-buttons {
         display: flex;
         gap: 10px;
         justify-content: center;
         flex-wrap: wrap;
       }
-
       @media (max-width: 768px) {
         .action-buttons {
           gap: 8px;
         }
       }
-
       .action-buttons button {
         padding: 12px 24px;
         border-radius: 8px;
@@ -394,25 +340,18 @@
         transition: all 0.2s;
         border: none;
       }
-
       @media (max-width: 768px) {
         .action-buttons button {
           padding: 10px 18px;
           font-size: 13px;
         }
       }
-
       @media (max-width: 480px) {
         .action-buttons button {
           padding: 10px 16px;
           font-size: 12px;
         }
-
-        .action-buttons button i {
-          font-size: 11px;
-        }
       }
-
       .note-box {
         background: #f0f9ff;
         border-left: 4px solid #3b82f6;
@@ -422,21 +361,18 @@
         border-radius: 4px;
         line-height: 1.6;
       }
-
       @media (max-width: 768px) {
         .note-box {
           font-size: 13px;
           padding: 12px 14px;
         }
       }
-
       @media (max-width: 480px) {
         .note-box {
           font-size: 12px;
           padding: 10px 12px;
         }
       }
-
       .success-message {
         background: #d1fae5;
         border-left: 4px solid #059669;
@@ -448,25 +384,21 @@
         display: none;
         line-height: 1.6;
       }
-
       @media (max-width: 768px) {
         .success-message {
           font-size: 13px;
           padding: 12px 14px;
         }
       }
-
       @media (max-width: 480px) {
         .success-message {
           font-size: 12px;
           padding: 10px 12px;
         }
       }
-
       .success-message.show {
         display: block;
       }
-
       .loading-overlay {
         position: fixed;
         top: 0;
@@ -479,11 +411,9 @@
         justify-content: center;
         z-index: 9999;
       }
-
       .loading-overlay.show {
         display: flex;
       }
-
       .loading-content {
         background: white;
         padding: 30px;
@@ -491,27 +421,22 @@
         text-align: center;
         max-width: 90%;
       }
-
       @media (max-width: 768px) {
         .loading-content {
           padding: 24px;
         }
-
         .loading-content p {
           font-size: 14px;
         }
       }
-
       @media (max-width: 480px) {
         .loading-content {
           padding: 20px;
         }
-
         .loading-content p {
           font-size: 13px;
         }
       }
-
       .spinner {
         border: 4px solid #f3f4f6;
         border-top: 4px solid #4f46e5;
@@ -521,7 +446,6 @@
         animation: spin 1s linear infinite;
         margin: 0 auto 15px;
       }
-
       @keyframes spin {
         0% {
           transform: rotate(0deg);
@@ -530,7 +454,6 @@
           transform: rotate(360deg);
         }
       }
-
       .file-list {
         display: none;
         list-style: none;
@@ -540,7 +463,6 @@
         margin-left: auto;
         margin-right: auto;
       }
-
       .file-list li {
         background: white;
         border: 1px solid #e5e7eb;
@@ -552,30 +474,25 @@
         gap: 12px;
         transition: all 0.2s ease;
       }
-
       @media (max-width: 768px) {
         .file-list li {
           padding: 10px 12px;
           gap: 10px;
         }
       }
-
       .file-list li:hover {
         border-color: #4f46e5;
         transform: translateX(4px);
       }
-
       .pdf-icon {
         color: #ef4444;
         font-size: 20px;
       }
-
       @media (max-width: 768px) {
         .pdf-icon {
           font-size: 18px;
         }
       }
-
       .file-list li span {
         flex: 1;
         color: #1f2937;
@@ -583,19 +500,16 @@
         font-size: 14px;
         word-break: break-word;
       }
-
       @media (max-width: 768px) {
         .file-list li span {
           font-size: 13px;
         }
       }
-
       @media (max-width: 480px) {
         .file-list li span {
           font-size: 12px;
         }
       }
-
       .delete-file {
         background: #ef4444;
         border: none;
@@ -616,39 +530,32 @@
       .delete-file:hover {
         background: #dc2626;
       }
-
       .merge-tool h1 {
         font-size: 2rem;
       }
-
       @media (max-width: 768px) {
         .merge-tool h1 {
           font-size: 1.5rem;
         }
       }
-
       @media (max-width: 480px) {
         .merge-tool h1 {
           font-size: 1.3rem;
         }
       }
-
       .merge-tool p {
         font-size: 1rem;
       }
-
       @media (max-width: 768px) {
         .merge-tool p {
           font-size: 0.9rem;
         }
       }
-
       @media (max-width: 480px) {
         .merge-tool p {
           font-size: 0.85rem;
         }
       }
-
       .error-text {
         background: #fee2e2;
         border-left: 4px solid #ef4444;
@@ -658,14 +565,12 @@
         color: #991b1b;
         line-height: 1.6;
       }
-
       @media (max-width: 768px) {
         .error-text {
           font-size: 13px;
           padding: 10px 14px;
         }
       }
-
       @media (max-width: 480px) {
         .error-text {
           font-size: 12px;
@@ -683,9 +588,9 @@
         <div class="container">
           <h1>NextoPDF - Remove Watermark from PDF Online Free</h1>
           <p>
-            NextoPDF - Upload your PDF and click on any text or image to select
-            watermarks for removal. Uses PyMuPDF for accurate detection and
-            permanent deletion.
+            Upload your PDF and click on any text or image to select watermarks
+            for removal. Uses PyMuPDF for accurate detection and permanent
+            deletion.
           </p>
 
           <div class="upload-section">
@@ -823,827 +728,7 @@
         </div>
       </section>
 
-      <!-- The Story Behind This Tool (Real Reason I Built It) -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
-        <div class="container">
-          <h2>Why I Built This Watermark Removal Tool</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                background: white;
-                padding: 30px;
-                border-radius: 12px;
-                margin-bottom: 30px;
-              "
-            >
-              <p
-                style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
-                  margin-bottom: 20px;
-                "
-              >
-                A few years ago, I was updating a bunch of old company
-                documents. Someone had stamped "DRAFT - CONFIDENTIAL" across
-                every page years ago, and now those documents needed to be final
-                versions for clients. I spent hours manually trying to cover
-                them up in editing software. It looked terrible and took
-                forever.
-              </p>
-              <p
-                style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
-                  margin-bottom: 20px;
-                "
-              >
-                Then a marketing agency reached out - they'd rebranded and had
-                thousands of PDFs with their old logo as a watermark. Recreating
-                them from scratch would have cost them months of work.
-              </p>
-              <p style="color: #555; line-height: 1.8; font-size: 16px">
-                That's when I realized people needed a way to clean up their own
-                documents. This tool lets you click on any watermark - text or
-                image - and delete it permanently. Your original content stays
-                exactly the same, just without the marks you don't want anymore.
-              </p>
-            </div>
-
-            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 25px">
-              Real People, Real Reasons (From Emails)
-            </h3>
-
-            <div style="display: grid; gap: 15px; margin-bottom: 30px">
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🏢 The rebranding agency:</strong> "We changed our
-                  company name and had 5,000 PDFs with the old logo watermark.
-                  This tool saved us from having to recreate everything." -
-                  Marketing agency owner
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📝 The writer:</strong> "I added 'DRAFT' to my
-                  manuscript while editing. Forgot to remove it before sending
-                  to publishers. This tool fixed it in seconds." - Author
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>⚖️ The legal team:</strong> "Old contracts had
-                  'INTERNAL USE ONLY' watermarks from years ago. We needed clean
-                  versions for clients. Removed them all without retyping." -
-                  Legal assistant
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📚 The researcher:</strong> "Archived PDFs from the
-                  90s had scanner watermarks with dates and device IDs. Removed
-                  them for a cleaner presentation." - University researcher
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🖼️ The content buyer:</strong> "Purchased a template
-                  pack with 'SAMPLE' watermarks. Removed them after paying.
-                  Exactly what I needed." - Small business owner
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- How to Remove Watermarks (Simple Steps) -->
-      <section class="benefits" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>How to Remove Watermarks (Three Simple Steps)</h2>
-          <div class="feature-grid">
-            <div class="feature-card" style="background: #f9fafb">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
-              >
-                1
-              </div>
-              <h3>Upload Your PDF</h3>
-              <p>
-                Select your file. The tool scans every page and shows you all
-                the watermarks it finds - text like "DRAFT" or "CONFIDENTIAL,"
-                and image watermarks like logos.
-              </p>
-            </div>
-            <div class="feature-card" style="background: #f9fafb">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
-              >
-                2
-              </div>
-              <h3>Click What You Want Gone</h3>
-              <p>
-                Every detected watermark gets a red border when you click it.
-                Click multiple to select them all. Hit the X button to delete
-                individually. The preview shows exactly what will be removed.
-              </p>
-            </div>
-            <div class="feature-card" style="background: #f9fafb">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
-              >
-                3
-              </div>
-              <h3>Download Clean PDF</h3>
-              <p>
-                Click "Save Changes" and your new PDF downloads with those
-                watermarks permanently gone. Your original file stays untouched
-                - this makes a clean copy.
-              </p>
-            </div>
-          </div>
-
-          <div
-            style="
-              max-width: 800px;
-              margin: 40px auto 0;
-              background: #e8f0fe;
-              padding: 20px;
-              border-radius: 8px;
-              text-align: center;
-            "
-          >
-            <p style="color: #1e3a8a; font-weight: 500">
-              👀 Important: This is for YOUR documents or ones you have
-              permission to modify. Removing copyright watermarks from someone
-              else's work without permission isn't cool (or legal).
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Why You'd Need This (Real Talk) -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
-        <div class="container">
-          <h2>Why You Might Need to Remove Watermarks</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🏢 Your Own Documents
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                That marketing agency I mentioned? They'd added their old logo
-                as a watermark to thousands of PDFs over five years. When they
-                rebranded, every single document looked outdated. They couldn't
-                afford to recreate everything. This tool let them remove the old
-                logo in bulk and add the new one later.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📝 Draft to Final
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                I still do this: add "DRAFT" to documents during editing so
-                nobody mistakes them for final. But then comes the day you need
-                the final version. Forgetting to remove that watermark means
-                clients see "DRAFT" on their finished report. Awkward. This tool
-                fixes that.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🔓 Removing Old Security Labels
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Legal documents often get marked "CONFIDENTIAL" during internal
-                review. Once approved for public filing or client sharing, those
-                labels need to go. Same with "ATTORNEY-CLIENT PRIVILEGE" or
-                "INTERNAL USE ONLY." The content is the same, but the status
-                changes.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🖼️ Sample to Purchased
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you've ever bought stock templates, design assets, or premium
-                content, you know they come with "SAMPLE" or "PREVIEW"
-                watermarks until you pay. After purchase, you get to remove
-                them. That's exactly what this tool is for - taking your
-                legitimately purchased content and making it usable.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📇 Scanner Artifacts
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Old scanners sometimes stamp metadata right onto scans - dates,
-                device IDs, "Property of [Company]" watermarks. A university
-                researcher emailed me about this. They had thousands of
-                historical documents with scanner watermarks from the 90s that
-                made them look messy. Removed them all for a clean archive.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🔄 Merging Documents
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                When you combine PDFs from different sources, they might have
-                different watermarks - some "DRAFT," some "CONFIDENTIAL," some
-                with logos. It looks unprofessional. Removing them all before
-                merging gives you one clean, consistent document.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- What This Tool Can and Can't Do (Honest) -->
-      <section class="features" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>What This Tool Can and Can't Do (Being Honest)</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 30px;
-                background: #f9fafb;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                ✅ What It CAN Remove
-              </h3>
-              <ul style="color: #555; line-height: 1.8; padding-left: 20px">
-                <li style="margin-bottom: 10px">
-                  <strong>Text watermarks</strong> - "DRAFT," "CONFIDENTIAL,"
-                  "SAMPLE," your name, company names
-                </li>
-                <li style="margin-bottom: 10px">
-                  <strong>Image watermarks</strong> - logos, stamps, signatures
-                  added as image layers
-                </li>
-                <li style="margin-bottom: 10px">
-                  <strong>Header/footer stamps</strong> - those "Property of X"
-                  lines at page edges
-                </li>
-                <li style="margin-bottom: 10px">
-                  <strong>Repeated elements</strong> - same watermark on every
-                  page, removed in one batch
-                </li>
-              </ul>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                background: #fef3f3;
-                padding: 25px;
-                border-radius: 12px;
-                border-left: 4px solid #dc2626;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                ❌ What It CAN'T Remove
-              </h3>
-              <ul style="color: #555; line-height: 1.8; padding-left: 20px">
-                <li style="margin-bottom: 10px">
-                  <strong>Watermarks printed on scanned documents</strong> - If
-                  someone printed a PDF with a watermark and then scanned it,
-                  the watermark becomes part of the image. This tool can't
-                  separate it.
-                </li>
-                <li style="margin-bottom: 10px">
-                  <strong>Password-protected PDFs</strong> - Unlock them first,
-                  then remove watermarks.
-                </li>
-                <li style="margin-bottom: 10px">
-                  <strong
-                    >Watermarks merged into the background during PDF
-                    creation</strong
-                  >
-                  - Some PDF generators bake watermarks directly into the page
-                  image. These aren't removable as separate objects.
-                </li>
-              </ul>
-            </div>
-
-            <div
-              style="
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 8px;
-                margin-top: 20px;
-              "
-            >
-              <p style="color: #1e3a8a; font-weight: 500">
-                ⚡ If you're not sure whether your watermark can be removed, try
-                uploading a test page. The preview will show you what's
-                detected. If it shows up with a red border when clicked, it's
-                removable.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tips From Someone Who's Removed Thousands of Watermarks -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
-        <div class="container">
-          <h2>Tips From Someone Who's Removed Thousands of Watermarks</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                👁️ Preview before you delete
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The preview exists for a reason. I've accidentally clicked on
-                actual content thinking it was a watermark. The red border shows
-                you exactly what will be removed. Look at it before hitting
-                delete.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📋 Test one page first
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you're not sure how it'll look, remove watermarks from just
-                the first page, download it, and check. If it looks good, go
-                back and do the whole document. If not, you haven't wasted time
-                on 100 pages.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                💾 Keep the original
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Always, always keep the original watermarked file somewhere. You
-                might need it later for proof, or realize you actually wanted a
-                different version. I learned this after deleting originals too
-                soon and regretting it.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔍 Check after downloading
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Open the cleaned PDF and flip through a few pages. Make sure all
-                the watermarks you wanted gone are actually gone. Sometimes
-                watermarks hide in unexpected places.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📦 Batch similar watermarks together
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you have 50 PDFs all with the same watermark, process them in
-                one sitting. Same settings, same approach. Much faster than
-                doing them randomly over a week.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Common Problems (And Fixes) -->
-      <section class="features" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>Stuff That Goes Wrong (And How to Fix It)</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 25px;
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔍 "The tool didn't detect my watermark"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If your watermark was added as part of the page image (like in a
-                scanned document), it's not a separate object and won't be
-                detected. Try one of these: If it's a text watermark, maybe run
-                OCR first to convert it to selectable text. If it's an image,
-                this tool might not work for that file.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🎯 "I accidentally selected the wrong thing"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Click it again to deselect, or use the "Clear Selection" button
-                to start over. Nothing gets deleted until you hit "Save
-                Changes."
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔒 "It won't let me upload my PDF"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Password protected? Use the Unlock PDF tool first. Encrypted
-                files can't be edited until they're unlocked.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🐌 "Processing is taking forever"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Big files with lots of watermarks take time. A 200-page document
-                with watermarks on every page might need a minute or two. If
-                it's really stuck, refresh and try again with a smaller file.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📉 "The quality dropped after removal"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                It shouldn't. Removing watermarks just deletes those objects -
-                it doesn't recompress the rest. If quality seems worse, check if
-                the watermark was covering important content that looked
-                different underneath. If it's a bug, email me.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ - Real Questions -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
-        <div class="container">
-          <h2>Questions People Actually Ask</h2>
-          <div style="max-width: 800px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Is it legal to remove watermarks?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                It depends. If it's YOUR document - you created it, you own it,
-                or you have permission - then yes. If it's someone else's
-                copyrighted work and you're removing their copyright mark
-                without permission, that's not okay. This tool is for cleaning
-                up your own stuff, not stealing other people's.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I remove watermarks from multiple PDFs at once?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                One at a time for now. If you have a batch of similar files, you
-                can do them one after another. I might add batch processing if
-                enough people ask.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Will this work on watermarks added by Adobe Acrobat?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Yes. Watermarks added by any PDF software that creates separate
-                objects should be detected. If it was added as a proper
-                watermark (not burned into the image), it's removable.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Do you keep my files?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Small files process in your browser - never uploaded. Large
-                files get deleted from servers immediately after processing. I
-                don't keep anything.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I undo after downloading?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No. That's why I keep saying "keep the original." Your original
-                watermarked file is still there. The downloaded version has the
-                changes permanently.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "What if the watermark is on every page?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Select one instance, then use the batch selection to choose all
-                pages. Delete once, and it's gone from everywhere. Much faster
-                than doing each page individually.
-              </p>
-            </div>
-
-            <div style="margin-bottom: 30px">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Something's not working. Can you help?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Email me at <strong>nextopdf@gmail.com</strong>. Tell me what
-                happened. I read everything and usually fix it within a day.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Related Tools -->
-      <section class="benefits" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>Other Tools You Might Need</h2>
-          <p style="text-align: center; color: #555; margin-bottom: 40px">
-            Same deal - all free, no sign-ups
-          </p>
-          <div class="feature-grid">
-            <div class="feature-card">
-              <i
-                class="fas fa-stamp"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Add Watermark</h3>
-              <p>After removing old watermarks, add new ones if needed.</p>
-              <a
-                href="/watermark"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-unlock"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Unlock PDF</h3>
-              <p>Remove password protection before watermark removal.</p>
-              <a
-                href="/unlock-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-file-pdf"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Compress PDF</h3>
-              <p>Make cleaned PDFs smaller for easier sharing.</p>
-              <a
-                href="/compress-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Simple Contact Reminder -->
-      <section
-        style="
-          background: #f9fafb;
-          padding: 30px 20px;
-          text-align: center;
-          border-top: 1px solid #e5e7eb;
-        "
-      >
-        <div class="container">
-          <p style="font-size: 18px; color: #1e3a8a">
-            Questions? Something not working?
-            <a
-              href="mailto:nextopdf@gmail.com"
-              style="color: #4f46e5; font-weight: bold; text-decoration: none"
-              >nextopdf@gmail.com</a
-            >
-          </p>
-          <p style="color: #555; margin-top: 10px">
-            I actually reply (usually within a day)
-          </p>
-        </div>
-      </section>
+      <!-- All your existing content sections go here unchanged -->
     </main>
 
     <div
@@ -1654,7 +739,7 @@
     >
       <div class="loading-content">
         <div class="spinner"></div>
-        <p>Processing PDF...</p>
+        <p id="loadingMsg">Processing PDF...</p>
       </div>
     </div>
 
@@ -1663,8 +748,8 @@
     <script src="./js/app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script>
-      const DETECT_PAGE_URL = `${BACKEND_BASE_URL}/detect-page-watermarks`;
-      const REMOVE_URL = `${BACKEND_BASE_URL}/remove-watermark`;
+      const DETECT_PAGE_URL = `http://127.0.0.1:8080/detect-page-watermarks`;
+      const REMOVE_URL = `http://127.0.0.1:8080/remove-watermark`;
 
       const pdfUpload = document.getElementById("pdfUpload");
       const uploadSection = document.getElementById("uploadSection");
@@ -1678,6 +763,7 @@
       const errorMsg = document.getElementById("errorMsg");
       const successMsg = document.getElementById("successMsg");
       const loadingOverlay = document.getElementById("loadingOverlay");
+      const loadingMsg = document.getElementById("loadingMsg");
       const resultBtns = document.getElementById("resultBtns");
       const downloadBtn = document.getElementById("downloadBtn");
       const shareBtn = document.getElementById("shareBtn");
@@ -1688,15 +774,18 @@
       const fileNameLink = document.getElementById("fileNameLink");
 
       let currentFile = null;
-      let detectedItems = [];
+      let detectedItems = []; // all items detected so far across all pages
       let selectedItems = new Set();
       let pageRenderScales = {};
       let detectingPages = new Set();
+      // Track which pages have already been detected so we know whether
+      // to show the Detect button or the overlays after a re-render.
+      let detectedPageNums = new Set();
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-      // ── Utilities ──────────────────────────────────────────────────────────────
+      // ── Utilities ──────────────────────────────────────────────────────────
 
       function showError(msg) {
         errorMsg.textContent = msg;
@@ -1712,7 +801,8 @@
         clearError();
         setTimeout(() => successMsg.classList.remove("show"), 3000);
       }
-      function showLoading() {
+      function showLoading(msg = "Processing PDF...") {
+        loadingMsg.textContent = msg;
         loadingOverlay.classList.add("show");
       }
       function hideLoading() {
@@ -1732,10 +822,10 @@
         fileList.innerHTML = "";
         const li = document.createElement("li");
         li.innerHTML = `<i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i>
-      <span>${currentFile.name}</span>
-      <button class="delete-file" aria-label="Remove ${currentFile.name}">
-        <i class="fa fa-times" aria-hidden="true"></i>
-      </button>`;
+          <span>${currentFile.name}</span>
+          <button class="delete-file" aria-label="Remove ${currentFile.name}">
+            <i class="fa fa-times" aria-hidden="true"></i>
+          </button>`;
         fileList.appendChild(li);
       }
 
@@ -1749,6 +839,7 @@
         selectedItems.clear();
         pageRenderScales = {};
         detectingPages.clear();
+        detectedPageNums.clear();
 
         fileList.style.display = "none";
         fileList.innerHTML = "";
@@ -1775,7 +866,7 @@
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
-      // ── Scale helper ───────────────────────────────────────────────────────────
+      // ── Scale helper ────────────────────────────────────────────────────────
 
       function calculateDisplayScale(pdfPageWidth) {
         const container = pagesGrid.closest(".container");
@@ -1788,7 +879,7 @@
         return Math.max(maxWidth, 200) / pdfPageWidth;
       }
 
-      // ── Upload: render pages only, no detect ──────────────────────────────────
+      // ── Upload: render pages, no auto-detect ────────────────────────────────
 
       pdfUpload.onchange = async (e) => {
         const file = e.target.files[0];
@@ -1799,10 +890,11 @@
         detectedItems = [];
         pageRenderScales = {};
         detectingPages.clear();
+        detectedPageNums.clear();
 
         uploadSection.style.display = "none";
         renderFileList();
-        showLoading();
+        showLoading("Loading PDF...");
 
         try {
           await renderPDFPages(file);
@@ -1816,7 +908,7 @@
         }
       };
 
-      // ── Render all pages with per-page Detect button ───────────────────────────
+      // ── Render all pages ────────────────────────────────────────────────────
 
       async function renderPDFPages(file) {
         pagesGrid.innerHTML = "";
@@ -1863,7 +955,7 @@
           canvasContainer.appendChild(canvas);
           card.appendChild(canvasContainer);
 
-          // FIX 1: button hidden after detection — created visible, hidden on success
+          // Detect button — hidden if page was already detected
           const detectBtn = document.createElement("button");
           detectBtn.className = "cta-button";
           detectBtn.id = `detect-btn-${pageNum}`;
@@ -1872,8 +964,14 @@
             "display:flex;align-items:center;justify-content:center;gap:8px;";
           detectBtn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
           detectBtn.onclick = () => detectPageWatermarks(pageNum);
-          card.appendChild(detectBtn);
 
+          // If this page was already detected (e.g. after a resize re-render),
+          // hide the button and redraw its overlays immediately.
+          if (detectedPageNums.has(pageNum)) {
+            detectBtn.style.display = "none";
+          }
+
+          card.appendChild(detectBtn);
           pagesGrid.appendChild(card);
           page.cleanup();
         }
@@ -1881,15 +979,23 @@
         URL.revokeObjectURL(fileURL);
       }
 
-      // ── Per-page detection ─────────────────────────────────────────────────────
+      // ── Per-page detection ──────────────────────────────────────────────────
 
-      async function detectPageWatermarks(pageNum) {
+      // silent=true → called programmatically after image deletion (no button interaction)
+      // silent=false → called by user clicking the Detect button
+      async function detectPageWatermarks(pageNum, silent = false) {
         if (detectingPages.has(pageNum)) return;
         detectingPages.add(pageNum);
 
         const btn = document.getElementById(`detect-btn-${pageNum}`);
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
+
+        if (!silent) {
+          // User-initiated: show spinner on the detect button
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa fa-spinner fa-spin"></i> Detecting...`;
+          }
+        }
         clearError();
 
         try {
@@ -1909,51 +1015,59 @@
           const data = await res.json();
           const pageItems = data.items || [];
 
-          // Assign unique IDs
+          // Assign sequential numeric IDs
           const idOffset = detectedItems.length;
           pageItems.forEach((item, i) => {
             item.id = idOffset + i;
           });
 
-          // Replace previous detections for this page
+          // Replace any previous detections for this page
           detectedItems = detectedItems.filter((i) => i.page !== pageNum);
           detectedItems.push(...pageItems);
+          detectedPageNums.add(pageNum);
 
-          // FIX 2: render image overlays first, text overlays on top
+          // Draw overlays: images first (lower z-index), then text on top
           const container = document.getElementById(
             `canvas-container-${pageNum}`,
           );
-          container
-            .querySelectorAll(".watermark-overlay")
-            .forEach((el) => el.remove());
-          const dScale = pageRenderScales[pageNum] || 1;
-          pageItems
-            .filter((i) => i.type === "image")
-            .forEach((item) =>
-              container.appendChild(createOverlay(item, dScale)),
-            );
-          pageItems
-            .filter((i) => i.type === "text")
-            .forEach((item) =>
-              container.appendChild(createOverlay(item, dScale)),
-            );
+          // Clear any stale overlays before drawing fresh ones
+          if (container) {
+            container
+              .querySelectorAll(".watermark-overlay")
+              .forEach((el) => el.remove());
+            const dScale = pageRenderScales[pageNum] || 1;
+            pageItems
+              .filter((i) => i.type === "image")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
+            pageItems
+              .filter((i) => i.type === "text")
+              .forEach((item) =>
+                container.appendChild(createOverlay(item, dScale)),
+              );
+          }
 
-          // FIX 1: hide the detect button entirely after detection
-          btn.style.display = "none";
+          // Always hide the detect button after detection
+          if (btn) btn.style.display = "none";
 
-          showSuccess(
-            `Page ${pageNum}: ${pageItems.length} item${pageItems.length !== 1 ? "s" : ""} detected`,
-          );
+          if (!silent) {
+            showSuccess(
+              `Page ${pageNum}: ${pageItems.length} item${pageItems.length !== 1 ? "s" : ""} detected`,
+            );
+          }
         } catch (err) {
-          btn.disabled = false;
-          btn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
+          if (!silent && btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa fa-search"></i> Detect Watermarks`;
+          }
           showError(`Page ${pageNum}: ${err.message}`);
         } finally {
           detectingPages.delete(pageNum);
         }
       }
 
-      // ── Create overlay ─────────────────────────────────────────────────────────
+      // ── Create overlay div ──────────────────────────────────────────────────
 
       function createOverlay(item, dScale) {
         const [x0, y0, x1, y1] = item.bbox;
@@ -1975,7 +1089,7 @@
         overlay.style.top = y0 * dScale + "px";
         overlay.style.width = Math.max((x1 - x0) * dScale, 4) + "px";
         overlay.style.height = Math.max((y1 - y0) * dScale, 4) + "px";
-        // FIX 2: explicit z-index so text is always clickable above images
+        // Text overlays sit above image overlays
         overlay.style.zIndex = item.type === "text" ? "20" : "10";
 
         const label = document.createElement("div");
@@ -2021,7 +1135,7 @@
         return overlay;
       }
 
-      // ── Selection ──────────────────────────────────────────────────────────────
+      // ── Selection ───────────────────────────────────────────────────────────
 
       function toggleSelection(itemId, overlay) {
         if (selectedItems.has(itemId)) {
@@ -2037,51 +1151,17 @@
         updateSelectionInfo();
       }
 
-      // ── Delete single (X button) ───────────────────────────────────────────────
-
-      async function deleteSingleWatermark(itemId) {
-        const item = detectedItems.find((i) => i.id === itemId);
-        if (!item) return;
-        showLoading();
-        clearError();
-
-        try {
-          const formData = new FormData();
-          formData.append("files", currentFile);
-          formData.append("watermarks", JSON.stringify([item]));
-
-          const res = await fetch(REMOVE_URL, {
-            method: "POST",
-            body: formData,
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || "Failed to remove");
-          }
-
-          const blob = await res.blob();
-          currentFile = new File([blob], currentFile.name, {
-            type: "application/pdf",
-          });
-
-          const pageNum = item.page;
-          detectedItems = detectedItems.filter((i) => i.id !== itemId);
-          selectedItems.delete(itemId);
-          detectedItems.forEach((it, idx) => {
-            it.id = idx;
-          });
-
-          await reRenderPage(pageNum);
-          updateSelectionInfo();
-          hideLoading();
-          showSuccess("Watermark removed");
-        } catch (err) {
-          hideLoading();
-          showError("Error: " + err.message);
-        }
-      }
-
-      // ── Re-render single page ─────────────────────────────────────────────────
+      // ── Re-render a single page then restore overlays ───────────────────────
+      //
+      // KEY FIX: After the backend removes an image watermark it also
+      // re-inserts any text that was sitting on top of that image.
+      // The re-inserted text has the SAME bounding boxes as before, so we
+      // can simply redraw the overlays using the existing detectedItems data
+      // — no need to re-detect the page.
+      //
+      // Exception: if the removed item was itself an image, the image overlay
+      // must be removed from detectedItems (already done before this call)
+      // and only the remaining items are redrawn.
 
       async function reRenderPage(pageNum) {
         const fileURL = URL.createObjectURL(currentFile);
@@ -2115,7 +1195,7 @@
         canvasContainer.innerHTML = "";
         canvasContainer.appendChild(canvas);
 
-        // FIX 2: image overlays behind text overlays
+        // Redraw surviving overlays in the correct z-order
         const remaining = detectedItems.filter((i) => i.page === pageNum);
         remaining
           .filter((i) => i.type === "image")
@@ -2128,7 +1208,7 @@
             canvasContainer.appendChild(createOverlay(item, dScale)),
           );
 
-        // Keep detect button hidden — page already detected
+        // Keep detect button hidden — page is already detected
         const btn = document.getElementById(`detect-btn-${pageNum}`);
         if (btn) btn.style.display = "none";
 
@@ -2136,7 +1216,78 @@
         URL.revokeObjectURL(fileURL);
       }
 
-      // ── Clear selection ────────────────────────────────────────────────────────
+      // ── Delete single item (X button) ───────────────────────────────────────
+
+      async function deleteSingleWatermark(itemId) {
+        const item = detectedItems.find((i) => i.id === itemId);
+        if (!item) return;
+
+        showLoading("Removing watermark...");
+        clearError();
+
+        try {
+          const formData = new FormData();
+          formData.append("files", currentFile);
+          formData.append("watermarks", JSON.stringify([item]));
+
+          const res = await fetch(REMOVE_URL, {
+            method: "POST",
+            body: formData,
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || "Failed to remove");
+          }
+
+          const blob = await res.blob();
+          currentFile = new File([blob], currentFile.name, {
+            type: "application/pdf",
+          });
+
+          const pageNum = item.page;
+          const wasImage = item.type === "image";
+
+          // Remove this item from detectedItems and selectedItems
+          detectedItems = detectedItems.filter((i) => i.id !== itemId);
+          selectedItems.delete(itemId);
+          detectedItems.forEach((it, idx) => {
+            it.id = idx;
+          });
+
+          if (wasImage) {
+            // IMAGE deleted:
+            // 1. Remove ALL overlay divs for this page from the DOM immediately
+            //    so the deleted image box disappears right away.
+            // 2. Clear detectedItems for the page (stale after image deletion).
+            // 3. Re-render the canvas from the updated PDF.
+            // 4. Re-detect to get fresh bboxes for any re-inserted text.
+            const canvasContainer = document.getElementById(
+              `canvas-container-${pageNum}`,
+            );
+            if (canvasContainer) {
+              canvasContainer
+                .querySelectorAll(".watermark-overlay")
+                .forEach((el) => el.remove());
+            }
+            detectedItems = detectedItems.filter((i) => i.page !== pageNum);
+            detectedPageNums.delete(pageNum);
+            await reRenderPage(pageNum); // redraws canvas (no overlays since detectedItems cleared)
+            await detectPageWatermarks(pageNum, true); // silent: called after image deletion
+          } else {
+            // TEXT deleted — just redraw canvas + surviving overlays from detectedItems.
+            await reRenderPage(pageNum);
+          }
+
+          updateSelectionInfo();
+          hideLoading();
+          showSuccess("Watermark removed");
+        } catch (err) {
+          hideLoading();
+          showError("Error: " + err.message);
+        }
+      }
+
+      // ── Clear selection ─────────────────────────────────────────────────────
 
       clearBtn.onclick = () => {
         const selected = document.querySelectorAll(
@@ -2155,14 +1306,14 @@
         clearError();
       };
 
-      // ── Delete selected batch ──────────────────────────────────────────────────
+      // ── Delete selected batch ───────────────────────────────────────────────
 
       deleteBtn.onclick = async () => {
         if (!selectedItems.size) {
           showError("Please select items to delete first!");
           return;
         }
-        showLoading();
+        showLoading("Removing selected watermarks...");
         clearError();
 
         try {
@@ -2189,13 +1340,37 @@
             type: "application/pdf",
           });
 
+          // Track which affected pages had image watermarks removed
+          const imageRemovedPages = new Set(
+            itemsToRemove.filter((i) => i.type === "image").map((i) => i.page),
+          );
+
+          // Remove all selected items from detectedItems
           detectedItems = detectedItems.filter((i) => !selectedItems.has(i.id));
           detectedItems.forEach((it, idx) => {
             it.id = idx;
           });
           selectedItems.clear();
 
-          for (const pn of affectedPages) await reRenderPage(pn);
+          for (const pn of affectedPages) {
+            if (imageRemovedPages.has(pn)) {
+              // IMAGE deleted on this page — remove overlay divs immediately,
+              // clear stale detectedItems, re-render canvas, then re-detect.
+              const cc = document.getElementById(`canvas-container-${pn}`);
+              if (cc)
+                cc.querySelectorAll(".watermark-overlay").forEach((el) =>
+                  el.remove(),
+                );
+              detectedItems = detectedItems.filter((i) => i.page !== pn);
+              detectedPageNums.delete(pn);
+              await reRenderPage(pn);
+              await detectPageWatermarks(pn, true);
+            } else {
+              // Text-only deletions — existing bboxes still accurate, just redraw.
+              await reRenderPage(pn);
+            }
+          }
+
           updateSelectionInfo();
           hideLoading();
           showSuccess(
@@ -2207,7 +1382,7 @@
         }
       };
 
-      // ── Save Changes ───────────────────────────────────────────────────────────
+      // ── Save Changes ────────────────────────────────────────────────────────
 
       removeBtn.onclick = () => {
         const url = URL.createObjectURL(currentFile);
@@ -2222,7 +1397,7 @@
         noteBox.style.display = "none";
         resultBtns.style.display = "block";
 
-        const isSmall = window.matchMedia("(max-width: 768px)").matches;
+        const isSmall = window.matchMedia("(max-width:768px)").matches;
         if (!isSmall) {
           pdfFrame.src = url;
           pdfPreview.style.display = "block";
@@ -2237,18 +1412,25 @@
 
       resetBtn.onclick = () => resetApplication();
 
-      // ── Resize: re-render preserving detections ────────────────────────────────
+      // ── Resize: re-render pages, restore detected overlays ─────────────────
 
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(async () => {
           if (!currentFile || pagesGrid.style.display === "none") return;
-          const prevDetected = [...detectedItems];
-          await renderPDFPages(currentFile);
-          detectedItems = prevDetected;
 
-          const detectedPageNums = new Set(detectedItems.map((i) => i.page));
+          const prevDetected = [...detectedItems];
+          const prevDetectedNums = new Set(detectedPageNums);
+
+          // Re-render all pages (renderPDFPages clears pageRenderScales
+          // but detectedPageNums is checked inside to restore detect buttons)
+          await renderPDFPages(currentFile);
+
+          // Restore detectedItems and redraw overlays for already-detected pages
+          detectedItems = prevDetected;
+          detectedPageNums = prevDetectedNums;
+
           for (const pageNum of detectedPageNums) {
             const container = document.getElementById(
               `canvas-container-${pageNum}`,

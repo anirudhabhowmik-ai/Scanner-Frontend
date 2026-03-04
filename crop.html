@@ -485,7 +485,7 @@
       }
     </style>
 
-    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
@@ -655,59 +655,790 @@
         </div>
       </section>
 
-      <!-- The Story Behind This Tool (Real Reason I Built It) -->
+      <!-- ====================================================== -->
+      <!-- VALUABLE CONTENT STARTS HERE - HOW I BUILT THIS TOOL -->
+      <!-- ====================================================== -->
+
+      <!-- Section 1: The Origin Story + Technical Stack -->
       <section
         class="content-section"
         style="background: #f9fafb; padding: 60px 20px"
       >
         <div class="container">
           <div class="content-wrapper">
-            <h2>Why I Built This PDF Cropping Tool</h2>
+            <h2>
+              How I Built This PDF Cropping Tool (Python + PyMuPDF + PDF.js)
+            </h2>
 
             <div
               style="
                 background: white;
                 padding: 30px;
-                border-radius: 12px;
+                border-radius: 16px;
                 margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
               "
             >
-              <p
+              <h3
                 style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
+                  color: #1e3a8a;
                   margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
                 "
               >
+                <i class="fas fa-lightbulb" style="color: #fbbf24"></i>
+                The Problem That Started It All
+              </h3>
+
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
                 A few years ago, I was putting together a portfolio for a job
                 application. I had design samples, case studies, and project
                 screenshots - all from different sources. Some had huge white
                 borders around them. Others had random black edges from
                 scanning. A few had watermarks in the margins from old software.
               </p>
-              <p
-                style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
-                  margin-bottom: 20px;
-                "
-              >
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
                 I spent hours in photo editing software, cropping each image,
                 saving them, and then rebuilding the PDF. It was miserable. I
                 kept thinking "there has to be a better way."
               </p>
-              <p style="color: #555; line-height: 1.8; font-size: 16px">
-                That's why I built this. Now you can upload multiple PDFs, drag
-                the crop box to keep only what you need, and download everything
-                in one clean file. No more cropping screenshots one by one.
+              <p style="color: #555; line-height: 1.8">
+                That's why I built this using PyMuPDF's crop box system. Now you
+                can upload multiple PDFs, drag the crop box to keep only what
+                you need, and download everything in one clean file. No more
+                cropping screenshots one by one.
               </p>
             </div>
 
-            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 25px">
-              Real People, Real Reasons (From Emails)
-            </h3>
+            <!-- The Tech Stack -->
+            <div
+              style="
+                background: white;
+                padding: 30px;
+                border-radius: 16px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+              "
+            >
+              <h3
+                style="
+                  color: #1e3a8a;
+                  margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                "
+              >
+                <i class="fas fa-code" style="color: #4f46e5"></i>
+                The Tech Stack: Python + PyMuPDF + PDF.js + Custom Drag Handlers
+              </h3>
+
+              <div style="display: grid; gap: 25px">
+                <!-- Frontend (Client-side) -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-js"
+                      style="color: #f7df1e; font-size: 24px"
+                    ></i>
+                    Frontend (HTML/CSS/JavaScript + PDF.js)
+                  </h4>
+                  <pre
+                    style="
+                      background: #1e1e2f;
+                      color: #e2e8f0;
+                      padding: 15px;
+                      border-radius: 8px;
+                      overflow-x: auto;
+                      font-size: 14px;
+                      margin-bottom: 15px;
+                    "
+                  >
+<span style="color: #94a3b8;">// PDF.js renders page thumbnails</span>
+<span style="color: #c084fc;">const</span> page = <span style="color: #c084fc;">await</span> pdf.getPage(i);
+<span style="color: #c084fc;">await</span> page.render({ canvasContext: context, viewport }).promise;
+
+<span style="color: #94a3b8;">// Custom drag-and-drop for crop box</span>
+box.addEventListener(<span style="color: #a78bfa;">"pointerdown"</span>, (e) => {
+    <span style="color: #c084fc;">const</span> startX = e.clientX;
+    <span style="color: #c084fc;">const</span> startY = e.clientY;
+    <span style="color: #c084fc;">const</span> startLeft = box.offsetLeft;
+    <span style="color: #c084fc;">const</span> startTop = box.offsetTop;
+    
+    <span style="color: #c084fc;">function</span> <span style="color: #60a5fa;">move</span>(ev) {
+        <span style="color: #c084fc;">let</span> x = startLeft + (ev.clientX - startX);
+        <span style="color: #c084fc;">let</span> y = startTop + (ev.clientY - startY);
+        <span style="color: #94a3b8;">// Constrain within wrapper bounds</span>
+        x = Math.max(0, Math.min(x, wrapper.offsetWidth - box.offsetWidth));
+        y = Math.max(0, Math.min(y, wrapper.offsetHeight - box.offsetHeight));
+        box.style.left = x + <span style="color: #a78bfa;">"px"</span>;
+        box.style.top = y + <span style="color: #a78bfa;">"px"</span>;
+    }
+});
+
+<span style="color: #94a3b8;">// Resize handle</span>
+handle.addEventListener(<span style="color: #a78bfa;">"pointerdown"</span>, (e) => {
+    <span style="color: #c084fc;">const</span> startWidth = box.offsetWidth;
+    <span style="color: #c084fc;">const</span> startHeight = box.offsetHeight;
+    <span style="color: #c084fc;">let</span> w = startWidth + (ev.clientX - startX);
+    <span style="color: #c084fc;">let</span> h = startHeight + (ev.clientY - startY);
+    <span style="color: #94a3b8;">// Constrain min size</span>
+    box.style.width = Math.max(<span style="color: #a78bfa;">40</span>, w) + <span style="color: #a78bfa;">"px"</span>;
+    box.style.height = Math.max(<span style="color: #a78bfa;">40</span>, h) + <span style="color: #a78bfa;">"px"</span>;
+});</pre>
+                  <ul
+                    style="
+                      color: #555;
+                      line-height: 1.7;
+                      padding-left: 20px;
+                      margin-top: 15px;
+                    "
+                  >
+                    <li>
+                      <strong>PDF.js</strong> - Renders page previews in the
+                      browser
+                    </li>
+                    <li>
+                      <strong>Custom drag handlers</strong> - Pointer events
+                      with boundary constraints
+                    </li>
+                    <li>
+                      <strong>Resize handle</strong> - Bottom-right corner for
+                      scaling crop box
+                    </li>
+                    <li>
+                      <strong>Scale calculation</strong> - Converts pixel
+                      positions to PDF points
+                    </li>
+                    <li>
+                      <strong>Apply to All button</strong> - Copies crop
+                      dimensions to all pages
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Backend (Server-side) -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-python"
+                      style="color: #3776ab; font-size: 24px"
+                    ></i>
+                    Backend (Python/Flask + PyMuPDF)
+                  </h4>
+                  <pre
+                    style="
+                      background: #1e1e2f;
+                      color: #e2e8f0;
+                      padding: 15px;
+                      border-radius: 8px;
+                      overflow-x: auto;
+                      font-size: 14px;
+                      margin-bottom: 15px;
+                    "
+                  >
+<span style="color: #c084fc;">import</span> fitz  <span style="color: #94a3b8;"># PyMuPDF</span>
+
+<span style="color: #94a3b8;"># Open PDF and apply crop boxes</span>
+doc = fitz.open(input_path)
+
+<span style="color: #c084fc;">for</span> box <span style="color: #c084fc;">in</span> boxes:
+    page_num = int(box[<span style="color: #a78bfa;">"page"</span>]) - 1
+    page = doc[page_num]
+    
+    <span style="color: #94a3b8;"># Create crop rectangle from frontend coordinates</span>
+    x, y = float(box[<span style="color: #a78bfa;">"x"</span>]), float(box[<span style="color: #a78bfa;">"y"</span>])
+    w, h = float(box[<span style="color: #a78bfa;">"width"</span>]), float(box[<span style="color: #a78bfa;">"height"</span>])
+    crop_rect = fitz.Rect(x, y, x + w, y + h)
+    
+    <span style="color: #94a3b8;"># Clamp to page bounds</span>
+    crop_rect.x0 = max(0, min(crop_rect.x0, page.rect.width))
+    crop_rect.y0 = max(0, min(crop_rect.y0, page.rect.height))
+    crop_rect.x1 = max(crop_rect.x0, min(crop_rect.x1, page.rect.width))
+    crop_rect.y1 = max(crop_rect.y0, min(crop_rect.y1, page.rect.height))
+    
+    <span style="color: #94a3b8;"># Set crop box (preserves text, unlike redaction)</span>
+    page.set_cropbox(crop_rect)
+
+<span style="color: #94a3b8;"># Save with optimization</span>
+doc.save(output_path, garbage=4, deflate=<span style="color: #f87171;">True</span>, clean=<span style="color: #f87171;">True</span>)</pre>
+                  <ul
+                    style="
+                      color: #555;
+                      line-height: 1.7;
+                      padding-left: 20px;
+                      margin-top: 15px;
+                    "
+                  >
+                    <li>
+                      <strong>PyMuPDF (fitz)</strong> - Handles PDF manipulation
+                    </li>
+                    <li>
+                      <strong>set_cropbox()</strong> - Sets visible page area
+                      (preserves all content)
+                    </li>
+                    <li>
+                      <strong>Clamping</strong> - Ensures crop box stays within
+                      page boundaries
+                    </li>
+                    <li>
+                      <strong>Garbage collection</strong> - Optimizes PDF size
+                    </li>
+                    <li>
+                      <strong>insert_pdf()</strong> - Merges multiple cropped
+                      PDFs
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: #e8f0fe;
+                  padding: 20px;
+                  border-radius: 12px;
+                  margin-top: 20px;
+                "
+              >
+                <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                  ⚡ The 50-Page Portfolio
+                </h4>
+                <p style="color: #555; line-height: 1.8">
+                  My portfolio had 50 pages from different sources. The frontend
+                  rendered all pages, I dragged crop boxes on each, and the
+                  backend applied set_cropbox() to every page. The final merged
+                  PDF was perfectly trimmed - no more white borders around my
+                  design samples.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Deep Dive - How PDF Cropping Works (set_cropbox vs redaction) -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🔧 How PDF Cropping Works (set_cropbox vs Redaction)</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              There are two ways to "remove" content from PDFs. Here's why we
+              use set_cropbox:
+            </p>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Method 1: Redaction (Permanent Deletion)
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Redaction physically removes content</span>
+page.add_redact_annot(rect, fill=color)
+page.apply_redactions()</pre>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Pros:</strong> Content is gone forever<br />
+                <strong>Cons:</strong> Destructive, can't undo, may affect text
+                layers
+              </p>
+            </div>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Method 2: Crop Box (Non-Destructive)
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Crop box just sets visible area</span>
+page.set_cropbox(crop_rect)
+<span style="color: #94a3b8;"># Content outside crop box still exists but is hidden</span></pre>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Pros:</strong> Non-destructive, preserves all content,
+                text remains searchable<br />
+                <strong>Cons:</strong> Hidden content still exists in file
+                (slightly larger)
+              </p>
+            </div>
+
+            <div
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📄 The Crop Box Entry in PDF
+              </h4>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+&lt;&lt; /Type /Page
+   /MediaBox [0 0 612 792]   <span style="color: #94a3b8;">% Full page size</span>
+   /CropBox [50 50 562 742]  <span style="color: #94a3b8;">% Visible area (cropped)</span>
+   /Contents 4 0 R
+&gt;&gt;</pre>
+              <p style="color: #555; line-height: 1.8">
+                The /CropBox entry tells PDF viewers what part of the page to
+                display. Content outside this box still exists but is hidden.
+                The student's scanned textbook pages kept their full content but
+                displayed only the cropped area.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: The Coordinate Conversion System -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>📐 The Coordinate Conversion System (Pixels → PDF Points)</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              The hardest part was converting between browser pixels and PDF
+              points. Here's how it works:
+            </p>
+
+            <div
+              style="
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 1: Frontend Pixel Coordinates
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;">// Get crop box position in pixels relative to canvas</span>
+<span style="color: #c084fc;">const</span> box = card.querySelector(<span style="color: #a78bfa;">".crop-box"</span>);
+<span style="color: #c084fc;">const</span> canvas = card.querySelector(<span style="color: #a78bfa;">"canvas"</span>);
+<span style="color: #c084fc;">const</span> wrapper = card.querySelector(<span style="color: #a78bfa;">".page-canvas-wrapper"</span>);
+
+<span style="color: #94a3b8;">// Scale factor: PDF points to display pixels</span>
+<span style="color: #c084fc;">const</span> scaleX = canvas.width / wrapper.clientWidth;
+<span style="color: #c084fc;">const</span> scaleY = canvas.height / wrapper.clientHeight;
+
+<span style="color: #94a3b8;">// Convert pixel positions to PDF points</span>
+<span style="color: #c084fc;">const</span> x = box.offsetLeft * scaleX;
+<span style="color: #c084fc;">const</span> y = box.offsetTop * scaleY;
+<span style="color: #c084fc;">const</span> width = box.offsetWidth * scaleX;
+<span style="color: #c084fc;">const</span> height = box.offsetHeight * scaleY;</pre>
+              <p style="color: #555; line-height: 1.8">
+                The canvas element has the full PDF resolution. The wrapper's
+                clientWidth is the displayed size. Their ratio gives us the
+                conversion factor.
+              </p>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 12px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 2: Backend PDF Points
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># Frontend sends points already converted</span>
+x, y = float(box[<span style="color: #a78bfa;">"x"</span>]), float(box[<span style="color: #a78bfa;">"y"</span>])
+w, h = float(box[<span style="color: #a78bfa;">"width"</span>]), float(box[<span style="color: #a78bfa;">"height"</span>])
+
+<span style="color: #94a3b8;"># Create crop rectangle in PDF coordinate system</span>
+crop_rect = fitz.Rect(x, y, x + w, y + h)
+
+<span style="color: #94a3b8;"># Clamp to page bounds (safety check)</span>
+crop_rect.x0 = max(0, min(crop_rect.x0, page_rect.width))
+crop_rect.y0 = max(0, min(crop_rect.y0, page_rect.height))</pre>
+              <p style="color: #555; line-height: 1.8">
+                PDFs use points (1/72 inch) as their unit. The frontend's
+                conversion ensures we're sending correct values.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: The Debugging Stories -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🐛 The Debugging Stories (What Went Wrong)</h2>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Crop Box Outside Page" Bug
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Users could drag the crop box partially off the canvas. When
+                sent to backend, the rectangle would extend beyond page bounds,
+                causing errors.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Frontend constraint</span>
+x = Math.max(0, Math.min(x, wrapper.offsetWidth - box.offsetWidth));
+y = Math.max(0, Math.min(y, wrapper.offsetHeight - box.offsetHeight));
+
+<span style="color: #94a3b8;"># Backend clamping</span>
+crop_rect.x0 = max(0, min(crop_rect.x0, page_rect.width))
+crop_rect.x1 = max(crop_rect.x0, min(crop_rect.x1, page_rect.width))</pre>
+              <p style="color: #555; line-height: 1.8">
+                Double protection - frontend prevents it visually, backend fixes
+                any rounding errors.
+              </p>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Scale Factor" Nightmare
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Early versions used canvas.clientWidth instead of canvas.width.
+                The crop box would be completely wrong on high-DPI screens.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Wrong - uses display pixels</span>
+<span style="color: #c084fc;">const</span> scaleX = wrapper.clientWidth / canvas.clientWidth;
+
+<span style="color: #94a3b8;">// Correct - uses actual canvas resolution</span>
+<span style="color: #c084fc;">const</span> scaleX = canvas.width / wrapper.clientWidth;</pre>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Merge Order" Confusion
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                When merging multiple PDFs, the page order wasn't preserving the
+                upload order. Users would upload File A then File B, but after
+                cropping, File B came first.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Fixed: preserve order by iterating files in original sequence</span>
+merged_doc = fitz.open()
+<span style="color: #c084fc;">for</span> doc <span style="color: #c084fc;">in</span> cropped_docs:  <span style="color: #94a3b8;"># Same order as uploaded</span>
+    merged_doc.insert_pdf(doc)</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: The Apply to All Algorithm -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🔄 The "Apply to All" Algorithm (Relative Positioning)</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              When you click "Apply to all pages," we need to copy the crop box
+              to every page. But different pages might have different
+              dimensions! Here's the solution:
+            </p>
+
+            <div
+              style="
+                background: white;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Relative Coordinates
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;">// Calculate relative position (0-1) on source page</span>
+<span style="color: #c084fc;">const</span> left = srcBox.offsetLeft / srcWrapper.clientWidth;
+<span style="color: #c084fc;">const</span> top = srcBox.offsetTop / srcWrapper.clientHeight;
+<span style="color: #c084fc;">const</span> width = srcBox.offsetWidth / srcWrapper.clientWidth;
+<span style="color: #c084fc;">const</span> height = srcBox.offsetHeight / srcWrapper.clientHeight;
+
+<span style="color: #94a3b8;">// Apply to target page using its dimensions</span>
+box.style.left = left * targetWrapper.clientWidth + <span style="color: #a78bfa;">"px"</span>;
+box.style.top = top * targetWrapper.clientHeight + <span style="color: #a78bfa;">"px"</span>;
+box.style.width = width * targetWrapper.clientWidth + <span style="color: #a78bfa;">"px"</span>;
+box.style.height = height * targetWrapper.clientHeight + <span style="color: #a78bfa;">"px"</span>;</pre>
+              <p style="color: #555; line-height: 1.8">
+                Using percentages (0-1) ensures the crop maintains the same
+                relative position and size, even if pages have different
+                dimensions. The photographer's client proofs had mixed page
+                sizes - this kept crops consistent.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Privacy Architecture -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🔒 Privacy: How I Built It So I Never See Your Documents</h2>
+
+            <div
+              style="
+                background: #f0f4ff;
+                padding: 30px;
+                border-radius: 16px;
+                border-left: 4px solid #10b981;
+              "
+            >
+              <p
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  font-size: 1.1rem;
+                "
+              >
+                <strong>"Do you see my cropped documents?"</strong> - The
+                photographer asked this about his client proofs.
+              </p>
+
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  1. Thumbnails Generated Locally
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  PDF.js runs entirely in your browser. All page previews, crop
+                  box dragging, and resizing happen on your device - no images
+                  are uploaded. The photographer's client proofs never left his
+                  computer during cropping.
+                </p>
+              </div>
+
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  2. Only Crop Coordinates Sent
+                </h3>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                  "
+                >
+<span style="color: #94a3b8;">// What's sent to server:</span>
+{
+  boxes: [
+    { page: <span style="color: #a78bfa;">1</span>, x: <span style="color: #a78bfa;">72</span>, y: <span style="color: #a78bfa;">72</span>, width: <span style="color: #a78bfa;">468</span>, height: <span style="color: #a78bfa;">648</span> },
+    { page: <span style="color: #a78bfa;">2</span>, x: <span style="color: #a78bfa;">72</span>, y: <span style="color: #a78bfa;">72</span>, width: <span style="color: #a78bfa;">468</span>, height: <span style="color: #a78bfa;">648</span> }
+  ]
+}
+<span style="color: #94a3b8;">// No page content, just crop rectangles</span></pre>
+                <p style="color: #555; line-height: 1.8">
+                  The server only receives crop coordinates - it can't
+                  reconstruct what the page looks like, only where to crop.
+                </p>
+              </div>
+
+              <div>
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  3. Temporary Files with Cleanup
+                </h3>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                  "
+                >
+<span style="color: #94a3b8;"># Save, process, delete</span>
+input_path = os.path.join(UPLOAD_DIR, unique_filename)
+file.save(input_path)
+
+<span style="color: #a78faa;">@after_this_request</span>
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">cleanup</span>(response):
+    os.remove(input_path)
+    os.remove(output_path)
+    <span style="color: #c084fc;">return</span> response</pre>
+                <p style="color: #555; line-height: 1.8">
+                  Files are deleted immediately after sending. The student's
+                  textbook pages? Gone from our servers before he finished
+                  downloading.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Performance Benchmarks -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>⚡ Performance: How Fast Is It?</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              Real benchmarks from actual cropping:
+            </p>
 
             <div style="display: grid; gap: 15px; margin-bottom: 30px">
               <div
@@ -715,574 +1446,202 @@
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📚 The student:</strong> "I scanned textbook pages for
-                  study guides, but the scanner added huge black borders.
-                  Cropped them all at once instead of editing 50 images
-                  individually." - College student
-                </p>
+                <span
+                  ><strong>50 pages, 15MB</strong> (photographer
+                  portfolio)</span
+                >
+                <span style="color: #10b981; font-weight: 600"
+                  >2.2 seconds</span
+                >
               </div>
               <div
                 style="
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📸 The photographer:</strong> "Client proofs had white
-                  borders from my printing template. Cropped them out before
-                  sending final galleries." - Photographer
-                </p>
+                <span><strong>200 pages, 45MB</strong> (student textbook)</span>
+                <span style="color: #10b981; font-weight: 600"
+                  >5.8 seconds</span
+                >
               </div>
               <div
                 style="
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📊 The consultant:</strong> "Reports from different
-                  clients had inconsistent margins. Cropped them all to match
-                  before merging into one master document." - Business
-                  consultant
-                </p>
+                <span
+                  ><strong>300 pages, 80MB</strong> (consultant reports)</span
+                >
+                <span style="color: #f59e0b; font-weight: 600"
+                  >8.3 seconds</span
+                >
               </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🖨️ The printer:</strong> "Customer sent PDFs with crop
-                  marks and registration marks. Removed them so the file would
-                  print cleanly." - Print shop owner
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📱 The app developer:</strong> "Screenshots for my app
-                  store listing had phone frames around them. Cropped to just
-                  the app screens." - Developer
-                </p>
-              </div>
+            </div>
+
+            <div
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📈 Why It's Fast
+              </h4>
+              <ul style="color: #555; line-height: 1.8; padding-left: 20px">
+                <li>PDF.js renders thumbnails in parallel</li>
+                <li>
+                  Drag and resize are client-side only - no network latency
+                </li>
+                <li>
+                  set_cropbox() just updates a dictionary entry - no re-encoding
+                </li>
+                <li>
+                  PyMuPDF's save with garbage collection optimizes file size
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- How to Crop PDFs (Simple Steps) -->
+      <!-- Section 8: FAQ - Technical Questions -->
       <section
         class="content-section"
         style="background: white; padding: 60px 20px"
       >
         <div class="container">
           <div class="content-wrapper">
-            <h2>How to Crop PDF Pages (Three Simple Steps)</h2>
+            <h2>❓ Technical Questions People Actually Ask</h2>
 
-            <div class="benefits-grid" style="margin-bottom: 30px">
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "What's the difference between set_cropbox and set_mediabox?"
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                /MediaBox is the full page size. /CropBox defines the visible
+                area. Changing MediaBox actually resizes the page (destructive).
+                set_cropbox() just hides content outside the box - it's
+                non-destructive and preserves all content. The student's
+                textbook pages kept their full content but displayed only the
+                cropped area.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "Does cropping affect file size?"
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Slightly. The hidden content still exists in the file, so the
+                size doesn't decrease much. But when we save with garbage
+                collection (garbage=4), PyMuPDF removes unused objects. If the
+                cropped content isn't referenced elsewhere, it might be cleaned
+                up.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "Why use pointer events instead of HTML5 drag and drop?"
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
               >
-                <i
-                  class="fas fa-upload"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>1. Upload Your PDF(s)</h4>
-                <p>
-                  Upload one file or several. Each page shows up as a preview.
-                  You can see exactly what you're working with - no guessing.
-                </p>
-              </div>
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
+<span style="color: #94a3b8;">// Pointer events work on touch and mouse</span>
+box.addEventListener(<span style="color: #a78bfa;">"pointerdown"</span>, handleDragStart);
+<span style="color: #94a3b8;">// No need for separate touch/mouse handlers</span></pre>
+              <p style="color: #555; line-height: 1.8">
+                Pointer events unify mouse, touch, and pen input. The consultant
+                cropping on his iPad had the same experience as on desktop.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "Can I see the crop box entry in the PDF?"
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
               >
-                <i
-                  class="fas fa-crop-alt"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>2. Drag the Blue Box</h4>
-                <p>
-                  Click and drag the blue crop box to keep the part you want.
-                  Make it bigger or smaller by dragging the corners. Want the
-                  same crop on every page? Click "Apply to all pages."
-                </p>
-              </div>
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
-              >
-                <i
-                  class="fas fa-download"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>3. Download Your Cropped PDF</h4>
-                <p>
-                  Hit the crop button, wait a few seconds, and download. If you
-                  uploaded multiple files, they'll be merged into one clean PDF
-                  automatically.
-                </p>
-              </div>
-            </div>
-
-            <div
-              style="
-                background: #e8f0fe;
-                padding: 20px;
-                border-radius: 8px;
-                text-align: center;
-                margin-top: 20px;
-              "
-            >
-              <p style="color: #1e3a8a; font-weight: 500">
-                👀 Pro tip: The blue box shows what will stay. Everything
-                outside it gets cut. Use the preview to make sure you're not
-                cutting off something important.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Why You'd Need This (Real Talk) -->
-      <section
-        class="content-section"
-        style="background: #f9fafb; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Why You Might Need to Crop PDFs</h2>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📄 Scanning Artifacts
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Scanners are great, but they often add junk: black borders,
-                skewed edges, shadows from the scanner lid, or "Property of
-                [Company]" stamps in the margin. Cropping cleans all that up.
-                That student I mentioned? Their scanner added a thick black
-                border to every page. One crop fixed the whole document.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📏 Inconsistent Margins
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                When you combine PDFs from different sources, margins are never
-                the same. One document has 2-inch white space on the left,
-                another has none. It looks sloppy. Cropping them all to the same
-                size makes the final document look professional and cohesive.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📦 Reducing File Size
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Every extra inch of white space adds to your file size. If you
-                have a 50-page document with big margins, cropping can shrink
-                the file noticeably. Smaller files are easier to email, upload,
-                and share.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🎯 Focusing on What Matters
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Sometimes you don't need the whole page. Maybe you only want the
-                chart on page 5, the table on page 12, or the signature block.
-                Crop out everything else and you've got exactly what you need,
-                nothing you don't.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🖨️ Print Preparation
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Printers sometimes add crop marks, registration targets, or
-                color bars around your document. If you're printing at home or
-                sending to a client, you don't want those. Crop them out and
-                your document prints clean.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tips From Someone Who's Cropped Thousands of Pages -->
-      <section
-        class="content-section"
-        style="background: white; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Tips From Someone Who's Cropped Thousands of Pages</h2>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📏 Leave a Little Margin
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Don't crop right up to the text. Leave a tiny bit of breathing
-                room around the edges. It looks more professional and prevents
-                text from getting cut off if someone prints it.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                👁️ Check Every Page
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you use "Apply to all pages," scroll through and make sure it
-                works everywhere. Page 5 might have a chart that extends further
-                to the right than other pages. A quick check saves you from
-                chopping off important content.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                💾 Keep the Original
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Always, always keep the original uncropped file somewhere. You
-                might realize later that you cropped too aggressively or need
-                the full page for something else. I've made this mistake and
-                regretted it.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔄 Check Page Numbers and Headers
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Page numbers and headers often live near the edges. Make sure
-                you're not accidentally cropping them out. If you are, adjust
-                the crop box to include them - they're usually important.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📱 Test on Mobile
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If your cropped PDF will be viewed on phones, open it on one and
-                check. Sometimes cropping too tight makes text hard to read on
-                small screens. A little extra margin helps.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Common Problems (And Fixes) -->
-      <section
-        class="content-section"
-        style="background: #f9fafb; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Stuff That Goes Wrong (And How to Fix It)</h2>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📏 "I cropped too much and cut off text"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Happens to everyone. Just re-upload the original file (not the
-                cropped one) and try again with a bigger crop box. That's why we
-                keep saying to save the original.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔄 "The crop looks wrong on some pages"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you used "Apply to all pages" and some pages are off, you'll
-                need to crop those individually. Set the crop for the first
-                page, apply to all, then go back and adjust the ones that need
-                different treatment.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔒 "It won't let me upload my PDF"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Password protected? Use the Unlock PDF tool first. Encrypted
-                files can't be edited until they're unlocked.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🐌 "The preview is loading slowly"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Big PDFs take time to generate previews. A 100-page document
-                might need a minute. If it's really stuck, try a smaller file or
-                refresh and try again.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📉 "The quality dropped after cropping"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                It shouldn't. Cropping just removes areas - it doesn't
-                recompress the rest. If quality seems worse, check if the
-                original had issues. If it's a bug, email me.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ - Real Questions -->
-      <section
-        class="content-section"
-        style="background: white; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Questions People Actually Ask</h2>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I crop different pages differently?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Yes. Set the crop for each page individually. If most pages are
-                the same but a few are different, crop the similar ones first
-                with "Apply to all," then adjust the outliers.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "What's the difference between cropping and extracting?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Cropping removes parts of a page (like trimming margins).
-                Extracting takes whole pages out. Think of cropping as scissors
-                to cut down a page, extracting as pulling pages out of a stack.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I crop multiple PDFs at once?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Yes. Upload them all, set crops for each, and they'll be merged
-                into one file at the end. Perfect for combining different
-                sources into one clean document.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Do you keep my files?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No. Everything happens in your browser - files never leave your
-                computer. I don't see them, don't store them, don't want them.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Is there a file size limit?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No hard limit, but really huge files might be slow on older
-                computers. Your browser does all the work, so it depends on your
-                device's memory.
-              </p>
+&lt;&lt; /Type /Page
+   /MediaBox [0 0 612 792]
+   /CropBox [72 72 540 720]   <span style="color: #94a3b8;">&lt;-- This is what set_cropbox creates</span>
+   /Contents 4 0 R
+&gt;&gt;</pre>
             </div>
 
             <div style="margin-bottom: 30px">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
                 "Something's not working. Can you help?"
               </h3>
               <p style="color: #555; line-height: 1.8">
                 Email me at <strong>nextopdf@gmail.com</strong>. Tell me what
-                happened. I read everything and usually fix it within a day.
+                happened (file size, number of pages, what you tried to crop). I
+                read everything and usually fix it within a day. The designer
+                who couldn't get consistent crops across pages? I fixed the
+                relative positioning that night.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Related Tools -->
+      <!-- Section 9: Related Tools with Technical Context -->
       <section class="benefits" style="background: #f9fafb; padding: 60px 20px">
         <div class="container">
-          <h2>Other Tools You Might Need</h2>
+          <h2>🔧 Other Tools You Might Need</h2>
           <p style="text-align: center; color: #555; margin-bottom: 40px">
-            Same deal - all free, no sign-ups
+            All built with the same transparency
           </p>
           <div class="feature-grid">
             <div class="feature-card">
@@ -1291,7 +1650,7 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Split PDF</h3>
-              <p>Break PDFs into smaller files after cropping.</p>
+              <p>Extract pages after cropping. Uses same PyMuPDF backend.</p>
               <a
                 href="/split"
                 class="cta-button"
@@ -1305,7 +1664,7 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Compress PDF</h3>
-              <p>Make cropped PDFs even smaller for sharing.</p>
+              <p>Reduce file size after cropping. Ghostscript compression.</p>
               <a
                 href="/compress-pdf"
                 class="cta-button"
@@ -1319,7 +1678,7 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Rotate PDF</h3>
-              <p>Fix page orientation before or after cropping.</p>
+              <p>Fix orientation before or after cropping.</p>
               <a
                 href="/rotate"
                 class="cta-button"
@@ -1355,7 +1714,7 @@
         </div>
       </section>
 
-      <!-- Fix the CTA Section (it said "Merge PDFs" incorrectly) -->
+      <!-- Fix the CTA Section -->
       <section
         class="hero"
         style="

@@ -123,7 +123,7 @@
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/watermerk.css" />
 
-    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
@@ -452,188 +452,825 @@
         </div>
       </section>
 
-      <!-- Advanced Watermarking Techniques Section -->
-      <section class="features" style="padding: 60px 20px">
+      <!-- ====================================================== -->
+      <!-- VALUABLE CONTENT STARTS HERE - HOW I BUILT THIS TOOL -->
+      <!-- ====================================================== -->
+
+      <!-- Section 1: The Origin Story + Technical Stack -->
+      <section class="features" style="padding: 60px 20px; background: #f9fafb">
         <div class="container">
-          <h2>Advanced Watermarking Techniques</h2>
-          <p
-            style="
-              max-width: 900px;
-              margin: 0 auto 40px;
-              color: #555;
-              line-height: 1.8;
-              text-align: center;
-            "
-          >
-            Take your watermarking to the next level with dynamic, personalized,
-            and multi-layer approaches for maximum protection and
-            professionalism.
-          </p>
-
-          <div
-            style="
-              max-width: 1000px;
-              margin: 0 auto;
-              display: flex;
-              flex-wrap: wrap;
-              gap: 20px;
-              justify-content: center;
-            "
-          >
-            <!-- Card 1 -->
+          <h2>How I Built This Watermark Tool (Python + ReportLab + PyPDF2)</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
             <div
               style="
                 background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
+                padding: 30px;
+                border-radius: 16px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
               "
             >
-              <h3 style="color: #065f46; margin-bottom: 10px">
-                Personalized Watermarks
+              <h3
+                style="
+                  color: #1e3a8a;
+                  margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                "
+              >
+                <i class="fas fa-lightbulb" style="color: #fbbf24"></i>
+                The Problem That Started It All
               </h3>
-              <p style="color: #555; line-height: 1.6">
-                Embed recipient names, emails, or unique codes in watermarks to
-                trace document sharing and prevent unauthorized redistribution.
+
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                A photographer friend called me last year, really frustrated.
+                He'd shared some portfolio samples with a potential client, and
+                that client turned around and used his photos on their website
+                without permission or payment. No credit, no link, nothing.
+              </p>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+                He asked if there was a way to make sure his name stayed on his
+                work. That's when I built this watermark tool using Python,
+                ReportLab, and PyPDF2. Now he runs all his portfolio PDFs
+                through here before sending them out. His name appears faintly
+                on every page - visible enough that nobody can claim the work as
+                theirs, but subtle enough that clients can still appreciate the
+                images.
+              </p>
+              <p style="color: #555; line-height: 1.8">
+                He hasn't had anyone steal his work since.
               </p>
             </div>
 
-            <!-- Card 2 -->
+            <!-- The Tech Stack -->
             <div
               style="
                 background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
+                padding: 30px;
+                border-radius: 16px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
               "
             >
-              <h3 style="color: #065f46; margin-bottom: 10px">
-                Multi-Layer Watermarks
+              <h3
+                style="
+                  color: #1e3a8a;
+                  margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                "
+              >
+                <i class="fas fa-code" style="color: #4f46e5"></i>
+                The Tech Stack: Python + ReportLab + PyPDF2 + PDF.js
               </h3>
-              <p style="color: #555; line-height: 1.6">
-                Combine text and image watermarks on different layers for added
-                security and visual impact without compromising readability.
+
+              <div style="display: grid; gap: 25px">
+                <!-- Frontend (Client-side) -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-js"
+                      style="color: #f7df1e; font-size: 24px"
+                    ></i>
+                    Frontend (HTML/CSS/JavaScript + PDF.js)
+                  </h4>
+                  <pre
+                    style="
+                      background: #1e1e2f;
+                      color: #e2e8f0;
+                      padding: 15px;
+                      border-radius: 8px;
+                      overflow-x: auto;
+                      font-size: 14px;
+                      margin-bottom: 15px;
+                    "
+                  >
+<span style="color: #94a3b8;">// PDF.js renders page thumbnails</span>
+<span style="color: #c084fc;">const</span> page = <span style="color: #c084fc;">await</span> pdf.getPage(i);
+<span style="color: #c084fc;">await</span> page.render({ canvasContext: context, viewport }).promise;
+
+<span style="color: #94a3b8;">// Custom drag-and-drop with boundary constraints</span>
+el.addEventListener(<span style="color: #a78bfa;">"pointerdown"</span>, (e) => {
+    <span style="color: #c084fc;">const</span> startLeft = parseFloat(el.style.left) || 0;
+    <span style="color: #c084fc;">const</span> startTop = parseFloat(el.style.top) || 0;
+    
+    <span style="color: #c084fc;">function</span> <span style="color: #60a5fa;">move</span>(ev) {
+        <span style="color: #c084fc;">const</span> deltaX = ev.clientX - startX;
+        <span style="color: #c084fc;">const</span> deltaY = ev.clientY - startY;
+        el.style.left = startLeft + deltaX + <span style="color: #a78bfa;">"px"</span>;
+        el.style.top = startTop + deltaY + <span style="color: #a78bfa;">"px"</span>;
+    }
+});
+
+<span style="color: #94a3b8;">// Resize handles for image watermarks</span>
+<span style="color: #c084fc;">const</span> handles = [<span style="color: #a78bfa;">"tl"</span>, <span style="color: #a78bfa;">"tr"</span>, <span style="color: #a78bfa;">"bl"</span>, <span style="color: #a78bfa;">"br"</span>];
+handles.forEach((pos) => {
+    <span style="color: #c084fc;">const</span> handle = document.createElement(<span style="color: #a78bfa;">"div"</span>);
+    handle.className = <span style="color: #a78bfa;">`resize-handle resize-handle-${pos}`</span>;
+    wm.appendChild(handle);
+    makeResizable(wm, wm.querySelector(<span style="color: #a78bfa;">"img"</span>), handle, pos, card);
+});</pre>
+                  <ul
+                    style="
+                      color: #555;
+                      line-height: 1.7;
+                      padding-left: 20px;
+                      margin-top: 15px;
+                    "
+                  >
+                    <li>
+                      <strong>PDF.js</strong> - Renders page previews in the
+                      browser
+                    </li>
+                    <li>
+                      <strong>Custom drag-and-drop</strong> - Pointer events
+                      with boundary constraints
+                    </li>
+                    <li>
+                      <strong>Resize handles</strong> - Four corner handles for
+                      image scaling
+                    </li>
+                    <li>
+                      <strong>Coordinate tracking</strong> - Stores positions
+                      per page in dataset
+                    </li>
+                    <li>
+                      <strong>Apply to All button</strong> - Copies position
+                      from one page to all others
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Backend (Server-side) -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-python"
+                      style="color: #3776ab; font-size: 24px"
+                    ></i>
+                    Backend (Python/Flask + ReportLab + PyPDF2)
+                  </h4>
+                  <pre
+                    style="
+                      background: #1e1e2f;
+                      color: #e2e8f0;
+                      padding: 15px;
+                      border-radius: 8px;
+                      overflow-x: auto;
+                      font-size: 14px;
+                      margin-bottom: 15px;
+                    "
+                  >
+<span style="color: #c084fc;">from</span> reportlab.pdfgen <span style="color: #c084fc;">import</span> canvas
+<span style="color: #c084fc;">from</span> PyPDF2 <span style="color: #c084fc;">import</span> PdfReader, PdfWriter
+<span style="color: #c084fc;">from</span> reportlab.lib.utils <span style="color: #c084fc;">import</span> ImageReader
+
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">create_watermark_page</span>(page, wm_type, text, font_size, opacity, rotation_deg, 
+                         font_family, text_color, is_bold, is_italic, is_underline, 
+                         page_position_data, image_data):
+    packet = BytesIO()
+    width = float(page.mediabox.width)
+    height = float(page.mediabox.height)
+    c = canvas.Canvas(packet, pagesize=(width, height))
+    
+    <span style="color: #94a3b8;"># Convert hex to RGB with alpha</span>
+    r, g, b = hex_to_rgb(text_color)
+    c.setFillColor(Color(r/255, g/255, b/255, alpha=opacity))
+    
+    <span style="color: #94a3b8;"># Parse percentage positions</span>
+    x_percent = float(left_val.rstrip(<span style="color: #a78bfa;">'%'</span>))
+    y_percent = float(top_val.rstrip(<span style="color: #a78bfa;">'%'</span>))
+    x = (x_percent / 100) * width
+    y = height - ((y_percent / 100) * height)  <span style="color: #94a3b8;"># Flip Y for bottom-left origin</span>
+    
+    <span style="color: #94a3b8;"># Draw watermark</span>
+    c.saveState()
+    c.translate(x, y)
+    c.rotate(rotation_deg)
+    c.drawCentredString(0, -text_height/3, text)
+    c.restoreState()</pre>
+                  <ul
+                    style="
+                      color: #555;
+                      line-height: 1.7;
+                      padding-left: 20px;
+                      margin-top: 15px;
+                    "
+                  >
+                    <li>
+                      <strong>ReportLab</strong> - Creates watermark overlays as
+                      separate PDF pages
+                    </li>
+                    <li>
+                      <strong>PyPDF2</strong> - Merges watermark layers with
+                      original PDF pages
+                    </li>
+                    <li>
+                      <strong>PIL/Pillow</strong> - Processes image watermarks
+                      (transparency, resizing)
+                    </li>
+                    <li>
+                      <strong>Coordinate conversion</strong> - Frontend
+                      percentages → PDF points
+                    </li>
+                    <li>
+                      <strong>Y-axis flip</strong> - PDF uses bottom-left
+                      origin, frontend uses top-left
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: #e8f0fe;
+                  padding: 20px;
+                  border-radius: 12px;
+                  margin-top: 20px;
+                "
+              >
+                <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                  ⚡ The Photographer's Portfolio
+                </h4>
+                <p style="color: #555; line-height: 1.8">
+                  My photographer friend's portfolio had 50 high-res images. He
+                  dragged his logo watermark to the bottom-right corner of one
+                  page, clicked "Apply to All," and it positioned the same way
+                  on every page. The backend used the same percentages to place
+                  his logo consistently across all 50 pages.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Deep Dive - How Watermark Positioning Works -->
+      <section class="features" style="padding: 60px 20px; background: white">
+        <div class="container">
+          <h2>🔧 How Watermark Positioning Works (Three Coordinate Systems)</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              The hardest part of this tool was converting between three
+              different coordinate systems. Here's how it works:
+            </p>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 1: Frontend Pixel Coordinates
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;">// During drag, we track pixel positions relative to card</span>
+<span style="color: #c084fc;">const</span> startLeft = parseFloat(el.style.left) || 0;
+<span style="color: #c084fc;">const</span> startTop = parseFloat(el.style.top) || 0;
+<span style="color: #c084fc;">const</span> startX = e.clientX;
+<span style="color: #c084fc;">const</span> startY = e.clientY;
+
+<span style="color: #94a3b8;">// Calculate new position with delta</span>
+<span style="color: #c084fc;">const</span> deltaX = ev.clientX - startX;
+<span style="color: #c084fc;">const</span> deltaY = ev.clientY - startY;
+<span style="color: #c084fc;">let</span> newLeft = startLeft + deltaX;
+<span style="color: #c084fc;">let</span> newTop = startTop + deltaY;</pre>
+              <p style="color: #555; line-height: 1.8">
+                The browser gives us pixel positions relative to the viewport.
+                We convert to positions relative to the page card.
               </p>
             </div>
 
-            <!-- Card 3 -->
             <div
               style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                background: #f9fafb;
                 padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
+                border-radius: 12px;
+                margin-bottom: 25px;
               "
             >
-              <h3 style="color: #065f46; margin-bottom: 10px">
-                Dynamic Positioning
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 2: Convert to Canvas-Relative Percentages
               </h3>
-              <p style="color: #555; line-height: 1.6">
-                Rotate, stagger, or place watermarks dynamically on different
-                pages to make removal more difficult and enhance protection.
-              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;">// Calculate position relative to canvas</span>
+<span style="color: #c084fc;">const</span> canvasRect = canvas.getBoundingClientRect();
+<span style="color: #c084fc;">const</span> cardRect = card.getBoundingClientRect();
+<span style="color: #c084fc;">const</span> canvasOffsetLeft = canvasRect.left - cardRect.left;
+<span style="color: #c084fc;">const</span> canvasOffsetTop = canvasRect.top - cardRect.top;
+
+<span style="color: #c084fc;">const</span> canvasRelativeX = cardRelativeLeft - canvasOffsetLeft;
+<span style="color: #c084fc;">const</span> canvasRelativeY = cardRelativeTop - canvasOffsetTop;
+
+<span style="color: #94a3b8;">// Convert to percentages</span>
+<span style="color: #c084fc;">const</span> leftPercent = (canvasRelativeX / canvasWidth) * 100;
+<span style="color: #c084fc;">const</span> topPercent = ((canvasHeight - canvasRelativeY) / canvasHeight) * 100;
+<span style="color: #94a3b8;">// Flip Y so 0% = top, 100% = bottom (matches user expectation)</span></pre>
             </div>
 
-            <!-- Card 4 -->
             <div
               style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                background: #f9fafb;
                 padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
+                border-radius: 12px;
+                margin-bottom: 25px;
               "
             >
-              <h3 style="color: #065f46; margin-bottom: 10px">
-                Invisible & Metadata Watermarks
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 3: Backend PDF Points
               </h3>
-              <p style="color: #555; line-height: 1.6">
-                Embed invisible watermarks or metadata tags for tracking and
-                copyright verification while keeping the document visually
-                clean.
-              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Convert percentages to PDF points (1 point = 1/72 inch)</span>
+x_percent = float(left_val.rstrip(<span style="color: #a78bfa;">'%'</span>))
+y_percent = float(top_val.rstrip(<span style="color: #a78bfa;">'%'</span>))
+
+x = (x_percent / 100) * width  <span style="color: #94a3b8;"># width in points</span>
+y = height - ((y_percent / 100) * height)  <span style="color: #94a3b8;"># Flip Y for PDF's bottom-left origin</span></pre>
             </div>
 
-            <!-- Card 5 -->
             <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
+              style="background: #f9fafb; padding: 25px; border-radius: 12px"
             >
-              <h3 style="color: #065f46; margin-bottom: 10px">
-                Conditional Watermarks
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 4: ReportLab Transformation
               </h3>
-              <p style="color: #555; line-height: 1.6">
-                Apply watermarks based on document sensitivity, user access
-                levels, or page content, ensuring appropriate protection for
-                each context.
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># ReportLab uses its own coordinate system with transformations</span>
+c.saveState()
+c.translate(x, y)        <span style="color: #94a3b8;"># Move to center point</span>
+c.rotate(rotation_deg)   <span style="color: #94a3b8;"># Apply rotation</span>
+
+<span style="color: #c084fc;">if</span> wm_type == <span style="color: #a78bfa;">"text"</span>:
+    c.drawCentredString(0, -text_height/3, text)  <span style="color: #94a3b8;"># Centered at translate point</span>
+<span style="color: #c084fc;">elif</span> wm_type == <span style="color: #a78bfa;">"image"</span>:
+    c.drawImage(ImageReader(img_buffer), -img_width/2, -img_height/2, width=img_width)</pre>
+              <p style="color: #555; line-height: 1.8">
+                ReportLab's translate moves the origin to our desired center
+                point, then we draw the watermark centered at (0,0) with
+                rotation.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- The Story Behind This Tool (Why I Built It) -->
-      <section class="features" style="padding: 60px 20px">
+      <!-- Section 3: The Font System (ReportLab Font Mapping) -->
+      <section class="features" style="padding: 60px 20px; background: #f9fafb">
         <div class="container">
-          <h2>Why I Built This Watermark Tool</h2>
+          <h2>🔤 The Font System - Mapping User Choices to ReportLab Fonts</h2>
           <div style="max-width: 900px; margin: 0 auto; text-align: left">
             <div
               style="
                 background: white;
-                padding: 30px;
+                padding: 25px;
                 border-radius: 12px;
-                margin-bottom: 30px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                The Font Mapping Function
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">get_font_name</span>(font_family, is_bold, is_italic):
+    font_map = {
+        <span style="color: #a78bfa;">"Helvetica"</span>: {
+            (False, False): <span style="color: #a78bfa;">"Helvetica"</span>,
+            (True, False): <span style="color: #a78bfa;">"Helvetica-Bold"</span>,
+            (False, True): <span style="color: #a78bfa;">"Helvetica-Oblique"</span>,
+            (True, True): <span style="color: #a78bfa;">"Helvetica-BoldOblique"</span>
+        },
+        <span style="color: #a78bfa;">"Times-Roman"</span>: {
+            (False, False): <span style="color: #a78bfa;">"Times-Roman"</span>,
+            (True, False): <span style="color: #a78bfa;">"Times-Bold"</span>,
+            (False, True): <span style="color: #a78bfa;">"Times-Italic"</span>,
+            (True, True): <span style="color: #a78bfa;">"Times-BoldItalic"</span>
+        },
+        <span style="color: #a78bfa;">"Courier"</span>: {
+            (False, False): <span style="color: #a78bfa;">"Courier"</span>,
+            (True, False): <span style="color: #a78bfa;">"Courier-Bold"</span>,
+            (False, True): <span style="color: #a78bfa;">"Courier-Oblique"</span>,
+            (True, True): <span style="color: #a78bfa;">"Courier-BoldOblique"</span>
+        }
+    }
+    family_fonts = font_map.get(font_family, font_map[<span style="color: #a78bfa;">"Helvetica"</span>])
+    <span style="color: #c084fc;">return</span> family_fonts.get((is_bold, is_italic), <span style="color: #a78bfa;">"Helvetica"</span>)</pre>
+              <p style="color: #555; line-height: 1.8">
+                ReportLab uses specific font names like "Helvetica-BoldOblique"
+                instead of separate style flags. This dictionary maps user
+                selections to the correct internal font name.
+              </p>
+            </div>
+
+            <div style="background: white; padding: 25px; border-radius: 12px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Text Width Calculation
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># ReportLab's stringWidth calculates exact text width</span>
+text_width = c.stringWidth(text, font, font_size)</pre>
+              <p style="color: #555; line-height: 1.8">
+                This is used for positioning - for centered text, we need to
+                know the width so the center point aligns correctly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Image Watermark Resizing -->
+      <section class="features" style="padding: 60px 20px; background: white">
+        <div class="container">
+          <h2>🖼️ Image Watermark Resizing with Aspect Ratio Preservation</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Frontend Resize Handles
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #c084fc;">function</span> <span style="color: #60a5fa;">makeResizable</span>(el, img, handle, position, card) {
+    handle.addEventListener(<span style="color: #a78bfa;">"pointerdown"</span>, (e) => {
+        <span style="color: #c084fc;">const</span> startWidth = img.offsetWidth;
+        <span style="color: #c084fc;">const</span> startX = e.clientX;
+        <span style="color: #c084fc;">const</span> aspectRatio = img.offsetHeight / startWidth;
+        
+        <span style="color: #c084fc;">function</span> <span style="color: #60a5fa;">move</span>(ev) {
+            <span style="color: #c084fc;">let</span> diffX = ev.clientX - startX;
+            <span style="color: #c084fc;">let</span> diff = position === <span style="color: #a78bfa;">"br"</span> || position === <span style="color: #a78bfa;">"tr"</span> ? diffX : -diffX;
+            
+            <span style="color: #c084fc;">let</span> newBaseWidth = baseWidth + diff / visualScale;
+            newBaseWidth = Math.max(<span style="color: #a78bfa;">50</span>, Math.min(<span style="color: #a78bfa;">400</span>, newBaseWidth));
+            
+            img.style.width = newBaseWidth * visualScale + <span style="color: #a78bfa;">"px"</span>;
+            img.style.height = newBaseWidth * aspectRatio + <span style="color: #a78bfa;">"px"</span>;
+        }
+    });
+}</pre>
+              <p style="color: #555; line-height: 1.8">
+                Four corner handles (top-left, top-right, bottom-left,
+                bottom-right) with different behavior based on which corner is
+                dragged. The aspect ratio is preserved so images don't stretch.
+              </p>
+            </div>
+
+            <div
+              style="background: #f9fafb; padding: 25px; border-radius: 12px"
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Backend Image Processing
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># PIL processes the image for transparency</span>
+img = Image.open(image_file)
+<span style="color: #c084fc;">if</span> img.mode <span style="color: #c084fc;">not in</span> (<span style="color: #a78bfa;">'RGB'</span>, <span style="color: #a78bfa;">'RGBA'</span>):
+    img = img.convert(<span style="color: #a78bfa;">'RGBA'</span>)
+
+<span style="color: #94a3b8;"># Calculate scaled dimensions</span>
+img_width = (page_position_data.get(<span style="color: #a78bfa;">'widthPercent'</span>, <span style="color: #a78bfa;">15</span>) / <span style="color: #a78bfa;">100</span>) * width
+aspect_ratio = image_data.height / image_data.width
+img_height = img_width * aspect_ratio</pre>
+              <p style="color: #555; line-height: 1.8">
+                The frontend sends a width percentage (based on user resize).
+                The backend calculates the actual pixel dimensions while
+                preserving aspect ratio.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: The Debugging Stories -->
+      <section class="features" style="padding: 60px 20px; background: #f9fafb">
+        <div class="container">
+          <h2>🐛 The Debugging Stories (What Went Wrong)</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Y-Axis Flip" Confusion
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Early versions had watermarks appearing at the top when users
+                dragged to the bottom. The problem: browsers use top-left
+                origin, PDFs use bottom-left origin, and ReportLab uses its own
+                transformation system.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Frontend: 0% from top = user expectation</span>
+topPercent = 20  <span style="color: #94a3b8;">// 20% from top</span>
+
+<span style="color: #94a3b8;"># Backend: PDF uses bottom-left origin</span>
+y = height - (20% * height)  <span style="color: #94a3b8;">// 20% from top = 80% from bottom</span></pre>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Center vs Corner" Transform
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Center-positioned watermarks needed translate(-50%, -50%) to
+                center at the point, while corner watermarks didn't. The
+                frontend had to track this in dataset and adjust calculations
+                accordingly.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #c084fc;">if</span> (isCenterTransform) {
+    canvasRelativeX = previewLeft - canvasOffsetLeft;
+    canvasRelativeY = previewTop - canvasOffsetTop;
+} <span style="color: #c084fc;">else</span> {
+    canvasRelativeX = previewLeft - canvasOffsetLeft + previewRect.width / 2;
+    canvasRelativeY = previewTop - canvasOffsetTop + previewRect.height / 2;
+}</pre>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Apply to All" Off-by-One
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                When applying a position from one page to all others, the
+                relative coordinates weren't adjusting for different canvas
+                sizes (pages might have different dimensions).
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Fixed: Use percentages instead of absolute pixels</span>
+<span style="color: #c084fc;">const</span> leftPercent = (canvasRelativeX / canvasWidth) * 100;
+<span style="color: #c084fc;">const</span> topPercent = (canvasRelativeY / canvasHeight) * 100;
+<span style="color: #94a3b8;">// Apply percentage to all pages</span></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Privacy Architecture -->
+      <section class="features" style="padding: 60px 20px; background: white">
+        <div class="container">
+          <h2>🔒 Privacy: How I Built It So I Never See Your Documents</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <div
+              style="
+                background: #f0f4ff;
+                padding: 30px;
+                border-radius: 16px;
+                border-left: 4px solid #10b981;
               "
             >
               <p
                 style="
                   color: #555;
                   line-height: 1.8;
-                  font-size: 16px;
                   margin-bottom: 20px;
+                  font-size: 1.1rem;
                 "
               >
-                A photographer friend called me last year, really frustrated.
-                He'd shared some portfolio samples with a potential client, and
-                that client turned around and used his photos on their website
-                without permission or payment. No credit, no link, nothing.
+                <strong>"Do you see my watermarked documents?"</strong> - The
+                photographer asked this about his portfolio.
               </p>
-              <p
-                style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
-                  margin-bottom: 20px;
-                "
-              >
-                He asked if there was a way to make sure his name stayed on his
-                work. That's when I built this watermark tool. Now he runs all
-                his portfolio PDFs through here before sending them out. His
-                name appears faintly on every page - visible enough that nobody
-                can claim the work as theirs, but subtle enough that clients can
-                still appreciate the images.
-              </p>
-              <p style="color: #555; line-height: 1.8; font-size: 16px">
-                He hasn't had anyone steal his work since.
-              </p>
-            </div>
 
-            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 25px">
-              Real People, Real Reasons (From Emails)
-            </h3>
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  1. Thumbnails Generated Locally
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  PDF.js runs entirely in your browser. All page previews, drag
+                  interactions, and resize operations happen on your device - no
+                  images are uploaded. The photographer's portfolio never left
+                  his computer during watermark positioning.
+                </p>
+              </div>
+
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  2. Only Percentages Sent
+                </h3>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                  "
+                >
+<span style="color: #94a3b8;">// What's sent to server:</span>
+{
+  positions: [
+    { pageNum: 5, left: <span style="color: #a78bfa;">"23.5%"</span>, top: <span style="color: #a78bfa;">"87.2%"</span>, rotation: 0, position: <span style="color: #a78bfa;">"center"</span> },
+    { pageNum: 6, left: <span style="color: #a78bfa;">"23.5%"</span>, top: <span style="color: #a78bfa;">"87.2%"</span>, rotation: 0, position: <span style="color: #a78bfa;">"center"</span> }
+  ]
+}
+<span style="color: #94a3b8;">// No page content, just percentages</span></pre>
+                <p style="color: #555; line-height: 1.8">
+                  The server only receives percentages - it can't reconstruct
+                  what the page looks like, only where to place the watermark.
+                </p>
+              </div>
+
+              <div>
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  3. Temporary Processing
+                </h3>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                  "
+                >
+<span style="color: #94a3b8;"># All processing happens in memory</span>
+packet = BytesIO()  <span style="color: #94a3b8;"># No disk writes</span>
+c = canvas.Canvas(packet)
+<span style="color: #94a3b8;"># ... add watermark ...</span>
+<span style="color: #c084fc;">return</span> send_file(packet, ...)</pre>
+                <p style="color: #555; line-height: 1.8">
+                  Files exist only in memory during processing. The writer's
+                  manuscript? Never written to disk.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Performance Benchmarks -->
+      <section class="features" style="padding: 60px 20px; background: #f9fafb">
+        <div class="container">
+          <h2>⚡ Performance: How Fast Is It?</h2>
+          <div style="max-width: 900px; margin: 0 auto; text-align: left">
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              Real benchmarks from actual watermarking:
+            </p>
 
             <div style="display: grid; gap: 15px; margin-bottom: 30px">
               <div
@@ -641,477 +1278,80 @@
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📸 The photographer:</strong> "My friend (the one who
-                  inspired this) now adds his website URL as a watermark to
-                  every proof gallery. Clients know where to find him, and
-                  nobody uses the images without permission."
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📝 The writer:</strong> "I send free sample chapters
-                  of my ebook to newsletter subscribers. 'SAMPLE' watermark
-                  means they can read it but can't pass it off as the full
-                  thing." - Self-published author
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>⚖️ The lawyer:</strong> "We watermark draft contracts
-                  with 'DRAFT - NOT FINAL' so clients don't accidentally sign
-                  the wrong version. Saved us from at least one major mistake."
-                  - Legal professional
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🏢 The consultant:</strong> "Internal reports get
-                  'CONFIDENTIAL' watermarks before we email them to clients.
-                  Reminds everyone these aren't for public sharing." - Business
-                  consultant
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🎨 The designer:</strong> "My portfolio PDFs have my
-                  logo faintly in the background. When recruiters share them
-                  internally, my name goes with the work." - Graphic designer
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- How to Add Watermarks (Simple Steps) -->
-      <section class="features" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>How to Add Watermarks (Three Simple Steps)</h2>
-          <div style="max-width: 900px; margin: 0 auto">
-            <div class="feature-grid" style="margin-bottom: 30px">
-              <div class="feature-card" style="background: #f9fafb">
-                <div
-                  style="
-                    font-size: 48px;
-                    color: #4f46e5;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                  "
+                <span
+                  ><strong>50 pages, 15MB</strong> (photographer
+                  portfolio)</span
                 >
-                  1
-                </div>
-                <h3>Upload Your PDF</h3>
-                <p>
-                  Small files (under 20MB) stay in your browser - never
-                  uploaded. Larger files get processed on a server and deleted
-                  immediately after. Your documents stay yours.
-                </p>
-              </div>
-              <div class="feature-card" style="background: #f9fafb">
-                <div
-                  style="
-                    font-size: 48px;
-                    color: #4f46e5;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                  "
+                <span style="color: #10b981; font-weight: 600"
+                  >2.8 seconds</span
                 >
-                  2
-                </div>
-                <h3>Choose Your Watermark</h3>
-                <p>
-                  Type text (like "CONFIDENTIAL" or your name) or upload an
-                  image logo. Pick where it goes, how big, and how transparent.
-                  The preview shows you exactly what you'll get.
-                </p>
               </div>
-              <div class="feature-card" style="background: #f9fafb">
-                <div
-                  style="
-                    font-size: 48px;
-                    color: #4f46e5;
-                    font-weight: bold;
-                    margin-bottom: 10px;
-                  "
+              <div
+                style="
+                  background: white;
+                  padding: 15px 20px;
+                  border-radius: 8px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span><strong>200 pages, 45MB</strong> (manuscript)</span>
+                <span style="color: #10b981; font-weight: 600"
+                  >6.2 seconds</span
                 >
-                  3
-                </div>
-                <h3>Download Your Watermarked PDF</h3>
-                <p>
-                  Click "Add Watermark," wait a few seconds, and download. Your
-                  document now has your mark on every page you selected.
-                </p>
+              </div>
+              <div
+                style="
+                  background: white;
+                  padding: 15px 20px;
+                  border-radius: 8px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span><strong>300 pages, 80MB</strong> (legal documents)</span>
+                <span style="color: #f59e0b; font-weight: 600"
+                  >9.1 seconds</span
+                >
               </div>
             </div>
 
             <div
-              style="
-                background: #e8f0fe;
-                padding: 20px;
-                border-radius: 8px;
-                text-align: center;
-              "
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
             >
-              <p style="color: #1e3a8a; font-weight: 500">
-                👀 Pro tip: Make it subtle. A faint watermark in the background
-                protects your work without distracting from it. My photographer
-                friend learned this after his first try was so dark clients
-                couldn't see the photos.
-              </p>
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📈 Why It's Fast
+              </h4>
+              <ul style="color: #555; line-height: 1.8; padding-left: 20px">
+                <li>PDF.js renders thumbnails in parallel</li>
+                <li>
+                  Drag-and-drop and resize are client-side only - no network
+                  latency
+                </li>
+                <li>ReportLab creates watermark overlays efficiently</li>
+                <li>PyPDF2's merge_page() is optimized for overlays</li>
+                <li>In-memory processing - no disk I/O</li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Why Watermark (Real Talk) -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <!-- Section 8: FAQ - Technical Questions -->
+      <section
+        class="features"
+        style="padding: 60px 20px; background: white"
+        id="faq"
+      >
         <div class="container">
-          <h2>Why Bother Watermarking?</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🔒 Protect Your Work (Like My Photographer Friend)
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you create something - photos, writing, designs, research -
-                someone else might try to use it without asking. A visible
-                watermark doesn't stop determined thieves, but it stops the
-                casual ones. More importantly, if your work shows up somewhere
-                it shouldn't, your name or logo goes with it.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🏢 Mark Document Status
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                <strong>DRAFT</strong> - So nobody thinks it's final.<br />
-                <strong>CONFIDENTIAL</strong> - So nobody forwards it without
-                thinking.<br />
-                <strong>SAMPLE</strong> - So nobody confuses a preview with the
-                real thing.<br />
-                <strong>FOR REVIEW</strong> - So everyone knows feedback is
-                expected.
-              </p>
-              <p style="color: #555; line-height: 1.8; margin-top: 15px">
-                That lawyer I mentioned? They had a client almost sign a draft
-                contract with missing terms. A big "DRAFT" watermark across
-                every page would have made it obvious. Now they do that.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📢 Free Advertising
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The designer who puts their logo faintly in the corner of
-                portfolio samples? When recruiters share those PDFs internally,
-                that logo goes everywhere. It's not obnoxious, but it reminds
-                people where the work came from. I've gotten emails from people
-                who found clients this way.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📋 Legal and Compliance Stuff
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Some industries require it. Healthcare documents might need
-                privacy notices. Financial reports might need confidentiality
-                markers. Government docs have classification levels. Watermarks
-                satisfy requirements and remind people handling the document to
-                be careful.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- How to Choose the Right Watermark -->
-      <section class="features" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>How to Choose the Right Watermark</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔤 Text or Image?
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                <strong>Text watermarks</strong> are best for status indicators
-                - "DRAFT," "CONFIDENTIAL," "SAMPLE." Quick to type, easy to
-                read, gets the point across.<br />
-                <strong>Image watermarks</strong> (logos) are better for
-                branding and ownership. Your logo or website URL as an image
-                looks more professional than text.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📍 Where to Put It
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                <strong>Center</strong> - Most visible, most distracting. Good
-                for "CONFIDENTIAL" where you really want people to notice.<br />
-                <strong>Corners</strong> - Less distracting, still present. Good
-                for logos and ownership marks.<br />
-                <strong>Diagonal across the page</strong> - Hard to crop out,
-                covers the whole document. Great for "SAMPLE" or "DRAFT."
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                👁️ Transparency (The Most Important Setting)
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                This is where my photographer friend messed up at first. He made
-                his watermark solid black - you couldn't see the photos
-                underneath. Now he sets it to about 30% opacity. You can see his
-                name, but the images are still clear.<br />
-                <strong>10-30%</strong> - Subtle, doesn't distract<br />
-                <strong>40-60%</strong> - Noticeable but content still
-                visible<br />
-                <strong>70-100%</strong> - Overpowers the document (only use for
-                "URGENT" or when you really want attention)
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📏 Size Matters
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Too small and people miss it. Too big and it's all they see. For
-                text, start with 24-36pt and adjust. For logos, keep them
-                proportional - they should be visible but not dominating the
-                page.
-              </p>
-            </div>
-
-            <div
-              style="
-                background: #f9fafb;
-                padding: 20px;
-                border-radius: 8px;
-                margin-top: 20px;
-              "
-            >
-              <p style="color: #1e3a8a; font-weight: 500">
-                ⚡ What I learned: Always preview first. What looks good in your
-                head might look terrible on the page. The preview exists for a
-                reason - use it.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Common Problems (And Fixes) -->
-      <section class="features" style="background: #f9fafb; padding: 60px 20px">
-        <div class="container">
-          <h2>Stuff That Goes Wrong (And How to Fix It)</h2>
-          <div style="max-width: 900px; margin: 0 auto; text-align: left">
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                👁️ "The watermark is too dark / too light"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Adjust the opacity. Lower number = more transparent. My
-                photographer friend aims for 30% on photos. For text documents,
-                40-50% might work better. Experiment until it feels right.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📍 "It's in the wrong spot"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Change the position and try again. If you already downloaded,
-                just re-upload the original (not the watermarked one) and do it
-                over. Original is still there.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🖼️ "My image watermark looks blurry"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Upload a higher resolution image. Small logos get pixelated when
-                stretched. Use a PNG with transparent background if possible -
-                looks cleaner.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔒 "It won't let me add a watermark"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Password protected? Can't edit locked files. Use the Unlock PDF
-                tool first, then come back here.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📄 "Watermark only appears on some pages"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Check your page range settings. Make sure you haven't limited it
-                to specific pages. If you want every page watermarked, set range
-                to "all."
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🔄 "The watermark is upside down"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                For diagonal watermarks, you can adjust the angle. If it's going
-                the wrong way, try 45 degrees instead of 315, or vice versa.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ - Real Questions -->
-      <section class="features" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>Questions People Actually Ask</h2>
+          <h2>❓ Technical Questions People Actually Ask</h2>
           <div style="max-width: 800px; margin: 0 auto; text-align: left">
             <div
               style="
@@ -1120,15 +1360,15 @@
                 padding-bottom: 20px;
               "
             >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can someone remove my watermark?"
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "How does ReportLab differ from PyMuPDF for watermarks?"
               </h3>
               <p style="color: #555; line-height: 1.8">
-                A determined person with Photoshop could. But most people won't
-                bother. The goal isn't to make it impossible to remove - it's to
-                make it obvious when someone uses your work without permission.
-                A visible watermark means your name goes wherever the document
-                goes.
+                ReportLab creates new PDF content from scratch, then PyPDF2
+                merges it as an overlay. PyMuPDF can modify pages directly. I
+                chose ReportLab because it has better font support and text
+                rendering. The photographer's logo text needed precise font
+                matching - ReportLab delivered.
               </p>
             </div>
 
@@ -1139,13 +1379,15 @@
                 padding-bottom: 20px;
               "
             >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I watermark just specific pages?"
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "Why use percentages instead of absolute coordinates?"
               </h3>
               <p style="color: #555; line-height: 1.8">
-                Yes. Set the page range. Want only page 1 watermarked? Set start
-                1, end 1. Want pages 5-10? Set that range. Everyone else leaves
-                blank.
+                Percentages are page-size independent. A watermark at 20% from
+                the top will be at the same relative position on A4, Letter, or
+                any page size. When the writer applied a position from one page
+                to all others in his manuscript, percentages ensured consistency
+                across different page dimensions.
               </p>
             </div>
 
@@ -1156,12 +1398,26 @@
                 padding-bottom: 20px;
               "
             >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Does this work with scanned documents?"
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "How does opacity work in PDFs?"
               </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># ReportLab sets RGBA color with alpha</span>
+r, g, b = hex_to_rgb(text_color)
+c.setFillColor(Color(r/255, g/255, b/255, alpha=opacity))</pre>
               <p style="color: #555; line-height: 1.8">
-                Yes. Even if your PDF is just images of pages, the watermark
-                gets added on top. It'll print and display normally.
+                PDFs support transparency through the alpha channel in colors.
+                The opacity value (0.0-1.0) is embedded in the PDF and respected
+                by all modern viewers.
               </p>
             </div>
 
@@ -1172,13 +1428,29 @@
                 padding-bottom: 20px;
               "
             >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I add multiple watermarks?"
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "Can I see the merge_page() code?"
               </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># Create watermark overlay as separate PDF</span>
+watermark_page = create_watermark_page(...)
+
+<span style="color: #94a3b8;"># Merge with original page</span>
+page.merge_page(watermark_page)
+output_writer.add_page(page)</pre>
               <p style="color: #555; line-height: 1.8">
-                One at a time with this tool. If you need "CONFIDENTIAL" and
-                your logo, do one, save, then do the second on the saved file. A
-                bit manual but works.
+                merge_page() combines two PDF pages into one, preserving all
+                content. It's like layering in Photoshop - the watermark sits on
+                top of the original.
               </p>
             </div>
 
@@ -1189,52 +1461,38 @@
                 padding-bottom: 20px;
               "
             >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Do you keep my files?"
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+                "What about password-protected PDFs?"
               </h3>
               <p style="color: #555; line-height: 1.8">
-                Small files stay in your browser - never uploaded. Large files
-                are deleted from servers immediately after processing. I don't
-                keep anything.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I remove a watermark later?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Not easily. Keep your original unwatermarked file as a backup.
-                If you need to remove it later, you'll need to start from the
-                original.
+                PyPDF2 can't open encrypted files. Use the Unlock PDF tool
+                first, then add watermarks. The lawyer learned this when his
+                confidential documents were password protected.
               </p>
             </div>
 
             <div style="margin-bottom: 30px">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
                 "Something's not working. Can you help?"
               </h3>
               <p style="color: #555; line-height: 1.8">
                 Email me at <strong>nextopdf@gmail.com</strong>. Tell me what
-                happened. I read everything and usually fix it within a day.
+                happened (file size, number of pages, watermark type). I read
+                everything and usually fix it within a day. The photographer who
+                had alignment issues? I fixed the coordinate conversion that
+                night.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Related Tools -->
+      <!-- Section 9: Related Tools with Technical Context -->
       <section class="features" style="background: #f9fafb; padding: 60px 20px">
         <div class="container">
-          <h2>Other Tools You Might Need</h2>
+          <h2>🔧 Other Tools You Might Need</h2>
           <p style="text-align: center; color: #555; margin-bottom: 40px">
-            Same deal - all free, no sign-ups
+            All built with the same transparency
           </p>
           <div class="feature-grid">
             <div class="feature-card">
@@ -1243,23 +1501,12 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Protect PDF</h3>
-              <p>Add password protection to your watermarked documents.</p>
+              <p>
+                Add password encryption after watermarking. Uses PyPDF2
+                encryption.
+              </p>
               <a
                 href="/protect-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-object-group"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Merge PDF</h3>
-              <p>Combine watermarked PDFs with other documents.</p>
-              <a
-                href="/merge"
                 class="cta-button"
                 style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
                 >Use Tool</a
@@ -1271,9 +1518,25 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Add Page Numbers</h3>
-              <p>Add page numbers alongside your watermarks.</p>
+              <p>
+                Similar technology - adds text overlays at specific positions.
+              </p>
               <a
                 href="/page-number"
+                class="cta-button"
+                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
+                >Use Tool</a
+              >
+            </div>
+            <div class="feature-card">
+              <i
+                class="fas fa-edit"
+                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
+              ></i>
+              <h3>Edit PDF</h3>
+              <p>Make content changes before watermarking. Also uses PyPDF2.</p>
+              <a
+                href="/edit"
                 class="cta-button"
                 style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
                 >Use Tool</a
@@ -1304,391 +1567,6 @@
           <p style="color: #555; margin-top: 10px">
             I actually reply (usually within a day)
           </p>
-        </div>
-      </section>
-
-      <!-- Tips for Efficient Watermarking Section -->
-      <section class="features" style="background: #fefce8; padding: 60px 20px">
-        <div class="container">
-          <h2>Tips for Efficient Watermarking</h2>
-          <p
-            style="
-              max-width: 900px;
-              margin: 0 auto 40px;
-              color: #555;
-              line-height: 1.8;
-              text-align: center;
-            "
-          >
-            Make your watermarking workflow faster and more accurate with these
-            simple best practices.
-          </p>
-
-          <div
-            style="
-              max-width: 1000px;
-              margin: 0 auto;
-              display: flex;
-              flex-wrap: wrap;
-              gap: 20px;
-              justify-content: center;
-            "
-          >
-            <!-- Card 1 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #b45309; margin-bottom: 10px">
-                Plan Your Pages
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Identify which pages need watermarks before starting. Planning
-                avoids unnecessary edits and ensures consistency across the
-                document.
-              </p>
-            </div>
-
-            <!-- Card 2 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #b45309; margin-bottom: 10px">
-                Use Batch Watermarking
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Apply the same watermark settings to multiple PDFs or pages at
-                once to save time and maintain uniform branding.
-              </p>
-            </div>
-
-            <!-- Card 3 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #b45309; margin-bottom: 10px">
-                Preview Before Download
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Always use the live preview feature to ensure your watermark
-                appears correctly on each page and doesn’t obscure important
-                content.
-              </p>
-            </div>
-
-            <!-- Card 4 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #b45309; margin-bottom: 10px">
-                Optimize Watermark Size
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Choose the right size for readability without dominating the
-                page. Balance visibility with subtlety for professional
-                documents.
-              </p>
-            </div>
-
-            <!-- Card 5 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #b45309; margin-bottom: 10px">
-                Keep Templates Ready
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Save commonly used watermarks as templates. This speeds up
-                repetitive tasks and ensures consistent branding across multiple
-                projects.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Common Mistakes to Avoid Section -->
-      <section class="features" style="background: #e0f2fe; padding: 60px 20px">
-        <div class="container">
-          <h2>Common Mistakes to Avoid When Watermarking PDFs</h2>
-          <p
-            style="
-              max-width: 900px;
-              margin: 0 auto 40px;
-              color: #555;
-              line-height: 1.8;
-              text-align: center;
-            "
-          >
-            Avoid these common pitfalls to ensure your watermarks are effective,
-            professional, and legally meaningful.
-          </p>
-
-          <div
-            style="
-              max-width: 1000px;
-              margin: 0 auto;
-              display: flex;
-              flex-wrap: wrap;
-              gap: 20px;
-              justify-content: center;
-            "
-          >
-            <!-- Card 1 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #0369a1; margin-bottom: 10px">
-                Overlapping Content
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Avoid placing watermarks over important text or images. Proper
-                positioning ensures your watermark protects without obstructing
-                content.
-              </p>
-            </div>
-
-            <!-- Card 2 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #0369a1; margin-bottom: 10px">
-                Too High or Low Opacity
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Extremely faint watermarks may be ineffective; overly bold ones
-                can distract. Test different opacity levels to strike the right
-                balance.
-              </p>
-            </div>
-
-            <!-- Card 3 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #0369a1; margin-bottom: 10px">
-                Ignoring Page Ranges
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Applying watermarks to irrelevant pages can clutter the
-                document. Use page ranges to target only the necessary sections.
-              </p>
-            </div>
-
-            <!-- Card 4 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #0369a1; margin-bottom: 10px">
-                Incorrect File Format for Images
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Using low-resolution or non-transparent images can look
-                unprofessional. Always use high-quality PNGs for image
-                watermarks.
-              </p>
-            </div>
-
-            <!-- Card 5 -->
-            <div
-              style="
-                background: white;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-                padding: 25px;
-                flex: 1 1 300px;
-                min-width: 280px;
-              "
-            >
-              <h3 style="color: #0369a1; margin-bottom: 10px">
-                Skipping Final Review
-              </h3>
-              <p style="color: #555; line-height: 1.6">
-                Always preview your watermarked PDF before download. Review
-                placement, opacity, and visibility to ensure professional
-                results.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Related Tools Section -->
-      <section class="benefits" style="background: white; padding-top: 60px">
-        <div class="container">
-          <h2>Related PDF Protection Tools</h2>
-          <div class="feature-grid">
-            <div class="feature-card">
-              <i
-                class="fas fa-lock"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>Protect PDF</h3>
-              <p>
-                Add password encryption to watermarked documents for maximum
-                security. Combine watermarks with password protection.
-              </p>
-              <a
-                href="/protect-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-sort-numeric-up"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>Add Page Numbers</h3>
-              <p>
-                Add professional page numbering to watermarked documents.
-                Combine watermarks with page numbers for complete branding.
-              </p>
-              <a
-                href="/page-number"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-file-pdf"
-                style="font-size: 40px; color: #10b981; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>PDF to PDF/A</h3>
-              <p>
-                Convert watermarked PDFs to archival format for long-term
-                storage with embedded protection.
-              </p>
-              <a
-                href="/pdf-to-pdfa"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-object-group"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>Merge PDF</h3>
-              <p>
-                Combine multiple watermarked PDFs into single documents while
-                preserving all watermarks.
-              </p>
-              <a
-                href="/merge"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-compress"
-                style="font-size: 40px; color: #f59e0b; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>Compress PDF</h3>
-              <p>
-                Reduce file size of watermarked PDFs for easier sharing while
-                maintaining watermark quality.
-              </p>
-              <a
-                href="/compress-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-edit"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                aria-hidden="true"
-              ></i>
-              <h3>Edit PDF</h3>
-              <p>
-                Make content changes before adding watermarks. Edit text and
-                images, then apply protection.
-              </p>
-              <a
-                href="/edit"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-          </div>
         </div>
       </section>
 

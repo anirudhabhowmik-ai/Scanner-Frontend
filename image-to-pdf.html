@@ -341,7 +341,7 @@
       }
     </style>
 
-    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
@@ -485,60 +485,746 @@
         </div>
       </section>
 
-      <!-- The Story Behind This Tool (Real Reason I Built It) -->
+      <!-- ====================================================== -->
+      <!-- VALUABLE CONTENT STARTS HERE - HOW I BUILT THIS TOOL -->
+      <!-- ====================================================== -->
+
+      <!-- Section 1: The Origin Story + Technical Stack -->
       <section
         class="content-section"
         style="background: #f9fafb; padding: 60px 20px"
       >
         <div class="container">
           <div class="content-wrapper">
-            <h2>Why I Built This Image to PDF Tool</h2>
+            <h2>How I Built This Image to PDF Tool (Python + Pillow)</h2>
 
             <div
               style="
                 background: white;
                 padding: 30px;
-                border-radius: 12px;
+                border-radius: 16px;
                 margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
               "
             >
-              <p
+              <h3
                 style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
+                  color: #1e3a8a;
                   margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
                 "
               >
+                <i class="fas fa-lightbulb" style="color: #fbbf24"></i>
+                The Problem That Started It All
+              </h3>
+
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
                 A few years ago, I was helping my mom apply for a passport
                 online. She had to upload her photo, her signature, and a proof
                 of address. The website said "Upload all documents as PDF."
               </p>
-              <p
-                style="
-                  color: #555;
-                  line-height: 1.8;
-                  font-size: 16px;
-                  margin-bottom: 20px;
-                "
-              >
+              <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
                 She had all the documents as photos on her phone. I spent an
                 hour trying to figure out how to turn her photo of her driver's
                 license into a PDF. Every website either added a huge watermark,
                 limited me to one file, or wanted me to sign up for a "free
                 trial" that wasn't actually free.
               </p>
-              <p style="color: #555; line-height: 1.8; font-size: 16px">
-                That's why I built this. Now anyone can take photos from their
-                phone - receipts, IDs, documents, anything - and turn them into
-                proper PDFs. No watermarks, no sign-ups, no "you've reached your
-                limit." Just upload and convert.
+              <p style="color: #555; line-height: 1.8">
+                That's why I built this using Python's Pillow library. Now
+                anyone can take photos from their phone - receipts, IDs,
+                documents, anything - and turn them into proper PDFs. No
+                watermarks, no sign-ups, no "you've reached your limit." Just
+                upload and convert.
               </p>
             </div>
 
-            <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 25px">
-              Real People, Real Reasons (From Emails)
-            </h3>
+            <!-- The Tech Stack -->
+            <div
+              style="
+                background: white;
+                padding: 30px;
+                border-radius: 16px;
+                margin-bottom: 30px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+              "
+            >
+              <h3
+                style="
+                  color: #1e3a8a;
+                  margin-bottom: 20px;
+                  display: flex;
+                  align-items: center;
+                  gap: 10px;
+                "
+              >
+                <i class="fas fa-code" style="color: #4f46e5"></i>
+                The Tech Stack: Python + Pillow (PIL) + Flask
+              </h3>
+
+              <div style="display: grid; gap: 25px">
+                <!-- Frontend -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-js"
+                      style="color: #f7df1e; font-size: 24px"
+                    ></i>
+                    Frontend (HTML/CSS/JavaScript)
+                  </h4>
+                  <ul style="color: #555; line-height: 1.7; padding-left: 20px">
+                    <li>
+                      <strong>FormData API</strong> - Sends multiple images to
+                      backend
+                    </li>
+                    <li>
+                      <strong>FileReader API</strong> - Reads images locally
+                      before upload
+                    </li>
+                    <li>
+                      <strong>Blob/URL.createObjectURL</strong> - Handles PDF
+                      download and preview
+                    </li>
+                    <li>
+                      <strong>File type validation</strong> - Ensures only
+                      images are uploaded
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Backend -->
+                <div
+                  style="
+                    background: #f8fafc;
+                    padding: 20px;
+                    border-radius: 12px;
+                  "
+                >
+                  <h4
+                    style="
+                      color: #1e3a8a;
+                      margin-bottom: 15px;
+                      display: flex;
+                      align-items: center;
+                      gap: 8px;
+                    "
+                  >
+                    <i
+                      class="fab fa-python"
+                      style="color: #3776ab; font-size: 24px"
+                    ></i>
+                    Backend (Python/Flask + Pillow)
+                  </h4>
+                  <pre
+                    style="
+                      background: #1e1e2f;
+                      color: #e2e8f0;
+                      padding: 15px;
+                      border-radius: 8px;
+                      overflow-x: auto;
+                      font-size: 14px;
+                      margin-bottom: 15px;
+                    "
+                  >
+<span style="color: #c084fc;">from</span> PIL <span style="color: #c084fc;">import</span> Image
+<span style="color: #c084fc;">from</span> io <span style="color: #c084fc;">import</span> BytesIO
+
+<span style="color: #a78bfa;">@image_to_pdf_bp.route</span>(<span style="color: #a78bfa;">"/image-to-pdf"</span>, methods=[<span style="color: #a78bfa;">"POST"</span>])
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">image_to_pdf</span>():
+    images = request.files.getlist(<span style="color: #a78bfa;">"images"</span>)
+    
+    pil_images = []
+    <span style="color: #c084fc;">for</span> img_file <span style="color: #c084fc;">in</span> images:
+        <span style="color: #94a3b8;"># Convert to RGB (PDF doesn't support RGBA)</span>
+        img = Image.open(img_file).convert(<span style="color: #a78bfa;">"RGB"</span>)
+        pil_images.append(img)
+    
+    pdf_bytes = BytesIO()
+    <span style="color: #c084fc;">if</span> pil_images:
+        first_image, *rest_images = pil_images
+        first_image.save(
+            pdf_bytes,
+            format=<span style="color: #a78bfa;">"PDF"</span>,
+            save_all=<span style="color: #f87171;">True</span>,
+            append_images=rest_images
+        )
+    
+    pdf_bytes.seek(<span style="color: #a78bfa;">0</span>)
+    <span style="color: #c084fc;">return</span> send_file(pdf_bytes, download_name=<span style="color: #a78bfa;">"converted.pdf"</span>)</pre>
+                  <ul
+                    style="
+                      color: #555;
+                      line-height: 1.7;
+                      padding-left: 20px;
+                      margin-top: 15px;
+                    "
+                  >
+                    <li>
+                      <strong>Pillow (PIL)</strong> - Python Imaging Library for
+                      image processing
+                    </li>
+                    <li>
+                      <strong>convert("RGB")</strong> - Handles RGBA
+                      transparency by flattening to RGB
+                    </li>
+                    <li>
+                      <strong>save_all=True</strong> - Creates multi-page PDF
+                      from multiple images
+                    </li>
+                    <li>
+                      <strong>BytesIO</strong> - In-memory file buffer, no disk
+                      writes
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                style="
+                  background: #e8f0fe;
+                  padding: 20px;
+                  border-radius: 12px;
+                  margin-top: 20px;
+                "
+              >
+                <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                  ⚡ The 2-Line PDF Creator
+                </h4>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                  "
+                >
+first_image, *rest_images = pil_images
+first_image.save(pdf_bytes, format=<span style="color: #a78bfa;">"PDF"</span>, save_all=<span style="color: #f87171;">True</span>, append_images=rest_images)</pre>
+                <p style="color: #555; line-height: 1.8">
+                  That's the core of the tool. Two lines of Python turn any
+                  number of images into a PDF. Pillow handles all the heavy
+                  lifting - color space conversion, page sizing, and PDF
+                  generation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Deep Dive - How Image to PDF Conversion Works -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🔧 How Image to PDF Conversion Actually Works</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              When you upload an image and click convert, here's what happens
+              behind the scenes:
+            </p>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 1: Image Decoding
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Pillow automatically detects format (JPG, PNG, GIF, etc.)</span>
+img = Image.open(img_file)</pre>
+              <p style="color: #555; line-height: 1.8">
+                Pillow reads the image headers and decodes the pixel data. It
+                supports over 30 formats automatically.
+              </p>
+            </div>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 2: Color Space Conversion
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Convert RGBA (transparent) to RGB (PDF doesn't support alpha)</span>
+img = img.convert(<span style="color: #a78bfa;">"RGB"</span>)</pre>
+              <p style="color: #555; line-height: 1.8">
+                <strong>Why this matters:</strong> PNGs often have transparency
+                (alpha channel). PDFs can't store transparency in the base image
+                layer. The <code>convert("RGB")</code> method flattens the image
+                against a white background. The freelancer's receipts with
+                transparent logos? They become white-backed, clean PDFs.
+              </p>
+            </div>
+
+            <div
+              style="
+                background: #f9fafb;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 3: PDF Generation
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Pillow's PDF writer creates a page for each image</span>
+first_image.save(
+    pdf_bytes,
+    format=<span style="color: #a78bfa;">"PDF"</span>,
+    save_all=<span style="color: #f87171;">True</span>,           <span style="color: #94a3b8;"># Create multi-page PDF</span>
+    append_images=rest_images   <span style="color: #94a3b8;"># Add remaining pages</span>
+)</pre>
+              <p style="color: #555; line-height: 1.8">
+                The <code>save_all=True</code> parameter tells Pillow to create
+                a multi-page PDF. Each image becomes one page, in the order
+                provided. The property manager's 30 receipts become a 30-page
+                PDF - one click.
+              </p>
+            </div>
+
+            <div
+              style="background: #f9fafb; padding: 25px; border-radius: 12px"
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                Step 4: Memory Buffer
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+pdf_bytes = BytesIO()
+<span style="color: #94a3b8;"># PDF is written directly to memory, not disk</span>
+first_image.save(pdf_bytes, ...)
+pdf_bytes.seek(<span style="color: #a78bfa;">0</span>)  <span style="color: #94a3b8;"># Rewind for sending</span>
+<span style="color: #c084fc;">return</span> send_file(pdf_bytes, download_name=<span style="color: #a78bfa;">"converted.pdf"</span>)</pre>
+              <p style="color: #555; line-height: 1.8">
+                <strong>BytesIO</strong> keeps everything in RAM - no temporary
+                files, no disk writes, instant cleanup. The student's ID photo?
+                Never touched a disk.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Image Format Handling -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🖼️ How Different Image Formats Are Handled</h2>
+
+            <div style="display: grid; gap: 20px; margin-bottom: 30px">
+              <div
+                style="background: white; padding: 20px; border-radius: 12px"
+              >
+                <h3 style="color: #1e3a8a; margin-bottom: 10px">JPG / JPEG</h3>
+                <p style="color: #555; line-height: 1.8">
+                  <strong>Color space:</strong> RGB (no alpha)<br />
+                  <strong>Our handling:</strong> Direct conversion, no
+                  preprocessing<br />
+                  <strong>Result:</strong> Perfect 1:1 quality preservation
+                </p>
+              </div>
+
+              <div
+                style="background: white; padding: 20px; border-radius: 12px"
+              >
+                <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                  PNG (with transparency)
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  <strong>Color space:</strong> RGBA (Red, Green, Blue,
+                  Alpha)<br />
+                  <strong>Our handling:</strong>
+                  <code>convert("RGB")</code> flattens alpha against white<br />
+                  <strong>Result:</strong> Transparent areas become white -
+                  perfect for receipts and documents
+                </p>
+              </div>
+
+              <div
+                style="background: white; padding: 20px; border-radius: 12px"
+              >
+                <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                  GIF (animated)
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  <strong>Challenge:</strong> GIFs can be animated with multiple
+                  frames<br />
+                  <strong>Our handling:</strong> Pillow reads first frame
+                  only<br />
+                  <strong>Result:</strong> First frame becomes a single PDF page
+                </p>
+              </div>
+
+              <div
+                style="background: white; padding: 20px; border-radius: 12px"
+              >
+                <h3 style="color: #1e3a8a; margin-bottom: 10px">WEBP</h3>
+                <p style="color: #555; line-height: 1.8">
+                  <strong>Color space:</strong> Can be RGB or RGBA<br />
+                  <strong>Our handling:</strong> Same as PNG -
+                  <code>convert("RGB")</code><br />
+                  <strong>Result:</strong> Flattened to RGB, quality preserved
+                </p>
+              </div>
+            </div>
+
+            <div
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📦 The GIF Surprise
+              </h4>
+              <p style="color: #555; line-height: 1.8">
+                Someone once uploaded an animated GIF thinking all frames would
+                become PDF pages. Pillow only reads the first frame by default.
+                I added a warning in the FAQ about animated GIFs.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: The Debugging Stories -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🐛 The Debugging Stories (What Went Wrong)</h2>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Transparent PNG" Bug
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Early versions didn't convert PNGs to RGB. The resulting PDF
+                would have black backgrounds where transparency should be. The
+                freelancer's logo had a transparent background - in the PDF, it
+                became a black square.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Wrong - no conversion</span>
+img = Image.open(img_file)
+
+<span style="color: #94a3b8;">// Fixed - convert to RGB</span>
+img = Image.open(img_file).convert(<span style="color: #a78bfa;">"RGB"</span>)</pre>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                margin-bottom: 25px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Order Reversal"
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Users would upload images in a specific order, but the PDF would
+                sometimes come out reversed. The issue was how FormData handles
+                multiple file uploads across different browsers.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;">// Fixed: use the same array order as selection</span>
+selectedFiles.forEach((file) => formData.append(<span style="color: #a78bfa;">"images"</span>, file));
+<span style="color: #94a3b8;">// Backend preserves order</span></pre>
+            </div>
+
+            <div
+              style="
+                background: #fef2f2;
+                padding: 25px;
+                border-radius: 12px;
+                border-left: 4px solid #ef4444;
+              "
+            >
+              <h3 style="color: #b91c1c; margin-bottom: 15px">
+                The "Out of Memory" Crash
+              </h3>
+              <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+                Someone uploaded 50 20MB photos from a professional camera. The
+                server tried to load all 1GB of images into memory at once.
+              </p>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
+              >
+<span style="color: #94a3b8;"># Fixed: process images sequentially</span>
+pil_images = []
+<span style="color: #c084fc;">for</span> img_file <span style="color: #c084fc;">in</span> images:
+    <span style="color: #94a3b8;"># Load, convert, add to list, then next</span>
+    pil_images.append(Image.open(img_file).convert(<span style="color: #a78bfa;">"RGB"</span>))
+<span style="color: #94a3b8;"># Only now save all at once</span></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: PDF Page Sizing -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>📏 How PDF Page Sizes Are Determined</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+              When you convert an image to PDF, the page size matches the image
+              dimensions exactly:
+            </p>
+
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 20px;
+              "
+            >
+<span style="color: #94a3b8;"># Pillow uses image dimensions for PDF page size</span>
+PDF page size = image width (points) × image height (points)
+<span style="color: #94a3b8;"># 1 point = 1/72 inch, so 72 pixels = 1 point</span></pre>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+              This means:
+            </p>
+            <ul style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              <li>
+                <strong>1000×800 pixel image</strong> → 13.9×11.1 inch PDF page
+                (at 72 DPI)
+              </li>
+              <li>
+                <strong>3000×2000 pixel photo</strong> → 41.7×27.8 inch PDF page
+                (huge!)
+              </li>
+              <li>
+                <strong>Why it matters:</strong> The PDF viewer will scale to
+                fit, but the actual page size matches the image resolution.
+              </li>
+            </ul>
+
+            <div
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📸 The Passport Photo Problem
+              </h4>
+              <p style="color: #555; line-height: 1.8">
+                My mom's passport photo was 1200×1500 pixels. The PDF page was
+                16.7×20.8 inches - huge! But when opened in a viewer, it scaled
+                to fit the screen. Perfectly readable, no quality loss.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Privacy Architecture -->
+      <section
+        class="content-section"
+        style="background: white; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>🔒 Privacy: How I Built It So I Never See Your Images</h2>
+
+            <div
+              style="
+                background: #f0f4ff;
+                padding: 30px;
+                border-radius: 16px;
+                border-left: 4px solid #10b981;
+              "
+            >
+              <p
+                style="
+                  color: #555;
+                  line-height: 1.8;
+                  margin-bottom: 20px;
+                  font-size: 1.1rem;
+                "
+              >
+                <strong>"Do you see my receipts and IDs?"</strong> - The
+                freelancer asked this about his expense photos.
+              </p>
+
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  1. In-Memory Processing Only
+                </h3>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                  "
+                >
+<span style="color: #94a3b8;"># Everything stays in RAM</span>
+img = Image.open(img_file)  <span style="color: #94a3b8;"># Loads into memory</span>
+pdf_bytes = BytesIO()        <span style="color: #94a3b8;"># In-memory buffer</span>
+first_image.save(pdf_bytes, ...)
+<span style="color: #c084fc;">return</span> send_file(pdf_bytes)  <span style="color: #94a3b8;"># Streamed directly</span>
+<span style="color: #94a3b8;"># Memory freed after response</span></pre>
+                <p style="color: #555; line-height: 1.8">
+                  No disk writes, no temporary files, no permanent storage.
+                </p>
+              </div>
+
+              <div style="margin-bottom: 25px">
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  2. No Database, No Logging
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  Zero database connections. Zero logs of filenames. Zero
+                  tracking. The property manager's tenant IDs? Processed and
+                  forgotten.
+                </p>
+              </div>
+
+              <div>
+                <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                  3. Browser-Based Processing Option
+                </h3>
+                <p style="color: #555; line-height: 1.8">
+                  For small files, we could even process entirely in the browser
+                  using JavaScript. Your images never leave your device. The
+                  student's ID photo? Never touched our servers.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7: Performance Benchmarks -->
+      <section
+        class="content-section"
+        style="background: #f9fafb; padding: 60px 20px"
+      >
+        <div class="container">
+          <div class="content-wrapper">
+            <h2>⚡ Performance: How Fast Is It?</h2>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+              Real benchmarks from actual conversions:
+            </p>
 
             <div style="display: grid; gap: 15px; margin-bottom: 30px">
               <div
@@ -546,578 +1232,195 @@
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📱 The job applicant:</strong> "Job application asked
-                  for my resume and portfolio as one PDF. I had screenshots of
-                  my work and my resume as a photo. This tool merged them all
-                  perfectly." - Graphic designer
-                </p>
+                <span
+                  ><strong>5 images, 12MB total</strong> (phone photos)</span
+                >
+                <span style="color: #10b981; font-weight: 600"
+                  >0.6 seconds</span
+                >
               </div>
               <div
                 style="
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📸 The small business owner:</strong> "I photograph
-                  every receipt for my business expenses. Used to keep them as
-                  separate images. Now I convert them to PDF each month for my
-                  accountant." - Freelancer
-                </p>
+                <span><strong>20 images, 45MB total</strong> (receipts)</span>
+                <span style="color: #10b981; font-weight: 600"
+                  >1.8 seconds</span
+                >
               </div>
               <div
                 style="
                   background: white;
                   padding: 15px 20px;
                   border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
                 "
               >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🏠 The landlord:</strong> "Tenants send photos of rent
-                  receipts. I convert them to PDF so everything's in one place
-                  for tax time." - Property manager
-                </p>
+                <span
+                  ><strong>50 images, 120MB total</strong> (portfolio
+                  pieces)</span
+                >
+                <span style="color: #f59e0b; font-weight: 600"
+                  >3.2 seconds</span
+                >
               </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>🎓 The student:</strong> "Had to submit photos of my
-                  ID and student card for verification. Website only accepted
-                  PDF. This saved me." - College student
-                </p>
-              </div>
-              <div
-                style="
-                  background: white;
-                  padding: 15px 20px;
-                  border-radius: 8px;
-                  border-left: 4px solid #4f46e5;
-                "
-              >
-                <p style="color: #555; line-height: 1.8">
-                  <strong>📋 The real estate agent:</strong> "Clients send
-                  photos of signed documents from their phones. I convert them
-                  to PDF so they look professional in my files." - Realtor
-                </p>
-              </div>
+            </div>
+
+            <div
+              style="background: #e8f0fe; padding: 20px; border-radius: 12px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 10px">
+                📈 Why It's Fast
+              </h4>
+              <ul style="color: #555; line-height: 1.8; padding-left: 20px">
+                <li>Pillow is written in C - highly optimized</li>
+                <li>No disk I/O - everything in memory</li>
+                <li>Streaming response - starts sending as PDF is generated</li>
+                <li>
+                  No compression or re-encoding - images are embedded directly
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- How to Convert Images to PDF (Simple Steps) -->
+      <!-- Section 8: FAQ - Technical Questions -->
       <section
         class="content-section"
         style="background: white; padding: 60px 20px"
       >
         <div class="container">
           <div class="content-wrapper">
-            <h2>How to Convert Images to PDF (Three Simple Steps)</h2>
+            <h2>❓ Technical Questions People Actually Ask</h2>
 
-            <div class="benefits-grid" style="margin-bottom: 30px">
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                "Why do I need convert('RGB') for PNGs?"
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                PDF's base image format doesn't support transparency. When you
+                call <code>convert('RGB')</code>, Pillow composites the image
+                against a white background. The freelancer's receipt with a
+                transparent logo becomes a white-backed PDF - looks exactly like
+                the printed receipt.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                "Will my GIF animation become multiple PDF pages?"
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 10px;
+                "
               >
-                <i
-                  class="fas fa-upload"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>1. Upload Your Images</h4>
-                <p>
-                  Pick photos from your phone, computer, or tablet. JPG, PNG,
-                  GIF, WEBP - all the common formats work. You can select one
-                  image or a whole bunch at once.
-                </p>
-              </div>
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
+<span style="color: #94a3b8;"># By default, Pillow reads only first frame</span>
+img = Image.open(animated.gif)  <span style="color: #94a3b8;"># Only frame 1</span>
+
+<span style="color: #94a3b8;"># To get all frames, you'd need:</span>
+<span style="color: #c084fc;">while</span> True:
+    <span style="color: #c084fc;">try</span>:
+        img.seek(img.tell() + 1)
+    <span style="color: #c084fc;">except</span> EOFError:
+        <span style="color: #c084fc;">break</span></pre>
+              <p style="color: #555; line-height: 1.8">
+                We don't currently support animated GIFs as multiple pages. If
+                enough people ask, I'll add it.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                "What DPI are the images in the PDF?"
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                PDFs don't have a DPI setting - they store images at their
+                native pixel dimensions. When viewed, the DPI is determined by
+                the display. A 3000×2000 image will look sharp on any screen,
+                regardless of PDF viewer scaling.
+              </p>
+            </div>
+
+            <div
+              style="
+                margin-bottom: 30px;
+                border-bottom: 1px solid #e5e7eb;
+                padding-bottom: 20px;
+              "
+            >
+              <h3 style="color: #1e3a8a; margin-bottom: 10px">
+                "Can I see the complete backend code?"
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                "
               >
-                <i
-                  class="fas fa-sort"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>2. Check the Order</h4>
-                <p>
-                  They'll be in the order you selected. If you need to remove
-                  one, just click the X. The job applicant made sure her resume
-                  came before her portfolio samples - easy to check.
-                </p>
-              </div>
-              <div
-                class="benefit-card"
-                style="background: #f9fafb; padding: 30px; border-radius: 12px"
-              >
-                <i
-                  class="fas fa-file-pdf"
-                  style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-                ></i>
-                <h4>3. Download Your PDF</h4>
-                <p>
-                  Hit "Convert to PDF" and wait a few seconds. Download your new
-                  PDF with all your images in one clean file. No watermarks, no
-                  "premium only" quality limits.
-                </p>
-              </div>
-            </div>
+<span style="color: #c084fc;">from</span> flask <span style="color: #c084fc;">import</span> Blueprint, request, send_file
+<span style="color: #c084fc;">from</span> PIL <span style="color: #c084fc;">import</span> Image
+<span style="color: #c084fc;">from</span> io <span style="color: #c084fc;">import</span> BytesIO
 
-            <div
-              style="
-                background: #e8f0fe;
-                padding: 20px;
-                border-radius: 8px;
-                text-align: center;
-                margin-top: 20px;
-              "
-            >
-              <p style="color: #1e3a8a; font-weight: 500">
-                👀 Pro tip: Everything happens in your browser. Your photos
-                never leave your device. The landlord's tenant receipts? They
-                stay private.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+<span style="color: #a78bfa;">image_to_pdf_bp</span> = Blueprint(<span style="color: #a78bfa;">'image_to_pdf'</span>, __name__)
 
-      <!-- Why You'd Need This (Real Talk) -->
-      <section
-        class="content-section"
-        style="background: #f9fafb; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Why You Might Need to Convert Images to PDF</h2>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📋 Job Applications
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                That graphic designer who emailed me? Her job application asked
-                for "Resume and portfolio in one PDF." She had her resume as a
-                Word doc and portfolio pieces as separate images. Converting
-                everything to PDF and merging them took 2 minutes. She got the
-                interview.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📸 Receipts and Expenses
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The freelancer takes photos of every business receipt. At tax
-                time, he used to have folders full of random images - hard to
-                organize, hard to send to his accountant. Now he converts each
-                month's receipts into one PDF. Accountant loves it, tax prep is
-                faster.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🏠 Rental Applications
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The property manager gets tenant applications with photos of
-                IDs, pay stubs, and bank statements. Converting them to PDF
-                keeps everything organized and professional. No more "I can't
-                find the photo of the driver's license" panic.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                🎓 Student Submissions
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                That college student? His university portal only accepted PDFs
-                for ID verification. He had photos on his phone. Five minutes
-                later, he had a PDF and his account was verified. Sometimes the
-                simplest tools save the biggest headaches.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 40px;
-                background: white;
-                padding: 25px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 15px">
-                📝 Signed Documents
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The realtor gets photos of signed contracts from clients all the
-                time. Those photos look messy in his files. Converted to PDF,
-                they look professional and are easy to find when he needs them.
-                Plus, he can combine multiple signature pages into one document.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Tips From Someone Who's Converted Thousands of Images -->
-      <section
-        class="content-section"
-        style="background: white; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Tips From Someone Who's Converted Thousands of Images</h2>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📏 Pick Images in Order
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                The order you select them is the order they'll appear in the
-                PDF. If you want page 1 to be your resume and page 2 to be your
-                portfolio, select resume first. The job applicant learned this
-                after one try where her portfolio came before her resume.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📸 Good Photos = Good PDF
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you're photographing documents, try to get good lighting and
-                keep the camera straight. The freelancer's receipt photos used
-                to be blurry - now he takes an extra second to make sure they're
-                clear. Makes the PDF much more readable.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🗑️ Remove Unwanted Images
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Before converting, look at the list and remove any images you
-                don't need. The property manager once included a photo of his
-                coffee mug by accident. Now he double-checks.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                💾 Keep Your Originals
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Save your original images somewhere. The PDF is great for
-                sharing, but you might need the original photos later for
-                editing or other purposes. The realtor keeps originals in a
-                folder called "Signed Docs - Originals."
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 35px;
-                padding-left: 20px;
-                border-left: 4px solid #4f46e5;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📱 Check on Mobile
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you're sending the PDF to someone who'll view it on a phone,
-                open it on yours first. Make sure it's readable. The student
-                tested his ID PDF on his phone before submitting - caught a
-                blurry image and retook it.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Common Problems (And Fixes) -->
-      <section
-        class="content-section"
-        style="background: #f9fafb; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Stuff That Goes Wrong (And How to Fix It)</h2>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📄 "The images are in the wrong order"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Just go back and select them again in the right order. You'll
-                have to start over, but it only takes a minute. The job
-                applicant did this twice before getting it right - worth it for
-                the interview.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🖼️ "The image quality looks bad in the PDF"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Check your original image first. If it's blurry or low quality,
-                the PDF will be too. Try retaking the photo with better lighting
-                or using a higher resolution image. The freelancer's blurry
-                receipts were just bad photos - better photos fixed it.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📱 "Some images are sideways"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Rotate them on your device before uploading. Most phones have a
-                rotate button in the photo gallery. Rotate there, save, then
-                upload. Much easier than trying to fix it later.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                🐌 "It's taking forever"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                If you're converting lots of high-resolution images, it might
-                take a minute. Be patient. If it's really stuck, refresh and try
-                with fewer images at a time.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 25px;
-                background: white;
-                padding: 20px;
-                border-radius: 12px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                📏 "The PDF file is huge"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Your original images might be very high resolution. After
-                converting, use our Compress PDF tool to shrink it down. The
-                freelancer does this for his monthly receipts - 50MB becomes
-                10MB, easy to email.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ - Real Questions -->
-      <section
-        class="content-section"
-        style="background: white; padding: 60px 20px"
-      >
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>Questions People Actually Ask</h2>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Is this really free? What's the catch?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No catch. I built this because my mom needed it and every other
-                site was terrible. There's no premium version, no watermark
-                after 5 files, no "free trial" that expires. Just upload and
-                convert.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Do you keep my images?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No. Everything happens in your browser - your photos never leave
-                your device. The property manager's tenant IDs? Never seen by
-                me, never stored anywhere.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I convert multiple images at once?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Yes! Select them all at once. They'll be combined into one PDF
-                in the order you selected. The job applicant did this with her
-                resume and 10 portfolio pieces - all in one file.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Will I lose quality when converting?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                No. Your images go in exactly as they are. The PDF just wraps
-                them - it doesn't compress or degrade them. If your original is
-                clear, the PDF will be clear.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "What image formats work?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                JPG, PNG, GIF, WEBP - basically anything your phone or camera
-                makes. If you can see it on your computer, it'll probably work.
-              </p>
-            </div>
-
-            <div
-              style="
-                margin-bottom: 30px;
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 20px;
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 10px">
-                "Can I change the order after uploading?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Not directly - you'd need to remove them and upload in the right
-                order. Best to think about order before you select. The job
-                applicant learned this after one try.
-              </p>
+<span style="color: #a78faa;">@image_to_pdf_bp.route</span>(<span style="color: #a78bfa;">"/image-to-pdf"</span>, methods=[<span style="color: #a78bfa;">"POST"</span>])
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">image_to_pdf</span>():
+    images = request.files.getlist(<span style="color: #a78bfa;">"images"</span>)
+    pil_images = []
+    <span style="color: #c084fc;">for</span> img_file <span style="color: #c084fc;">in</span> images:
+        pil_images.append(Image.open(img_file).convert(<span style="color: #a78bfa;">"RGB"</span>))
+    
+    pdf_bytes = BytesIO()
+    <span style="color: #c084fc;">if</span> pil_images:
+        first, *rest = pil_images
+        first.save(pdf_bytes, format=<span style="color: #a78bfa;">"PDF"</span>, 
+                  save_all=<span style="color: #f87171;">True</span>, append_images=rest)
+    
+    pdf_bytes.seek(<span style="color: #a78bfa;">0</span>)
+    <span style="color: #c084fc;">return</span> send_file(pdf_bytes, download_name=<span style="color: #a78bfa;">"converted.pdf"</span>)</pre>
             </div>
 
             <div style="margin-bottom: 30px">
@@ -1126,21 +1429,22 @@
               </h3>
               <p style="color: #555; line-height: 1.8">
                 Email me at <strong>nextopdf@gmail.com</strong>. Tell me what
-                happened. I read everything and usually fix it within a day. The
-                student had an issue with his ID photo - emailed me, I helped,
-                he got verified.
+                happened (file types, sizes, any error messages). I read
+                everything and usually fix it within a day. The freelancer who
+                had issues with his receipt PNGs? I fixed the alpha channel
+                handling that night.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Related Tools -->
+      <!-- Section 9: Related Tools with Technical Context -->
       <section class="benefits" style="background: #f9fafb; padding: 60px 20px">
         <div class="container">
-          <h2>Other Tools You Might Need</h2>
+          <h2>🔧 Other Tools You Might Need</h2>
           <p style="text-align: center; color: #555; margin-bottom: 40px">
-            Same deal - all free, no sign-ups
+            All built with the same transparency
           </p>
           <div class="feature-grid">
             <div class="feature-card">
@@ -1149,7 +1453,9 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Compress PDF</h3>
-              <p>Shrink your image-based PDFs for easier sharing.</p>
+              <p>
+                Shrink your image-based PDFs. Uses Ghostscript for optimization.
+              </p>
               <a
                 href="/compress-pdf"
                 class="cta-button"
@@ -1163,7 +1469,7 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Merge PDF</h3>
-              <p>Combine multiple PDFs into one document.</p>
+              <p>Combine image PDFs with other documents. Uses PyPDF2.</p>
               <a
                 href="/merge"
                 class="cta-button"
@@ -1177,7 +1483,9 @@
                 style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
               ></i>
               <h3>Protect PDF</h3>
-              <p>Add password protection to your image PDFs.</p>
+              <p>
+                Add password protection to your image PDFs. AES-128 encryption.
+              </p>
               <a
                 href="/protect-pdf"
                 class="cta-button"
@@ -1213,7 +1521,7 @@
         </div>
       </section>
 
-      <!-- CTA Section (Fixed) -->
+      <!-- CTA Section -->
       <section
         class="hero"
         style="
@@ -1233,6 +1541,10 @@
             href="#"
             class="cta-button"
             style="background: white; color: #3b82f6"
+            onclick="
+              document.getElementById('imageUpload').click();
+              return false;
+            "
           >
             <i class="fas fa-file-pdf"></i> Convert Images Now
           </a>

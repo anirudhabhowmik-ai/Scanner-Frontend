@@ -2767,7 +2767,6 @@ page.insert_image(rect, stream=rgb_buf.getvalue(),
                   img.dataUrl,
                   (fimg) => {
                     if (!fimg || !fimg.width) {
-                      console.warn("Image load failed:", img.xref);
                       resolve();
                       return;
                     }
@@ -2860,7 +2859,6 @@ page.insert_image(rect, stream=rgb_buf.getvalue(),
               "s",
             );
           } catch (err) {
-            console.error(err);
             toast("Extract failed: " + err.message, "e");
           } finally {
             btn.disabled = false;
@@ -2967,7 +2965,6 @@ page.insert_image(rect, stream=rgb_buf.getvalue(),
           showSaveScreen(blob, "edited_" + pdfFile.name);
           toast("PDF saved — preview ready!", "s");
         } catch (err) {
-          console.error("Save error:", err);
           await mAlert("Save failed: " + err.message, "Error");
         } finally {
           btn.disabled = false;

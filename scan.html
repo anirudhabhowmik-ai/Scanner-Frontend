@@ -1886,9 +1886,7 @@ output.seek(0)
         try {
           const res = await fetch(`${BACKEND_URL}/`);
           const data = await res.json();
-          console.log("✓ Backend connected:", data);
         } catch (err) {
-          console.error("✗ Backend not reachable:", err);
           showError("Backend server not reachable. Please check connection.");
         }
       });

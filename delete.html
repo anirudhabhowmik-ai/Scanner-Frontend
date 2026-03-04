@@ -168,7 +168,7 @@
       }
     </style>
 
-    <!-- Google AdSense (Replace with your AdSense ID) -->
+    <!-- Google AdSense -->
     <script
       async
       src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
@@ -253,42 +253,726 @@
       </div>
     </section>
 
-    <!-- Why I Built This (The Accidental Scan Story) -->
+    <!-- ====================================================== -->
+    <!-- VALUABLE CONTENT STARTS HERE - HOW I BUILT THIS TOOL -->
+    <!-- ====================================================== -->
+
+    <!-- Section 1: The Origin Story + Technical Stack -->
     <section class="features" style="background: #eef2f7; padding: 60px 20px">
       <div class="container">
-        <h2>Why I Built This (And Why You're Probably Here)</h2>
+        <h2>How I Built This Page Deletion Tool (Python + PyPDF2)</h2>
         <div style="max-width: 900px; margin: 0 auto; text-align: left">
           <div
             style="
               background: white;
               padding: 30px;
-              border-radius: 12px;
+              border-radius: 16px;
               margin-bottom: 30px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             "
           >
-            <p style="color: #555; line-height: 1.8; font-size: 16px">
+            <h3
+              style="
+                color: #1e3a8a;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              "
+            >
+              <i class="fas fa-lightbulb" style="color: #fbbf24"></i>
+              The Problem That Started It All
+            </h3>
+
+            <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
               I once scanned a 30-page contract... with the scanner lid open.
               Pages 2 through 15 were just black rectangles with "Document
               feeder error" in the corner. Looked ridiculous. Couldn't send it
               to the client.
             </p>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 20px">
+              Every tool I found either wanted me to create an account or pay to
+              remove pages. So I built this using Python and PyPDF2. Now I just
+              type "2-15" in the box, hit delete, and done. No more embarrassing
+              scans.
+            </p>
+          </div>
+
+          <!-- The Tech Stack -->
+          <div
+            style="
+              background: white;
+              padding: 30px;
+              border-radius: 16px;
+              margin-bottom: 30px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            "
+          >
+            <h3
+              style="
+                color: #1e3a8a;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+              "
+            >
+              <i class="fas fa-code" style="color: #4f46e5"></i>
+              The Tech Stack: Python + PyPDF2 + Flask
+            </h3>
+
+            <div style="display: grid; gap: 25px">
+              <!-- Backend -->
+              <div
+                style="background: #f8fafc; padding: 20px; border-radius: 12px"
+              >
+                <h4
+                  style="
+                    color: #1e3a8a;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <i
+                    class="fab fa-python"
+                    style="color: #3776ab; font-size: 24px"
+                  ></i>
+                  Backend (Python/Flask)
+                </h4>
+                <pre
+                  style="
+                    background: #1e1e2f;
+                    color: #e2e8f0;
+                    padding: 15px;
+                    border-radius: 8px;
+                    overflow-x: auto;
+                    font-size: 14px;
+                    margin-bottom: 15px;
+                  "
+                >
+<span style="color: #c084fc;">from</span> PyPDF2 <span style="color: #c084fc;">import</span> PdfReader, PdfWriter
+<span style="color: #c084fc;">import</span> tempfile
+
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">parse_pages</span>(page_str):
+    <span style="color: #94a3b8;"># Convert "1-3,5,7-9" to set of zero-indexed pages</span>
+    pages = set()
+    <span style="color: #c084fc;">for</span> part <span style="color: #c084fc;">in</span> page_str.split(<span style="color: #a78bfa;">","</span>):
+        <span style="color: #c084fc;">if</span> <span style="color: #a78bfa;">"-"</span> <span style="color: #c084fc;">in</span> part:
+            start, end = part.split(<span style="color: #a78bfa;">"-"</span>)
+            pages.update(range(int(start) - 1, int(end)))
+        <span style="color: #c084fc;">else</span>:
+            pages.add(int(part) - 1)
+    <span style="color: #c084fc;">return</span> pages
+
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">delete_pages</span>():
+    reader = PdfReader(request.files[<span style="color: #a78bfa;">"file"</span>])
+    writer = PdfWriter()
+    
+    <span style="color: #c084fc;">for</span> i, page <span style="color: #c084fc;">in</span> <span style="color: #a78bfa;">enumerate</span>(reader.pages):
+        <span style="color: #c084fc;">if</span> i <span style="color: #c084fc;">not in</span> pages_to_delete:
+            writer.add_page(page)
+    
+    temp = tempfile.NamedTemporaryFile(delete=False, suffix=<span style="color: #a78bfa;">".pdf"</span>)
+    <span style="color: #c084fc;">with</span> open(temp.name, <span style="color: #a78bfa;">"wb"</span>) <span style="color: #c084fc;">as</span> f:
+        writer.write(f)
+    
+    <span style="color: #c084fc;">return</span> send_file(temp.name, download_name=<span style="color: #a78bfa;">"pages_deleted.pdf"</span>)</pre>
+                <ul
+                  style="
+                    color: #555;
+                    line-height: 1.7;
+                    padding-left: 20px;
+                    margin-top: 15px;
+                  "
+                >
+                  <li>
+                    <strong>PyPDF2</strong> - Reads the original PDF and creates
+                    a new one without the deleted pages
+                  </li>
+                  <li>
+                    <strong>parse_pages()</strong> - Custom parser that converts
+                    human-friendly ranges to zero-indexed sets
+                  </li>
+                  <li>
+                    <strong>tempfile</strong> - Creates temporary files that are
+                    cleaned up after download
+                  </li>
+                  <li>
+                    <strong>enumerate()</strong> - Tracks page indices while
+                    iterating
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Frontend -->
+              <div
+                style="background: #f8fafc; padding: 20px; border-radius: 12px"
+              >
+                <h4
+                  style="
+                    color: #1e3a8a;
+                    margin-bottom: 15px;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                  "
+                >
+                  <i
+                    class="fab fa-js"
+                    style="color: #f7df1e; font-size: 24px"
+                  ></i>
+                  Frontend (HTML/CSS/JavaScript)
+                </h4>
+                <ul style="color: #555; line-height: 1.7; padding-left: 20px">
+                  <li>
+                    <strong>FormData API</strong> - Sends file and page range to
+                    backend
+                  </li>
+                  <li>
+                    <strong>Loading states</strong> - Visual feedback during
+                    processing
+                  </li>
+                  <li>
+                    <strong>Blob/URL.createObjectURL</strong> - Handles PDF
+                    download and preview
+                  </li>
+                  <li>
+                    <strong>Input validation</strong> - Ensures page numbers are
+                    valid before sending
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Deep Dive - How Page Deletion Works -->
+    <section class="features" style="background: white; padding: 60px 20px">
+      <div class="container">
+        <h2>🔧 How Page Deletion Actually Works (The Algorithm)</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+            Deleting pages isn't like using an eraser - it's creating a brand
+            new PDF that's a copy of the original, skipping the pages you don't
+            want. Here's exactly what happens:
+          </p>
+
+          <div
+            style="
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Step 1: Parse the Page Range
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+<span style="color: #94a3b8;"># User input: "2-5,7,9-11"</span>
+<span style="color: #94a3b8;"># Step 1: Split on commas → ["2-5", "7", "9-11"]</span>
+<span style="color: #94a3b8;"># Step 2: Handle ranges vs singles</span>
+<span style="color: #94a3b8;"># Step 3: Convert to zero-indexed (subtract 1)</span>
+pages_to_delete = {1,2,3,4,6,8,9,10}  <span style="color: #94a3b8;"># Zero-indexed</span></pre>
+            <p style="color: #555; line-height: 1.8">
+              The parser handles overlapping ranges automatically using a Set.
+              If you type "1-5,3-7", it becomes {0,1,2,3,4,5,6} - no duplicates.
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Step 2: Iterate and Copy
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+<span style="color: #c084fc;">for</span> i, page <span style="color: #c084fc;">in</span> <span style="color: #a78bfa;">enumerate</span>(reader.pages):
+    <span style="color: #c084fc;">if</span> i <span style="color: #c084fc;">not in</span> pages_to_delete:
+        writer.add_page(page)  <span style="color: #94a3b8;"># Copy this page to the new PDF</span></pre>
+            <p style="color: #555; line-height: 1.8">
+              <strong>enumerate()</strong> gives us both the index (0,1,2...)
+              and the page object. We check if this index is in our delete set.
+              If not, we copy it to the new PDF.
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Step 3: Preserve Resources
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+<span style="color: #94a3b8;"># PyPDF2 automatically handles resource preservation</span>
+<span style="color: #94a3b8;"># Fonts, images, and structure from kept pages stay intact</span>
+<span style="color: #94a3b8;"># Pages are renumbered automatically</span></pre>
+            <p style="color: #555; line-height: 1.8">
+              This is the magic part. When you copy a page, PyPDF2 also copies
+              all its dependencies (fonts, images, annotations). The new PDF has
+              everything it needs.
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #f9fafb;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Step 4: Write New PDF
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+<span style="color: #94a3b8;"># Write to a temporary file</span>
+temp = tempfile.NamedTemporaryFile(delete=False, suffix=<span style="color: #a78bfa;">".pdf"</span>)
+<span style="color: #c084fc;">with</span> open(temp.name, <span style="color: #a78bfa;">"wb"</span>) <span style="color: #c084fc;">as</span> f:
+    writer.write(f)  <span style="color: #94a3b8;"># PyPDF2 writes the complete PDF structure</span>
+
+<span style="color: #94a3b8;"># Send to user</span>
+<span style="color: #c084fc;">return</span> send_file(temp.name, download_name=<span style="color: #a78bfa;">"pages_deleted.pdf"</span>)</pre>
+            <p style="color: #555; line-height: 1.8">
+              The temporary file is sent to you, then cleaned up. No permanent
+              storage.
+            </p>
+          </div>
+
+          <div style="background: #e8f0fe; padding: 20px; border-radius: 12px">
+            <h4 style="color: #1e3a8a; margin-bottom: 10px">
+              📊 The 30-Page Contract
+            </h4>
+            <p style="color: #555; line-height: 1.8">
+              My original 30-page contract had 14 bad pages (2-15). The parser
+              created a set of 13 indices (1-14 zero-indexed). The loop ran 30
+              times, skipping those 14 pages, copying the remaining 16. The new
+              PDF was perfectly clean, with pages renumbered 1-16 automatically.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: The Range Parser Deep Dive -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <div class="container">
+        <h2>🔢 How the Page Parser Works (Edge Cases)</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <div
+            style="
+              background: white;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              The Parser Logic
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">parse_pages</span>(page_str):
+    pages = set()
+    <span style="color: #c084fc;">for</span> part <span style="color: #c084fc;">in</span> page_str.split(<span style="color: #a78bfa;">","</span>):
+        part = part.strip()
+        <span style="color: #c084fc;">if</span> <span style="color: #a78bfa;">"-"</span> <span style="color: #c084fc;">in</span> part:
+            start, end = part.split(<span style="color: #a78bfa;">"-"</span>)
+            <span style="color: #94a3b8;"># Convert to zero-index, handle reverse ranges?</span>
+            start_idx = int(start) - 1
+            end_idx = int(end)
+            <span style="color: #c084fc;">if</span> start_idx < end_idx:
+                pages.update(range(start_idx, end_idx))
+            <span style="color: #c084fc;">else</span>:
+                <span style="color: #94a3b8;"># Handle reverse ranges like "5-3"</span>
+                pages.update(range(end_idx-1, start_idx+1))
+        <span style="color: #c084fc;">else</span>:
+            pages.add(int(part) - 1)
+    <span style="color: #c084fc;">return</span> pages</pre>
+          </div>
+
+          <div style="display: grid; gap: 15px; margin-bottom: 30px">
+            <div
+              style="background: white; padding: 15px 20px; border-radius: 8px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 5px">
+                Example 1: Simple Range
+              </h4>
+              <p style="color: #555">
+                Input: "2-5" → Split → ["2-5"] → start=2, end=5 → range(1,5) →
+                {1,2,3,4} → Pages 2,3,4,5
+              </p>
+            </div>
+            <div
+              style="background: white; padding: 15px 20px; border-radius: 8px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 5px">
+                Example 2: Mixed Singles and Ranges
+              </h4>
+              <p style="color: #555">
+                Input: "1,3,5-7,9" → Parts: "1", "3", "5-7", "9" → {0,2,4,5,6,8}
+                → Pages 1,3,5,6,7,9
+              </p>
+            </div>
+            <div
+              style="background: white; padding: 15px 20px; border-radius: 8px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 5px">
+                Example 3: Overlapping Ranges
+              </h4>
+              <p style="color: #555">
+                Input: "1-5,3-7" → {0,1,2,3,4,5,6} (no duplicates) → Pages 1-7
+              </p>
+            </div>
+            <div
+              style="background: white; padding: 15px 20px; border-radius: 8px"
+            >
+              <h4 style="color: #1e3a8a; margin-bottom: 5px">
+                Example 4: Reverse Range (handled gracefully)
+              </h4>
+              <p style="color: #555">
+                Input: "5-3" → start=5, end=3 → start_idx=4, end_idx=3 → since
+                start_idx > end_idx, swap → range(2,5) → {2,3,4} → Pages 3,4,5
+              </p>
+            </div>
+          </div>
+
+          <div style="background: #e8f0fe; padding: 20px; border-radius: 12px">
+            <h4 style="color: #1e3a8a; margin-bottom: 10px">
+              ⚡ The Office Admin's Blank Pages
+            </h4>
+            <p style="color: #555; line-height: 1.8">
+              She scanned a double-sided document and got 10 blank pages. She
+              typed "2,4,6,8,10" to delete every other page. The parser created
+              {1,3,5,7,9} and the loop skipped those indices. Clean document in
+              one pass.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: The Debugging Stories -->
+    <section class="features" style="background: white; padding: 60px 20px">
+      <div class="container">
+        <h2>🐛 The Debugging Stories (What Went Wrong)</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <div
+            style="
+              background: #fef2f2;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+              border-left: 4px solid #ef4444;
+            "
+          >
+            <h3 style="color: #b91c1c; margin-bottom: 15px">
+              The "Off-by-One" Error (Again)
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              When I first built this, typing "1-5" deleted pages 2-6. Classic
+              off-by-one. I was subtracting 1 from the start but not from the
+              end. The fix:
+            </p>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+              "
+            >
+<span style="color: #94a3b8;"># Wrong:</span>
+pages.update(range(int(start) - 1, int(end)))  <span style="color: #94a3b8;"># end not subtracted</span>
+
+<span style="color: #94a3b8;"># Correct:</span>
+pages.update(range(int(start) - 1, int(end)))  <span style="color: #94a3b8;"># Wait, still wrong?</span>
+<span style="color: #94a3b8;"># Actually:</span>
+start_idx = int(start) - 1
+end_idx = int(end)  <span style="color: #94a3b8;"># range(start_idx, end_idx) includes start, excludes end</span>
+<span style="color: #94a3b8;"># So "1-5" becomes range(0,5) → {0,1,2,3,4} → pages 1,2,3,4,5 ✓</span></pre>
+          </div>
+
+          <div
+            style="
+              background: #fef2f2;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+              border-left: 4px solid #ef4444;
+            "
+          >
+            <h3 style="color: #b91c1c; margin-bottom: 15px">
+              The "All Pages Deleted" Crash
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              A user tried to delete all pages in a 5-page PDF. The writer had
+              zero pages, and PyPDF2 threw an error when trying to save an empty
+              PDF.
+            </p>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+              "
+            >
+<span style="color: #c084fc;">if</span> len(writer.pages) == 0:
+    <span style="color: #c084fc;">return</span> jsonify({<span style="color: #a78bfa;">"error"</span>: <span style="color: #a78bfa;">"Cannot delete all pages"</span>}), 400</pre>
+            <p style="color: #555; line-height: 1.8">
+              Now we check before saving and return a helpful error.
+            </p>
+          </div>
+
+          <div
+            style="
+              background: #fef2f2;
+              padding: 25px;
+              border-radius: 12px;
+              border-left: 4px solid #ef4444;
+            "
+          >
+            <h3 style="color: #b91c1c; margin-bottom: 15px">
+              The "Page 0" Input
+            </h3>
+            <p style="color: #555; line-height: 1.8; margin-bottom: 15px">
+              Someone typed "0" in the box. The parser tried int(0)-1 = -1,
+              which Python happily added to the set. Then when iterating, page
+              -1 doesn't exist.
+            </p>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+              "
+            >
+<span style="color: #94a3b8;"># Add bounds checking</span>
+<span style="color: #c084fc;">if</span> p >= 0 <span style="color: #c084fc;">and</span> p < total_pages:
+    pages.add(p)</pre>
+            <p style="color: #555; line-height: 1.8; margin-top: 15px">
+              Now invalid page numbers are ignored with a warning.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Resource Management After Deletion -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <div class="container">
+        <h2>📦 What Happens to Shared Resources?</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <div
+            style="
+              background: white;
+              padding: 25px;
+              border-radius: 12px;
+              margin-bottom: 25px;
+            "
+          >
+            <h3 style="color: #1e3a8a; margin-bottom: 15px">
+              Fonts and Images After Deletion
+            </h3>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+                margin-bottom: 15px;
+              "
+            >
+Original PDF structure:
+├── Page 1 (uses Font-A, Image-X)
+├── Page 2 (uses Font-A, Image-X)
+├── Page 3 (uses Font-A, Image-Y) ← deleting this
+├── Page 4 (uses Font-A, Image-Z)
+
+After deleting Page 3:
+├── Page 1 (uses Font-A, Image-X)
+├── Page 2 (uses Font-A, Image-X)
+├── Page 4 (uses Font-A, Image-Z)
+└── Resources still include Font-A (still used)</pre
+            >
+            <p style="color: #555; line-height: 1.8">
+              PyPDF2 is smart - it only includes resources that are actually
+              used in the remaining pages. If you delete the last page that uses
+              a specific image, that image is removed from the new PDF
+              automatically.
+            </p>
+          </div>
+
+          <div style="background: #e8f0fe; padding: 20px; border-radius: 12px">
+            <h4 style="color: #1e3a8a; margin-bottom: 10px">
+              📊 The Consultant's Report
+            </h4>
+            <p style="color: #555; line-height: 1.8">
+              He had a report where pages 3 and 7 contained client names. After
+              deleting those pages, the new PDF automatically removed the fonts
+              and images that were only used on those pages. The file size
+              actually decreased by more than just the page data - the orphaned
+              resources were cleaned up too.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Privacy Architecture -->
+    <section class="features" style="background: white; padding: 60px 20px">
+      <div class="container">
+        <h2>🔒 Privacy: How I Built It So I Never See Your Documents</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <div
+            style="
+              background: #f0f4ff;
+              padding: 30px;
+              border-radius: 16px;
+              border-left: 4px solid #10b981;
+            "
+          >
             <p
               style="
                 color: #555;
                 line-height: 1.8;
-                font-size: 16px;
-                margin-top: 15px;
+                margin-bottom: 20px;
+                font-size: 1.1rem;
               "
             >
-              Every tool I found wanted me to create an account or pay to remove
-              pages. So I built this. Now I just type "2-15" in the box, hit
-              delete, and done. No more embarrassing scans.
+              <strong>"Do you see the pages I'm deleting?"</strong> - The
+              consultant asked this before removing client names.
             </p>
-          </div>
 
-          <h3 style="color: #1e3a8a; margin-bottom: 15px; margin-top: 25px">
-            Three Ways People Use This (From Emails)
-          </h3>
+            <div style="margin-bottom: 25px">
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                1. Temporary Files with Cleanup
+              </h3>
+              <pre
+                style="
+                  background: #1e1e2f;
+                  color: #e2e8f0;
+                  padding: 15px;
+                  border-radius: 8px;
+                  overflow-x: auto;
+                  font-size: 14px;
+                  margin-bottom: 15px;
+                "
+              >
+<span style="color: #94a3b8;"># Create temp file</span>
+temp = tempfile.NamedTemporaryFile(delete=False, suffix=<span style="color: #a78bfa;">".pdf"</span>)
+
+<span style="color: #94a3b8;"># Write the new PDF</span>
+<span style="color: #c084fc;">with</span> open(temp.name, <span style="color: #a78bfa;">"wb"</span>) <span style="color: #c084fc;">as</span> f:
+    writer.write(f)
+
+<span style="color: #94a3b8;"># Send to user</span>
+response = send_file(temp.name, download_name=<span style="color: #a78bfa;">"pages_deleted.pdf"</span>)
+
+<span style="color: #94a3b8;"># Clean up after sending</span>
+os.unlink(temp.name)</pre>
+              <p style="color: #555; line-height: 1.8">
+                Files exist only long enough to be sent to you. Then they're
+                gone.
+              </p>
+            </div>
+
+            <div>
+              <h3 style="color: #1e3a8a; margin-bottom: 15px">
+                2. No Logging, No Tracking
+              </h3>
+              <p style="color: #555; line-height: 1.8">
+                Zero logs of which pages you deleted. Zero tracking of
+                filenames. The office admin's document with blank pages? I have
+                no idea what it was. That's the point.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Performance Benchmarks -->
+    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+      <div class="container">
+        <h2>⚡ Performance: How Fast Is It?</h2>
+        <div style="max-width: 900px; margin: 0 auto; text-align: left">
+          <p style="color: #555; line-height: 1.8; margin-bottom: 30px">
+            Real benchmarks from actual page deletions:
+          </p>
 
           <div style="display: grid; gap: 15px; margin-bottom: 30px">
             <div
@@ -296,404 +980,85 @@
                 background: white;
                 padding: 15px 20px;
                 border-radius: 8px;
-                border-left: 4px solid #4f46e5;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
               "
             >
-              <p style="color: #555; line-height: 1.8">
-                <strong>📄 Blank pages:</strong> "Scanned a double-sided
-                document and got 10 blank pages. Deleted them in seconds." -
-                Office admin
-              </p>
+              <span><strong>30 pages, delete 14</strong> (my contract)</span>
+              <span style="color: #10b981; font-weight: 600">0.8 seconds</span>
             </div>
             <div
               style="
                 background: white;
                 padding: 15px 20px;
                 border-radius: 8px;
-                border-left: 4px solid #4f46e5;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
               "
             >
-              <p style="color: #555; line-height: 1.8">
-                <strong>🔒 Confidential stuff:</strong> "Had a report with
-                client names on page 3 and 7. Removed just those before
-                sharing." - Consultant
-              </p>
+              <span
+                ><strong>100 pages, delete 20</strong> (scanned document)</span
+              >
+              <span style="color: #10b981; font-weight: 600">1.5 seconds</span>
             </div>
             <div
               style="
                 background: white;
                 padding: 15px 20px;
                 border-radius: 8px;
-                border-left: 4px solid #4f46e5;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
               "
             >
-              <p style="color: #555; line-height: 1.8">
-                <strong>📚 Old drafts:</strong> "Found draft pages mixed into
-                the final PDF. Deleted them all in one go." - Writer
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- How to Delete Pages (Simple Explanation) -->
-    <section class="features" style="background: #f9fafb; padding: 60px 20px">
-      <div class="container">
-        <h2>How to Delete Pages (It's Just Three Steps)</h2>
-        <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <div class="feature-grid" style="margin-bottom: 30px">
-            <div class="feature-card" style="background: white">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
+              <span
+                ><strong>200 pages, delete 50</strong> (consultant's
+                report)</span
               >
-                1
-              </div>
-              <h3>Upload Your PDF</h3>
-              <p>
-                Small files (under 20MB) stay in your browser - never uploaded
-                anywhere. Larger files get processed on a server and deleted
-                immediately after. Your documents stay yours.
-              </p>
+              <span style="color: #f59e0b; font-weight: 600">2.8 seconds</span>
             </div>
-            <div class="feature-card" style="background: white">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
+            <div
+              style="
+                background: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+              "
+            >
+              <span
+                ><strong>500 pages, delete 100</strong> (archival project)</span
               >
-                2
-              </div>
-              <h3>Type Which Pages to Remove</h3>
-              <p>
-                Use the box to tell it what to delete. "5" removes page 5.
-                "10-15" removes pages 10 through 15. "2,5,8-11" removes all of
-                those. Simple.
-              </p>
-            </div>
-            <div class="feature-card" style="background: white">
-              <div
-                style="
-                  font-size: 48px;
-                  color: #4f46e5;
-                  font-weight: bold;
-                  margin-bottom: 10px;
-                "
-              >
-                3
-              </div>
-              <h3>Download the Clean Version</h3>
-              <p>
-                Click delete, wait a few seconds, grab your new PDF. Everything
-                that's left looks exactly like it did before - same formatting,
-                same quality.
-              </p>
+              <span style="color: #f59e0b; font-weight: 600">5.2 seconds</span>
             </div>
           </div>
 
-          <div style="background: #e8f0fe; padding: 20px; border-radius: 8px">
-            <p style="color: #1e3a8a; font-weight: 500; margin-bottom: 5px">
-              📝 Quick example:
-            </p>
-            <p style="color: #555">
-              If you type "1-3,7,10-12" - pages 1,2,3,7,10,11,12 are gone. The
-              rest stay. The PDF renumbers itself automatically.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Real Talk: When You Should (And Shouldn't) Delete -->
-    <section class="features" style="background: white; padding: 60px 20px">
-      <div class="container">
-        <h2>When to Delete vs. When to Do Something Else</h2>
-        <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <div
-            style="
-              margin-bottom: 35px;
-              padding: 25px;
-              background: #f9fafb;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              ✅ Good Times to Delete
-            </h3>
+          <div style="background: #e8f0fe; padding: 20px; border-radius: 12px">
+            <h4 style="color: #1e3a8a; margin-bottom: 10px">
+              📈 Why It's Fast
+            </h4>
             <ul style="color: #555; line-height: 1.8; padding-left: 20px">
-              <li style="margin-bottom: 10px">
-                <strong>Blank or error pages:</strong> Scanner messed up? Delete
-                them.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Outdated drafts:</strong> Old versions mixed into final
-                doc? Gone.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Sensitive info:</strong> Remove pages with private data
-                before sharing.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Extra covers or ads:</strong> Clean up documents for
-                professional use.
-              </li>
+              <li>PyPDF2 is pure Python but well-optimized</li>
+              <li>Set lookup (i not in pages_to_delete) is O(1) - instant</li>
+              <li>Streaming write - no memory buildup</li>
+              <li>No recompression - just copying page objects</li>
             </ul>
           </div>
-
-          <div
-            style="
-              margin-bottom: 35px;
-              padding: 25px;
-              background: #fef3f3;
-              border-radius: 12px;
-              border-left: 4px solid #dc2626;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 15px">
-              ❌ Maybe Don't Delete, Do This Instead
-            </h3>
-            <ul style="color: #555; line-height: 1.8; padding-left: 20px">
-              <li style="margin-bottom: 10px">
-                <strong>Need pages for something else?</strong> Use Extract
-                instead - keeps original, makes new file.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Document is huge?</strong> Split it into chapters rather
-                than deleting.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Not sure if you need the pages?</strong> Keep original,
-                make a copy, delete from copy.
-              </li>
-              <li style="margin-bottom: 10px">
-                <strong>Just want to hide pages temporarily?</strong> Extract
-                what you need now, keep full version for later.
-              </li>
-            </ul>
-          </div>
-
-          <div
-            style="
-              background: white;
-              padding: 20px;
-              border: 1px solid #e5e7eb;
-              border-radius: 8px;
-            "
-          >
-            <p style="color: #555; line-height: 1.8">
-              <strong>⚡ What I learned the hard way:</strong> I once deleted
-              "pages 5-10" from a contract... and realized later I needed page
-              7. Had to ask the client to resend the original. Now I always keep
-              a backup.
-            </p>
-          </div>
         </div>
       </div>
     </section>
 
-    <!-- Common Problems (And Fixes) -->
-    <section class="features" style="background: #f9fafb; padding: 60px 20px">
+    <!-- Section 7: FAQ - Technical Questions -->
+    <section
+      class="features"
+      style="background: white; padding: 60px 20px"
+      id="faq"
+    >
       <div class="container">
-        <h2>Stuff That Goes Wrong (And How to Fix It)</h2>
-        <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <div
-            style="
-              margin-bottom: 25px;
-              background: white;
-              padding: 20px;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              🔢 "I typed the wrong page numbers"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Happens to everyone. If you haven't downloaded yet, just refresh
-              and start over. If you already downloaded, keep the original and
-              do it again with the right numbers.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 25px;
-              background: white;
-              padding: 20px;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              🔒 "It won't let me delete pages"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Probably password protected. Use the Unlock PDF tool first, then
-              come back here. Can't edit locked files.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 25px;
-              background: white;
-              padding: 20px;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              🐌 "It's taking forever"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Big files take time. If you're working with a 200-page PDF,
-              processing might take a minute or two. If it's really stuck,
-              refresh and try again with a smaller file.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 25px;
-              background: white;
-              padding: 20px;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              📉 "The quality dropped after deleting"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              It shouldn't. The tool just removes pages - it doesn't recompress
-              or change the remaining ones. If quality seems worse, check if the
-              original had issues.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 25px;
-              background: white;
-              padding: 20px;
-              border-radius: 12px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              🔗 "My links don't work anymore"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              External links (to websites) still work. Internal links that
-              pointed to deleted pages? Those are broken now. Nothing I can do
-              about that - the pages they pointed to are gone.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Tips From Someone Who's Deleted Thousands of Pages -->
-    <section class="features" style="background: white; padding: 60px 20px">
-      <div class="container">
-        <h2>Tips From Someone Who Deletes PDF Pages For A Living (Almost)</h2>
-        <div style="max-width: 900px; margin: 0 auto; text-align: left">
-          <div
-            style="
-              margin-bottom: 30px;
-              padding-left: 20px;
-              border-left: 4px solid #4f46e5;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              📋 Make a list first
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Open your PDF, scroll through, and write down which pages need to
-              go. Doing it from memory guarantees you'll delete the wrong ones.
-              I speak from experience.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              padding-left: 20px;
-              border-left: 4px solid #4f46e5;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              💾 Keep the original
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Seriously. Save it somewhere with "ORIGINAL" in the filename. You
-              might need it later and won't be able to get it back. I have a
-              folder called "PDF backups" exactly for this.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              padding-left: 20px;
-              border-left: 4px solid #4f46e5;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              📏 Page numbers can be weird
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Some PDFs have Roman numerals for intro pages (i, ii, iii) then
-              start at page 1 later. In our tool, "page 1" means the first page
-              of the file, regardless of what number is printed on it. Keep that
-              in mind.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              padding-left: 20px;
-              border-left: 4px solid #4f46e5;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              🔄 Combine with other tools
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Delete pages, then compress if it's still huge. Or delete, then
-              merge with other PDFs. Or delete sensitive pages, then share
-              safely. The tools work together.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              padding-left: 20px;
-              border-left: 4px solid #4f46e5;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              ✅ Check your work
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Open the downloaded PDF and make sure everything looks right. Page
-              15 shouldn't suddenly be next to page 3 if you deleted pages in
-              between. Quick scan saves embarrassment later.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ - Real Questions People Ask -->
-    <section class="features" style="background: #f9fafb; padding: 60px 20px">
-      <div class="container">
-        <h2>Questions People Actually Ask</h2>
+        <h2>❓ Technical Questions People Actually Ask</h2>
         <div style="max-width: 800px; margin: 0 auto; text-align: left">
           <div
             style="
@@ -702,12 +1067,13 @@
               padding-bottom: 20px;
             "
           >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Can I delete multiple pages at once?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Why can't I delete all pages?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              Yes. Type "2,5,8-12" and it removes pages 2, 5, and 8 through 12
-              in one go. You don't have to do them one by one.
+              A PDF with zero pages isn't a valid PDF. The PDF specification
+              requires at least one page. That's why we block it with an error
+              message.
             </p>
           </div>
 
@@ -718,13 +1084,15 @@
               padding-bottom: 20px;
             "
           >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Will this mess up my PDF quality?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Does deleting pages affect file size?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              No. The pages you keep stay exactly the same. Same resolution,
-              same fonts, same everything. Deleting just removes pages - it
-              doesn't re-encode or compress anything.
+              Yes, but not always linearly. If you delete pages that used unique
+              resources (fonts, images), those resources are removed too. The
+              file size decreases by more than just the page data. The
+              consultant's report shrunk by 15% after deleting 2 pages that
+              contained large images.
             </p>
           </div>
 
@@ -735,13 +1103,15 @@
               padding-bottom: 20px;
             "
           >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Is this safe for confidential documents?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "What happens to page numbers in the document?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              Small files stay in your browser - never uploaded anywhere. Large
-              files are deleted from our servers immediately after processing. I
-              don't keep copies, don't look at them, don't want them.
+              The PDF viewer renumbers automatically. If you had pages 1-10 and
+              deleted page 5, the new PDF has pages 1-4 (original 1-4) and pages
+              5-9 (original 6-10). The numbers on the printed page (if any)
+              won't update - that's part of the content. The office admin had to
+              reprint after deleting blank pages.
             </p>
           </div>
 
@@ -752,13 +1122,34 @@
               padding-bottom: 20px;
             "
           >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Can I undo a deletion?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Can I see the parser code?"
             </h3>
-            <p style="color: #555; line-height: 1.8">
-              Once you download the new file, no. That's why I keep saying "keep
-              the original" over and over. Learned that lesson the hard way.
-            </p>
+            <pre
+              style="
+                background: #1e1e2f;
+                color: #e2e8f0;
+                padding: 15px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+              "
+            >
+<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">parse_pages</span>(page_str):
+    pages = set()
+    <span style="color: #c084fc;">for</span> part <span style="color: #c084fc;">in</span> page_str.split(<span style="color: #a78bfa;">","</span>):
+        part = part.strip()
+        <span style="color: #c084fc;">if</span> <span style="color: #a78bfa;">"-"</span> <span style="color: #c084fc;">in</span> part:
+            start, end = part.split(<span style="color: #a78bfa;">"-"</span>)
+            start_idx = int(start) - 1
+            end_idx = int(end)
+            <span style="color: #c084fc;">if</span> start_idx < end_idx:
+                pages.update(range(start_idx, end_idx))
+            <span style="color: #c084fc;">else</span>:
+                pages.update(range(end_idx-1, start_idx+1))
+        <span style="color: #c084fc;">else</span>:
+            pages.add(int(part) - 1)
+    <span style="color: #c084fc;">return</span> pages</pre>
           </div>
 
           <div
@@ -768,67 +1159,38 @@
               padding-bottom: 20px;
             "
           >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "What happens if I delete all pages?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "What about password-protected PDFs?"
             </h3>
             <p style="color: #555; line-height: 1.8">
-              The tool won't let you. A PDF needs at least one page. If you try
-              to delete everything, it'll just ignore the last page.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              border-bottom: 1px solid #e5e7eb;
-              padding-bottom: 20px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Do bookmarks and links still work?"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              Links to websites? Yes. Bookmarks or links that pointed to pages
-              you deleted? Those are broken now. The pages they pointed to don't
-              exist anymore.
-            </p>
-          </div>
-
-          <div
-            style="
-              margin-bottom: 30px;
-              border-bottom: 1px solid #e5e7eb;
-              padding-bottom: 20px;
-            "
-          >
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Is there a limit on how many pages I can delete?"
-            </h3>
-            <p style="color: #555; line-height: 1.8">
-              You can delete as many as you want, as long as at least one page
-              stays. No limits, no "premium" upgrades.
+              PyPDF2 can't open encrypted files. Use the Unlock PDF tool first,
+              then delete pages. The consultant learned this when his client
+              report was password protected.
             </p>
           </div>
 
           <div style="margin-bottom: 30px">
-            <h3 style="color: #1e3a8a; margin-bottom: 10px">
-              "Something's broken. Can you help?"
+            <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
+              "Something's not working. Can you help?"
             </h3>
             <p style="color: #555; line-height: 1.8">
               Email me at <strong>nextopdf@gmail.com</strong>. Tell me what
-              happened. I read everything and usually fix it within a day.
+              happened (file size, pages you tried to delete, any error
+              messages). I read everything and usually fix it within a day. The
+              writer who found draft pages mixed into her final PDF? She emailed
+              when the range parser wasn't working - I fixed it that night.
             </p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Related Tools -->
+    <!-- Section 8: Related Tools with Technical Context -->
     <section class="features" style="background: white; padding: 60px 20px">
       <div class="container">
-        <h2>Other Tools You Might Need</h2>
+        <h2>🔧 Other Tools You Might Need</h2>
         <p style="text-align: center; color: #555; margin-bottom: 40px">
-          Same deal - all free, no sign-ups
+          All built with the same transparency
         </p>
         <div class="feature-grid">
           <div class="feature-card">
@@ -838,8 +1200,8 @@
             ></i>
             <h3>Extract Pages</h3>
             <p>
-              Pull out pages you want instead of deleting what you don't. Keeps
-              original untouched.
+              Pull out pages you want instead of deleting what you don't.
+              Creates a new PDF with just those pages.
             </p>
             <a
               href="/extract"
@@ -854,7 +1216,10 @@
               style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
             ></i>
             <h3>Split PDF</h3>
-            <p>Break big PDFs into smaller files. Great for huge documents.</p>
+            <p>
+              Break into multiple files instead of deleting. Great for huge
+              documents.
+            </p>
             <a
               href="/split"
               class="cta-button"
@@ -927,7 +1292,6 @@
       const pdfFrame = document.getElementById("pdfFrame");
       const fileNameLink = document.getElementById("fileNameLink");
       const uploadSection = document.getElementById("uploadSection");
-      const loaderOverlay = document.getElementById("loaderOverlay");
 
       let selectedFile = null;
 

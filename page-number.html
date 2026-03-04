@@ -2332,7 +2332,7 @@ Courier        cour      cobo      coit      cobi</pre
     <script src="./js/app.js"></script>
 
     <script>
-      const BACKEND_URL = `http://127.0.0.1:8080/add-page-numbers`;
+      const BACKEND_URL = `${BACKEND_BASE_URL}/add-page-numbers`; // FIX 1
 
       pdfjsLib.GlobalWorkerOptions.workerSrc =
         "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -2350,7 +2350,6 @@ Courier        cour      cobo      coit      cobi</pre
       const pagesGrid = document.getElementById("pagesGrid");
       const fileNameLink = document.getElementById("fileNameLink");
       const shareBtn = document.getElementById("shareBtn");
-
       const optionsContainer = document.getElementById("optionsContainer");
       const position = document.getElementById("position");
       const fontFamily = document.getElementById("fontFamily");
@@ -2366,59 +2365,48 @@ Courier        cour      cobo      coit      cobi</pre
 
       let files = [];
       let totalPages = 0;
-      let pageNumberInstances = []; // Store page number positions for each page
+      let pageNumberInstances = [];
       let isDraggingGlobal = false;
 
+      // ── Helpers ──────────────────────────────────────────────────
       function clearError() {
         errorMsg.textContent = "";
         errorMsg.style.display = "none";
       }
-
       function showError(msg) {
         errorMsg.textContent = msg;
         errorMsg.style.display = "block";
       }
-
       function showSuccess(msg) {
-        // Remove any existing success messages
         const existingSuccess = document.querySelector(".success-toast");
         if (existingSuccess) existingSuccess.remove();
-
         const toast = document.createElement("div");
         toast.className = "success-toast";
         toast.textContent = msg;
-
         document.body.appendChild(toast);
-
-        // Auto-remove after 3 seconds
         setTimeout(() => {
           toast.style.animation = "slideOut 0.3s ease";
           setTimeout(() => {
-            if (toast.parentNode) {
-              toast.parentNode.removeChild(toast);
-            }
+            if (toast.parentNode) toast.parentNode.removeChild(toast);
           }, 300);
         }, 3000);
       }
 
-      // Format button toggles with ARIA updates
+      // ── Format-button toggles ────────────────────────────────────
       [boldBtn, italicBtn, underlineBtn].forEach((btn) => {
         btn.addEventListener("click", () => {
           const isActive = btn.classList.toggle("active");
           btn.setAttribute("aria-pressed", isActive);
-          updateAllPreviews();
+          updateAllPreviewStyles(); // style-only update, no position reset
         });
       });
 
-      // File upload handler
+      // ── File upload ──────────────────────────────────────────────
       pdfUpload.addEventListener("change", async () => {
         const newFiles = Array.from(pdfUpload.files);
         newFiles.forEach((file) => {
-          if (
-            !files.some((f) => f.name === file.name && f.size === file.size)
-          ) {
+          if (!files.some((f) => f.name === file.name && f.size === file.size))
             files.push(file);
-          }
         });
         pdfUpload.value = "";
         renderFileList();
@@ -2436,8 +2424,9 @@ Courier        cour      cobo      coit      cobi</pre
           const li = document.createElement("li");
           li.innerHTML = `
       <span><i class="fa fa-file-pdf pdf-icon" aria-hidden="true"></i> ${f.name}</span>
-      <button class="delete-file" data-i="${i}" aria-label="Remove ${f.name}"><i class="fa fa-times" aria-hidden="true"></i></button>
-    `;
+      <button class="delete-file" data-i="${i}" aria-label="Remove ${f.name}">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>`;
           fileList.appendChild(li);
         });
       }
@@ -2451,6 +2440,7 @@ Courier        cour      cobo      coit      cobi</pre
         }
       });
 
+      // ── Load PDFs ────────────────────────────────────────────────
       async function loadPDFs() {
         clearError();
         pagesGrid.innerHTML = "";
@@ -2480,21 +2470,19 @@ Courier        cour      cobo      coit      cobi</pre
               window.innerWidth < 768 ? window.innerWidth - 40 : 800;
             const viewport = page.getViewport({ scale: 1 });
             const displayScale = Math.min(maxWidth / viewport.width, 1);
-
             const renderScale = displayScale * (window.devicePixelRatio || 2);
             const scaledViewport = page.getViewport({ scale: renderScale });
 
-            const canvas = document.createElement("canvas");
-            canvas.width = scaledViewport.width;
-            canvas.height = scaledViewport.height;
-
+            const cvs = document.createElement("canvas");
+            cvs.width = scaledViewport.width;
+            cvs.height = scaledViewport.height;
             await page.render({
-              canvasContext: canvas.getContext("2d"),
+              canvasContext: cvs.getContext("2d"),
               viewport: scaledViewport,
             }).promise;
 
-            canvas.style.width = viewport.width * displayScale + "px";
-            canvas.style.height = viewport.height * displayScale + "px";
+            cvs.style.width = viewport.width * displayScale + "px";
+            cvs.style.height = viewport.height * displayScale + "px";
 
             const card = document.createElement("div");
             card.className = "page-card";
@@ -2508,23 +2496,17 @@ Courier        cour      cobo      coit      cobi</pre
             badge.textContent = `Page ${pageNo}`;
             badge.setAttribute("aria-hidden", "true");
             card.appendChild(badge);
-
-            card.appendChild(canvas);
-
+            card.appendChild(cvs);
             pagesGrid.appendChild(card);
 
-            // Initialize page number position data
+            // Each page stores its position state.
+            // customLeft/customTop = pixel offsets from card top-left.
+            // hasCustomPosition    = true once user drags OR Apply to All runs.
             pageNumberInstances[pageNo - 1] = {
               pageNum: pageNo,
-              left: null,
-              top: null,
+              hasCustomPosition: false,
               customLeft: null,
               customTop: null,
-              dragged: false,
-              scale: displayScale,
-              baseWidth: viewport.width,
-              baseHeight: viewport.height,
-              isCustomPosition: false,
               dropdownPosition: position.value,
             };
 
@@ -2536,184 +2518,26 @@ Courier        cour      cobo      coit      cobi</pre
         updateAllPreviews();
       }
 
-      function makeDraggable(preview, card) {
-        let isDragging = false;
-        let startX, startY;
-        let initialLeft, initialTop;
-        const canvas = card.querySelector("canvas");
+      // ── Build the preview element (position only on first creation) ──
+      function createPageNumberPreview(card) {
+        const cvs = card.querySelector("canvas");
         const pageNum = parseInt(card.dataset.pageNum);
         const pageData = pageNumberInstances[pageNum - 1];
 
-        const startDrag = (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          isDragging = true;
-          isDraggingGlobal = true;
-
-          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-          startX = clientX;
-          startY = clientY;
-          initialLeft = parseFloat(preview.style.left) || 0;
-          initialTop = parseFloat(preview.style.top) || 0;
-
-          preview.classList.add("dragging");
-          preview.style.zIndex = "100";
-          preview.style.cursor = "grabbing";
-
-          document.addEventListener("mousemove", drag);
-          document.addEventListener("mouseup", stopDrag);
-          document.addEventListener("touchmove", dragTouch, { passive: false });
-          document.addEventListener("touchend", stopDrag);
-        };
-
-        const drag = (e) => {
-          if (!isDragging) return;
-          e.preventDefault();
-
-          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
-          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
-
-          if (!clientX || !clientY) return;
-
-          const dx = clientX - startX;
-          const dy = clientY - startY;
-
-          let newLeft = initialLeft + dx;
-          let newTop = initialTop + dy;
-
-          // Get preview dimensions
-          const previewRect = preview.getBoundingClientRect();
-          const canvasRect = canvas.getBoundingClientRect();
-          const cardRect = card.getBoundingClientRect();
-
-          // Constrain within canvas bounds
-          const minX = canvasRect.left - cardRect.left;
-          const maxX = minX + canvasRect.width - previewRect.width;
-          const minY = canvasRect.top - cardRect.top;
-          const maxY = minY + canvasRect.height - previewRect.height;
-
-          newLeft = Math.max(minX, Math.min(newLeft, maxX));
-          newTop = Math.max(minY, Math.min(newTop, maxY));
-
-          preview.style.left = newLeft + "px";
-          preview.style.top = newTop + "px";
-
-          // Update page number instance data
-          if (pageNum && pageNumberInstances[pageNum - 1]) {
-            pageNumberInstances[pageNum - 1].customLeft = newLeft;
-            pageNumberInstances[pageNum - 1].customTop = newTop;
-            pageNumberInstances[pageNum - 1].dragged = true;
-            pageNumberInstances[pageNum - 1].isCustomPosition = true;
-
-            // Show "Apply to All" button for this page
-            const applyBtn = card.querySelector(".page-apply-btn");
-            if (applyBtn) {
-              applyBtn.style.display = "block";
-            }
-          }
-        };
-
-        const dragTouch = (e) => {
-          if (!isDragging) return;
-          e.preventDefault();
-          const touch = e.touches[0];
-
-          const dx = touch.clientX - startX;
-          const dy = touch.clientY - startY;
-
-          let newLeft = initialLeft + dx;
-          let newTop = initialTop + dy;
-
-          // Get preview dimensions
-          const previewRect = preview.getBoundingClientRect();
-          const canvasRect = canvas.getBoundingClientRect();
-          const cardRect = card.getBoundingClientRect();
-
-          // Constrain within canvas bounds
-          const minX = canvasRect.left - cardRect.left;
-          const maxX = minX + canvasRect.width - previewRect.width;
-          const minY = canvasRect.top - cardRect.top;
-          const maxY = minY + canvasRect.height - previewRect.height;
-
-          newLeft = Math.max(minX, Math.min(newLeft, maxX));
-          newTop = Math.max(minY, Math.min(newTop, maxY));
-
-          preview.style.left = newLeft + "px";
-          preview.style.top = newTop + "px";
-
-          // Update page number instance data
-          if (pageNum && pageNumberInstances[pageNum - 1]) {
-            pageNumberInstances[pageNum - 1].customLeft = newLeft;
-            pageNumberInstances[pageNum - 1].customTop = newTop;
-            pageNumberInstances[pageNum - 1].dragged = true;
-            pageNumberInstances[pageNum - 1].isCustomPosition = true;
-
-            // Show "Apply to All" button for this page
-            const applyBtn = card.querySelector(".page-apply-btn");
-            if (applyBtn) {
-              applyBtn.style.display = "block";
-            }
-          }
-        };
-
-        const stopDrag = () => {
-          if (!isDragging) return;
-
-          isDragging = false;
-          isDraggingGlobal = false;
-          preview.classList.remove("dragging");
-          preview.style.zIndex = "5";
-          preview.style.cursor = "move";
-
-          document.removeEventListener("mousemove", drag);
-          document.removeEventListener("mouseup", stopDrag);
-          document.removeEventListener("touchmove", dragTouch);
-          document.removeEventListener("touchend", stopDrag);
-        };
-
-        // Mouse events
-        preview.addEventListener("mousedown", startDrag);
-
-        // Touch events
-        preview.addEventListener(
-          "touchstart",
-          (e) => {
-            if (e.touches.length === 1) {
-              startDrag(e);
-            }
-          },
-          { passive: false },
-        );
-
-        // Prevent default drag behavior
-        preview.addEventListener("dragstart", (e) => {
-          e.preventDefault();
-        });
-      }
-
-      function createPageNumberPreview(card) {
-        const canvas = card.querySelector("canvas");
-        const pageNum = parseInt(card.dataset.pageNum);
-
         const startPageNum = parseInt(startPage.value) || 1;
         const endPageNum = parseInt(endPage.value) || totalPages;
-
-        if (pageNum < startPageNum || pageNum > endPageNum) {
-          return null;
-        }
+        if (pageNum < startPageNum || pageNum > endPageNum) return null;
 
         const startNumValue = parseInt(startNumber.value) || 1;
         const displayNum = startNumValue + (pageNum - startPageNum);
 
         let text = customText.value || "{n}";
-        text = text.replace(/\{n\}/g, displayNum);
-        text = text.replace(/\{total\}/g, totalPages);
+        text = text
+          .replace(/\{n\}/g, displayNum)
+          .replace(/\{total\}/g, totalPages);
 
         const preview = document.createElement("div");
         preview.className = "page-number-preview";
-        preview.textContent = text;
         preview.dataset.pageNum = pageNum;
         preview.setAttribute("draggable", "true");
         preview.setAttribute("role", "button");
@@ -2723,8 +2547,74 @@ Courier        cour      cobo      coit      cobi</pre
         );
         preview.setAttribute("tabindex", "0");
 
-        const visualScale =
-          canvas.offsetWidth / parseFloat(card.dataset.baseWidth);
+        // Apply current styles
+        applyStylesToPreview(preview, cvs);
+        preview.textContent = text;
+
+        preview.style.position = "absolute";
+        preview.style.cursor = "move";
+        preview.style.userSelect = "none";
+        preview.style.zIndex = "5";
+        preview.style.pointerEvents = "auto";
+
+        // ── Position: use saved custom position if available ──────
+        // FIX 2: hasCustomPosition tracks whether user has ever set a custom position.
+        // This is NEVER reset on style changes — only on position dropdown change or full reset.
+        let left, top;
+
+        if (
+          pageData &&
+          pageData.hasCustomPosition &&
+          pageData.customLeft !== null &&
+          pageData.customTop !== null
+        ) {
+          // Use the saved pixel position — style change, not a position reset
+          left = pageData.customLeft;
+          top = pageData.customTop;
+        } else {
+          // Calculate default from dropdown
+          const visualScale =
+            cvs.offsetWidth / parseFloat(card.dataset.baseWidth);
+          const fSize = (parseInt(fontSize.value) || 12) * visualScale;
+          const ctx = cvs.getContext("2d");
+          ctx.font = `${fSize}px Arial`;
+          const previewWidth = ctx.measureText(text).width;
+          const previewHeight = fSize;
+
+          const margin = 20 * visualScale;
+          const pos = position.value;
+          const canvasLeft = cvs.offsetLeft || 0;
+          const canvasTop = cvs.offsetTop || 0;
+
+          if (pos.startsWith("top")) top = canvasTop + margin;
+          else top = canvasTop + cvs.offsetHeight - margin - previewHeight;
+
+          if (pos.includes("left")) left = canvasLeft + margin;
+          else if (pos.includes("right"))
+            left = canvasLeft + cvs.offsetWidth - margin - previewWidth;
+          else left = canvasLeft + (cvs.offsetWidth - previewWidth) / 2;
+
+          // Save as default (not custom) so style changes don't recalculate
+          pageData.customLeft = left;
+          pageData.customTop = top;
+          // hasCustomPosition stays false — position dropdown can still override
+        }
+
+        preview.style.left = left + "px";
+        preview.style.top = top + "px";
+
+        return preview;
+      }
+
+      // ── Apply only visual styles (no position change) ────────────
+      function applyStylesToPreview(preview, cvs) {
+        const card = cvs
+          ? cvs.closest(".page-card")
+          : preview.closest(".page-card");
+        const visualScale = cvs
+          ? cvs.offsetWidth / parseFloat(card.dataset.baseWidth)
+          : 1;
+
         preview.style.fontSize =
           (parseInt(fontSize.value) || 12) * visualScale + "px";
         preview.style.color = fontColor.value;
@@ -2746,103 +2636,45 @@ Courier        cour      cobo      coit      cobi</pre
           zapfdingbats: "Zapf Dingbats, serif",
         };
         preview.style.fontFamily = fonts[fontFamily.value] || fonts.helvetica;
-
-        preview.style.position = "absolute";
-        preview.style.cursor = "move";
-        preview.style.userSelect = "none";
-        preview.style.zIndex = "5";
-        preview.style.pointerEvents = "auto";
-
-        // Get page number instance data
-        const pageData = pageNumberInstances[pageNum - 1];
-
-        let left, top;
-
-        // Check if page has a custom position that should be used
-        if (
-          pageData &&
-          pageData.dragged &&
-          pageData.customLeft !== null &&
-          pageData.customTop !== null &&
-          pageData.isCustomPosition
-        ) {
-          // Use saved custom position
-          left = pageData.customLeft;
-          top = pageData.customTop;
-        } else {
-          // Calculate default position based on selected option
-          const ctx = canvas.getContext("2d");
-          ctx.font = `${(parseInt(fontSize.value) || 12) * visualScale}px ${preview.style.fontFamily}`;
-          const previewWidth = ctx.measureText(text).width;
-          const previewHeight = (parseInt(fontSize.value) || 12) * visualScale;
-
-          const margin = 20 * visualScale;
-          const pos = position.value;
-          const canvasLeft = canvas.offsetLeft || 0;
-          const canvasTop = canvas.offsetTop || 0;
-
-          if (pos.startsWith("top")) {
-            top = canvasTop + margin;
-          } else {
-            top = canvasTop + canvas.offsetHeight - margin - previewHeight;
-          }
-
-          if (pos.includes("left")) {
-            left = canvasLeft + margin;
-          } else if (pos.includes("right")) {
-            left = canvasLeft + canvas.offsetWidth - margin - previewWidth;
-          } else {
-            left = canvasLeft + (canvas.offsetWidth - previewWidth) / 2;
-          }
-
-          // Update page number instance data
-          if (!pageNumberInstances[pageNum - 1]) {
-            pageNumberInstances[pageNum - 1] = {
-              pageNum: pageNum,
-              left: left,
-              top: top,
-              customLeft: null,
-              customTop: null,
-              dragged: false,
-              scale: visualScale,
-              baseWidth: parseFloat(card.dataset.baseWidth),
-              baseHeight: parseFloat(card.dataset.baseHeight),
-              isCustomPosition: false,
-              dropdownPosition: pos,
-            };
-          } else {
-            pageNumberInstances[pageNum - 1].left = left;
-            pageNumberInstances[pageNum - 1].top = top;
-            pageNumberInstances[pageNum - 1].dropdownPosition = pos;
-          }
-        }
-
-        preview.style.left = left + "px";
-        preview.style.top = top + "px";
-
-        return preview;
       }
 
+      // ── Update ONLY styles on existing previews (no position reset) ──
+      // FIX 3: This is the key function — called when font/color/size changes.
+      function updateAllPreviewStyles() {
+        document.querySelectorAll(".page-card").forEach((card) => {
+          const preview = card.querySelector(".page-number-preview");
+          if (!preview) return;
+          const cvs = card.querySelector("canvas");
+          applyStylesToPreview(preview, cvs);
+
+          // Also update text content in case startNumber/customText changed
+          const pageNum = parseInt(card.dataset.pageNum);
+          const startPageNum = parseInt(startPage.value) || 1;
+          const startNumVal = parseInt(startNumber.value) || 1;
+          const displayNum = startNumVal + (pageNum - startPageNum);
+          let text = customText.value || "{n}";
+          text = text
+            .replace(/\{n\}/g, displayNum)
+            .replace(/\{total\}/g, totalPages);
+          preview.textContent = text;
+        });
+      }
+
+      // ── Full preview rebuild (position recalculated only if no custom pos) ──
       function updatePreview(card) {
         const pageNum = parseInt(card.dataset.pageNum);
-
-        // Remove existing preview
         const oldPreview = card.querySelector(".page-number-preview");
         if (oldPreview) oldPreview.remove();
 
-        // Create new preview
         const preview = createPageNumberPreview(card);
         if (!preview) return;
 
         card.appendChild(preview);
-
-        // Initialize dragging
         makeDraggable(preview, card);
 
-        // Check if we need to create or update the Apply button
+        // Apply button
         let applyBtn = card.querySelector(".page-apply-btn");
         if (!applyBtn) {
-          // Create "Apply to All" button if it doesn't exist
           applyBtn = document.createElement("button");
           applyBtn.className = "page-apply-btn";
           applyBtn.innerHTML =
@@ -2851,7 +2683,6 @@ Courier        cour      cobo      coit      cobi</pre
             "aria-label",
             "Apply this page number position to all pages",
           );
-          applyBtn.setAttribute("title", "Apply this position to all pages");
           applyBtn.onclick = (e) => {
             e.stopPropagation();
             applyThisPageToAll(card);
@@ -2859,88 +2690,163 @@ Courier        cour      cobo      coit      cobi</pre
           card.appendChild(applyBtn);
         }
 
-        // Show/hide Apply button based on whether this page has a custom position
         const pageData = pageNumberInstances[pageNum - 1];
-        if (pageData && pageData.dragged && pageData.isCustomPosition) {
-          applyBtn.style.display = "block";
-        } else {
-          applyBtn.style.display = "none"; // Hide when using dropdown position
-        }
+        applyBtn.style.display =
+          pageData && pageData.hasCustomPosition ? "block" : "none";
 
         // Keyboard navigation
         preview.addEventListener("keydown", (e) => {
-          if (e.key === " " || e.key === "Enter") {
-            e.preventDefault();
-            preview.focus();
-          } else if (e.key.startsWith("Arrow")) {
+          if (e.key.startsWith("Arrow")) {
             e.preventDefault();
             movePreviewWithArrow(e.key, preview, card);
           }
         });
-
-        // Focus styling
         preview.addEventListener("focus", () => {
           preview.style.outline = "2px solid #4f46e5";
           preview.style.outlineOffset = "2px";
         });
-
         preview.addEventListener("blur", () => {
           preview.style.outline = "";
           preview.style.outlineOffset = "";
         });
       }
 
+      function updateAllPreviews() {
+        if (isDraggingGlobal) return;
+        document
+          .querySelectorAll(".page-card")
+          .forEach((card) => updatePreview(card));
+      }
+
+      // ── Drag ─────────────────────────────────────────────────────
+      function makeDraggable(preview, card) {
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        const cvs = card.querySelector("canvas");
+        const pageNum = parseInt(card.dataset.pageNum);
+
+        const startDrag = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          isDragging = true;
+          isDraggingGlobal = true;
+          const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+          const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+          startX = clientX;
+          startY = clientY;
+          initialLeft = parseFloat(preview.style.left) || 0;
+          initialTop = parseFloat(preview.style.top) || 0;
+          preview.classList.add("dragging");
+          preview.style.zIndex = "100";
+          document.addEventListener("mousemove", drag);
+          document.addEventListener("mouseup", stopDrag);
+          document.addEventListener("touchmove", dragTouch, { passive: false });
+          document.addEventListener("touchend", stopDrag);
+        };
+
+        const doMove = (clientX, clientY) => {
+          const dx = clientX - startX;
+          const dy = clientY - startY;
+          let newLeft = initialLeft + dx;
+          let newTop = initialTop + dy;
+
+          const previewRect = preview.getBoundingClientRect();
+          const canvasRect = cvs.getBoundingClientRect();
+          const cardRect = card.getBoundingClientRect();
+          const minX = canvasRect.left - cardRect.left;
+          const maxX = minX + canvasRect.width - previewRect.width;
+          const minY = canvasRect.top - cardRect.top;
+          const maxY = minY + canvasRect.height - previewRect.height;
+
+          newLeft = Math.max(minX, Math.min(newLeft, maxX));
+          newTop = Math.max(minY, Math.min(newTop, maxY));
+
+          preview.style.left = newLeft + "px";
+          preview.style.top = newTop + "px";
+
+          // FIX 2: Save using hasCustomPosition = true
+          const pageData = pageNumberInstances[pageNum - 1];
+          if (pageData) {
+            pageData.customLeft = newLeft;
+            pageData.customTop = newTop;
+            pageData.hasCustomPosition = true; // ← single flag, never reset by style changes
+          }
+
+          const applyBtn = card.querySelector(".page-apply-btn");
+          if (applyBtn) applyBtn.style.display = "block";
+        };
+
+        const drag = (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          doMove(e.clientX, e.clientY);
+        };
+        const dragTouch = (e) => {
+          if (!isDragging) return;
+          e.preventDefault();
+          doMove(e.touches[0].clientX, e.touches[0].clientY);
+        };
+
+        const stopDrag = () => {
+          if (!isDragging) return;
+          isDragging = false;
+          isDraggingGlobal = false;
+          preview.classList.remove("dragging");
+          preview.style.zIndex = "5";
+          document.removeEventListener("mousemove", drag);
+          document.removeEventListener("mouseup", stopDrag);
+          document.removeEventListener("touchmove", dragTouch);
+          document.removeEventListener("touchend", stopDrag);
+        };
+
+        preview.addEventListener("mousedown", startDrag);
+        preview.addEventListener(
+          "touchstart",
+          (e) => {
+            if (e.touches.length === 1) startDrag(e);
+          },
+          { passive: false },
+        );
+        preview.addEventListener("dragstart", (e) => e.preventDefault());
+      }
+
+      // ── Arrow-key movement ────────────────────────────────────────
       function movePreviewWithArrow(key, preview, card) {
         if (isDraggingGlobal) return;
-
         const step = 5;
+        const pageNum = parseInt(preview.dataset.pageNum);
         let left = parseFloat(preview.style.left) || 0;
         let top = parseFloat(preview.style.top) || 0;
-        const canvas = card.querySelector("canvas");
-        const canvasRect = canvas.getBoundingClientRect();
+
+        const cvs = card.querySelector("canvas");
+        const canvasRect = cvs.getBoundingClientRect();
         const cardRect = card.getBoundingClientRect();
         const previewRect = preview.getBoundingClientRect();
-        const pageNum = parseInt(preview.dataset.pageNum);
-
-        // Constrain movement within canvas
         const minX = canvasRect.left - cardRect.left;
         const maxX = minX + canvasRect.width - previewRect.width;
         const minY = canvasRect.top - cardRect.top;
         const maxY = minY + canvasRect.height - previewRect.height;
 
-        switch (key) {
-          case "ArrowLeft":
-            left = Math.max(minX, left - step);
-            break;
-          case "ArrowRight":
-            left = Math.min(maxX, left + step);
-            break;
-          case "ArrowUp":
-            top = Math.max(minY, top - step);
-            break;
-          case "ArrowDown":
-            top = Math.min(maxY, top + step);
-            break;
-        }
+        if (key === "ArrowLeft") left = Math.max(minX, left - step);
+        else if (key === "ArrowRight") left = Math.min(maxX, left + step);
+        else if (key === "ArrowUp") top = Math.max(minY, top - step);
+        else if (key === "ArrowDown") top = Math.min(maxY, top + step);
 
         preview.style.left = left + "px";
         preview.style.top = top + "px";
 
-        // Update page number instance data
-        if (pageNum && pageNumberInstances[pageNum - 1]) {
-          pageNumberInstances[pageNum - 1].customLeft = left;
-          pageNumberInstances[pageNum - 1].customTop = top;
-          pageNumberInstances[pageNum - 1].dragged = true;
-          pageNumberInstances[pageNum - 1].isCustomPosition = true;
-
-          // Show "Apply to All" button
-          const applyBtn = card.querySelector(".page-apply-btn");
-          if (applyBtn) {
-            applyBtn.style.display = "block";
-          }
+        const pageData = pageNumberInstances[pageNum - 1];
+        if (pageData) {
+          pageData.customLeft = left;
+          pageData.customTop = top;
+          pageData.hasCustomPosition = true;
         }
+
+        const applyBtn = card.querySelector(".page-apply-btn");
+        if (applyBtn) applyBtn.style.display = "block";
       }
 
+      // ── Apply to All ──────────────────────────────────────────────
       function applyThisPageToAll(sourceCard) {
         const sourcePreview = sourceCard.querySelector(".page-number-preview");
         if (!sourcePreview) {
@@ -2950,191 +2856,104 @@ Courier        cour      cobo      coit      cobi</pre
 
         const sourcePageNum = parseInt(sourcePreview.dataset.pageNum);
         const sourceData = pageNumberInstances[sourcePageNum - 1];
-
-        if (
-          !sourceData ||
-          !sourceData.dragged ||
-          !sourceData.isCustomPosition
-        ) {
-          showError(
-            "Please drag the page number to a position first before applying to all",
-          );
+        if (!sourceData || !sourceData.hasCustomPosition) {
+          showError("Please drag the page number to a position first");
           return;
         }
 
         const sourceLeft = parseFloat(sourcePreview.style.left);
         const sourceTop = parseFloat(sourcePreview.style.top);
-        const sourceCanvas = sourceCard.querySelector("canvas");
+        const sourceCvs = sourceCard.querySelector("canvas");
+        const canvasOffsetLeft = sourceCvs.offsetLeft || 0;
+        const canvasOffsetTop = sourceCvs.offsetTop || 0;
 
-        if (!sourceCanvas) {
-          showError("Canvas not found");
-          return;
-        }
-
-        // Get relative position within the canvas
-        const canvasOffsetLeft = sourceCanvas.offsetLeft || 0;
-        const canvasOffsetTop = sourceCanvas.offsetTop || 0;
-
+        // Relative offset within the canvas (so it works across different card layouts)
         const relativeX = sourceLeft - canvasOffsetLeft;
         const relativeY = sourceTop - canvasOffsetTop;
 
-        // Get all page cards
-        const allCards = document.querySelectorAll(".page-card");
         let appliedCount = 0;
 
-        allCards.forEach((card) => {
+        document.querySelectorAll(".page-card").forEach((card) => {
           if (card === sourceCard) return;
           if (card.classList.contains("out-of-range")) return;
 
-          const canvas = card.querySelector("canvas");
-          if (!canvas) return;
-
+          const cvs = card.querySelector("canvas");
           const pageNum = parseInt(card.dataset.pageNum);
-          if (!pageNum) return;
+          if (!cvs || !pageNum) return;
 
-          // Calculate new position for this page
-          const newLeft = (canvas.offsetLeft || 0) + relativeX;
-          const newTop = (canvas.offsetTop || 0) + relativeY;
+          const newLeft = (cvs.offsetLeft || 0) + relativeX;
+          const newTop = (cvs.offsetTop || 0) + relativeY;
 
-          // Constrain within canvas bounds
-          const canvasRect = canvas.getBoundingClientRect();
+          const canvasRect = cvs.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
-          const previewWidth = sourcePreview.offsetWidth;
-          const previewHeight = sourcePreview.offsetHeight;
-
+          const previewW = sourcePreview.offsetWidth;
+          const previewH = sourcePreview.offsetHeight;
           const minX = canvasRect.left - cardRect.left;
-          const maxX = minX + canvasRect.width - previewWidth;
+          const maxX = minX + canvasRect.width - previewW;
           const minY = canvasRect.top - cardRect.top;
-          const maxY = minY + canvasRect.height - previewHeight;
+          const maxY = minY + canvasRect.height - previewH;
 
           const constrainedLeft = Math.max(minX, Math.min(newLeft, maxX));
           const constrainedTop = Math.max(minY, Math.min(newTop, maxY));
 
-          // Update page number instance
-          if (!pageNumberInstances[pageNum - 1]) {
-            pageNumberInstances[pageNum - 1] = {
-              pageNum: pageNum,
-              customLeft: null,
-              customTop: null,
-              dragged: false,
-              isCustomPosition: false,
-            };
+          // FIX 3: hasCustomPosition = true so style changes won't reset these pages
+          const pageData = pageNumberInstances[pageNum - 1];
+          if (pageData) {
+            pageData.customLeft = constrainedLeft;
+            pageData.customTop = constrainedTop;
+            pageData.hasCustomPosition = true; // ← was being set to false before — that was the bug
           }
 
-          pageNumberInstances[pageNum - 1].customLeft = constrainedLeft;
-          pageNumberInstances[pageNum - 1].customTop = constrainedTop;
-          pageNumberInstances[pageNum - 1].dragged = false; // Set to false so button doesn't show
-          pageNumberInstances[pageNum - 1].isCustomPosition = false; // Set to false so button doesn't show
-
-          // Update preview position if it exists
+          // Move the existing preview element directly (no rebuild needed)
           const preview = card.querySelector(".page-number-preview");
           if (preview) {
             preview.style.left = constrainedLeft + "px";
             preview.style.top = constrainedTop + "px";
           }
 
-          // Hide "Apply to All" button on this card
           const applyBtn = card.querySelector(".page-apply-btn");
-          if (applyBtn) {
-            applyBtn.style.display = "none";
-          }
+          if (applyBtn) applyBtn.style.display = "none";
 
           appliedCount++;
         });
 
-        // Also hide "Apply to All" button on source card
+        // Hide Apply button on source too (but keep hasCustomPosition = true)
         const sourceApplyBtn = sourceCard.querySelector(".page-apply-btn");
-        if (sourceApplyBtn) {
-          sourceApplyBtn.style.display = "none";
-        }
-
-        // Reset source page's dragged state too
-        if (sourceData) {
-          sourceData.dragged = false;
-          sourceData.isCustomPosition = false;
-        }
+        if (sourceApplyBtn) sourceApplyBtn.style.display = "none";
 
         showSuccess(
           `✓ Page number position applied to ${appliedCount + 1} pages!`,
         );
       }
 
-      function updateAllPreviews() {
-        if (isDraggingGlobal) return;
-
-        document.querySelectorAll(".page-card").forEach((card) => {
-          updatePreview(card);
-        });
-      }
-
+      // ── Page range display ────────────────────────────────────────
       function updatePageRangeDisplay() {
         const start = parseInt(startPage.value) || 1;
         const end = parseInt(endPage.value) || totalPages;
-        const effectiveEnd = end === 0 ? totalPages : Math.min(end, totalPages);
+        const effectiveEnd = Math.min(end === 0 ? totalPages : end, totalPages);
 
         document.querySelectorAll(".page-card").forEach((card) => {
           const pageNum = parseInt(card.dataset.pageNum);
-          if (pageNum < start || pageNum > effectiveEnd) {
-            card.classList.add("out-of-range");
-          } else {
-            card.classList.remove("out-of-range");
-          }
+          card.classList.toggle(
+            "out-of-range",
+            pageNum < start || pageNum > effectiveEnd,
+          );
         });
-
         updateAllPreviews();
       }
 
-      // Position dropdown change handler
-      position.addEventListener("change", () => {
-        const selectedPosition = position.value;
-
-        // When dropdown changes, reset ALL pages to dropdown position
-        document.querySelectorAll(".page-card").forEach((card) => {
-          const pageNum = parseInt(card.dataset.pageNum);
-          if (pageNumberInstances[pageNum - 1]) {
-            // Reset to dropdown position
-            pageNumberInstances[pageNum - 1].dragged = false;
-            pageNumberInstances[pageNum - 1].isCustomPosition = false;
-            pageNumberInstances[pageNum - 1].customLeft = null;
-            pageNumberInstances[pageNum - 1].customTop = null;
-            pageNumberInstances[pageNum - 1].dropdownPosition =
-              selectedPosition;
-          }
-        });
-
-        updateAllPreviews();
-      });
-
-      // Add event listeners for other options changes
-      [
-        fontFamily,
-        fontSize,
-        fontColor,
-        customText,
-        startPage,
-        endPage,
-        startNumber,
-      ].forEach((el) => {
-        if (el) {
-          el.addEventListener("change", updateAllPreviews);
-          el.addEventListener("input", updateAllPreviews);
-        }
-      });
-
-      // COMPLETELY REWRITTEN to match watermark code EXACTLY
+      // ── Calculate positions for backend ──────────────────────────
       function calculatePagePositions() {
         const pagePositions = [];
 
         document.querySelectorAll(".page-card").forEach((card) => {
           if (card.classList.contains("out-of-range")) return;
-
           const preview = card.querySelector(".page-number-preview");
           if (!preview) return;
 
-          const canvas = card.querySelector("canvas");
+          const cvs = card.querySelector("canvas");
           const pageNum = parseInt(card.dataset.pageNum);
-
-          const canvasRect = canvas.getBoundingClientRect();
+          const canvasRect = cvs.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
 
           const canvasOffsetLeft = canvasRect.left - cardRect.left;
@@ -3142,19 +2961,17 @@ Courier        cour      cobo      coit      cobi</pre
 
           const previewLeft = parseFloat(preview.style.left) || 0;
           const previewTop = parseFloat(preview.style.top) || 0;
-
           const previewW = preview.offsetWidth || 0;
           const previewH = preview.offsetHeight || 0;
 
-          // Centre of the preview element, relative to the canvas top-left
+          // Centre of preview relative to canvas top-left
           const canvasRelativeX = previewLeft - canvasOffsetLeft + previewW / 2;
           const canvasRelativeY = previewTop - canvasOffsetTop + previewH / 2;
 
-          // % from left, % from TOP  (backend flips Y itself, same as watermark)
+          // % from left, % from TOP (backend flips Y itself — same as watermark)
           const leftPercent = (canvasRelativeX / canvasRect.width) * 100;
-          const topPercent = (canvasRelativeY / canvasRect.height) * 100; // ← NO pre-flip
+          const topPercent = (canvasRelativeY / canvasRect.height) * 100;
 
-          // Alignment derived from the position dropdown
           const pos = position.value;
           let alignment = "center";
           if (pos.includes("left")) alignment = "left";
@@ -3171,6 +2988,43 @@ Courier        cour      cobo      coit      cobi</pre
         return pagePositions;
       }
 
+      // ── Option change listeners ───────────────────────────────────
+      // ONLY these options use style-only update (no position reset):
+      [fontFamily, fontSize, fontColor].forEach((el) => {
+        el.addEventListener("change", updateAllPreviewStyles);
+        el.addEventListener("input", updateAllPreviewStyles);
+      });
+
+      // These change text content so need a style+text update (still no position reset):
+      [customText, startNumber].forEach((el) => {
+        if (el) {
+          el.addEventListener("change", updateAllPreviewStyles);
+          el.addEventListener("input", updateAllPreviewStyles);
+        }
+      });
+
+      // Page range changes need full rebuild (pages enter/leave range):
+      [startPage, endPage].forEach((el) => {
+        if (el) {
+          el.addEventListener("change", updatePageRangeDisplay);
+          el.addEventListener("input", updatePageRangeDisplay);
+        }
+      });
+
+      // Position dropdown: reset ALL custom positions so numbers move to new preset
+      position.addEventListener("change", () => {
+        // Clear custom positions for all pages so they recalculate from dropdown
+        pageNumberInstances.forEach((pageData) => {
+          if (pageData) {
+            pageData.hasCustomPosition = false;
+            pageData.customLeft = null;
+            pageData.customTop = null;
+          }
+        });
+        updateAllPreviews();
+      });
+
+      // ── Submit ────────────────────────────────────────────────────
       addNumbersBtn.addEventListener("click", async () => {
         clearError();
         if (!files.length) {
@@ -3178,7 +3032,6 @@ Courier        cour      cobo      coit      cobi</pre
           return;
         }
 
-        // Calculate positions using the corrected function
         const pagePositions = calculatePagePositions();
 
         const fd = new FormData();
@@ -3205,15 +3058,9 @@ Courier        cour      cobo      coit      cobi</pre
         addNumbersBtn.classList.add("btn-loading");
 
         try {
-          const res = await fetch(BACKEND_URL, {
-            method: "POST",
-            body: fd,
-          });
-
-          if (!res.ok) {
-            const errorText = await res.text();
-            throw new Error(errorText || "Failed to add page numbers");
-          }
+          const res = await fetch(BACKEND_URL, { method: "POST", body: fd });
+          if (!res.ok)
+            throw new Error((await res.text()) || "Failed to add page numbers");
 
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
@@ -3230,7 +3077,6 @@ Courier        cour      cobo      coit      cobi</pre
           optionsContainer.style.display = "none";
 
           const isSmallDevice = window.matchMedia("(max-width: 768px)").matches;
-
           if (!isSmallDevice) {
             pdfFrame.src = url;
             pdfPreview.style.display = "block";
@@ -3251,6 +3097,7 @@ Courier        cour      cobo      coit      cobi</pre
         }
       });
 
+      // ── Reset ─────────────────────────────────────────────────────
       resetBtn.addEventListener("click", () => {
         files = [];
         totalPages = 0;
@@ -3265,11 +3112,12 @@ Courier        cour      cobo      coit      cobi</pre
         uploadSection.style.display = "block";
         optionsContainer.style.display = "none";
         addNumbersBtn.style.display = "block";
+        addNumbersBtn.disabled = false;
         clearError();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      // Keyboard accessibility for upload label
+      // ── Accessibility ─────────────────────────────────────────────
       document
         .querySelector(".upload-label")
         .addEventListener("keypress", (e) => {
@@ -3278,28 +3126,14 @@ Courier        cour      cobo      coit      cobi</pre
             pdfUpload.click();
           }
         });
-
-      // Prevent text selection while dragging
       document.addEventListener("selectstart", (e) => {
-        if (isDraggingGlobal) {
-          e.preventDefault();
-        }
+        if (isDraggingGlobal) e.preventDefault();
       });
 
-      // Handle window resize
       let resizeTimeout;
       window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-          updateAllPreviews();
-        }, 250);
-      });
-
-      // Initialize if there are any files on page load (for page refresh)
-      window.addEventListener("load", () => {
-        if (files.length > 0) {
-          loadPDFs();
-        }
+        resizeTimeout = setTimeout(() => updateAllPreviews(), 250);
       });
     </script>
   </body>

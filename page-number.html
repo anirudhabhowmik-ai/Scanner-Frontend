@@ -3133,7 +3133,6 @@ Courier        cour      cobo      coit      cobi</pre
 
           const canvas = card.querySelector("canvas");
           const pageNum = parseInt(card.dataset.pageNum);
-          const pageData = pageNumberInstances[pageNum - 1];
 
           const canvasRect = canvas.getBoundingClientRect();
           const cardRect = card.getBoundingClientRect();
@@ -3144,36 +3143,29 @@ Courier        cour      cobo      coit      cobi</pre
           const previewLeft = parseFloat(preview.style.left) || 0;
           const previewTop = parseFloat(preview.style.top) || 0;
 
-          // Use offsetWidth/offsetHeight — reliable even without getBoundingClientRect
           const previewW = preview.offsetWidth || 0;
           const previewH = preview.offsetHeight || 0;
 
-          // Center of the preview element relative to canvas
+          // Centre of the preview element, relative to the canvas top-left
           const canvasRelativeX = previewLeft - canvasOffsetLeft + previewW / 2;
           const canvasRelativeY = previewTop - canvasOffsetTop + previewH / 2;
 
-          // Convert to percentages; topPercent is "% from bottom" for backend
+          // % from left, % from TOP  (backend flips Y itself, same as watermark)
           const leftPercent = (canvasRelativeX / canvasRect.width) * 100;
-          const topPercent =
-            ((canvasRect.height - canvasRelativeY) / canvasRect.height) * 100;
+          const topPercent = (canvasRelativeY / canvasRect.height) * 100; // ← NO pre-flip
 
-          // Determine alignment from dropdown (dragged positions still use dropdown alignment)
+          // Alignment derived from the position dropdown
           const pos = position.value;
           let alignment = "center";
           if (pos.includes("left")) alignment = "left";
-          else if (pos.includes("right")) alignment = "right";
+          if (pos.includes("right")) alignment = "right";
 
           pagePositions.push({
             pageNum: pageNum,
             left: leftPercent.toFixed(2) + "%",
             top: topPercent.toFixed(2) + "%",
             position: alignment,
-            isCustomPosition: pageData ? pageData.isCustomPosition : false,
           });
-
-          console.log(
-            `Page ${pageNum}: center=${leftPercent.toFixed(1)}%, ${topPercent.toFixed(1)}% from bottom, align=${alignment}`,
-          );
         });
 
         return pagePositions;
@@ -3188,8 +3180,6 @@ Courier        cour      cobo      coit      cobi</pre
 
         // Calculate positions using the corrected function
         const pagePositions = calculatePagePositions();
-
-        console.log("Sending page positions to backend:", pagePositions);
 
         const fd = new FormData();
         files.forEach((f) => fd.append("files", f));
@@ -3215,7 +3205,6 @@ Courier        cour      cobo      coit      cobi</pre
         addNumbersBtn.classList.add("btn-loading");
 
         try {
-          console.log("Sending request to backend...");
           const res = await fetch(BACKEND_URL, {
             method: "POST",
             body: fd,
@@ -3223,7 +3212,6 @@ Courier        cour      cobo      coit      cobi</pre
 
           if (!res.ok) {
             const errorText = await res.text();
-            console.error("Backend error:", errorText);
             throw new Error(errorText || "Failed to add page numbers");
           }
 
@@ -3256,7 +3244,6 @@ Courier        cour      cobo      coit      cobi</pre
           };
           window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err) {
-          console.error("Error:", err);
           showError(err.message || "Error adding page numbers");
         } finally {
           addNumbersBtn.disabled = false;

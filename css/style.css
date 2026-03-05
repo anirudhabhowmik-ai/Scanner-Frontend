@@ -746,6 +746,12 @@ footer::before {
   border-radius: 8px;
 }
 
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 100%;
+}
+
 @media (max-width: 452px) {
   .result-btns-container a,
   .result-btns-container button {
@@ -754,7 +760,7 @@ footer::before {
   }
 
   @media (max-width: 386px) {
-    .cta-button{
+    .cta-button {
       padding: 12px 10px;
       font-size: 14px;
     }

@@ -1881,15 +1881,6 @@ output.seek(0)
           };
         }
       }
-
-      window.addEventListener("load", async () => {
-        try {
-          const res = await fetch(`${BACKEND_URL}/`);
-          const data = await res.json();
-        } catch (err) {
-          showError("Backend server not reachable. Please check connection.");
-        }
-      });
     </script>
   </body>
 </html>

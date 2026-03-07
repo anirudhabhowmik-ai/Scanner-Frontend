@@ -1,0 +1,2442 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ResuméAI – AI Resume Builder</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Fira+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --s50: #fafaf9;
+        --s100: #f5f5f4;
+        --s200: #e7e5e4;
+        --s300: #d6d3d1;
+        --s400: #a8a29e;
+        --s600: #57534e;
+        --s700: #44403c;
+        --s800: #292524;
+        --a300: #fcd34d;
+        --a400: #fbbf24;
+        --a500: #f59e0b;
+        --a600: #d97706;
+        --a700: #b45309;
+        --red: #ef4444;
+        --green: #22c55e;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--s50);
+        color: var(--s800);
+        min-height: 100vh;
+      }
+
+      /* ── HEADER ── */
+      header {
+        background: #fff;
+        border-bottom: 1px solid var(--s200);
+        padding: 13px 36px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--s800);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--a400);
+        font-weight: 700;
+        font-size: 15px;
+      }
+      .logo-text {
+        font-family: "Playfair Display", serif;
+        font-size: 19px;
+        font-weight: 700;
+      }
+      .header-tag {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--s400);
+        font-weight: 600;
+      }
+
+      /* ── LAYOUT ── */
+      .container {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 30px 20px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 390px;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* ── STEPS ── */
+      .steps {
+        display: flex;
+        align-items: center;
+        margin-bottom: 28px;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+      .step-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-shrink: 0;
+      }
+      .step-circle {
+        width: 27px;
+        height: 27px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        transition: all 0.3s;
+        border: 2px solid var(--s200);
+        background: var(--s100);
+        color: var(--s400);
+      }
+      .step-circle.active {
+        background: var(--a400);
+        border-color: var(--a400);
+        color: var(--s800);
+      }
+      .step-circle.done {
+        background: var(--s800);
+        border-color: var(--s800);
+        color: var(--a300);
+      }
+      .step-label {
+        font-size: 8.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-weight: 600;
+        color: var(--s400);
+        margin-top: 3px;
+        white-space: nowrap;
+      }
+      .step-label.active {
+        color: var(--a500);
+      }
+      .step-line {
+        width: 36px;
+        height: 2px;
+        background: var(--s200);
+        margin-bottom: 18px;
+        transition: background 0.4s;
+        flex-shrink: 0;
+      }
+      .step-line.done {
+        background: var(--s800);
+      }
+
+      /* ── FORM PANEL ── */
+      .form-panel {
+        background: #fff;
+        border: 1px solid var(--s200);
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      }
+      .step-content {
+        display: none;
+      }
+      .step-content.active {
+        display: block;
+      }
+      h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 23px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .section-note {
+        font-size: 12px;
+        color: var(--s400);
+        margin-bottom: 18px;
+      }
+      h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 17px;
+        font-weight: 700;
+        margin: 26px 0 14px;
+      }
+
+      /* ── FIELDS ── */
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .field-grid .full {
+        grid-column: 1/-1;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        font-weight: 600;
+        color: var(--s400);
+        margin-bottom: 4px;
+      }
+      .req {
+        color: var(--red);
+        margin-left: 2px;
+      }
+      input,
+      textarea,
+      select {
+        background: transparent;
+        border: none;
+        border-bottom: 1.5px solid var(--s300);
+        outline: none;
+        padding: 8px 0;
+        font-size: 13px;
+        font-family: "DM Sans", sans-serif;
+        color: var(--s800);
+        transition: border-color 0.2s;
+        width: 100%;
+      }
+      input:focus,
+      textarea:focus,
+      select:focus {
+        border-color: var(--s800);
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: var(--s400);
+      }
+      select option {
+        background: #fff;
+        color: var(--s800);
+      }
+      textarea {
+        resize: none;
+      }
+      input.error,
+      textarea.error {
+        border-color: var(--red) !important;
+      }
+      input.valid,
+      textarea.valid {
+        border-color: var(--green) !important;
+      }
+      .err-msg {
+        font-size: 11px;
+        color: var(--red);
+        margin-top: 3px;
+        display: none;
+        animation: fadeIn 0.2s;
+      }
+      .err-msg.show {
+        display: block;
+      }
+      .char-count {
+        font-size: 10px;
+        color: var(--s400);
+        text-align: right;
+        margin-top: 2px;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-3px);
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      /* ── ENTRY BLOCKS ── */
+      .entry-block {
+        border-left: 2px solid var(--a300);
+        padding-left: 16px;
+        margin-bottom: 20px;
+        position: relative;
+      }
+      .remove-btn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        font-size: 11px;
+        color: var(--s300);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: color 0.2s;
+      }
+      .remove-btn:hover {
+        color: var(--red);
+      }
+      .add-btn {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--s600);
+        background: none;
+        border: 1.5px dashed var(--s300);
+        padding: 7px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: all 0.2s;
+        margin-top: 6px;
+        display: inline-block;
+      }
+      .add-btn:hover {
+        border-color: var(--s600);
+        color: var(--s800);
+      }
+
+      /* ── NAV ── */
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--s100);
+      }
+      .btn-back {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--s400);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: color 0.2s;
+      }
+      .btn-back:hover {
+        color: var(--s700);
+      }
+      .btn-back:disabled {
+        opacity: 0.2;
+        cursor: default;
+      }
+      .btn-next {
+        background: var(--s800);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: none;
+        padding: 11px 26px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: background 0.2s;
+      }
+      .btn-next:hover {
+        background: var(--s700);
+      }
+
+      /* ══════════════════════════════════
+   TEMPLATE STEP STYLES
+══════════════════════════════════ */
+      .tpl-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.13em;
+        color: var(--s400);
+        margin: 20px 0 10px;
+      }
+      .tpl-section-title:first-child {
+        margin-top: 0;
+      }
+
+      /* Preset tags grid */
+      .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      .preset-card {
+        border: 2px solid var(--s200);
+        border-radius: 10px;
+        padding: 0;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+        background: #fff;
+        overflow: hidden;
+      }
+      .preset-card:hover {
+        border-color: var(--s400);
+        transform: translateY(-1px);
+      }
+      .preset-card.active {
+        border-color: var(--a400);
+        background: #fffbeb;
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
+      }
+      .preset-thumb {
+        height: 52px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        padding: 7px;
+      }
+      .preset-name {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--s700);
+        padding: 5px 0 6px;
+      }
+      .tb {
+        width: 75%;
+        height: 2.5px;
+        border-radius: 2px;
+      }
+      .tl {
+        height: 1.5px;
+        border-radius: 1px;
+      }
+
+      /* Style tag pills */
+      .tag-groups {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .tag-group-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--s600);
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+      }
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .style-tag {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 1.5px solid var(--s200);
+        background: #fff;
+        color: var(--s600);
+        cursor: pointer;
+        transition: all 0.2s;
+        font-family: "DM Sans", sans-serif;
+        user-select: none;
+      }
+      .style-tag:hover {
+        border-color: var(--s600);
+        color: var(--s800);
+      }
+      .style-tag.on {
+        background: var(--s800);
+        color: #fff;
+        border-color: var(--s800);
+      }
+
+      /* Prompt area */
+      .prompt-row {
+        display: flex;
+        gap: 8px;
+        align-items: stretch;
+        margin-top: 6px;
+      }
+      .prompt-row textarea {
+        border: 1.5px solid var(--s200);
+        border-radius: 10px;
+        padding: 10px 12px;
+        font-size: 13px;
+        height: 72px;
+        flex: 1;
+        transition: border-color 0.2s;
+        border-bottom: 1.5px solid var(--s200) !important;
+      }
+      .prompt-row textarea:focus {
+        border-color: var(--s800) !important;
+      }
+      .gen-btn {
+        background: var(--s800);
+        color: var(--a300);
+        border: none;
+        border-radius: 10px;
+        padding: 0 18px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+        transition: background 0.2s;
+        flex-shrink: 0;
+      }
+      .gen-btn:hover {
+        background: var(--s700);
+      }
+      .gen-btn:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      /* Generated gallery */
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 6px;
+      }
+      .gallery-card {
+        border: 2px solid var(--s200);
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+        background: #fff;
+      }
+      .gallery-card:hover {
+        border-color: var(--s400);
+        transform: translateY(-1px);
+      }
+      .gallery-card.active {
+        border-color: var(--a400);
+        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
+      }
+      .gallery-thumb {
+        height: 90px;
+        overflow: hidden;
+        position: relative;
+      }
+      .gallery-thumb-inner {
+        transform: scale(0.22);
+        transform-origin: top left;
+        width: 455%;
+        pointer-events: none;
+      }
+      .gallery-card-footer {
+        padding: 6px 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .gallery-card-name {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--s700);
+      }
+      .gallery-card-del {
+        font-size: 10px;
+        color: var(--s300);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        padding: 0;
+      }
+      .gallery-card-del:hover {
+        color: var(--red);
+      }
+      .gallery-empty {
+        font-size: 12px;
+        color: var(--s400);
+        text-align: center;
+        padding: 20px;
+        grid-column: 1/-1;
+      }
+
+      /* Gen loading overlay */
+      .gen-loading {
+        display: none;
+        align-items: center;
+        gap: 10px;
+        font-size: 12px;
+        color: var(--s400);
+        margin-top: 8px;
+      }
+      .gen-loading.show {
+        display: flex;
+      }
+      .gen-spinner {
+        width: 14px;
+        height: 14px;
+        border: 2px solid var(--s300);
+        border-top-color: var(--s800);
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+      }
+      .gen-error {
+        font-size: 11px;
+        color: var(--red);
+        margin-top: 6px;
+        display: none;
+      }
+
+      /* ── SIDEBAR ── */
+      .sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: sticky;
+        top: 76px;
+      }
+      .sidebar-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        color: var(--s400);
+        font-weight: 600;
+        margin-bottom: 8px;
+        display: block;
+      }
+      .mini-wrap {
+        background: #fff;
+        border: 1px solid var(--s200);
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      }
+      .mini-scaler {
+        transform: scale(0.355);
+        transform-origin: top left;
+        width: 282%;
+        pointer-events: none;
+      }
+      .tip-box {
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 12px;
+        padding: 13px;
+      }
+      .tip-head {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--a700);
+        margin-bottom: 4px;
+      }
+      .tip-text {
+        font-size: 11px;
+        color: var(--a700);
+        line-height: 1.5;
+      }
+
+      /* ── AI ENHANCE SECTION ── */
+      .ai-action-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+      }
+      .ai-action-row h2 {
+        margin-bottom: 0;
+        flex: 1;
+      }
+      #ai-btn {
+        background: var(--s800);
+        color: var(--a300);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+      }
+      #ai-btn:hover {
+        background: var(--s700);
+      }
+      #ai-btn:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+
+      /* ── SAVE/DOWNLOAD BUTTON ── */
+      #save-btn {
+        background: var(--a400);
+        color: var(--s800);
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: background 0.2s;
+      }
+      #save-btn:hover {
+        background: var(--a500);
+      }
+
+      /* ── AI SUMMARY EDIT BOX ── */
+      .ai-summary-box {
+        display: none;
+        background: #fffbeb;
+        border: 1px solid #fde68a;
+        border-radius: 12px;
+        padding: 14px;
+        margin-bottom: 18px;
+        animation: fadeIn 0.3s;
+      }
+      .ai-summary-box.visible {
+        display: block;
+      }
+      .ai-summary-box-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+      }
+      .ai-summary-box-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--a700);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .ai-summary-box-title svg {
+        flex-shrink: 0;
+      }
+      .ai-summary-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .ai-sum-save-btn {
+        font-size: 11px;
+        font-weight: 700;
+        background: var(--s800);
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 5px 12px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: background 0.2s;
+      }
+      .ai-sum-save-btn:hover {
+        background: var(--s700);
+      }
+      .ai-sum-discard-btn {
+        font-size: 11px;
+        font-weight: 600;
+        background: none;
+        color: var(--s400);
+        border: 1.5px solid var(--s300);
+        border-radius: 7px;
+        padding: 5px 12px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: all 0.2s;
+      }
+      .ai-sum-discard-btn:hover {
+        border-color: var(--red);
+        color: var(--red);
+      }
+      .ai-summary-textarea {
+        width: 100%;
+        border: 1.5px solid #fde68a !important;
+        border-bottom: 1.5px solid #fde68a !important;
+        border-radius: 8px;
+        padding: 10px 12px !important;
+        font-size: 13px;
+        line-height: 1.6;
+        font-family: "DM Sans", sans-serif;
+        color: var(--s800);
+        background: #fff;
+        resize: vertical;
+        min-height: 80px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .ai-summary-textarea:focus {
+        border-color: var(--a500) !important;
+      }
+      .ai-sum-hint {
+        font-size: 10.5px;
+        color: var(--a600);
+        margin-top: 6px;
+      }
+
+      .spinner {
+        width: 11px;
+        height: 11px;
+        border: 2px solid var(--a300);
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: none;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      #error-msg {
+        color: var(--red);
+        font-size: 12px;
+        margin-top: 6px;
+        display: none;
+      }
+      .ai-badge {
+        display: inline-block;
+        background: #fef3c7;
+        color: var(--a700);
+        font-size: 8px;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding: 2px 6px;
+        border-radius: 3px;
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+
+      /* ── ACTIVE TEMPLATE INDICATOR ── */
+      .active-tpl-bar {
+        background: var(--s100);
+        border: 1px solid var(--s200);
+        border-radius: 10px;
+        padding: 9px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+        font-size: 12px;
+      }
+      .active-tpl-bar.hidden {
+        display: none;
+      }
+      .active-tpl-left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .active-tpl-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--a400);
+        flex-shrink: 0;
+      }
+      .active-tpl-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--s400);
+        font-weight: 600;
+      }
+      .active-tpl-name {
+        font-weight: 700;
+        color: var(--s800);
+        font-size: 13px;
+      }
+      .change-tpl-btn {
+        font-size: 11px;
+        color: var(--a600);
+        background: none;
+        border: 1.5px solid var(--a400);
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 700;
+        padding: 4px 10px;
+        transition: all 0.2s;
+      }
+      .change-tpl-btn:hover {
+        background: var(--a400);
+        color: var(--s800);
+      }
+
+      /* ── SELECTED TAGS SUMMARY ── */
+      .selected-tags-summary {
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--s600);
+        min-height: 18px;
+      }
+      .selected-tags-summary span {
+        background: var(--s800);
+        color: #fff;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 12px;
+        margin: 2px;
+        display: inline-block;
+      }
+      .clear-tags-btn {
+        font-size: 10px;
+        color: var(--s400);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        margin-left: 4px;
+        text-decoration: underline;
+        padding: 0;
+      }
+      .clear-tags-btn:hover {
+        color: var(--red);
+      }
+
+      /* ── PRINT STYLES ── */
+      @media print {
+        header,
+        .steps,
+        .active-tpl-bar,
+        .ai-action-row,
+        .ai-summary-box,
+        #error-msg,
+        .nav,
+        .sidebar,
+        .form-panel > *:not(#step-5) {
+          display: none !important;
+        }
+        #step-5 {
+          display: block !important;
+        }
+        .grid {
+          display: block !important;
+        }
+        body {
+          background: #fff;
+        }
+        .form-panel {
+          border: none;
+          box-shadow: none;
+          padding: 0;
+        }
+        .container {
+          padding: 0;
+        }
+      }
+
+      @media (max-width: 780px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .field-grid {
+          grid-template-columns: 1fr;
+        }
+        .field-grid .full {
+          grid-column: 1;
+        }
+        .preset-grid,
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <div class="logo-icon">R</div>
+        <span class="logo-text">ResuméAI</span>
+      </div>
+      <span class="header-tag">AI-Powered Resume Builder</span>
+    </header>
+
+    <div class="container">
+      <div class="steps" id="steps"></div>
+
+      <!-- Global template bar visible on all steps except step 0 -->
+      <div class="active-tpl-bar hidden" id="global-tpl-bar">
+        <div class="active-tpl-left">
+          <div class="active-tpl-dot" id="tpl-dot"></div>
+          <div>
+            <div class="active-tpl-label">Active Template</div>
+            <div class="active-tpl-name" id="active-tpl-name">Classic</div>
+          </div>
+        </div>
+        <button class="change-tpl-btn" onclick="go(0)">
+          ⬡ Change Template
+        </button>
+      </div>
+
+      <div class="grid">
+        <!-- ══ FORM PANEL ══ -->
+        <div class="form-panel">
+          <!-- STEP 0: Template -->
+          <div class="step-content active" id="step-0">
+            <h2>Choose a Template</h2>
+            <p class="section-note">
+              Pick a preset, mix style tags, or describe any style — AI will
+              generate it instantly.
+            </p>
+
+            <!-- Preset templates -->
+            <div class="tpl-section-title">⬡ Preset Templates</div>
+            <div class="preset-grid" id="preset-grid"></div>
+
+            <!-- Style tags -->
+            <div class="tpl-section-title" style="margin-top: 20px">
+              🎨 Mix Style Tags
+              <span
+                style="
+                  font-weight: 400;
+                  text-transform: none;
+                  letter-spacing: 0;
+                  color: var(--s400);
+                  margin-left: 4px;
+                "
+                >(select multiple across any category)</span
+              >
+            </div>
+            <div class="tag-groups" id="tag-groups"></div>
+            <div class="selected-tags-summary" id="selected-tags-summary"></div>
+
+            <!-- AI prompt generator -->
+            <div class="tpl-section-title" style="margin-top: 20px">
+              ✦ Describe Any Style — AI Generates It
+            </div>
+            <div class="prompt-row">
+              <textarea
+                id="tpl-prompt"
+                placeholder="e.g. dark navy blue with gold accents, elegant serif fonts, law firm style…"
+                oninput="onPromptInput()"
+              ></textarea>
+              <button class="gen-btn" id="gen-btn" onclick="generateTemplate()">
+                <span
+                  class="gen-spinner"
+                  id="gen-spinner"
+                  style="display: none"
+                ></span>
+                <span id="gen-btn-text">✦ Generate</span>
+              </button>
+            </div>
+            <div class="gen-loading" id="gen-loading">
+              <div class="gen-spinner"></div>
+              <span id="gen-loading-text"
+                >Generating your unique template…</span
+              >
+            </div>
+            <div class="gen-error" id="gen-error"></div>
+
+            <!-- Saved gallery -->
+            <div class="tpl-section-title" style="margin-top: 20px">
+              🗂 Your Generated Templates
+            </div>
+            <div class="gallery-grid" id="gallery-grid">
+              <div class="gallery-empty">
+                No generated templates yet.<br />Describe a style above to
+                create one!
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 1: Personal -->
+          <div class="step-content" id="step-1">
+            <h2>Personal Details</h2>
+            <div class="field-grid">
+              <div class="field">
+                <label>Full Name <span class="req">*</span></label>
+                <input
+                  id="f-name"
+                  placeholder="Ada Lovelace"
+                  oninput="
+                    lv(this, 'name');
+                    rp();
+                  "
+                />
+                <span class="err-msg" id="e-name"
+                  >Please enter your full name.</span
+                >
+              </div>
+              <div class="field">
+                <label>Job Title <span class="req">*</span></label>
+                <input
+                  id="f-title"
+                  placeholder="Software Engineer"
+                  oninput="
+                    lv(this, 'title');
+                    rp();
+                  "
+                />
+                <span class="err-msg" id="e-title"
+                  >Please enter your job title.</span
+                >
+              </div>
+              <div class="field">
+                <label>Email <span class="req">*</span></label>
+                <input
+                  id="f-email"
+                  type="email"
+                  placeholder="ada@example.com"
+                  oninput="
+                    lv(this, 'email');
+                    rp();
+                  "
+                />
+                <span class="err-msg" id="e-email">Enter a valid email.</span>
+              </div>
+              <div class="field">
+                <label>Phone</label>
+                <input
+                  id="f-phone"
+                  placeholder="+1 (555) 000-0000"
+                  oninput="
+                    lv(this, 'phone');
+                    rp();
+                  "
+                />
+                <span class="err-msg" id="e-phone"
+                  >Enter a valid phone number.</span
+                >
+              </div>
+              <div class="field">
+                <label>Location</label>
+                <input
+                  id="f-loc"
+                  placeholder="San Francisco, CA"
+                  oninput="rp()"
+                />
+              </div>
+              <div class="field">
+                <label>Blood Group</label>
+                <select id="f-blood" onchange="rp()">
+                  <option value="">Select…</option>
+                  <option>A+</option>
+                  <option>A-</option>
+                  <option>B+</option>
+                  <option>B-</option>
+                  <option>AB+</option>
+                  <option>AB-</option>
+                  <option>O+</option>
+                  <option>O-</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label
+                  >Professional Summary
+                  <span
+                    style="
+                      color: var(--s400);
+                      font-weight: 400;
+                      text-transform: none;
+                      letter-spacing: 0;
+                    "
+                    >(AI will polish this)</span
+                  >
+                </label>
+                <textarea
+                  id="f-sum"
+                  rows="3"
+                  maxlength="400"
+                  placeholder="A brief summary of your background…"
+                  oninput="
+                    ucc();
+                    rp();
+                  "
+                ></textarea>
+                <div class="char-count"><span id="sum-len">0</span> / 400</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 2: Experience -->
+          <div class="step-content" id="step-2">
+            <h2>Work Experience</h2>
+            <div id="exp-list"></div>
+            <button class="add-btn" onclick="addExp()">
+              + Add Another Role
+            </button>
+          </div>
+
+          <!-- STEP 3: Education & Certificates -->
+          <div class="step-content" id="step-3">
+            <h2>Education</h2>
+            <div id="edu-list"></div>
+            <button class="add-btn" onclick="addEdu()">+ Add Another</button>
+            <h3>Certificate Courses</h3>
+            <div id="cert-list"></div>
+            <button class="add-btn" onclick="addCert()">
+              + Add Certificate
+            </button>
+          </div>
+
+          <!-- STEP 4: Skills, Languages, Hobbies -->
+          <div class="step-content" id="step-4">
+            <h2>Skills, Languages &amp; More</h2>
+            <div class="field-grid">
+              <div class="field full">
+                <label
+                  >Technical Skills <span class="req">*</span>
+                  <span
+                    style="
+                      color: var(--s400);
+                      font-weight: 400;
+                      text-transform: none;
+                      letter-spacing: 0;
+                    "
+                    >(comma separated)</span
+                  >
+                </label>
+                <textarea
+                  id="f-skills"
+                  rows="3"
+                  placeholder="React, Node.js, Python, Docker…"
+                  oninput="
+                    lv(this, 'skills');
+                    rp();
+                  "
+                ></textarea>
+                <span class="err-msg" id="e-skills"
+                  >Please add at least one skill.</span
+                >
+              </div>
+              <div class="field full">
+                <label>Languages Known</label>
+                <textarea
+                  id="f-langs"
+                  rows="2"
+                  placeholder="English – Fluent, Hindi – Native, French – Basic…"
+                  oninput="rp()"
+                ></textarea>
+              </div>
+              <div class="field full">
+                <label>Hobbies &amp; Interests</label>
+                <textarea
+                  id="f-hobbies"
+                  rows="2"
+                  placeholder="Reading, Open-source, Photography, Chess…"
+                  oninput="rp()"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- STEP 5: Preview -->
+          <div class="step-content" id="step-5">
+            <!-- Action bar -->
+            <div class="ai-action-row">
+              <h2>Your Resume</h2>
+              <button id="ai-btn" onclick="enhanceAI()">
+                <span class="spinner" id="spinner"></span>
+                <span id="ai-btn-text">✦ AI Enhance Summary</span>
+              </button>
+              <button
+                id="save-btn"
+                onclick="saveResume()"
+                title="Print or save as PDF"
+              >
+                ⬇ Save as PDF
+              </button>
+            </div>
+
+            <!-- ── EDITABLE AI SUMMARY BOX (shown after AI enhance) ── -->
+            <div class="ai-summary-box" id="ai-summary-box">
+              <div class="ai-summary-box-header">
+                <div class="ai-summary-box-title">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                  >
+                    <path
+                      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+                    />
+                  </svg>
+                  AI-Generated Summary — Edit Before Saving
+                </div>
+                <div class="ai-summary-actions">
+                  <button class="ai-sum-save-btn" onclick="applyAISummary()">
+                    ✓ Apply
+                  </button>
+                  <button
+                    class="ai-sum-discard-btn"
+                    onclick="discardAISummary()"
+                  >
+                    ✕ Discard
+                  </button>
+                </div>
+              </div>
+              <textarea
+                class="ai-summary-textarea"
+                id="ai-summary-edit"
+                rows="4"
+                placeholder="AI-generated summary will appear here for you to review and edit…"
+                oninput="onAISummaryEdit()"
+              ></textarea>
+              <div class="ai-sum-hint">
+                ✏️ You can freely edit this text. Click
+                <strong>Apply</strong> to use it in your resume, or
+                <strong>Discard</strong> to keep your original summary.
+              </div>
+            </div>
+
+            <div id="error-msg"></div>
+            <div id="resume-out"></div>
+          </div>
+
+          <!-- Nav -->
+          <div class="nav">
+            <button
+              class="btn-back"
+              id="btn-back"
+              onclick="prevStep()"
+              disabled
+            >
+              ← Back
+            </button>
+            <button class="btn-next" id="btn-next" onclick="nextStep()">
+              Continue →
+            </button>
+          </div>
+        </div>
+
+        <!-- ══ SIDEBAR ══ -->
+        <div class="sidebar">
+          <div class="mini-wrap">
+            <span class="sidebar-label">Live Preview</span>
+            <div
+              style="
+                overflow: hidden;
+                border-radius: 6px;
+                border: 1px solid var(--s200);
+                min-height: 120px;
+              "
+            >
+              <div id="mini-resume" class="mini-scaler"></div>
+            </div>
+          </div>
+          <div class="tip-box">
+            <div class="tip-head">✦ Tips</div>
+            <div class="tip-text" id="tip-text"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ═══════════════════════════════════════════════
+      //  CONSTANTS
+      // ═══════════════════════════════════════════════
+      const STEPS = [
+        "Template",
+        "Personal",
+        "Experience",
+        "Education",
+        "Skills",
+        "Preview",
+      ];
+      const TIPS = [
+        "Describe any style in plain English — AI will generate a unique template just for you! Or mix tags to build a combination.",
+        "Fields marked * are required. Write a rough summary — AI will polish it on the final step.",
+        'Lead with results: "Cut load time by 40%" beats "Responsible for performance."',
+        "Add From–To years. Certificate courses show your commitment to growth.",
+        "List tools employers search for. Add languages — even basic proficiency counts!",
+        "Click ✦ AI Enhance to generate a polished summary. You can then edit it before applying to your resume. Use ⬇ Save as PDF to download.",
+      ];
+
+      const TAG_GROUPS = [
+        {
+          label: "🎨 Color Theme",
+          tags: [
+            "Black & White",
+            "Dark Navy",
+            "Forest Green",
+            "Crimson Red",
+            "Ocean Blue",
+            "Rose Gold",
+            "Midnight Purple",
+            "Warm Cream",
+            "Slate Gray",
+            "Coral Orange",
+          ],
+        },
+        {
+          label: "✏️ Typography",
+          tags: [
+            "Serif / Classic",
+            "Sans-serif / Modern",
+            "Monospace / Tech",
+            "Bold Headlines",
+            "Light & Airy",
+            "Condensed",
+            "Handwritten Feel",
+          ],
+        },
+        {
+          label: "📐 Layout",
+          tags: [
+            "Single Column",
+            "Two Column",
+            "Sidebar Left",
+            "Sidebar Right",
+            "Centered Header",
+            "Timeline Style",
+            "Compact Dense",
+            "Spacious Airy",
+          ],
+        },
+        {
+          label: "💼 Industry / Vibe",
+          tags: [
+            "Corporate",
+            "Creative / Design",
+            "Tech / Dev",
+            "Academic",
+            "Healthcare",
+            "Legal",
+            "Startup",
+            "Luxury / Executive",
+            "Minimalist",
+            "Retro / Vintage",
+            "Cyberpunk",
+            "Art Deco",
+          ],
+        },
+      ];
+
+      const PRESETS = [
+        {
+          id: "classic",
+          name: "Classic",
+          bg: "#fff",
+          bar: "#333",
+          lines: ["#ccc", "#ccc", "#ddd", "#ddd"],
+          bdr: "1px solid #ddd",
+        },
+        {
+          id: "modern",
+          name: "Modern",
+          bg: "#1e293b",
+          bar: "#60a5fa",
+          lines: ["#334155", "#334155", "#1e3a5f", "#1e3a5f"],
+          bdr: "none",
+        },
+        {
+          id: "minimal",
+          name: "Minimal",
+          bg: "#f8fafc",
+          bar: "#0f172a",
+          lines: ["#e2e8f0", "#e2e8f0", "#f1f5f9", "#f1f5f9"],
+          bdr: "1px solid #e2e8f0",
+        },
+        {
+          id: "bold",
+          name: "Bold",
+          bg: "#7c3aed",
+          bar: "#fff",
+          lines: [
+            "rgba(255,255,255,.25)",
+            "rgba(255,255,255,.25)",
+            "rgba(255,255,255,.15)",
+            "rgba(255,255,255,.15)",
+          ],
+          bdr: "none",
+        },
+        {
+          id: "elegant",
+          name: "Elegant",
+          bg: "#fdf6ec",
+          bar: "#92400e",
+          lines: ["#d4b896", "#d4b896", "#e9d5b4", "#e9d5b4"],
+          bdr: "1px solid #e9d5b4",
+        },
+        {
+          id: "tech",
+          name: "Tech",
+          bg: "#0f172a",
+          bar: "#22d3ee",
+          lines: ["#1e3a5f", "#1e3a5f", "#1e293b", "#1e293b"],
+          bdr: "1px solid #1e293b",
+        },
+      ];
+
+      // ═══════════════════════════════════════════════
+      //  STATE
+      // ═══════════════════════════════════════════════
+      let step = 0,
+        expIdx = 0,
+        eduIdx = 0,
+        certIdx = 0;
+      // aiSummary holds the *applied* summary (shown in the resume)
+      // aiDraftSummary holds the current text in the edit box (before Apply)
+      let aiSummary = "";
+      let aiDraftSummary = "";
+      let activeTags = new Map();
+      let activeTemplate = null;
+      let savedTemplates = [];
+
+      // ═══════════════════════════════════════════════
+      //  INIT
+      // ═══════════════════════════════════════════════
+      (function init() {
+        renderStepBar();
+        renderPresets();
+        renderTagGroups();
+        setupTagDelegation();
+        addExp();
+        addEdu();
+        addCert();
+        selectPreset("classic");
+        updateTip();
+      })();
+
+      // ═══════════════════════════════════════════════
+      //  STEP BAR
+      // ═══════════════════════════════════════════════
+      function renderStepBar() {
+        document.getElementById("steps").innerHTML = STEPS.map((n, i) => {
+          const line =
+            i > 0
+              ? `<div class="step-line${i <= step ? " done" : ""}"></div>`
+              : "";
+          const c = i < step ? "done" : i === step ? "active" : "";
+          return `${line}<div class="step-col"><div class="step-circle ${c}">${i < step ? "✓" : i + 1}</div><span class="step-label ${i === step ? "active" : ""}">${n}</span></div>`;
+        }).join("");
+      }
+
+      // ═══════════════════════════════════════════════
+      //  NAVIGATION
+      // ═══════════════════════════════════════════════
+      function nextStep() {
+        if (!validate(step)) return;
+        go(step + 1);
+        if (step === 5) renderResume();
+      }
+      function prevStep() {
+        if (step > 0) go(step - 1);
+      }
+      function go(n) {
+        document.getElementById("step-" + step).classList.remove("active");
+        step = n;
+        document.getElementById("step-" + step).classList.add("active");
+        document.getElementById("btn-back").disabled = step === 0;
+        document.getElementById("btn-next").style.display =
+          step === 5 ? "none" : "inline-block";
+        document
+          .getElementById("global-tpl-bar")
+          .classList.toggle("hidden", step === 0);
+        renderStepBar();
+        updateTip();
+      }
+      function updateTip() {
+        document.getElementById("tip-text").textContent = TIPS[step];
+      }
+
+      // ═══════════════════════════════════════════════
+      //  VALIDATION
+      // ═══════════════════════════════════════════════
+      const RULES = {
+        name: {
+          el: "f-name",
+          err: "e-name",
+          req: true,
+          msg: "Please enter your full name.",
+        },
+        title: {
+          el: "f-title",
+          err: "e-title",
+          req: true,
+          msg: "Please enter your job title.",
+        },
+        email: {
+          el: "f-email",
+          err: "e-email",
+          req: true,
+          pat: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          msg: "Enter a valid email address.",
+        },
+        phone: {
+          el: "f-phone",
+          err: "e-phone",
+          req: false,
+          pat: /^[\d\s\+\-\(\)]{7,20}$/,
+          msg: "Enter a valid phone number.",
+        },
+        skills: {
+          el: "f-skills",
+          err: "e-skills",
+          req: true,
+          msg: "Please add at least one skill.",
+        },
+      };
+      function applyRule(key) {
+        const r = RULES[key],
+          el = document.getElementById(r.el),
+          errEl = document.getElementById(r.err);
+        if (!el) return true;
+        const v = el.value.trim();
+        let ok = true;
+        if (r.req && !v) ok = false;
+        if (ok && v && r.pat && !r.pat.test(v)) ok = false;
+        el.classList.toggle("error", !ok);
+        el.classList.toggle("valid", ok && !!v);
+        errEl.textContent = r.msg;
+        errEl.classList.toggle("show", !ok);
+        return ok;
+      }
+      function lv(el, key) {
+        if (!el.value.trim()) return;
+        applyRule(key);
+      }
+      function validate(s) {
+        if (s === 0) {
+          if (!activeTemplate) {
+            alert("Please select or generate a template first.");
+            return false;
+          }
+          return true;
+        }
+        if (s === 1) {
+          let ok = true;
+          ["name", "title", "email", "phone"].forEach((k) => {
+            if (!applyRule(k)) ok = false;
+          });
+          return ok;
+        }
+        if (s === 2) {
+          let ok = true;
+          document.querySelectorAll("#exp-list .entry-block").forEach((b) => {
+            const inp = b.querySelectorAll("input");
+            [inp[0], inp[1]].forEach((el, i) => {
+              if (!el) return;
+              const empty = !el.value.trim();
+              el.classList.toggle("error", empty);
+              el.classList.toggle("valid", !empty);
+              let e = el.nextElementSibling;
+              if (!e || !e.classList.contains("err-msg")) {
+                e = document.createElement("span");
+                e.className = "err-msg";
+                el.after(e);
+              }
+              e.textContent =
+                i === 0 ? "Company name is required." : "Role is required.";
+              e.classList.toggle("show", empty);
+              if (empty) ok = false;
+            });
+          });
+          return ok;
+        }
+        if (s === 4) return applyRule("skills");
+        return true;
+      }
+      function ucc() {
+        const e = document.getElementById("f-sum");
+        document.getElementById("sum-len").textContent = e ? e.value.length : 0;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  PRESET TEMPLATES
+      // ═══════════════════════════════════════════════
+      function renderPresets() {
+        document.getElementById("preset-grid").innerHTML = PRESETS.map(
+          (p) => `
+          <div class="preset-card${activeTemplate && activeTemplate.id === p.id ? " active" : ""}" id="pc-${p.id}" onclick="selectPreset('${p.id}')">
+            <div class="preset-thumb" style="background:${p.bg};border-bottom:${p.bdr || "none"};">
+              <div class="tb" style="background:${p.bar};"></div>
+              ${p.lines.map((l, i) => `<div class="tl" style="width:${[75, 60, 68, 50][i]}%;background:${l};"></div>`).join("")}
+            </div>
+            <div class="preset-name">${p.name}</div>
+          </div>`,
+        ).join("");
+      }
+
+      function selectPreset(id) {
+        const p = PRESETS.find((x) => x.id === id);
+        if (!p) return;
+        document
+          .querySelectorAll(".preset-card,.gallery-card")
+          .forEach((c) => c.classList.remove("active"));
+        document.getElementById("pc-" + id)?.classList.add("active");
+        activeTemplate = {
+          id: p.id,
+          name: p.name,
+          css: "",
+          html_fn: (d, badge) => buildPresetResume(p.id, d, badge),
+        };
+        updateActiveName(p.name);
+        rp();
+      }
+
+      // ═══════════════════════════════════════════════
+      //  STYLE TAGS
+      // ═══════════════════════════════════════════════
+      function renderTagGroups() {
+        document.getElementById("tag-groups").innerHTML = TAG_GROUPS.map(
+          (g, gi) => `
+          <div>
+            <div class="tag-group-label">${g.label}</div>
+            <div class="tag-row">
+              ${g.tags.map((t) => `<button class="style-tag${activeTags.get(gi) === t ? " on" : ""}" data-tag="${escAttr(t)}" data-group="${gi}">${t}</button>`).join("")}
+            </div>
+          </div>`,
+        ).join("");
+        renderSelectedTagsSummary();
+      }
+
+      function setupTagDelegation() {
+        document.getElementById("tag-groups").addEventListener("click", (e) => {
+          const btn = e.target.closest(".style-tag");
+          if (!btn) return;
+          const tag = btn.dataset.tag;
+          const gi = parseInt(btn.dataset.group, 10);
+          if (activeTags.get(gi) === tag) {
+            activeTags.delete(gi);
+          } else {
+            activeTags.set(gi, tag);
+          }
+          document.querySelectorAll(`[data-group="${gi}"]`).forEach((b) => {
+            b.classList.toggle("on", activeTags.get(gi) === b.dataset.tag);
+          });
+          syncPromptFromTags();
+          renderSelectedTagsSummary();
+        });
+      }
+
+      function escAttr(str) {
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function syncPromptFromTags() {
+        const promptEl = document.getElementById("tpl-prompt");
+        promptEl.value =
+          activeTags.size > 0 ? [...activeTags.values()].join(", ") : "";
+      }
+
+      function renderSelectedTagsSummary() {
+        const el = document.getElementById("selected-tags-summary");
+        if (!el) return;
+        if (activeTags.size === 0) {
+          el.innerHTML = "";
+          return;
+        }
+        const pills = [...activeTags.entries()]
+          .map(
+            ([gi, t]) =>
+              `<span data-pill-group="${gi}">${TAG_GROUPS[gi].label.split(" ")[0]} ${t}</span>`,
+          )
+          .join("");
+        el.innerHTML = `${pills} <button class="clear-tags-btn" onclick="clearTags()">Clear all</button>`;
+      }
+
+      function clearTags() {
+        activeTags.clear();
+        renderTagGroups();
+        document.getElementById("tpl-prompt").value = "";
+      }
+
+      function onPromptInput() {
+        const val = document.getElementById("tpl-prompt").value.toLowerCase();
+        if (val.trim() === "") {
+          activeTags.clear();
+        } else {
+          for (const [gi, tag] of activeTags.entries()) {
+            if (!val.includes(tag.toLowerCase())) activeTags.delete(gi);
+          }
+        }
+        document.querySelectorAll(".style-tag").forEach((btn) => {
+          const gi = parseInt(btn.dataset.group, 10);
+          btn.classList.toggle("on", activeTags.get(gi) === btn.dataset.tag);
+        });
+        renderSelectedTagsSummary();
+      }
+
+      // ═══════════════════════════════════════════════
+      //  AI TEMPLATE GENERATOR
+      // ═══════════════════════════════════════════════
+      async function generateTemplate() {
+        const prompt = document.getElementById("tpl-prompt").value.trim();
+        if (!prompt) {
+          const errEl = document.getElementById("gen-error");
+          errEl.textContent = "Please describe a style first.";
+          errEl.style.display = "block";
+          return;
+        }
+        document.getElementById("gen-error").style.display = "none";
+
+        const btn = document.getElementById("gen-btn");
+        const sp = document.getElementById("gen-spinner");
+        const txt = document.getElementById("gen-btn-text");
+        const loading = document.getElementById("gen-loading");
+        const loadingTxt = document.getElementById("gen-loading-text");
+
+        btn.disabled = true;
+        sp.style.display = "inline-block";
+        txt.textContent = "Generating…";
+        loading.classList.add("show");
+        loadingTxt.textContent = `Creating "${prompt.slice(0, 40)}${prompt.length > 40 ? "…" : ""}" template…`;
+
+        try {
+          const res = await fetch(
+            "http://127.0.0.1:8080/api/resume/generate-template",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ prompt }),
+            },
+          );
+          const tplData = await res.json();
+          if (!res.ok) throw new Error(tplData.error || "Server error");
+          const newTpl = {
+            id: "gen-" + Date.now(),
+            name: tplData.name || prompt.slice(0, 20),
+            css: tplData.css || "",
+            layout: tplData.layout || "single",
+            prompt,
+          };
+          savedTemplates.push(newTpl);
+          renderGallery();
+          selectGenerated(newTpl.id);
+        } catch (e) {
+          console.error(e);
+          const errEl = document.getElementById("gen-error");
+          errEl.textContent = "Generation failed: " + e.message;
+          errEl.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          sp.style.display = "none";
+          txt.textContent = "✦ Generate";
+          loading.classList.remove("show");
+        }
+      }
+
+      // ═══════════════════════════════════════════════
+      //  GALLERY
+      // ═══════════════════════════════════════════════
+      function renderGallery() {
+        const el = document.getElementById("gallery-grid");
+        if (!savedTemplates.length) {
+          el.innerHTML = `<div class="gallery-empty">No generated templates yet.<br>Describe a style above to create one!</div>`;
+          return;
+        }
+        el.innerHTML = savedTemplates
+          .map(
+            (t) => `
+          <div class="gallery-card${activeTemplate && activeTemplate.id === t.id ? " active" : ""}" id="gc-${t.id}">
+            <div class="gallery-thumb" onclick="selectGenerated('${t.id}')">
+              <div class="gallery-thumb-inner">
+                <style>${t.css}</style>
+                ${buildAIResume(t, getSampleData(), false)}
+              </div>
+            </div>
+            <div class="gallery-card-footer">
+              <span class="gallery-card-name" onclick="selectGenerated('${t.id}')" style="cursor:pointer;">${t.name}</span>
+              <button class="gallery-card-del" onclick="deleteSaved('${t.id}')">✕</button>
+            </div>
+          </div>`,
+          )
+          .join("");
+      }
+
+      function selectGenerated(id) {
+        const t = savedTemplates.find((x) => x.id === id);
+        if (!t) return;
+        document
+          .querySelectorAll(".preset-card,.gallery-card")
+          .forEach((c) => c.classList.remove("active"));
+        document.getElementById("gc-" + id)?.classList.add("active");
+        activeTemplate = {
+          id: t.id,
+          name: t.name,
+          css: t.css,
+          layout: t.layout,
+          html_fn: (d, badge) => buildAIResume(t, d, badge),
+        };
+        updateActiveName(t.name);
+        rp();
+      }
+
+      function deleteSaved(id) {
+        savedTemplates = savedTemplates.filter((t) => t.id !== id);
+        if (activeTemplate?.id === id) {
+          activeTemplate = null;
+          updateActiveName("None selected");
+        }
+        renderGallery();
+        rp();
+      }
+
+      function updateActiveName(name) {
+        document.getElementById("active-tpl-name").textContent = name;
+        const dotColors = {
+          classic: "#333",
+          modern: "#60a5fa",
+          minimal: "#0f172a",
+          bold: "#7c3aed",
+          elegant: "#92400e",
+          tech: "#22d3ee",
+        };
+        const dot = document.getElementById("tpl-dot");
+        if (dot)
+          dot.style.background = dotColors[activeTemplate?.id] || "#fbbf24";
+      }
+
+      // ═══════════════════════════════════════════════
+      //  DATA
+      // ═══════════════════════════════════════════════
+      function getSampleData() {
+        return {
+          name: "Your Name",
+          title: "Your Title",
+          email: "email@example.com",
+          phone: "+1 555 0000",
+          loc: "City, Country",
+          blood: "",
+          sum: "A brief summary of your background and career goals goes here.",
+          skills: "Skill One, Skill Two, Skill Three",
+          langs: "English – Fluent",
+          hobbies: "Reading, Travel",
+          exp: [
+            {
+              company: "Company Name",
+              role: "Job Title",
+              from: "2020",
+              to: "Present",
+              desc: "Key achievement and responsibility description.",
+            },
+          ],
+          edu: [
+            {
+              school: "University Name",
+              degree: "Degree Title",
+              from: "2016",
+              to: "2020",
+            },
+          ],
+          cert: [
+            {
+              course: "Certificate Name",
+              org: "Issuing Org",
+              from: "2022",
+              to: "2023",
+            },
+          ],
+        };
+      }
+
+      function getData() {
+        const g = (id) => (document.getElementById(id) || {}).value || "";
+        const exp = [
+          ...document.querySelectorAll("#exp-list .entry-block"),
+        ].map((b) => {
+          const f = b.querySelectorAll("input,textarea");
+          return {
+            company: f[0]?.value || "",
+            role: f[1]?.value || "",
+            from: f[2]?.value || "",
+            to: f[3]?.value || "",
+            desc: f[4]?.value || "",
+          };
+        });
+        const edu = [
+          ...document.querySelectorAll("#edu-list .entry-block"),
+        ].map((b) => {
+          const f = b.querySelectorAll("input");
+          return {
+            school: f[0]?.value || "",
+            degree: f[1]?.value || "",
+            from: f[2]?.value || "",
+            to: f[3]?.value || "",
+          };
+        });
+        const cert = [
+          ...document.querySelectorAll("#cert-list .entry-block"),
+        ].map((b) => {
+          const f = b.querySelectorAll("input");
+          return {
+            course: f[0]?.value || "",
+            org: f[1]?.value || "",
+            from: f[2]?.value || "",
+            to: f[3]?.value || "",
+          };
+        });
+        return {
+          name: g("f-name"),
+          title: g("f-title"),
+          email: g("f-email"),
+          phone: g("f-phone"),
+          loc: g("f-loc"),
+          blood: g("f-blood"),
+          sum: g("f-sum"),
+          skills: g("f-skills"),
+          langs: g("f-langs"),
+          hobbies: g("f-hobbies"),
+          exp,
+          edu,
+          cert,
+        };
+      }
+
+      // ═══════════════════════════════════════════════
+      //  BUILD AI-GENERATED TEMPLATE RESUME
+      // ═══════════════════════════════════════════════
+      function buildAIResume(tpl, d, showBadge) {
+        // Use aiSummary (the applied one) if showBadge=true and it exists
+        const sum = showBadge && aiSummary ? aiSummary : d.sum;
+        const badge =
+          showBadge && aiSummary
+            ? `<span style="display:inline-block;background:#fef3c7;color:#b45309;font-size:8px;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-left:5px;">✦ AI Enhanced</span>`
+            : "";
+        const sk = d.skills
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const langs = d.langs
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const hobbies = d.hobbies
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const ct = [
+          d.email,
+          d.phone,
+          d.loc,
+          d.blood ? `Blood: ${d.blood}` : "",
+        ].filter(Boolean);
+        const exps = d.exp.filter((e) => e.company);
+        const edus = d.edu.filter((e) => e.school);
+        const certs = d.cert.filter((c) => c.course);
+        const dur = (f, t) =>
+          f || t ? `${f || ""}${f && t ? " – " : ""}${t || ""}` : "";
+
+        const styleTag = tpl.css ? `<style>${tpl.css}</style>` : "";
+        const contactHtml = ct.map((c) => `<span>${c}</span>`).join(" ");
+        const expHtml = exps
+          .map(
+            (e) =>
+              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${e.role}</span><span class="rt-entry-date">${dur(e.from, e.to)}</span></div><div class="rt-entry-company">${e.company}</div><div class="rt-entry-desc">${e.desc}</div></div>`,
+          )
+          .join("");
+        const eduHtml = edus
+          .map(
+            (e) =>
+              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${e.degree}</span><span class="rt-entry-date">${dur(e.from, e.to)}</span></div><div class="rt-entry-company">${e.school}</div></div>`,
+          )
+          .join("");
+        const certHtml = certs
+          .map(
+            (c) =>
+              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${c.course}</span><span class="rt-entry-date">${dur(c.from, c.to)}</span></div><div class="rt-entry-company">${c.org}</div></div>`,
+          )
+          .join("");
+        const skHtml = sk
+          .map((s) => `<span class="rt-tag">${s}</span>`)
+          .join("");
+        const langHtml = langs
+          .map((s) => `<span class="rt-tag">${s}</span>`)
+          .join("");
+        const hobHtml = hobbies
+          .map((s) => `<span class="rt-tag">${s}</span>`)
+          .join("");
+
+        if (tpl.layout === "sidebar") {
+          return `${styleTag}<div class="rt-wrap">
+            <div class="rt-sidebar">
+              <div class="rt-name">${d.name || "Your Name"}</div>
+              <div class="rt-title">${d.title || ""}</div>
+              <div class="rt-contact">${ct.map((c) => `<div>${c}</div>`).join("")}</div>
+              ${sk.length ? `<div class="rt-section-title">Skills</div>${sk.map((s) => `<span class="rt-tag">${s}</span>`).join("")}` : ""}
+              ${langs.length ? `<div class="rt-section-title">Languages</div>${langHtml}` : ""}
+              ${hobbies.length ? `<div class="rt-section-title">Hobbies</div>${hobHtml}` : ""}
+            </div>
+            <div class="rt-main">
+              ${sum ? `<div class="rt-section-title">About ${badge}</div><div class="rt-summary">${sum}</div>` : ""}
+              ${exps.length ? `<div class="rt-section-title">Experience</div>${expHtml}` : ""}
+              ${edus.length ? `<div class="rt-section-title">Education</div>${eduHtml}` : ""}
+              ${certs.length ? `<div class="rt-section-title">Certifications</div>${certHtml}` : ""}
+            </div>
+          </div>`;
+        }
+
+        return `${styleTag}<div class="rt-wrap">
+          <div class="rt-header">
+            <div class="rt-name">${d.name || "Your Name"}</div>
+            <div class="rt-title">${d.title || ""}</div>
+            <div class="rt-contact">${contactHtml}</div>
+          </div>
+          ${sum ? `<div class="rt-section-title">Summary ${badge}</div><div class="rt-summary">${sum}</div>` : ""}
+          ${exps.length ? `<div class="rt-section-title">Experience</div>${expHtml}` : ""}
+          ${edus.length ? `<div class="rt-section-title">Education</div>${eduHtml}` : ""}
+          ${certs.length ? `<div class="rt-section-title">Certifications</div>${certHtml}` : ""}
+          ${sk.length ? `<div class="rt-section-title">Skills</div>${skHtml}` : ""}
+          ${langs.length ? `<div class="rt-section-title">Languages</div>${langHtml}` : ""}
+          ${hobbies.length ? `<div class="rt-section-title">Hobbies</div>${hobHtml}` : ""}
+        </div>`;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  BUILD PRESET RESUME HTML
+      // ═══════════════════════════════════════════════
+      function buildPresetResume(id, d, showBadge) {
+        const sum = showBadge && aiSummary ? aiSummary : d.sum;
+        const badge =
+          showBadge && aiSummary
+            ? `<span class="ai-badge">✦ AI Enhanced</span>`
+            : "";
+        const sk = d.skills
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const langs = d.langs
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const hobbies = d.hobbies
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+        const ct = [d.email, d.phone, d.loc].filter(Boolean);
+        const exps = d.exp.filter((e) => e.company);
+        const edus = d.edu.filter((e) => e.school);
+        const certs = d.cert.filter((c) => c.course);
+        const dur = (f, t) =>
+          f || t ? `${f || ""}${f && t ? " – " : ""}${t || ""}` : "";
+        const meta = [d.blood ? `Blood: ${d.blood}` : ""].filter(Boolean);
+
+        const expRows = exps
+          .map(
+            (e) =>
+              `<div class="ren"><div class="rer"><span class="rerl">${e.role}</span><span class="rerd">${dur(e.from, e.to)}</span></div><div class="reco">${e.company}</div><div class="rede">${e.desc}</div></div>`,
+          )
+          .join("");
+        const eduRows = edus
+          .map(
+            (e) =>
+              `<div class="ren"><div class="rer"><span class="rerl">${e.degree}</span><span class="rerd">${dur(e.from, e.to)}</span></div><div class="reco">${e.school}</div></div>`,
+          )
+          .join("");
+        const certRows = certs
+          .map(
+            (c) =>
+              `<div class="ren"><div class="rer"><span class="rerl">${c.course}</span><span class="rerd">${dur(c.from, c.to)}</span></div><div class="reco">${c.org}</div></div>`,
+          )
+          .join("");
+
+        if (id === "classic")
+          return `<div style="background:#fff;padding:36px;font-family:Georgia,serif;font-size:12.5px;color:#222;border:1px solid #ddd;border-radius:3px;">
+          <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:14px;">
+            <div style="font-size:24px;font-weight:700;">${d.name || "Your Name"}</div>
+            <div style="font-size:12px;color:#555;margin-top:2px;">${d.title}</div>
+            <div style="font-size:10px;color:#777;margin-top:5px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;">${[...ct, ...meta].map((c) => `<span>${c}</span>`).join("")}</div>
+          </div>
+          ${sum ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Summary ${badge}</div><p style="font-size:12px;color:#333;line-height:1.7;">${sum}</p>` : ""}
+          ${exps.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Experience</div>${expRows}` : ""}
+          ${edus.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Education</div>${eduRows}` : ""}
+          ${certs.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Certifications</div>${certRows}` : ""}
+          ${sk.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Skills</div>${sk.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+          ${langs.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Languages</div>${langs.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+          ${hobbies.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Hobbies</div>${hobbies.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+        </div>`;
+
+        if (id === "modern")
+          return `<div style="display:grid;grid-template-columns:195px 1fr;font-family:'DM Sans',sans-serif;font-size:12.5px;border-radius:3px;overflow:hidden;border:1px solid #1e293b;">
+          <div style="background:#0f172a;padding:24px 16px;color:#e2e8f0;">
+            <div style="font-size:17px;font-weight:700;color:#f1f5f9;margin-bottom:3px;">${d.name || "Your Name"}</div>
+            <div style="font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:12px;">${d.title}</div>
+            <div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Contact</div>
+            ${[...ct, ...meta].map((c) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">▸ ${c}</div>`).join("")}
+            ${sk.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Skills</div>${sk.map((s, i) => `<div style="margin-bottom:6px;"><div style="font-size:10px;color:#cbd5e1;margin-bottom:2px;">${s}</div><div style="height:3px;background:#1e293b;border-radius:2px;overflow:hidden;"><div style="height:100%;background:#60a5fa;border-radius:2px;width:${65 + ((i * 19) % 30)}%"></div></div></div>`).join("")}` : ""}
+            ${langs.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Languages</div>${langs.map((s) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:3px;">• ${s}</div>`).join("")}` : ""}
+            ${hobbies.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Hobbies</div>${hobbies.map((s) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:3px;">• ${s}</div>`).join("")}` : ""}
+          </div>
+          <div style="background:#1e293b;padding:24px 20px;color:#e2e8f0;">
+            ${sum ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin-bottom:8px;">About ${badge}</div><p style="font-size:12px;color:#cbd5e1;line-height:1.65;">${sum}</p>` : ""}
+            ${exps.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Experience</div>${exps.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${e.role}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(e.from, e.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;margin:1px 0;">${e.company}</div><div style="font-size:11px;color:#94a3b8;line-height:1.6;margin-top:2px;">${e.desc}</div></div>`).join("")}` : ""}
+            ${edus.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Education</div>${edus.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${e.degree}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(e.from, e.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;">${e.school}</div></div>`).join("")}` : ""}
+            ${certs.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Certifications</div>${certs.map((c) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${c.course}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(c.from, c.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;">${c.org}</div></div>`).join("")}` : ""}
+          </div>
+        </div>`;
+
+        const colors = {
+          minimal: {
+            bg: "#f8fafc",
+            hd: "#0f172a",
+            ac: "#64748b",
+            sec: "#94a3b8",
+            txt: "#334155",
+            tag: "#e2e8f0",
+            tagTxt: "#0f172a",
+          },
+          bold: {
+            bg: "#7c3aed",
+            hd: "#fff",
+            ac: "#c4b5fd",
+            sec: "#c4b5fd",
+            txt: "#ddd6fe",
+            tag: "#6d28d9",
+            tagTxt: "#c4b5fd",
+          },
+          elegant: {
+            bg: "#fdf6ec",
+            hd: "#3b1f0a",
+            ac: "#92400e",
+            sec: "#92400e",
+            txt: "#57340f",
+            tag: "#fef3e2",
+            tagTxt: "#92400e",
+          },
+          tech: {
+            bg: "#0f172a",
+            hd: "#f0f9ff",
+            ac: "#22d3ee",
+            sec: "#22d3ee",
+            txt: "#94a3b8",
+            tag: "#1e293b",
+            tagTxt: "#22d3ee",
+          },
+        };
+        const C = colors[id] || colors.minimal;
+        return `<div style="background:${C.bg};padding:36px;font-family:'DM Sans',sans-serif;font-size:12.5px;color:${C.hd};border-radius:3px;">
+          <div style="border-bottom:2px solid ${C.ac};padding-bottom:12px;margin-bottom:14px;">
+            <div style="font-size:24px;font-weight:700;">${d.name || "Your Name"}</div>
+            <div style="font-size:12px;color:${C.ac};margin-top:2px;">${d.title}</div>
+            <div style="font-size:10px;color:${C.sec};margin-top:5px;display:flex;flex-wrap:wrap;gap:10px;">${[...ct, ...meta].map((c) => `<span>${c}</span>`).join("")}</div>
+          </div>
+          ${sum ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Summary ${badge}</div><p style="font-size:12px;color:${C.txt};line-height:1.7;">${sum}</p>` : ""}
+          ${exps.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Experience</div>${exps.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${e.role}</span><span style="font-size:10px;color:${C.ac};">${dur(e.from, e.to)}</span></div><div style="color:${C.ac};font-size:11px;margin:1px 0;">${e.company}</div><div style="font-size:11px;color:${C.txt};line-height:1.6;margin-top:2px;">${e.desc}</div></div>`).join("")}` : ""}
+          ${edus.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Education</div>${edus.map((e) => `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${e.degree}</span><span style="font-size:10px;color:${C.ac};">${dur(e.from, e.to)}</span></div><div style="color:${C.ac};font-size:11px;">${e.school}</div></div>`).join("")}` : ""}
+          ${certs.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Certifications</div>${certs.map((c) => `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${c.course}</span><span style="font-size:10px;color:${C.ac};">${dur(c.from, c.to)}</span></div><div style="color:${C.ac};font-size:11px;">${c.org}</div></div>`).join("")}` : ""}
+          ${sk.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Skills</div>${sk.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+          ${langs.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Languages</div>${langs.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+          ${hobbies.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Hobbies</div>${hobbies.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
+        </div>`;
+      }
+
+      // ═══════════════════════════════════════════════
+      //  LIVE PREVIEW
+      // ═══════════════════════════════════════════════
+      function rp() {
+        if (!activeTemplate) {
+          document.getElementById("mini-resume").innerHTML =
+            "<div style='padding:20px;font-size:11px;color:#a8a29e;text-align:center;'>Select a template to preview</div>";
+          return;
+        }
+        const d = getData();
+        document.getElementById("mini-resume").innerHTML =
+          activeTemplate.html_fn(d, false);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  FULL RESUME RENDER (step 5)
+      // ═══════════════════════════════════════════════
+      function renderResume() {
+        if (!activeTemplate) {
+          document.getElementById("resume-out").innerHTML =
+            "<p>No template selected.</p>";
+          return;
+        }
+        const d = getData();
+        document.getElementById("resume-out").innerHTML =
+          activeTemplate.html_fn(d, true);
+      }
+
+      // ═══════════════════════════════════════════════
+      //  ENTRY BLOCKS
+      // ═══════════════════════════════════════════════
+      function addExp() {
+        const id = expIdx++;
+        const d = document.createElement("div");
+        d.className = "entry-block";
+        d.id = "exp-" + id;
+        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('exp-${id}')">✕ Remove</button>` : ""}
+          <div class="field-grid">
+            <div class="field"><label>Company <span class="req">*</span></label><input placeholder="Google" oninput="rp()"/><span class="err-msg"></span></div>
+            <div class="field"><label>Role / Position <span class="req">*</span></label><input placeholder="Senior Engineer" oninput="rp()"/><span class="err-msg"></span></div>
+            <div class="field"><label>From Year</label><input placeholder="2020" maxlength="4" oninput="rp()"/></div>
+            <div class="field"><label>To Year</label><input placeholder="2024 or Present" oninput="rp()"/></div>
+            <div class="field full"><label>Key Achievements</label><textarea rows="3" placeholder="Led a team of 5, cut load time by 40%…" oninput="rp()"></textarea></div>
+          </div>`;
+        document.getElementById("exp-list").appendChild(d);
+      }
+      function addEdu() {
+        const id = eduIdx++;
+        const d = document.createElement("div");
+        d.className = "entry-block";
+        d.id = "edu-" + id;
+        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('edu-${id}')">✕ Remove</button>` : ""}
+          <div class="field-grid">
+            <div class="field"><label>School / University</label><input placeholder="MIT" oninput="rp()"/></div>
+            <div class="field"><label>Degree / Qualification</label><input placeholder="B.Sc. Computer Science" oninput="rp()"/></div>
+            <div class="field"><label>From Year</label><input placeholder="2015" maxlength="4" oninput="rp()"/></div>
+            <div class="field"><label>To Year</label><input placeholder="2019 or Present" oninput="rp()"/></div>
+          </div>`;
+        document.getElementById("edu-list").appendChild(d);
+      }
+      function addCert() {
+        const id = certIdx++;
+        const d = document.createElement("div");
+        d.className = "entry-block";
+        d.id = "cert-" + id;
+        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('cert-${id}')">✕ Remove</button>` : ""}
+          <div class="field-grid">
+            <div class="field"><label>Course / Certification</label><input placeholder="AWS Solutions Architect" oninput="rp()"/></div>
+            <div class="field"><label>Issuing Organization</label><input placeholder="Amazon Web Services" oninput="rp()"/></div>
+            <div class="field"><label>From Year</label><input placeholder="2022" maxlength="4" oninput="rp()"/></div>
+            <div class="field"><label>To Year / Completed</label><input placeholder="2023" oninput="rp()"/></div>
+          </div>`;
+        document.getElementById("cert-list").appendChild(d);
+      }
+      function del(id) {
+        document.getElementById(id).remove();
+        rp();
+      }
+
+      // ═══════════════════════════════════════════════
+      //  AI SUMMARY ENHANCE  (NEW FLOW)
+      //  1. AI generates → shown in editable textarea
+      //  2. User edits freely
+      //  3. User clicks Apply → aiSummary is set, resume re-renders
+      //  4. User clicks Discard → edit box hides, original summary kept
+      // ═══════════════════════════════════════════════
+      async function enhanceAI() {
+        const d = getData();
+        const btn = document.getElementById("ai-btn");
+        const sp = document.getElementById("spinner");
+        const txt = document.getElementById("ai-btn-text");
+        const err = document.getElementById("error-msg");
+
+        btn.disabled = true;
+        sp.style.display = "block";
+        txt.textContent = "Generating…";
+        err.style.display = "none";
+
+        try {
+          const res = await fetch(
+            "http://127.0.0.1:8080/api/resume/enhance-summary",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                name: d.name,
+                title: d.title,
+                summary: d.sum,
+                experience: d.exp,
+                skills: d.skills,
+              }),
+            },
+          );
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Server error");
+
+          // Show the editable box with AI output — DO NOT apply yet
+          aiDraftSummary = data.summary;
+          const editBox = document.getElementById("ai-summary-box");
+          const editArea = document.getElementById("ai-summary-edit");
+          editArea.value = aiDraftSummary;
+          editBox.classList.add("visible");
+          editArea.focus();
+
+          // Scroll to the edit box
+          editBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        } catch (e) {
+          err.textContent = "AI enhancement failed: " + e.message;
+          err.style.display = "block";
+        } finally {
+          btn.disabled = false;
+          sp.style.display = "none";
+          txt.textContent = "✦ AI Enhance Summary";
+        }
+      }
+
+      // Live-sync the draft as user types
+      function onAISummaryEdit() {
+        aiDraftSummary = document.getElementById("ai-summary-edit").value;
+      }
+
+      // Apply the (possibly edited) AI summary to the resume
+      function applyAISummary() {
+        aiSummary = document.getElementById("ai-summary-edit").value.trim();
+        if (!aiSummary) {
+          discardAISummary();
+          return;
+        }
+        document.getElementById("ai-summary-box").classList.remove("visible");
+        renderResume();
+        rp();
+        // Update the AI Enhance button label to indicate re-generation is possible
+        document.getElementById("ai-btn-text").textContent =
+          "✦ Re-enhance Summary";
+      }
+
+      // Discard: hide the box, do not change aiSummary
+      function discardAISummary() {
+        document.getElementById("ai-summary-box").classList.remove("visible");
+        aiDraftSummary = "";
+        document.getElementById("ai-summary-edit").value = "";
+      }
+
+      // ═══════════════════════════════════════════════
+      //  SAVE AS PDF  (browser print dialog)
+      // ═══════════════════════════════════════════════
+      function saveResume() {
+        // Ensure the resume is fully rendered before printing
+        renderResume();
+        // Small delay so DOM can repaint
+        setTimeout(() => window.print(), 120);
+      }
+    </script>
+  </body>
+</html>

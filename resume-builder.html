@@ -1356,6 +1356,7 @@
     <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="./js/app.js"></script>
     <script>
       "use strict";
@@ -1522,7 +1523,7 @@
       // ══════════════════════════════════════════════════════
       // STATE
       // ══════════════════════════════════════════════════════
-      const API = "http://127.0.0.1:8080";
+      const API = `${BACKEND_BASE_URL}`;
       let EXP = [],
         EDU = [],
         CERT = [],
@@ -1706,7 +1707,17 @@
       }
 
       function exportPDF() {
-        window.print();
+        const element = $("resume-body");
+
+        html2pdf()
+          .from(element)
+          .set({
+            filename: "resume.pdf",
+            margin: 10,
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+          })
+          .save();
       }
 
       function exportHTML() {

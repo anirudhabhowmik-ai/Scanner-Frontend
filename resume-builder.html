@@ -2,2441 +2,2382 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>ResuméAI – AI Resume Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=Fira+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./css/style.css"></link>
     <style>
-      *,
-      *::before,
-      *::after {
+      /* ─── RESET & VARS ─── */
+      :root {
+        --ink: #0e0e0e;
+        --paper: #f7f4ef;
+        --accent: #c8502a;
+        --accent2: #2a6ec8;
+        --muted: #888;
+        --border: #d8d3cb;
+        --card: #fff;
+        --success: #2e7d52;
+        --warn: #b85c00;
+        --r: 10px;
+        --sh: 0 2px 16px rgba(0, 0, 0, 0.08);
+      }
+      * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
       }
-      :root {
-        --s50: #fafaf9;
-        --s100: #f5f5f4;
-        --s200: #e7e5e4;
-        --s300: #d6d3d1;
-        --s400: #a8a29e;
-        --s600: #57534e;
-        --s700: #44403c;
-        --s800: #292524;
-        --a300: #fcd34d;
-        --a400: #fbbf24;
-        --a500: #f59e0b;
-        --a600: #d97706;
-        --a700: #b45309;
-        --red: #ef4444;
-        --green: #22c55e;
-      }
       body {
         font-family: "DM Sans", sans-serif;
-        background: var(--s50);
-        color: var(--s800);
+        background: var(--paper);
+        color: var(--ink);
+        min-height: 100vh;
+        font-size: 14px;
+      }
+
+      /* ─── APP SHELL ─── */
+      .app {
+        display: flex;
         min-height: 100vh;
       }
 
-      /* ── HEADER ── */
-      header {
-        background: #fff;
-        border-bottom: 1px solid var(--s200);
-        padding: 13px 36px;
+      /* ─── SIDEBAR ─── */
+      .sidebar {
+        width: 240px;
+        flex-shrink: 0;
+        background: var(--ink);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 60px;
+        height: 100vh;
+        overflow-y: auto;
+        z-index: 20;
+      }
+      .sidebar-logo {
+        padding: 24px 20px 16px;
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        flex-shrink: 0;
+      }
+      .sidebar-logo span {
+        color: var(--accent);
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 12px 0;
+      }
+      .nav-label {
+        font-size: 0.6rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.28);
+        padding: 14px 20px 4px;
+      }
+      .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: rgba(255, 255, 255, 0.55);
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.84rem;
+        font-weight: 400;
+        text-align: left;
+        transition: all 0.14s;
+      }
+      .nav-btn:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.07);
+      }
+      .nav-btn.active {
+        color: #fff;
+        background: rgba(200, 80, 42, 0.2);
+        border-left: 3px solid var(--accent);
+        padding-left: 17px;
+      }
+      .nav-btn svg {
+        width: 15px;
+        height: 15px;
+        opacity: 0.65;
+        flex-shrink: 0;
+      }
+      .nav-btn span {
+        flex: 1;
+      }
+
+      /* ─── MAIN AREA ─── */
+      .main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      /* ─── TOPBAR ─── */
+      .topbar {
+        background: var(--card);
+        border-bottom: 1px solid var(--border);
+        padding: 12px 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         position: sticky;
-        top: 0;
-        z-index: 200;
-        box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+        top: 60px;
+        z-index: 15;
+        flex-shrink: 0;
+        overflow: visible;
       }
-      .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .logo-icon {
-        width: 32px;
-        height: 32px;
-        background: var(--s800);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--a400);
-        font-weight: 700;
-        font-size: 15px;
-      }
-      .logo-text {
+      .topbar-left .ttitle {
         font-family: "Playfair Display", serif;
-        font-size: 19px;
+        font-size: 1.25rem;
         font-weight: 700;
+        line-height: 1.2;
       }
-      .header-tag {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: var(--s400);
-        font-weight: 600;
+      .topbar-left .tsub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-top: 1px;
       }
-
-      /* ── LAYOUT ── */
-      .container {
-        max-width: 1160px;
-        margin: 0 auto;
-        padding: 30px 20px;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: 1fr 390px;
-        gap: 24px;
-        align-items: start;
-      }
-
-      /* ── STEPS ── */
-      .steps {
+      .topbar-right {
         display: flex;
         align-items: center;
-        margin-bottom: 28px;
-        overflow-x: auto;
-        padding-bottom: 4px;
-      }
-      .step-col {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        flex-shrink: 0;
-      }
-      .step-circle {
-        width: 27px;
-        height: 27px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 700;
-        transition: all 0.3s;
-        border: 2px solid var(--s200);
-        background: var(--s100);
-        color: var(--s400);
-      }
-      .step-circle.active {
-        background: var(--a400);
-        border-color: var(--a400);
-        color: var(--s800);
-      }
-      .step-circle.done {
-        background: var(--s800);
-        border-color: var(--s800);
-        color: var(--a300);
-      }
-      .step-label {
-        font-size: 8.5px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-weight: 600;
-        color: var(--s400);
-        margin-top: 3px;
-        white-space: nowrap;
-      }
-      .step-label.active {
-        color: var(--a500);
-      }
-      .step-line {
-        width: 36px;
-        height: 2px;
-        background: var(--s200);
-        margin-bottom: 18px;
-        transition: background 0.4s;
-        flex-shrink: 0;
-      }
-      .step-line.done {
-        background: var(--s800);
+        gap: 8px;
       }
 
-      /* ── FORM PANEL ── */
-      .form-panel {
-        background: #fff;
-        border: 1px solid var(--s200);
-        border-radius: 16px;
-        padding: 30px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+      /* ─── CONTENT ─── */
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
       }
-      .step-content {
+      .panel {
         display: none;
       }
-      .step-content.active {
+      .panel.active {
         display: block;
       }
-      h2 {
-        font-family: "Playfair Display", serif;
-        font-size: 23px;
-        font-weight: 700;
-        margin-bottom: 6px;
+
+      /* ─── CARDS ─── */
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: var(--sh);
       }
-      .section-note {
-        font-size: 12px;
-        color: var(--s400);
-        margin-bottom: 18px;
-      }
-      h3 {
+      .card-title {
         font-family: "Playfair Display", serif;
-        font-size: 17px;
+        font-size: 1rem;
         font-weight: 700;
-        margin: 26px 0 14px;
+        margin-bottom: 3px;
+      }
+      .card-sub {
+        font-size: 0.75rem;
+        color: var(--muted);
+        margin-bottom: 16px;
       }
 
-      /* ── FIELDS ── */
-      .field-grid {
+      /* ─── FORMS ─── */
+      .form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 16px;
+        gap: 12px;
       }
-      .field-grid .full {
-        grid-column: 1/-1;
-      }
-      .field {
+      .form-group {
         display: flex;
         flex-direction: column;
+        gap: 4px;
+      }
+      .form-group.full {
+        grid-column: 1/-1;
       }
       label {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.11em;
+        font-size: 0.74rem;
         font-weight: 600;
-        color: var(--s400);
-        margin-bottom: 4px;
-      }
-      .req {
-        color: var(--red);
-        margin-left: 2px;
+        color: #555;
       }
       input,
       textarea,
       select {
-        background: transparent;
-        border: none;
-        border-bottom: 1.5px solid var(--s300);
-        outline: none;
-        padding: 8px 0;
-        font-size: 13px;
-        font-family: "DM Sans", sans-serif;
-        color: var(--s800);
-        transition: border-color 0.2s;
         width: 100%;
+        padding: 8px 11px;
+        border: 1.5px solid var(--border);
+        border-radius: 7px;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.85rem;
+        background: #fff;
+        color: var(--ink);
+        transition: border-color 0.15s;
+        outline: none;
       }
       input:focus,
       textarea:focus,
       select:focus {
-        border-color: var(--s800);
-      }
-      input::placeholder,
-      textarea::placeholder {
-        color: var(--s400);
-      }
-      select option {
-        background: #fff;
-        color: var(--s800);
+        border-color: var(--accent2);
       }
       textarea {
-        resize: none;
-      }
-      input.error,
-      textarea.error {
-        border-color: var(--red) !important;
-      }
-      input.valid,
-      textarea.valid {
-        border-color: var(--green) !important;
-      }
-      .err-msg {
-        font-size: 11px;
-        color: var(--red);
-        margin-top: 3px;
-        display: none;
-        animation: fadeIn 0.2s;
-      }
-      .err-msg.show {
-        display: block;
-      }
-      .char-count {
-        font-size: 10px;
-        color: var(--s400);
-        text-align: right;
-        margin-top: 2px;
-      }
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-3px);
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      /* ── ENTRY BLOCKS ── */
-      .entry-block {
-        border-left: 2px solid var(--a300);
-        padding-left: 16px;
-        margin-bottom: 20px;
-        position: relative;
-      }
-      .remove-btn {
-        position: absolute;
-        top: 0;
-        right: 0;
-        font-size: 11px;
-        color: var(--s300);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: color 0.2s;
-      }
-      .remove-btn:hover {
-        color: var(--red);
-      }
-      .add-btn {
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--s600);
-        background: none;
-        border: 1.5px dashed var(--s300);
-        padding: 7px 16px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: all 0.2s;
-        margin-top: 6px;
-        display: inline-block;
-      }
-      .add-btn:hover {
-        border-color: var(--s600);
-        color: var(--s800);
-      }
-
-      /* ── NAV ── */
-      .nav {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 28px;
-        padding-top: 20px;
-        border-top: 1px solid var(--s100);
-      }
-      .btn-back {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--s400);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: color 0.2s;
-      }
-      .btn-back:hover {
-        color: var(--s700);
-      }
-      .btn-back:disabled {
-        opacity: 0.2;
-        cursor: default;
-      }
-      .btn-next {
-        background: var(--s800);
-        color: #fff;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        border: none;
-        padding: 11px 26px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: background 0.2s;
-      }
-      .btn-next:hover {
-        background: var(--s700);
-      }
-
-      /* ══════════════════════════════════
-   TEMPLATE STEP STYLES
-══════════════════════════════════ */
-      .tpl-section-title {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.13em;
-        color: var(--s400);
-        margin: 20px 0 10px;
-      }
-      .tpl-section-title:first-child {
-        margin-top: 0;
-      }
-
-      /* Preset tags grid */
-      .preset-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 8px;
-        margin-bottom: 4px;
-      }
-      .preset-card {
-        border: 2px solid var(--s200);
-        border-radius: 10px;
-        padding: 0;
-        cursor: pointer;
-        transition: all 0.2s;
-        text-align: center;
-        background: #fff;
-        overflow: hidden;
-      }
-      .preset-card:hover {
-        border-color: var(--s400);
-        transform: translateY(-1px);
-      }
-      .preset-card.active {
-        border-color: var(--a400);
-        background: #fffbeb;
-        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
-      }
-      .preset-thumb {
-        height: 52px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 3px;
-        padding: 7px;
-      }
-      .preset-name {
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--s700);
-        padding: 5px 0 6px;
-      }
-      .tb {
-        width: 75%;
-        height: 2.5px;
-        border-radius: 2px;
-      }
-      .tl {
-        height: 1.5px;
-        border-radius: 1px;
-      }
-
-      /* Style tag pills */
-      .tag-groups {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-      }
-      .tag-group-label {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--s600);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 4px;
-      }
-      .tag-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-      }
-      .style-tag {
-        padding: 5px 12px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 600;
-        border: 1.5px solid var(--s200);
-        background: #fff;
-        color: var(--s600);
-        cursor: pointer;
-        transition: all 0.2s;
-        font-family: "DM Sans", sans-serif;
-        user-select: none;
-      }
-      .style-tag:hover {
-        border-color: var(--s600);
-        color: var(--s800);
-      }
-      .style-tag.on {
-        background: var(--s800);
-        color: #fff;
-        border-color: var(--s800);
-      }
-
-      /* Prompt area */
-      .prompt-row {
-        display: flex;
-        gap: 8px;
-        align-items: stretch;
-        margin-top: 6px;
-      }
-      .prompt-row textarea {
-        border: 1.5px solid var(--s200);
-        border-radius: 10px;
-        padding: 10px 12px;
-        font-size: 13px;
-        height: 72px;
-        flex: 1;
-        transition: border-color 0.2s;
-        border-bottom: 1.5px solid var(--s200) !important;
-      }
-      .prompt-row textarea:focus {
-        border-color: var(--s800) !important;
-      }
-      .gen-btn {
-        background: var(--s800);
-        color: var(--a300);
-        border: none;
-        border-radius: 10px;
-        padding: 0 18px;
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        white-space: nowrap;
-        transition: background 0.2s;
-        flex-shrink: 0;
-      }
-      .gen-btn:hover {
-        background: var(--s700);
-      }
-      .gen-btn:disabled {
-        opacity: 0.5;
-        cursor: default;
-      }
-
-      /* Generated gallery */
-      .gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-top: 6px;
-      }
-      .gallery-card {
-        border: 2px solid var(--s200);
-        border-radius: 10px;
-        overflow: hidden;
-        cursor: pointer;
-        transition: all 0.2s;
-        position: relative;
-        background: #fff;
-      }
-      .gallery-card:hover {
-        border-color: var(--s400);
-        transform: translateY(-1px);
-      }
-      .gallery-card.active {
-        border-color: var(--a400);
-        box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.18);
-      }
-      .gallery-thumb {
-        height: 90px;
-        overflow: hidden;
-        position: relative;
-      }
-      .gallery-thumb-inner {
-        transform: scale(0.22);
-        transform-origin: top left;
-        width: 455%;
-        pointer-events: none;
-      }
-      .gallery-card-footer {
-        padding: 6px 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .gallery-card-name {
-        font-size: 10px;
-        font-weight: 600;
-        color: var(--s700);
-      }
-      .gallery-card-del {
-        font-size: 10px;
-        color: var(--s300);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        padding: 0;
-      }
-      .gallery-card-del:hover {
-        color: var(--red);
-      }
-      .gallery-empty {
-        font-size: 12px;
-        color: var(--s400);
-        text-align: center;
-        padding: 20px;
-        grid-column: 1/-1;
-      }
-
-      /* Gen loading overlay */
-      .gen-loading {
-        display: none;
-        align-items: center;
-        gap: 10px;
-        font-size: 12px;
-        color: var(--s400);
-        margin-top: 8px;
-      }
-      .gen-loading.show {
-        display: flex;
-      }
-      .gen-spinner {
-        width: 14px;
-        height: 14px;
-        border: 2px solid var(--s300);
-        border-top-color: var(--s800);
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-      }
-      .gen-error {
-        font-size: 11px;
-        color: var(--red);
-        margin-top: 6px;
-        display: none;
-      }
-
-      /* ── SIDEBAR ── */
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        position: sticky;
-        top: 76px;
-      }
-      .sidebar-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
-        color: var(--s400);
-        font-weight: 600;
-        margin-bottom: 8px;
-        display: block;
-      }
-      .mini-wrap {
-        background: #fff;
-        border: 1px solid var(--s200);
-        border-radius: 16px;
-        padding: 14px;
-        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
-      }
-      .mini-scaler {
-        transform: scale(0.355);
-        transform-origin: top left;
-        width: 282%;
-        pointer-events: none;
-      }
-      .tip-box {
-        background: #fffbeb;
-        border: 1px solid #fde68a;
-        border-radius: 12px;
-        padding: 13px;
-      }
-      .tip-head {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--a700);
-        margin-bottom: 4px;
-      }
-      .tip-text {
-        font-size: 11px;
-        color: var(--a700);
+        resize: vertical;
+        min-height: 76px;
         line-height: 1.5;
       }
 
-      /* ── AI ENHANCE SECTION ── */
-      .ai-action-row {
+      /* ─── BUTTONS ─── */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 7px;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: all 0.14s;
+        white-space: nowrap;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: #b0431e;
+      }
+      .btn-secondary {
+        background: var(--paper);
+        color: var(--ink);
+        border: 1.5px solid var(--border);
+      }
+      .btn-secondary:hover {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+      .btn-success {
+        background: var(--success);
+        color: #fff;
+      }
+      .btn-success:hover {
+        background: #236040;
+      }
+      .btn-sm {
+        padding: 6px 11px;
+        font-size: 0.78rem;
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* ─── EXPORT DROPDOWN ─── */
+      .export-wrap {
+        position: relative;
+        display: inline-block;
+      }
+      .export-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        background: var(--card);
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        box-shadow: 0 10px 32px rgba(0, 0, 0, 0.14);
+        min-width: 220px;
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-6px);
+        transition:
+          opacity 0.15s,
+          transform 0.15s;
+      }
+      .export-menu.open {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateY(0);
+      }
+      .export-item {
         display: flex;
         align-items: center;
         gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 16px;
-      }
-      .ai-action-row h2 {
-        margin-bottom: 0;
-        flex: 1;
-      }
-      #ai-btn {
-        background: var(--s800);
-        color: var(--a300);
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        border: none;
-        padding: 10px 18px;
-        border-radius: 10px;
+        padding: 10px 14px;
         cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        transition: background 0.2s;
-      }
-      #ai-btn:hover {
-        background: var(--s700);
-      }
-      #ai-btn:disabled {
-        opacity: 0.5;
-        cursor: default;
-      }
-
-      /* ── SAVE/DOWNLOAD BUTTON ── */
-      #save-btn {
-        background: var(--a400);
-        color: var(--s800);
-        font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--ink);
+        transition: background 0.1s;
         border: none;
-        padding: 10px 18px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
+        background: none;
+        width: 100%;
+        text-align: left;
+      }
+      .export-item:first-child {
+        border-radius: 9px 9px 0 0;
+      }
+      .export-item:last-child {
+        border-radius: 0 0 9px 9px;
+      }
+      .export-item:hover {
+        background: var(--paper);
+      }
+      .ei-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
         display: flex;
         align-items: center;
-        gap: 6px;
-        transition: background 0.2s;
-      }
-      #save-btn:hover {
-        background: var(--a500);
-      }
-
-      /* ── AI SUMMARY EDIT BOX ── */
-      .ai-summary-box {
-        display: none;
-        background: #fffbeb;
-        border: 1px solid #fde68a;
-        border-radius: 12px;
-        padding: 14px;
-        margin-bottom: 18px;
-        animation: fadeIn 0.3s;
-      }
-      .ai-summary-box.visible {
-        display: block;
-      }
-      .ai-summary-box-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 8px;
-      }
-      .ai-summary-box-title {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: var(--a700);
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .ai-summary-box-title svg {
+        justify-content: center;
+        font-size: 0.95rem;
         flex-shrink: 0;
       }
-      .ai-summary-actions {
+      .ei-info {
         display: flex;
-        gap: 8px;
+        flex-direction: column;
+        gap: 1px;
       }
-      .ai-sum-save-btn {
-        font-size: 11px;
-        font-weight: 700;
-        background: var(--s800);
-        color: #fff;
-        border: none;
-        border-radius: 7px;
-        padding: 5px 12px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: background 0.2s;
-      }
-      .ai-sum-save-btn:hover {
-        background: var(--s700);
-      }
-      .ai-sum-discard-btn {
-        font-size: 11px;
+      .ei-label {
         font-weight: 600;
-        background: none;
-        color: var(--s400);
-        border: 1.5px solid var(--s300);
-        border-radius: 7px;
-        padding: 5px 12px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        transition: all 0.2s;
+        font-size: 0.81rem;
       }
-      .ai-sum-discard-btn:hover {
-        border-color: var(--red);
-        color: var(--red);
+      .ei-desc {
+        font-size: 0.7rem;
+        color: var(--muted);
       }
-      .ai-summary-textarea {
-        width: 100%;
-        border: 1.5px solid #fde68a !important;
-        border-bottom: 1.5px solid #fde68a !important;
-        border-radius: 8px;
-        padding: 10px 12px !important;
-        font-size: 13px;
-        line-height: 1.6;
-        font-family: "DM Sans", sans-serif;
-        color: var(--s800);
-        background: #fff;
-        resize: vertical;
-        min-height: 80px;
-        outline: none;
-        transition: border-color 0.2s;
-      }
-      .ai-summary-textarea:focus {
-        border-color: var(--a500) !important;
-      }
-      .ai-sum-hint {
-        font-size: 10.5px;
-        color: var(--a600);
-        margin-top: 6px;
+      .export-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 3px 0;
       }
 
-      .spinner {
-        width: 11px;
-        height: 11px;
-        border: 2px solid var(--a300);
-        border-top-color: transparent;
+      /* ─── EXP/EDU ITEMS ─── */
+      .exp-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .exp-item {
+        border: 1.5px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        background: #fdfcfa;
+      }
+      .exp-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 9px;
+      }
+      .exp-num {
+        width: 20px;
+        height: 20px;
+        background: var(--accent);
+        color: #fff;
         border-radius: 50%;
-        animation: spin 0.7s linear infinite;
+        font-size: 0.66rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .exp-title {
+        font-weight: 600;
+        font-size: 0.82rem;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .btn-del {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #ccc;
+        font-size: 0.9rem;
+        line-height: 1;
+        padding: 2px 4px;
+        transition: color 0.14s;
+      }
+      .btn-del:hover {
+        color: var(--accent);
+      }
+
+      /* ─── AI RESULT ─── */
+      .ai-box {
+        background: #f0f6ff;
+        border: 1.5px solid #b8d0f8;
+        border-radius: 8px;
+        padding: 12px 14px;
+        margin-top: 12px;
+        font-size: 0.85rem;
+        line-height: 1.65;
         display: none;
       }
-      @keyframes spin {
+      .ai-box.show {
+        display: block;
+      }
+      .ai-box-label {
+        font-size: 0.66rem;
+        font-weight: 700;
+        color: var(--accent2);
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+
+      /* ─── SCORE ─── */
+      .score-row {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
+      }
+      .score-donut {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: conic-gradient(
+          var(--accent) calc(var(--pct, 0) * 1%),
+          #e8e3db 0
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      }
+      .score-donut::after {
+        content: "";
+        width: 66px;
+        height: 66px;
+        background: var(--card);
+        border-radius: 50%;
+        position: absolute;
+      }
+      .score-val {
+        position: relative;
+        z-index: 1;
+        font-family: "Playfair Display", serif;
+        font-size: 1.65rem;
+        font-weight: 700;
+      }
+      .score-meta {
+      }
+      .score-grade {
+        font-family: "Playfair Display", serif;
+        font-size: 1.25rem;
+        font-weight: 700;
+      }
+      .score-fb {
+        font-size: 0.82rem;
+        color: #555;
+        margin-top: 5px;
+        max-width: 360px;
+        line-height: 1.5;
+      }
+      .score-cols {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .score-col-title {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .score-col-title.g {
+        color: var(--success);
+      }
+      .score-col-title.o {
+        color: var(--warn);
+      }
+      .score-list {
+        list-style: none;
+      }
+      .score-list li {
+        font-size: 0.8rem;
+        color: #333;
+        padding: 4px 0;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 7px;
+        align-items: flex-start;
+        line-height: 1.45;
+      }
+      .score-list li::before {
+        content: "•";
+        flex-shrink: 0;
+      }
+      .score-list.g li::before {
+        color: var(--success);
+      }
+      .score-list.o li::before {
+        color: var(--warn);
+      }
+
+      /* ─── TAGS ─── */
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .tag {
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        background: #eef3ff;
+        color: var(--accent2);
+        border: 1px solid #c0d4f5;
+        cursor: pointer;
+        transition: all 0.13s;
+      }
+      .tag:hover {
+        background: var(--accent2);
+        color: #fff;
+      }
+      .tag.found {
+        background: #e6f5ed;
+        color: var(--success);
+        border-color: #a3d4b5;
+      }
+      .tag.missing {
+        background: #fff0eb;
+        color: var(--accent);
+        border-color: #f5c4b0;
+      }
+
+      /* ─── PREVIEW PANEL ─── */
+      #preview-toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      #resume-frame {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--r);
+        box-shadow: var(--sh);
+        overflow: hidden;
+      }
+      #resume-chrome {
+        padding: 8px 14px;
+        background: #f0ede8;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .chrome-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      #resume-body {
+        padding: 32px;
+        min-height: 500px;
+      }
+
+      /* ─── TEMPLATE GALLERY ─── */
+      .tgallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .tcard {
+        border: 2px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 8px;
+        cursor: pointer;
+        transition: all 0.14s;
+        background: #fdfcfa;
+        text-align: center;
+      }
+      .tcard:hover,
+      .tcard.sel {
+        border-color: var(--accent);
+        background: #fff6f3;
+      }
+      .tcard-dot {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        margin: 0 auto 7px;
+        border: 2px solid rgba(0, 0, 0, 0.07);
+      }
+      .tcard-name {
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-bottom: 2px;
+      }
+      .tcard-layout {
+        color: var(--muted);
+        font-size: 0.68rem;
+      }
+      .tcard-badge {
+        font-size: 0.64rem;
+        border-radius: 4px;
+        padding: 1px 6px;
+        margin-top: 5px;
+        display: inline-block;
+        font-weight: 600;
+      }
+
+      /* ─── TAILOR COLS ─── */
+      .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      /* ─── SPINNER ─── */
+      .spin {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.35);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spinning 0.6s linear infinite;
+        vertical-align: middle;
+      }
+      @keyframes spinning {
         to {
           transform: rotate(360deg);
         }
       }
-      #error-msg {
-        color: var(--red);
-        font-size: 12px;
-        margin-top: 6px;
-        display: none;
-      }
-      .ai-badge {
-        display: inline-block;
-        background: #fef3c7;
-        color: var(--a700);
-        font-size: 8px;
-        font-family: "DM Sans", sans-serif;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        padding: 2px 6px;
-        border-radius: 3px;
-        margin-left: 5px;
-        vertical-align: middle;
+      .spin-dark {
+        border-color: rgba(0, 0, 0, 0.15);
+        border-top-color: var(--accent2);
       }
 
-      /* ── ACTIVE TEMPLATE INDICATOR ── */
-      .active-tpl-bar {
-        background: var(--s100);
-        border: 1px solid var(--s200);
-        border-radius: 10px;
-        padding: 9px 14px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 20px;
-        font-size: 12px;
-      }
-      .active-tpl-bar.hidden {
-        display: none;
-      }
-      .active-tpl-left {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .active-tpl-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--a400);
-        flex-shrink: 0;
-      }
-      .active-tpl-label {
-        font-size: 10px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--s400);
-        font-weight: 600;
-      }
-      .active-tpl-name {
-        font-weight: 700;
-        color: var(--s800);
-        font-size: 13px;
-      }
-      .change-tpl-btn {
-        font-size: 11px;
-        color: var(--a600);
-        background: none;
-        border: 1.5px solid var(--a400);
-        border-radius: 6px;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        font-weight: 700;
-        padding: 4px 10px;
-        transition: all 0.2s;
-      }
-      .change-tpl-btn:hover {
-        background: var(--a400);
-        color: var(--s800);
-      }
-
-      /* ── SELECTED TAGS SUMMARY ── */
-      .selected-tags-summary {
-        margin-top: 8px;
-        font-size: 11px;
-        color: var(--s600);
-        min-height: 18px;
-      }
-      .selected-tags-summary span {
-        background: var(--s800);
+      /* ─── TOAST ─── */
+      #toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1a1a1a;
         color: #fff;
-        font-size: 10px;
-        padding: 2px 8px;
-        border-radius: 12px;
-        margin: 2px;
-        display: inline-block;
+        padding: 9px 16px;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        transform: translateY(16px);
+        opacity: 0;
+        transition: all 0.22s;
+        pointer-events: none;
+        z-index: 9999;
+        max-width: 320px;
       }
-      .clear-tags-btn {
-        font-size: 10px;
-        color: var(--s400);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-family: "DM Sans", sans-serif;
-        margin-left: 4px;
-        text-decoration: underline;
-        padding: 0;
-      }
-      .clear-tags-btn:hover {
-        color: var(--red);
+      #toast.show {
+        transform: translateY(0);
+        opacity: 1;
       }
 
-      /* ── PRINT STYLES ── */
-      @media print {
-        header,
-        .steps,
-        .active-tpl-bar,
-        .ai-action-row,
-        .ai-summary-box,
-        #error-msg,
-        .nav,
-        .sidebar,
-        .form-panel > *:not(#step-5) {
-          display: none !important;
-        }
-        #step-5 {
-          display: block !important;
-        }
-        .grid {
-          display: block !important;
-        }
-        body {
-          background: #fff;
-        }
-        .form-panel {
-          border: none;
-          box-shadow: none;
-          padding: 0;
-        }
-        .container {
-          padding: 0;
-        }
+      /* ─── ERROR BOX ─── */
+      .err-box {
+        background: #fff0eb;
+        border: 1.5px solid #f5c4b0;
+        border-radius: 7px;
+        padding: 9px 12px;
+        margin-top: 10px;
+        font-size: 0.8rem;
+        color: #9a3416;
+        display: none;
+        word-break: break-word;
+        line-height: 1.5;
+      }
+      .err-box.show {
+        display: block;
       }
 
-      @media (max-width: 780px) {
-        .grid {
-          grid-template-columns: 1fr;
-        }
+      /* ─── RESPONSIVE ─── */
+      @media (max-width: 860px) {
         .sidebar {
+          width: 52px;
+        }
+        .sidebar-logo,
+        .nav-label,
+        .nav-btn span {
           display: none;
         }
-        .field-grid {
+        .nav-btn {
+          justify-content: center;
+          padding: 12px;
+        }
+        .content {
+          padding: 14px;
+        }
+        .form-grid,
+        .two-col,
+        .score-cols {
           grid-template-columns: 1fr;
         }
-        .field-grid .full {
-          grid-column: 1;
+      }
+
+      /* ─── PRINT ─── */
+      @page {
+        size: A4;
+        margin: 14mm;
+      }
+      @media print {
+        html,
+        body {
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
         }
-        .preset-grid,
-        .gallery-grid {
-          grid-template-columns: repeat(2, 1fr);
+        .sidebar,
+        .topbar,
+        .content > *:not(#panel-preview),
+        #resume-chrome,
+        #preview-toolbar,
+        #toast {
+          display: none !important;
+        }
+        .panel {
+          display: none !important;
+        }
+        #panel-preview {
+          display: block !important;
+          padding: 0 !important;
+        }
+        #resume-frame {
+          border: none !important;
+          box-shadow: none !important;
+          border-radius: 0 !important;
+        }
+        .main,
+        .content,
+        body,
+        .app {
+          background: #fff !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        #resume-body {
+          padding: 0 !important;
         }
       }
     </style>
   </head>
   <body>
-    <header>
-      <div class="logo">
-        <div class="logo-icon">R</div>
-        <span class="logo-text">ResuméAI</span>
-      </div>
-      <span class="header-tag">AI-Powered Resume Builder</span>
-    </header>
+    <section id="header-placeholder"></section>
+    <div class="app">
+      <!-- ════════════ SIDEBAR ════════════ -->
+      <aside class="sidebar">
+        <div class="sidebar-logo">Résumé<span>AI</span></div>
+        <nav class="sidebar-nav">
+          <div class="nav-label">Build</div>
+          <button
+            class="nav-btn active"
+            onclick="nav('builder')"
+            data-p="builder"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <path d="M3 9h18M9 21V9" />
+            </svg>
+            <span>Resume Builder</span>
+          </button>
+          <button class="nav-btn" onclick="nav('preview')" data-p="preview">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Preview &amp; Export</span>
+          </button>
+          <div class="nav-label">AI Tools</div>
+          <button class="nav-btn" onclick="nav('score')" data-p="score">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            <span>Score Resume</span>
+          </button>
+          <button class="nav-btn" onclick="nav('tailor')" data-p="tailor">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4z" />
+            </svg>
+            <span>Tailor to Job</span>
+          </button>
+          <button class="nav-btn" onclick="nav('skills')" data-p="skills">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"
+              />
+            </svg>
+            <span>Suggest Skills</span>
+          </button>
+          <button class="nav-btn" onclick="nav('template')" data-p="template">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            <span>AI Templates</span>
+          </button>
+        </nav>
+      </aside>
 
-    <div class="container">
-      <div class="steps" id="steps"></div>
-
-      <!-- Global template bar visible on all steps except step 0 -->
-      <div class="active-tpl-bar hidden" id="global-tpl-bar">
-        <div class="active-tpl-left">
-          <div class="active-tpl-dot" id="tpl-dot"></div>
-          <div>
-            <div class="active-tpl-label">Active Template</div>
-            <div class="active-tpl-name" id="active-tpl-name">Classic</div>
+      <!-- ════════════ MAIN ════════════ -->
+      <div class="main">
+        <div class="topbar">
+          <div class="topbar-left">
+            <div class="ttitle" id="t-title">Resume Builder</div>
+            <div class="tsub" id="t-sub">Fill in your details below</div>
+          </div>
+          <div class="topbar-right">
+            <button class="btn btn-secondary btn-sm" onclick="nav('preview')">
+              👁 Preview
+            </button>
+            <div class="export-wrap">
+              <button
+                class="btn btn-primary btn-sm"
+                id="exp-btn-top"
+                onclick="toggleMenu('exp-menu-top', event)"
+              >
+                ⬇ Export ▾
+              </button>
+              <div class="export-menu" id="exp-menu-top">
+                <button class="export-item" onclick="doExport('pdf')">
+                  <div class="ei-icon" style="background: #fff0eb">📄</div>
+                  <div class="ei-info">
+                    <span class="ei-label">Save as PDF</span
+                    ><span class="ei-desc">Print-ready, no date stamp</span>
+                  </div>
+                </button>
+                <button class="export-item" onclick="doExport('html')">
+                  <div class="ei-icon" style="background: #eef3ff">🌐</div>
+                  <div class="ei-info">
+                    <span class="ei-label">Download HTML</span
+                    ><span class="ei-desc">Self-contained web file</span>
+                  </div>
+                </button>
+                <div class="export-divider"></div>
+                <button class="export-item" onclick="doExport('word')">
+                  <div class="ei-icon" style="background: #e8f0fe">📝</div>
+                  <div class="ei-info">
+                    <span class="ei-label">Word Document (.doc)</span
+                    ><span class="ei-desc">Open in MS Word / Docs</span>
+                  </div>
+                </button>
+                <button class="export-item" onclick="doExport('txt')">
+                  <div class="ei-icon" style="background: #f0faf4">📋</div>
+                  <div class="ei-info">
+                    <span class="ei-label">Plain Text (.txt)</span
+                    ><span class="ei-desc">ATS-friendly format</span>
+                  </div>
+                </button>
+                <button class="export-item" onclick="doExport('json')">
+                  <div class="ei-icon" style="background: #fef9e7">🗂</div>
+                  <div class="ei-info">
+                    <span class="ei-label">JSON Backup</span
+                    ><span class="ei-desc">Save &amp; restore your data</span>
+                  </div>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <button class="change-tpl-btn" onclick="go(0)">
-          ⬡ Change Template
-        </button>
-      </div>
 
-      <div class="grid">
-        <!-- ══ FORM PANEL ══ -->
-        <div class="form-panel">
-          <!-- STEP 0: Template -->
-          <div class="step-content active" id="step-0">
-            <h2>Choose a Template</h2>
-            <p class="section-note">
-              Pick a preset, mix style tags, or describe any style — AI will
-              generate it instantly.
-            </p>
-
-            <!-- Preset templates -->
-            <div class="tpl-section-title">⬡ Preset Templates</div>
-            <div class="preset-grid" id="preset-grid"></div>
-
-            <!-- Style tags -->
-            <div class="tpl-section-title" style="margin-top: 20px">
-              🎨 Mix Style Tags
-              <span
-                style="
-                  font-weight: 400;
-                  text-transform: none;
-                  letter-spacing: 0;
-                  color: var(--s400);
-                  margin-left: 4px;
-                "
-                >(select multiple across any category)</span
-              >
-            </div>
-            <div class="tag-groups" id="tag-groups"></div>
-            <div class="selected-tags-summary" id="selected-tags-summary"></div>
-
-            <!-- AI prompt generator -->
-            <div class="tpl-section-title" style="margin-top: 20px">
-              ✦ Describe Any Style — AI Generates It
-            </div>
-            <div class="prompt-row">
-              <textarea
-                id="tpl-prompt"
-                placeholder="e.g. dark navy blue with gold accents, elegant serif fonts, law firm style…"
-                oninput="onPromptInput()"
-              ></textarea>
-              <button class="gen-btn" id="gen-btn" onclick="generateTemplate()">
-                <span
-                  class="gen-spinner"
-                  id="gen-spinner"
-                  style="display: none"
-                ></span>
-                <span id="gen-btn-text">✦ Generate</span>
-              </button>
-            </div>
-            <div class="gen-loading" id="gen-loading">
-              <div class="gen-spinner"></div>
-              <span id="gen-loading-text"
-                >Generating your unique template…</span
-              >
-            </div>
-            <div class="gen-error" id="gen-error"></div>
-
-            <!-- Saved gallery -->
-            <div class="tpl-section-title" style="margin-top: 20px">
-              🗂 Your Generated Templates
-            </div>
-            <div class="gallery-grid" id="gallery-grid">
-              <div class="gallery-empty">
-                No generated templates yet.<br />Describe a style above to
-                create one!
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 1: Personal -->
-          <div class="step-content" id="step-1">
-            <h2>Personal Details</h2>
-            <div class="field-grid">
-              <div class="field">
-                <label>Full Name <span class="req">*</span></label>
-                <input
-                  id="f-name"
-                  placeholder="Ada Lovelace"
-                  oninput="
-                    lv(this, 'name');
-                    rp();
-                  "
-                />
-                <span class="err-msg" id="e-name"
-                  >Please enter your full name.</span
-                >
-              </div>
-              <div class="field">
-                <label>Job Title <span class="req">*</span></label>
-                <input
-                  id="f-title"
-                  placeholder="Software Engineer"
-                  oninput="
-                    lv(this, 'title');
-                    rp();
-                  "
-                />
-                <span class="err-msg" id="e-title"
-                  >Please enter your job title.</span
-                >
-              </div>
-              <div class="field">
-                <label>Email <span class="req">*</span></label>
-                <input
-                  id="f-email"
-                  type="email"
-                  placeholder="ada@example.com"
-                  oninput="
-                    lv(this, 'email');
-                    rp();
-                  "
-                />
-                <span class="err-msg" id="e-email">Enter a valid email.</span>
-              </div>
-              <div class="field">
-                <label>Phone</label>
-                <input
-                  id="f-phone"
-                  placeholder="+1 (555) 000-0000"
-                  oninput="
-                    lv(this, 'phone');
-                    rp();
-                  "
-                />
-                <span class="err-msg" id="e-phone"
-                  >Enter a valid phone number.</span
-                >
-              </div>
-              <div class="field">
-                <label>Location</label>
-                <input
-                  id="f-loc"
-                  placeholder="San Francisco, CA"
-                  oninput="rp()"
-                />
-              </div>
-              <div class="field">
-                <label>Blood Group</label>
-                <select id="f-blood" onchange="rp()">
-                  <option value="">Select…</option>
-                  <option>A+</option>
-                  <option>A-</option>
-                  <option>B+</option>
-                  <option>B-</option>
-                  <option>AB+</option>
-                  <option>AB-</option>
-                  <option>O+</option>
-                  <option>O-</option>
-                </select>
-              </div>
-              <div class="field full">
-                <label
-                  >Professional Summary
-                  <span
-                    style="
-                      color: var(--s400);
-                      font-weight: 400;
-                      text-transform: none;
-                      letter-spacing: 0;
-                    "
-                    >(AI will polish this)</span
-                  >
-                </label>
-                <textarea
-                  id="f-sum"
-                  rows="3"
-                  maxlength="400"
-                  placeholder="A brief summary of your background…"
-                  oninput="
-                    ucc();
-                    rp();
-                  "
-                ></textarea>
-                <div class="char-count"><span id="sum-len">0</span> / 400</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 2: Experience -->
-          <div class="step-content" id="step-2">
-            <h2>Work Experience</h2>
-            <div id="exp-list"></div>
-            <button class="add-btn" onclick="addExp()">
-              + Add Another Role
-            </button>
-          </div>
-
-          <!-- STEP 3: Education & Certificates -->
-          <div class="step-content" id="step-3">
-            <h2>Education</h2>
-            <div id="edu-list"></div>
-            <button class="add-btn" onclick="addEdu()">+ Add Another</button>
-            <h3>Certificate Courses</h3>
-            <div id="cert-list"></div>
-            <button class="add-btn" onclick="addCert()">
-              + Add Certificate
-            </button>
-          </div>
-
-          <!-- STEP 4: Skills, Languages, Hobbies -->
-          <div class="step-content" id="step-4">
-            <h2>Skills, Languages &amp; More</h2>
-            <div class="field-grid">
-              <div class="field full">
-                <label
-                  >Technical Skills <span class="req">*</span>
-                  <span
-                    style="
-                      color: var(--s400);
-                      font-weight: 400;
-                      text-transform: none;
-                      letter-spacing: 0;
-                    "
-                    >(comma separated)</span
-                  >
-                </label>
-                <textarea
-                  id="f-skills"
-                  rows="3"
-                  placeholder="React, Node.js, Python, Docker…"
-                  oninput="
-                    lv(this, 'skills');
-                    rp();
-                  "
-                ></textarea>
-                <span class="err-msg" id="e-skills"
-                  >Please add at least one skill.</span
-                >
-              </div>
-              <div class="field full">
-                <label>Languages Known</label>
-                <textarea
-                  id="f-langs"
-                  rows="2"
-                  placeholder="English – Fluent, Hindi – Native, French – Basic…"
-                  oninput="rp()"
-                ></textarea>
-              </div>
-              <div class="field full">
-                <label>Hobbies &amp; Interests</label>
-                <textarea
-                  id="f-hobbies"
-                  rows="2"
-                  placeholder="Reading, Open-source, Photography, Chess…"
-                  oninput="rp()"
-                ></textarea>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 5: Preview -->
-          <div class="step-content" id="step-5">
-            <!-- Action bar -->
-            <div class="ai-action-row">
-              <h2>Your Resume</h2>
-              <button id="ai-btn" onclick="enhanceAI()">
-                <span class="spinner" id="spinner"></span>
-                <span id="ai-btn-text">✦ AI Enhance Summary</span>
-              </button>
-              <button
-                id="save-btn"
-                onclick="saveResume()"
-                title="Print or save as PDF"
-              >
-                ⬇ Save as PDF
-              </button>
-            </div>
-
-            <!-- ── EDITABLE AI SUMMARY BOX (shown after AI enhance) ── -->
-            <div class="ai-summary-box" id="ai-summary-box">
-              <div class="ai-summary-box-header">
-                <div class="ai-summary-box-title">
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                  >
-                    <path
-                      d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                    />
-                  </svg>
-                  AI-Generated Summary — Edit Before Saving
+        <div class="content">
+          <!-- ── BUILDER ── -->
+          <div class="panel active" id="panel-builder">
+            <div class="card">
+              <div class="card-title">Personal Information</div>
+              <div class="card-sub">Your name, title, and contact details</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Full Name *</label
+                  ><input
+                    id="b-name"
+                    placeholder="Jane Doe"
+                    oninput="qRender()"
+                  />
                 </div>
-                <div class="ai-summary-actions">
-                  <button class="ai-sum-save-btn" onclick="applyAISummary()">
-                    ✓ Apply
+                <div class="form-group">
+                  <label>Job Title *</label
+                  ><input
+                    id="b-title"
+                    placeholder="Senior Product Manager"
+                    oninput="qRender()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Email</label
+                  ><input
+                    id="b-email"
+                    type="email"
+                    placeholder="jane@email.com"
+                    oninput="qRender()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Phone</label
+                  ><input
+                    id="b-phone"
+                    placeholder="+1 555 000 0000"
+                    oninput="qRender()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Location</label
+                  ><input
+                    id="b-location"
+                    placeholder="New York, USA"
+                    oninput="qRender()"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>LinkedIn / Website</label
+                  ><input
+                    id="b-website"
+                    placeholder="linkedin.com/in/janedoe"
+                    oninput="qRender()"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Professional Summary</div>
+              <div class="card-sub">
+                A compelling 2–3 sentence career overview
+              </div>
+              <div class="form-group" style="margin-bottom: 11px">
+                <label>Summary</label>
+                <textarea
+                  id="b-summary"
+                  rows="3"
+                  placeholder="Results-driven professional with…"
+                  oninput="qRender()"
+                ></textarea>
+              </div>
+              <button
+                class="btn btn-primary"
+                id="btn-enhance"
+                onclick="enhanceSummary()"
+              >
+                ✨ Enhance with AI
+              </button>
+              <div class="ai-box" id="ai-summary">
+                <div class="ai-box-label">✦ AI Enhanced Summary</div>
+                <div id="ai-summary-text" style="margin-bottom: 10px"></div>
+                <div style="display: flex; gap: 7px">
+                  <button
+                    class="btn btn-success btn-sm"
+                    onclick="applySummary()"
+                  >
+                    ✓ Use this
                   </button>
                   <button
-                    class="ai-sum-discard-btn"
-                    onclick="discardAISummary()"
+                    class="btn btn-secondary btn-sm"
+                    onclick="enhanceSummary()"
                   >
-                    ✕ Discard
+                    ↻ Retry
                   </button>
                 </div>
               </div>
-              <textarea
-                class="ai-summary-textarea"
-                id="ai-summary-edit"
-                rows="4"
-                placeholder="AI-generated summary will appear here for you to review and edit…"
-                oninput="onAISummaryEdit()"
-              ></textarea>
-              <div class="ai-sum-hint">
-                ✏️ You can freely edit this text. Click
-                <strong>Apply</strong> to use it in your resume, or
-                <strong>Discard</strong> to keep your original summary.
+              <div class="err-box" id="err-summary"></div>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Work Experience</div>
+              <div class="card-sub">
+                Add your roles — AI can improve each description
+              </div>
+              <div class="exp-list" id="exp-list"></div>
+              <button class="btn btn-secondary" onclick="addExp()">
+                + Add Experience
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Education</div>
+              <div class="card-sub">Your degrees and institutions</div>
+              <div class="exp-list" id="edu-list"></div>
+              <button class="btn btn-secondary" onclick="addEdu()">
+                + Add Education
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Certifications</div>
+              <div class="card-sub">Professional certificates and courses</div>
+              <div class="exp-list" id="cert-list"></div>
+              <button class="btn btn-secondary" onclick="addCert()">
+                + Add Certificate
+              </button>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Skills</div>
+              <div class="card-sub">
+                Comma-separated list of your key skills
+              </div>
+              <div class="form-group">
+                <textarea
+                  id="b-skills"
+                  rows="3"
+                  placeholder="Python, Project Management, SQL, Agile…"
+                  oninput="qRender()"
+                ></textarea>
               </div>
             </div>
 
-            <div id="error-msg"></div>
-            <div id="resume-out"></div>
-          </div>
+            <div class="card">
+              <div class="card-title">Languages</div>
+              <div class="card-sub">
+                Languages you know and proficiency level
+              </div>
+              <div class="exp-list" id="lang-list"></div>
+              <button class="btn btn-secondary" onclick="addLang()">
+                + Add Language
+              </button>
+            </div>
 
-          <!-- Nav -->
-          <div class="nav">
-            <button
-              class="btn-back"
-              id="btn-back"
-              onclick="prevStep()"
-              disabled
-            >
-              ← Back
-            </button>
-            <button class="btn-next" id="btn-next" onclick="nextStep()">
-              Continue →
-            </button>
-          </div>
-        </div>
-
-        <!-- ══ SIDEBAR ══ -->
-        <div class="sidebar">
-          <div class="mini-wrap">
-            <span class="sidebar-label">Live Preview</span>
-            <div
-              style="
-                overflow: hidden;
-                border-radius: 6px;
-                border: 1px solid var(--s200);
-                min-height: 120px;
-              "
-            >
-              <div id="mini-resume" class="mini-scaler"></div>
+            <div class="card">
+              <div class="card-title">Hobbies &amp; Interests</div>
+              <div class="card-sub">
+                A few personal interests to add personality
+              </div>
+              <div class="form-group">
+                <textarea
+                  id="b-hobbies"
+                  rows="2"
+                  placeholder="Photography, Open-source, Hiking…"
+                  oninput="qRender()"
+                ></textarea>
+              </div>
             </div>
           </div>
-          <div class="tip-box">
-            <div class="tip-head">✦ Tips</div>
-            <div class="tip-text" id="tip-text"></div>
+          <!-- /builder -->
+
+          <!-- ── PREVIEW ── -->
+          <div class="panel" id="panel-preview">
+            <div id="preview-toolbar">
+              <div class="export-wrap">
+                <button
+                  class="btn btn-primary"
+                  onclick="toggleMenu('exp-menu-prev', event)"
+                >
+                  ⬇ Export ▾
+                </button>
+                <div class="export-menu" id="exp-menu-prev">
+                  <button class="export-item" onclick="doExport('pdf')">
+                    <div class="ei-icon" style="background: #fff0eb">📄</div>
+                    <div class="ei-info">
+                      <span class="ei-label">Save as PDF</span
+                      ><span class="ei-desc">Print-ready, no date stamp</span>
+                    </div>
+                  </button>
+                  <button class="export-item" onclick="doExport('html')">
+                    <div class="ei-icon" style="background: #eef3ff">🌐</div>
+                    <div class="ei-info">
+                      <span class="ei-label">Download HTML</span
+                      ><span class="ei-desc">Self-contained web file</span>
+                    </div>
+                  </button>
+                  <div class="export-divider"></div>
+                  <button class="export-item" onclick="doExport('word')">
+                    <div class="ei-icon" style="background: #e8f0fe">📝</div>
+                    <div class="ei-info">
+                      <span class="ei-label">Word Document (.doc)</span
+                      ><span class="ei-desc">Open in MS Word / Docs</span>
+                    </div>
+                  </button>
+                  <button class="export-item" onclick="doExport('txt')">
+                    <div class="ei-icon" style="background: #f0faf4">📋</div>
+                    <div class="ei-info">
+                      <span class="ei-label">Plain Text (.txt)</span
+                      ><span class="ei-desc">ATS-friendly format</span>
+                    </div>
+                  </button>
+                  <button class="export-item" onclick="doExport('json')">
+                    <div class="ei-icon" style="background: #fef9e7">🗂</div>
+                    <div class="ei-info">
+                      <span class="ei-label">JSON Backup</span
+                      ><span class="ei-desc">Save &amp; restore your data</span>
+                    </div>
+                  </button>
+                </div>
+              </div>
+              <button class="btn btn-secondary" onclick="renderResume()">
+                ↻ Refresh
+              </button>
+              <span style="font-size: 0.77rem; color: var(--muted)"
+                >Theme:
+                <strong id="active-theme-name">Classic Crimson</strong></span
+              >
+            </div>
+            <div id="resume-frame">
+              <div id="resume-chrome">
+                <div class="chrome-dot" style="background: #ff5f56"></div>
+                <div class="chrome-dot" style="background: #ffbd2e"></div>
+                <div class="chrome-dot" style="background: #27c93f"></div>
+                <span style="font-size: 0.71rem; color: #999; margin-left: 8px"
+                  >resume.pdf</span
+                >
+              </div>
+              <div id="resume-body"></div>
+            </div>
+          </div>
+          <!-- /preview -->
+
+          <!-- ── SCORE ── -->
+          <div class="panel" id="panel-score">
+            <div class="card">
+              <div class="card-title">AI Resume Scorer</div>
+              <div class="card-sub">
+                Instant AI analysis — score, grade, strengths, and improvements
+              </div>
+              <button
+                class="btn btn-primary"
+                id="btn-score"
+                onclick="scoreResume()"
+              >
+                🎯 Analyse My Resume
+              </button>
+              <div class="err-box" id="err-score"></div>
+            </div>
+            <div id="score-result" style="display: none">
+              <div class="card">
+                <div class="score-row">
+                  <div class="score-donut" id="score-donut">
+                    <span class="score-val" id="score-val">--</span>
+                  </div>
+                  <div class="score-meta">
+                    <div class="score-grade" id="score-grade">Grade: --</div>
+                    <div class="score-fb" id="score-fb"></div>
+                  </div>
+                </div>
+                <div class="score-cols">
+                  <div>
+                    <div class="score-col-title g">✓ Strengths</div>
+                    <ul class="score-list g" id="score-str"></ul>
+                  </div>
+                  <div>
+                    <div class="score-col-title o">↑ Improvements</div>
+                    <ul class="score-list o" id="score-imp"></ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── TAILOR ── -->
+          <div class="panel" id="panel-tailor">
+            <div class="card">
+              <div class="card-title">Tailor Resume to Job Description</div>
+              <div class="card-sub">
+                Paste a job posting — AI rewrites your summary and highlights
+                missing keywords
+              </div>
+              <div class="form-group" style="margin-bottom: 12px">
+                <label>Job Description *</label>
+                <textarea
+                  id="job-desc"
+                  rows="7"
+                  placeholder="Paste the full job posting here…"
+                ></textarea>
+              </div>
+              <button
+                class="btn btn-primary"
+                id="btn-tailor"
+                onclick="tailorResume()"
+              >
+                🎯 Tailor My Resume
+              </button>
+              <div class="err-box" id="err-tailor"></div>
+            </div>
+            <div id="tailor-out" style="display: none">
+              <div class="two-col">
+                <div class="card">
+                  <div class="card-title">Tailored Summary</div>
+                  <div
+                    id="tailor-summary"
+                    style="
+                      font-size: 0.85rem;
+                      line-height: 1.7;
+                      color: #333;
+                      margin-bottom: 10px;
+                    "
+                  ></div>
+                  <button
+                    class="btn btn-success btn-sm"
+                    onclick="applyTailored()"
+                  >
+                    ✓ Apply to Resume
+                  </button>
+                </div>
+                <div class="card">
+                  <div class="card-title">Suggested Skills</div>
+                  <div class="tag-list" id="tailor-skills"></div>
+                </div>
+              </div>
+              <div class="two-col" style="margin-top: 0">
+                <div class="card">
+                  <div class="card-title" style="color: var(--success)">
+                    ✓ Keywords Found
+                  </div>
+                  <div class="tag-list" id="tailor-found"></div>
+                </div>
+                <div class="card">
+                  <div class="card-title" style="color: var(--accent)">
+                    ✗ Keywords Missing
+                  </div>
+                  <div class="tag-list" id="tailor-missing"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SKILLS ── -->
+          <div class="panel" id="panel-skills">
+            <div class="card">
+              <div class="card-title">AI Skill Suggester</div>
+              <div class="card-sub">
+                Based on your job title and experience, AI suggests the best
+                skills to include
+              </div>
+              <button
+                class="btn btn-primary"
+                id="btn-skills"
+                onclick="suggestSkills()"
+              >
+                💡 Suggest Skills for My Role
+              </button>
+              <div class="err-box" id="err-skills"></div>
+              <div class="ai-box" id="ai-skills">
+                <div class="ai-box-label">
+                  ✦ Click any skill to add it to your resume
+                </div>
+                <div class="tag-list" id="skills-list"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── TEMPLATES ── -->
+          <div class="panel" id="panel-template">
+            <div class="card">
+              <div class="card-title">Generate AI Template</div>
+              <div class="card-sub">
+                Describe your style — AI builds a unique CSS theme for your
+                resume
+              </div>
+              <div class="form-group" style="margin-bottom: 12px">
+                <label>Style Prompt *</label>
+                <input
+                  id="tpl-prompt"
+                  placeholder="e.g. dark navy with gold accents, law firm style"
+                />
+              </div>
+              <button
+                class="btn btn-primary"
+                id="btn-tpl"
+                onclick="genTemplate()"
+              >
+                🎨 Generate Template
+              </button>
+              <div class="err-box" id="err-tpl"></div>
+            </div>
+            <div class="card">
+              <div class="card-title">All Themes</div>
+              <div class="card-sub">
+                6 built-in themes · AI-generated themes appear here too
+              </div>
+              <div class="tgallery" id="tgallery"></div>
+            </div>
           </div>
         </div>
+        <!-- /content -->
       </div>
+      <!-- /main -->
     </div>
+    <!-- /app -->
 
+    <div id="toast"></div>
+
+    <section id="footer-placeholder"></section>
+    <!-- Theme CSS injected by JS at runtime -->
+    <style id="theme-css"></style>
+
+    <script src="./js/app.js"></script>
     <script>
-      // ═══════════════════════════════════════════════
-      //  CONSTANTS
-      // ═══════════════════════════════════════════════
-      const STEPS = [
-        "Template",
-        "Personal",
-        "Experience",
-        "Education",
-        "Skills",
-        "Preview",
+      "use strict";
+      // ══════════════════════════════════════════════════════
+      // BUILT-IN THEMES
+      // Each theme is fully self-contained CSS for .rt-* classes
+      // No conflicts: all fallback .rt- styles removed from <head>
+      // ══════════════════════════════════════════════════════
+      const THEMES = [
+        {
+          name: "Classic Crimson",
+          layout: "single",
+          color: "#c8502a",
+          isDefault: true,
+          css: `
+.rt-wrap{padding:32px;font-family:'Georgia',serif;color:#111;background:#fff;min-height:100%;}
+.rt-header{border-bottom:2px solid #c8502a;padding-bottom:14px;margin-bottom:18px;}
+.rt-name{font-size:2rem;font-weight:700;letter-spacing:-.4px;color:#111;}
+.rt-title{color:#c8502a;font-size:.88rem;margin:5px 0 7px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;font-family:'DM Sans',sans-serif;}
+.rt-contact{display:flex;flex-wrap:wrap;gap:12px;font-size:.76rem;color:#666;font-family:'DM Sans',sans-serif;}
+.rt-section-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#c8502a;border-bottom:1.5px solid #c8502a;padding-bottom:3px;margin:18px 0 10px;font-family:'DM Sans',sans-serif;}
+.rt-summary{font-size:.88rem;line-height:1.78;color:#333;font-family:'DM Sans',sans-serif;}
+.rt-entry{margin-bottom:12px;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;align-items:baseline;}
+.rt-entry-role{font-weight:700;font-size:.88rem;color:#111;}
+.rt-entry-company{color:#555;font-size:.82rem;font-family:'DM Sans',sans-serif;}
+.rt-entry-date{font-size:.74rem;color:#999;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.rt-entry-desc{font-size:.83rem;line-height:1.68;margin-top:4px;color:#333;font-family:'DM Sans',sans-serif;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rt-tag{background:#fdf0ec;color:#c8502a;border-radius:100px;padding:2px 9px;font-size:.73rem;border:1px solid #f5c4b0;font-family:'DM Sans',sans-serif;}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px;}
+.rt-pill{background:#f8f5f0;color:#444;border-radius:6px;padding:2px 9px;font-size:.75rem;border:1px solid #e0dbd3;font-family:'DM Sans',sans-serif;}`,
+        },
+        {
+          name: "Slate Sidebar",
+          layout: "sidebar",
+          color: "#1e293b",
+          isDefault: true,
+          css: `
+.rt-wrap{display:grid;grid-template-columns:200px 1fr;min-height:100%;font-family:'DM Sans',sans-serif;background:#fff;}
+.rt-header{background:#1e293b;color:#fff;padding:26px 22px 20px;grid-column:1/-1;}
+.rt-name{font-size:1.85rem;font-weight:700;color:#fff;letter-spacing:-.3px;}
+.rt-title{color:#94a3b8;font-size:.83rem;margin:5px 0 9px;text-transform:uppercase;letter-spacing:.08em;}
+.rt-contact{display:flex;flex-wrap:wrap;gap:10px;font-size:.74rem;color:#94a3b8;}
+.rt-sidebar{background:#f1f5f9;padding:20px 16px;border-right:1px solid #e2e8f0;}
+.rt-main{padding:20px 24px;}
+.rt-section-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#1e293b;border-bottom:2px solid #1e293b;padding-bottom:3px;margin:16px 0 9px;}
+.rt-summary{font-size:.85rem;line-height:1.75;color:#374151;}
+.rt-entry{margin-bottom:12px;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
+.rt-entry-role{font-weight:600;font-size:.86rem;color:#111;}
+.rt-entry-company{color:#64748b;font-size:.81rem;}
+.rt-entry-date{font-size:.72rem;color:#94a3b8;white-space:nowrap;}
+.rt-entry-desc{font-size:.82rem;line-height:1.65;margin-top:4px;color:#444;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.rt-tag{background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:2px 8px;font-size:.71rem;}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.rt-pill{background:#e2e8f0;color:#334155;border-radius:4px;padding:2px 8px;font-size:.71rem;}`,
+        },
+        {
+          name: "Mint Minimal",
+          layout: "single",
+          color: "#10b981",
+          isDefault: true,
+          css: `
+.rt-wrap{padding:32px;font-family:'DM Sans',sans-serif;color:#111;background:#fff;min-height:100%;}
+.rt-header{margin-bottom:20px;}
+.rt-name{font-size:2rem;font-weight:700;color:#111;border-bottom:3px solid #10b981;display:inline-block;padding-bottom:4px;letter-spacing:-.3px;}
+.rt-title{color:#10b981;font-size:.84rem;margin:8px 0 7px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;}
+.rt-contact{display:flex;flex-wrap:wrap;gap:12px;font-size:.75rem;color:#6b7280;}
+.rt-section-title{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#10b981;margin:18px 0 9px;display:flex;align-items:center;gap:9px;}
+.rt-section-title::after{content:'';flex:1;height:1px;background:#d1fae5;}
+.rt-summary{font-size:.87rem;line-height:1.78;color:#374151;}
+.rt-entry{margin-bottom:12px;padding-left:10px;border-left:2px solid #d1fae5;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
+.rt-entry-role{font-weight:700;font-size:.87rem;color:#111;}
+.rt-entry-company{color:#6b7280;font-size:.81rem;}
+.rt-entry-date{font-size:.73rem;color:#9ca3af;white-space:nowrap;}
+.rt-entry-desc{font-size:.83rem;line-height:1.65;margin-top:4px;color:#4b5563;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rt-tag{background:#d1fae5;color:#065f46;border-radius:100px;padding:2px 9px;font-size:.72rem;}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rt-pill{background:#f3f4f6;color:#374151;border-radius:6px;padding:2px 8px;font-size:.74rem;border:1px solid #e5e7eb;}`,
+        },
+        {
+          name: "Midnight Gold",
+          layout: "sidebar",
+          color: "#b8860b",
+          isDefault: true,
+          css: `
+.rt-wrap{display:grid;grid-template-columns:195px 1fr;min-height:100%;font-family:'DM Sans',sans-serif;}
+.rt-header{background:#12112a;color:#fff;padding:26px 22px 20px;grid-column:1/-1;border-bottom:2px solid #b8860b;}
+.rt-name{font-size:1.85rem;font-weight:700;color:#fff;letter-spacing:-.2px;}
+.rt-title{color:#d4af37;font-size:.83rem;margin:5px 0 9px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;}
+.rt-contact{display:flex;flex-wrap:wrap;gap:10px;font-size:.74rem;color:#9a9abf;}
+.rt-sidebar{background:#1a1933;padding:20px 15px;}
+.rt-main{padding:20px 24px;background:#fff;}
+.rt-section-title{font-size:.62rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;color:#b8860b;border-bottom:1.5px solid #b8860b;padding-bottom:3px;margin:16px 0 9px;}
+.rt-sidebar .rt-section-title{color:#d4af37;border-color:#d4af37;}
+.rt-summary{font-size:.86rem;line-height:1.76;color:#333;}
+.rt-entry{margin-bottom:12px;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
+.rt-entry-role{font-weight:700;font-size:.87rem;color:#12112a;}
+.rt-entry-company{color:#555;font-size:.81rem;}
+.rt-entry-date{font-size:.72rem;color:#999;white-space:nowrap;}
+.rt-entry-desc{font-size:.83rem;line-height:1.65;margin-top:4px;color:#444;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.rt-tag{background:rgba(212,175,55,.14);color:#d4af37;border-radius:4px;padding:2px 8px;font-size:.71rem;border:1px solid rgba(212,175,55,.3);}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.rt-pill{background:rgba(255,255,255,.07);color:#c0c0da;border-radius:4px;padding:2px 8px;font-size:.71rem;border:1px solid rgba(255,255,255,.12);}`,
+        },
+        {
+          name: "Rose Editorial",
+          layout: "single",
+          color: "#be185d",
+          isDefault: true,
+          css: `
+.rt-wrap{font-family:'DM Sans',sans-serif;color:#1f1f1f;background:#fff;min-height:100%;}
+.rt-header{background:#fff0f6;padding:28px 32px 20px;border-bottom:3px solid #be185d;}
+.rt-name{font-size:2.1rem;font-weight:700;color:#1f1f1f;letter-spacing:-.4px;}
+.rt-title{color:#be185d;font-size:.85rem;margin:5px 0 9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+.rt-contact{display:flex;flex-wrap:wrap;gap:14px;font-size:.76rem;color:#6b7280;}
+.rt-section-title{font-size:.64rem;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:#be185d;margin:18px 32px 10px;display:flex;align-items:center;gap:9px;}
+.rt-section-title::before{content:'';width:16px;height:2px;background:#be185d;flex-shrink:0;}
+.rt-summary{font-size:.88rem;line-height:1.78;color:#374151;margin:0 32px;}
+.rt-entry{margin:0 32px 12px;padding:9px 11px;background:#fdf2f8;border-radius:6px;border-left:3px solid #f9a8d4;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
+.rt-entry-role{font-weight:700;font-size:.88rem;color:#1f1f1f;}
+.rt-entry-company{color:#9d174d;font-size:.82rem;font-weight:500;}
+.rt-entry-date{font-size:.73rem;color:#be185d;white-space:nowrap;font-weight:600;}
+.rt-entry-desc{font-size:.83rem;line-height:1.65;margin-top:4px;color:#4b5563;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin:0 32px 4px;}
+.rt-tag{background:#fce7f3;color:#9d174d;border-radius:100px;padding:2px 9px;font-size:.72rem;border:1px solid #f9a8d4;}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:5px;margin:0 32px 4px;}
+.rt-pill{background:#fdf2f8;color:#6b7280;border-radius:6px;padding:2px 8px;font-size:.73rem;border:1px solid #f9a8d4;}`,
+        },
+        {
+          name: "Forest Pro",
+          layout: "single",
+          color: "#166534",
+          isDefault: true,
+          css: `
+.rt-wrap{padding:30px;font-family:'DM Sans',sans-serif;color:#111;background:#fff;min-height:100%;}
+.rt-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;border-bottom:2px solid #166534;padding-bottom:14px;margin-bottom:18px;}
+.rt-header-info{flex:1;}
+.rt-name{font-size:1.95rem;font-weight:700;color:#14532d;letter-spacing:-.3px;}
+.rt-title{color:#166534;font-size:.84rem;margin:4px 0 6px;font-weight:600;}
+.rt-contact{display:flex;flex-direction:column;gap:3px;font-size:.73rem;color:#374151;text-align:right;padding-top:4px;flex-shrink:0;}
+.rt-section-title{font-size:.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.13em;background:#166534;color:#fff;padding:3px 10px;margin:18px 0 10px;display:inline-block;border-radius:3px;}
+.rt-summary{font-size:.87rem;line-height:1.76;color:#374151;border-left:3px solid #bbf7d0;padding-left:12px;}
+.rt-entry{margin-bottom:12px;}
+.rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
+.rt-entry-role{font-weight:700;font-size:.88rem;color:#14532d;}
+.rt-entry-company{color:#555;font-size:.82rem;}
+.rt-entry-date{font-size:.72rem;color:#6b7280;background:#dcfce7;padding:1px 7px;border-radius:100px;white-space:nowrap;}
+.rt-entry-desc{font-size:.83rem;line-height:1.68;margin-top:4px;color:#374151;}
+.rt-tag-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rt-tag{background:#dcfce7;color:#14532d;border-radius:5px;padding:2px 9px;font-size:.73rem;border:1px solid #bbf7d0;font-weight:500;}
+.rt-pill-list{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px;}
+.rt-pill{background:#f0fdf4;color:#374151;border-radius:5px;padding:2px 8px;font-size:.73rem;border:1px solid #bbf7d0;}`,
+        },
       ];
-      const TIPS = [
-        "Describe any style in plain English — AI will generate a unique template just for you! Or mix tags to build a combination.",
-        "Fields marked * are required. Write a rough summary — AI will polish it on the final step.",
-        'Lead with results: "Cut load time by 40%" beats "Responsible for performance."',
-        "Add From–To years. Certificate courses show your commitment to growth.",
-        "List tools employers search for. Add languages — even basic proficiency counts!",
-        "Click ✦ AI Enhance to generate a polished summary. You can then edit it before applying to your resume. Use ⬇ Save as PDF to download.",
-      ];
 
-      const TAG_GROUPS = [
-        {
-          label: "🎨 Color Theme",
-          tags: [
-            "Black & White",
-            "Dark Navy",
-            "Forest Green",
-            "Crimson Red",
-            "Ocean Blue",
-            "Rose Gold",
-            "Midnight Purple",
-            "Warm Cream",
-            "Slate Gray",
-            "Coral Orange",
-          ],
-        },
-        {
-          label: "✏️ Typography",
-          tags: [
-            "Serif / Classic",
-            "Sans-serif / Modern",
-            "Monospace / Tech",
-            "Bold Headlines",
-            "Light & Airy",
-            "Condensed",
-            "Handwritten Feel",
-          ],
-        },
-        {
-          label: "📐 Layout",
-          tags: [
-            "Single Column",
-            "Two Column",
-            "Sidebar Left",
-            "Sidebar Right",
-            "Centered Header",
-            "Timeline Style",
-            "Compact Dense",
-            "Spacious Airy",
-          ],
-        },
-        {
-          label: "💼 Industry / Vibe",
-          tags: [
-            "Corporate",
-            "Creative / Design",
-            "Tech / Dev",
-            "Academic",
-            "Healthcare",
-            "Legal",
-            "Startup",
-            "Luxury / Executive",
-            "Minimalist",
-            "Retro / Vintage",
-            "Cyberpunk",
-            "Art Deco",
-          ],
-        },
-      ];
+      // ══════════════════════════════════════════════════════
+      // STATE
+      // ══════════════════════════════════════════════════════
+      const API = "http://127.0.0.1:8080";
+      let EXP = [],
+        EDU = [],
+        CERT = [],
+        LANG = [];
+      let allThemes = [...THEMES],
+        activeTheme = 0;
+      let summaryDraft = "",
+        tailorDraft = "";
 
-      const PRESETS = [
-        {
-          id: "classic",
-          name: "Classic",
-          bg: "#fff",
-          bar: "#333",
-          lines: ["#ccc", "#ccc", "#ddd", "#ddd"],
-          bdr: "1px solid #ddd",
-        },
-        {
-          id: "modern",
-          name: "Modern",
-          bg: "#1e293b",
-          bar: "#60a5fa",
-          lines: ["#334155", "#334155", "#1e3a5f", "#1e3a5f"],
-          bdr: "none",
-        },
-        {
-          id: "minimal",
-          name: "Minimal",
-          bg: "#f8fafc",
-          bar: "#0f172a",
-          lines: ["#e2e8f0", "#e2e8f0", "#f1f5f9", "#f1f5f9"],
-          bdr: "1px solid #e2e8f0",
-        },
-        {
-          id: "bold",
-          name: "Bold",
-          bg: "#7c3aed",
-          bar: "#fff",
-          lines: [
-            "rgba(255,255,255,.25)",
-            "rgba(255,255,255,.25)",
-            "rgba(255,255,255,.15)",
-            "rgba(255,255,255,.15)",
-          ],
-          bdr: "none",
-        },
-        {
-          id: "elegant",
-          name: "Elegant",
-          bg: "#fdf6ec",
-          bar: "#92400e",
-          lines: ["#d4b896", "#d4b896", "#e9d5b4", "#e9d5b4"],
-          bdr: "1px solid #e9d5b4",
-        },
-        {
-          id: "tech",
-          name: "Tech",
-          bg: "#0f172a",
-          bar: "#22d3ee",
-          lines: ["#1e3a5f", "#1e3a5f", "#1e293b", "#1e293b"],
-          bdr: "1px solid #1e293b",
-        },
-      ];
-
-      // ═══════════════════════════════════════════════
-      //  STATE
-      // ═══════════════════════════════════════════════
-      let step = 0,
-        expIdx = 0,
-        eduIdx = 0,
-        certIdx = 0;
-      // aiSummary holds the *applied* summary (shown in the resume)
-      // aiDraftSummary holds the current text in the edit box (before Apply)
-      let aiSummary = "";
-      let aiDraftSummary = "";
-      let activeTags = new Map();
-      let activeTemplate = null;
-      let savedTemplates = [];
-
-      // ═══════════════════════════════════════════════
-      //  INIT
-      // ═══════════════════════════════════════════════
-      (function init() {
-        renderStepBar();
-        renderPresets();
-        renderTagGroups();
-        setupTagDelegation();
-        addExp();
-        addEdu();
-        addCert();
-        selectPreset("classic");
-        updateTip();
-      })();
-
-      // ═══════════════════════════════════════════════
-      //  STEP BAR
-      // ═══════════════════════════════════════════════
-      function renderStepBar() {
-        document.getElementById("steps").innerHTML = STEPS.map((n, i) => {
-          const line =
-            i > 0
-              ? `<div class="step-line${i <= step ? " done" : ""}"></div>`
-              : "";
-          const c = i < step ? "done" : i === step ? "active" : "";
-          return `${line}<div class="step-col"><div class="step-circle ${c}">${i < step ? "✓" : i + 1}</div><span class="step-label ${i === step ? "active" : ""}">${n}</span></div>`;
-        }).join("");
-      }
-
-      // ═══════════════════════════════════════════════
-      //  NAVIGATION
-      // ═══════════════════════════════════════════════
-      function nextStep() {
-        if (!validate(step)) return;
-        go(step + 1);
-        if (step === 5) renderResume();
-      }
-      function prevStep() {
-        if (step > 0) go(step - 1);
-      }
-      function go(n) {
-        document.getElementById("step-" + step).classList.remove("active");
-        step = n;
-        document.getElementById("step-" + step).classList.add("active");
-        document.getElementById("btn-back").disabled = step === 0;
-        document.getElementById("btn-next").style.display =
-          step === 5 ? "none" : "inline-block";
-        document
-          .getElementById("global-tpl-bar")
-          .classList.toggle("hidden", step === 0);
-        renderStepBar();
-        updateTip();
-      }
-      function updateTip() {
-        document.getElementById("tip-text").textContent = TIPS[step];
-      }
-
-      // ═══════════════════════════════════════════════
-      //  VALIDATION
-      // ═══════════════════════════════════════════════
-      const RULES = {
-        name: {
-          el: "f-name",
-          err: "e-name",
-          req: true,
-          msg: "Please enter your full name.",
-        },
-        title: {
-          el: "f-title",
-          err: "e-title",
-          req: true,
-          msg: "Please enter your job title.",
-        },
-        email: {
-          el: "f-email",
-          err: "e-email",
-          req: true,
-          pat: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-          msg: "Enter a valid email address.",
-        },
-        phone: {
-          el: "f-phone",
-          err: "e-phone",
-          req: false,
-          pat: /^[\d\s\+\-\(\)]{7,20}$/,
-          msg: "Enter a valid phone number.",
-        },
-        skills: {
-          el: "f-skills",
-          err: "e-skills",
-          req: true,
-          msg: "Please add at least one skill.",
-        },
-      };
-      function applyRule(key) {
-        const r = RULES[key],
-          el = document.getElementById(r.el),
-          errEl = document.getElementById(r.err);
-        if (!el) return true;
-        const v = el.value.trim();
-        let ok = true;
-        if (r.req && !v) ok = false;
-        if (ok && v && r.pat && !r.pat.test(v)) ok = false;
-        el.classList.toggle("error", !ok);
-        el.classList.toggle("valid", ok && !!v);
-        errEl.textContent = r.msg;
-        errEl.classList.toggle("show", !ok);
-        return ok;
-      }
-      function lv(el, key) {
-        if (!el.value.trim()) return;
-        applyRule(key);
-      }
-      function validate(s) {
-        if (s === 0) {
-          if (!activeTemplate) {
-            alert("Please select or generate a template first.");
-            return false;
-          }
-          return true;
-        }
-        if (s === 1) {
-          let ok = true;
-          ["name", "title", "email", "phone"].forEach((k) => {
-            if (!applyRule(k)) ok = false;
-          });
-          return ok;
-        }
-        if (s === 2) {
-          let ok = true;
-          document.querySelectorAll("#exp-list .entry-block").forEach((b) => {
-            const inp = b.querySelectorAll("input");
-            [inp[0], inp[1]].forEach((el, i) => {
-              if (!el) return;
-              const empty = !el.value.trim();
-              el.classList.toggle("error", empty);
-              el.classList.toggle("valid", !empty);
-              let e = el.nextElementSibling;
-              if (!e || !e.classList.contains("err-msg")) {
-                e = document.createElement("span");
-                e.className = "err-msg";
-                el.after(e);
-              }
-              e.textContent =
-                i === 0 ? "Company name is required." : "Role is required.";
-              e.classList.toggle("show", empty);
-              if (empty) ok = false;
-            });
-          });
-          return ok;
-        }
-        if (s === 4) return applyRule("skills");
-        return true;
-      }
-      function ucc() {
-        const e = document.getElementById("f-sum");
-        document.getElementById("sum-len").textContent = e ? e.value.length : 0;
-      }
-
-      // ═══════════════════════════════════════════════
-      //  PRESET TEMPLATES
-      // ═══════════════════════════════════════════════
-      function renderPresets() {
-        document.getElementById("preset-grid").innerHTML = PRESETS.map(
-          (p) => `
-          <div class="preset-card${activeTemplate && activeTemplate.id === p.id ? " active" : ""}" id="pc-${p.id}" onclick="selectPreset('${p.id}')">
-            <div class="preset-thumb" style="background:${p.bg};border-bottom:${p.bdr || "none"};">
-              <div class="tb" style="background:${p.bar};"></div>
-              ${p.lines.map((l, i) => `<div class="tl" style="width:${[75, 60, 68, 50][i]}%;background:${l};"></div>`).join("")}
-            </div>
-            <div class="preset-name">${p.name}</div>
-          </div>`,
-        ).join("");
-      }
-
-      function selectPreset(id) {
-        const p = PRESETS.find((x) => x.id === id);
-        if (!p) return;
-        document
-          .querySelectorAll(".preset-card,.gallery-card")
-          .forEach((c) => c.classList.remove("active"));
-        document.getElementById("pc-" + id)?.classList.add("active");
-        activeTemplate = {
-          id: p.id,
-          name: p.name,
-          css: "",
-          html_fn: (d, badge) => buildPresetResume(p.id, d, badge),
-        };
-        updateActiveName(p.name);
-        rp();
-      }
-
-      // ═══════════════════════════════════════════════
-      //  STYLE TAGS
-      // ═══════════════════════════════════════════════
-      function renderTagGroups() {
-        document.getElementById("tag-groups").innerHTML = TAG_GROUPS.map(
-          (g, gi) => `
-          <div>
-            <div class="tag-group-label">${g.label}</div>
-            <div class="tag-row">
-              ${g.tags.map((t) => `<button class="style-tag${activeTags.get(gi) === t ? " on" : ""}" data-tag="${escAttr(t)}" data-group="${gi}">${t}</button>`).join("")}
-            </div>
-          </div>`,
-        ).join("");
-        renderSelectedTagsSummary();
-      }
-
-      function setupTagDelegation() {
-        document.getElementById("tag-groups").addEventListener("click", (e) => {
-          const btn = e.target.closest(".style-tag");
-          if (!btn) return;
-          const tag = btn.dataset.tag;
-          const gi = parseInt(btn.dataset.group, 10);
-          if (activeTags.get(gi) === tag) {
-            activeTags.delete(gi);
-          } else {
-            activeTags.set(gi, tag);
-          }
-          document.querySelectorAll(`[data-group="${gi}"]`).forEach((b) => {
-            b.classList.toggle("on", activeTags.get(gi) === b.dataset.tag);
-          });
-          syncPromptFromTags();
-          renderSelectedTagsSummary();
-        });
-      }
-
-      function escAttr(str) {
-        return str
+      // ══════════════════════════════════════════════════════
+      // UTILS
+      // ══════════════════════════════════════════════════════
+      const $ = (id) => document.getElementById(id);
+      function esc(s) {
+        return (s || "")
           .replace(/&/g, "&amp;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
       }
-
-      function syncPromptFromTags() {
-        const promptEl = document.getElementById("tpl-prompt");
-        promptEl.value =
-          activeTags.size > 0 ? [...activeTags.values()].join(", ") : "";
+      function toast(msg, ms = 2800) {
+        const t = $("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        clearTimeout(t._t);
+        t._t = setTimeout(() => t.classList.remove("show"), ms);
       }
-
-      function renderSelectedTagsSummary() {
-        const el = document.getElementById("selected-tags-summary");
+      function showErr(id, msg) {
+        const el = $(id);
         if (!el) return;
-        if (activeTags.size === 0) {
-          el.innerHTML = "";
-          return;
-        }
-        const pills = [...activeTags.entries()]
-          .map(
-            ([gi, t]) =>
-              `<span data-pill-group="${gi}">${TAG_GROUPS[gi].label.split(" ")[0]} ${t}</span>`,
-          )
-          .join("");
-        el.innerHTML = `${pills} <button class="clear-tags-btn" onclick="clearTags()">Clear all</button>`;
+        el.textContent = "❌ " + msg;
+        el.classList.add("show");
+        clearTimeout(el._t);
+        el._t = setTimeout(() => el.classList.remove("show"), 8000);
+      }
+      function setBtn(id, loading, label) {
+        const b = $(id);
+        if (!b) return;
+        b.disabled = loading;
+        b.innerHTML = loading ? `<span class="spin"></span> Working…` : label;
       }
 
-      function clearTags() {
-        activeTags.clear();
-        renderTagGroups();
-        document.getElementById("tpl-prompt").value = "";
-      }
-
-      function onPromptInput() {
-        const val = document.getElementById("tpl-prompt").value.toLowerCase();
-        if (val.trim() === "") {
-          activeTags.clear();
-        } else {
-          for (const [gi, tag] of activeTags.entries()) {
-            if (!val.includes(tag.toLowerCase())) activeTags.delete(gi);
-          }
-        }
-        document.querySelectorAll(".style-tag").forEach((btn) => {
-          const gi = parseInt(btn.dataset.group, 10);
-          btn.classList.toggle("on", activeTags.get(gi) === btn.dataset.tag);
-        });
-        renderSelectedTagsSummary();
-      }
-
-      // ═══════════════════════════════════════════════
-      //  AI TEMPLATE GENERATOR
-      // ═══════════════════════════════════════════════
-      async function generateTemplate() {
-        const prompt = document.getElementById("tpl-prompt").value.trim();
-        if (!prompt) {
-          const errEl = document.getElementById("gen-error");
-          errEl.textContent = "Please describe a style first.";
-          errEl.style.display = "block";
-          return;
-        }
-        document.getElementById("gen-error").style.display = "none";
-
-        const btn = document.getElementById("gen-btn");
-        const sp = document.getElementById("gen-spinner");
-        const txt = document.getElementById("gen-btn-text");
-        const loading = document.getElementById("gen-loading");
-        const loadingTxt = document.getElementById("gen-loading-text");
-
-        btn.disabled = true;
-        sp.style.display = "inline-block";
-        txt.textContent = "Generating…";
-        loading.classList.add("show");
-        loadingTxt.textContent = `Creating "${prompt.slice(0, 40)}${prompt.length > 40 ? "…" : ""}" template…`;
-
+      // Robust fetch — reads raw text first, never throws on empty/non-JSON
+      async function api(url, body) {
+        let res, txt;
         try {
-          const res = await fetch(
-            "http://127.0.0.1:8080/api/resume/generate-template",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ prompt }),
-            },
-          );
-          const tplData = await res.json();
-          if (!res.ok) throw new Error(tplData.error || "Server error");
-          const newTpl = {
-            id: "gen-" + Date.now(),
-            name: tplData.name || prompt.slice(0, 20),
-            css: tplData.css || "",
-            layout: tplData.layout || "single",
-            prompt,
-          };
-          savedTemplates.push(newTpl);
-          renderGallery();
-          selectGenerated(newTpl.id);
+          res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          txt = await res.text();
         } catch (e) {
-          console.error(e);
-          const errEl = document.getElementById("gen-error");
-          errEl.textContent = "Generation failed: " + e.message;
-          errEl.style.display = "block";
-        } finally {
-          btn.disabled = false;
-          sp.style.display = "none";
-          txt.textContent = "✦ Generate";
-          loading.classList.remove("show");
+          throw new Error(
+            "Cannot reach server — is Flask running? (" + e.message + ")",
+          );
         }
-      }
-
-      // ═══════════════════════════════════════════════
-      //  GALLERY
-      // ═══════════════════════════════════════════════
-      function renderGallery() {
-        const el = document.getElementById("gallery-grid");
-        if (!savedTemplates.length) {
-          el.innerHTML = `<div class="gallery-empty">No generated templates yet.<br>Describe a style above to create one!</div>`;
-          return;
+        if (!txt || !txt.trim())
+          throw new Error(
+            `Server returned empty response (HTTP ${res.status}). Check Flask route returns JSON.`,
+          );
+        let s = txt.trim();
+        const BT = "\x60\x60\x60";
+        if (s.startsWith(BT)) {
+          s = s
+            .replace(/^\x60{3}[a-z]*\n?/, "")
+            .replace(/\x60{3}\s*$/, "")
+            .trim();
         }
-        el.innerHTML = savedTemplates
-          .map(
-            (t) => `
-          <div class="gallery-card${activeTemplate && activeTemplate.id === t.id ? " active" : ""}" id="gc-${t.id}">
-            <div class="gallery-thumb" onclick="selectGenerated('${t.id}')">
-              <div class="gallery-thumb-inner">
-                <style>${t.css}</style>
-                ${buildAIResume(t, getSampleData(), false)}
-              </div>
-            </div>
-            <div class="gallery-card-footer">
-              <span class="gallery-card-name" onclick="selectGenerated('${t.id}')" style="cursor:pointer;">${t.name}</span>
-              <button class="gallery-card-del" onclick="deleteSaved('${t.id}')">✕</button>
-            </div>
-          </div>`,
-          )
-          .join("");
-      }
-
-      function selectGenerated(id) {
-        const t = savedTemplates.find((x) => x.id === id);
-        if (!t) return;
-        document
-          .querySelectorAll(".preset-card,.gallery-card")
-          .forEach((c) => c.classList.remove("active"));
-        document.getElementById("gc-" + id)?.classList.add("active");
-        activeTemplate = {
-          id: t.id,
-          name: t.name,
-          css: t.css,
-          layout: t.layout,
-          html_fn: (d, badge) => buildAIResume(t, d, badge),
-        };
-        updateActiveName(t.name);
-        rp();
-      }
-
-      function deleteSaved(id) {
-        savedTemplates = savedTemplates.filter((t) => t.id !== id);
-        if (activeTemplate?.id === id) {
-          activeTemplate = null;
-          updateActiveName("None selected");
+        let j;
+        try {
+          j = JSON.parse(s);
+        } catch (e) {
+          throw new Error(
+            `Non-JSON from server (${res.status}): "${s.slice(0, 120)}"`,
+          );
         }
-        renderGallery();
-        rp();
-      }
-
-      function updateActiveName(name) {
-        document.getElementById("active-tpl-name").textContent = name;
-        const dotColors = {
-          classic: "#333",
-          modern: "#60a5fa",
-          minimal: "#0f172a",
-          bold: "#7c3aed",
-          elegant: "#92400e",
-          tech: "#22d3ee",
-        };
-        const dot = document.getElementById("tpl-dot");
-        if (dot)
-          dot.style.background = dotColors[activeTemplate?.id] || "#fbbf24";
-      }
-
-      // ═══════════════════════════════════════════════
-      //  DATA
-      // ═══════════════════════════════════════════════
-      function getSampleData() {
-        return {
-          name: "Your Name",
-          title: "Your Title",
-          email: "email@example.com",
-          phone: "+1 555 0000",
-          loc: "City, Country",
-          blood: "",
-          sum: "A brief summary of your background and career goals goes here.",
-          skills: "Skill One, Skill Two, Skill Three",
-          langs: "English – Fluent",
-          hobbies: "Reading, Travel",
-          exp: [
-            {
-              company: "Company Name",
-              role: "Job Title",
-              from: "2020",
-              to: "Present",
-              desc: "Key achievement and responsibility description.",
-            },
-          ],
-          edu: [
-            {
-              school: "University Name",
-              degree: "Degree Title",
-              from: "2016",
-              to: "2020",
-            },
-          ],
-          cert: [
-            {
-              course: "Certificate Name",
-              org: "Issuing Org",
-              from: "2022",
-              to: "2023",
-            },
-          ],
-        };
+        if (!res.ok || j.error)
+          throw new Error(j.error || j.message || `Server error ${res.status}`);
+        return j;
       }
 
       function getData() {
-        const g = (id) => (document.getElementById(id) || {}).value || "";
-        const exp = [
-          ...document.querySelectorAll("#exp-list .entry-block"),
-        ].map((b) => {
-          const f = b.querySelectorAll("input,textarea");
-          return {
-            company: f[0]?.value || "",
-            role: f[1]?.value || "",
-            from: f[2]?.value || "",
-            to: f[3]?.value || "",
-            desc: f[4]?.value || "",
-          };
-        });
-        const edu = [
-          ...document.querySelectorAll("#edu-list .entry-block"),
-        ].map((b) => {
-          const f = b.querySelectorAll("input");
-          return {
-            school: f[0]?.value || "",
-            degree: f[1]?.value || "",
-            from: f[2]?.value || "",
-            to: f[3]?.value || "",
-          };
-        });
-        const cert = [
-          ...document.querySelectorAll("#cert-list .entry-block"),
-        ].map((b) => {
-          const f = b.querySelectorAll("input");
-          return {
-            course: f[0]?.value || "",
-            org: f[1]?.value || "",
-            from: f[2]?.value || "",
-            to: f[3]?.value || "",
-          };
-        });
         return {
-          name: g("f-name"),
-          title: g("f-title"),
-          email: g("f-email"),
-          phone: g("f-phone"),
-          loc: g("f-loc"),
-          blood: g("f-blood"),
-          sum: g("f-sum"),
-          skills: g("f-skills"),
-          langs: g("f-langs"),
-          hobbies: g("f-hobbies"),
-          exp,
-          edu,
-          cert,
+          name: $("b-name").value.trim(),
+          title: $("b-title").value.trim(),
+          email: $("b-email").value.trim(),
+          phone: $("b-phone").value.trim(),
+          location: $("b-location").value.trim(),
+          website: $("b-website").value.trim(),
+          summary: $("b-summary").value.trim(),
+          skills: $("b-skills").value.trim(),
+          hobbies: $("b-hobbies").value.trim(),
+          experience: EXP.map((e) => ({
+            role: e.role || "",
+            company: e.company || "",
+            from: e.from || "",
+            to: e.to || "",
+            desc: e.desc || "",
+          })),
+          education: EDU.map((e) => ({
+            degree: e.degree || "",
+            school: e.school || "",
+            from: e.from || "",
+            to: e.to || "",
+          })),
+          certificates: CERT.map((c) => ({
+            name: c.name || "",
+            issuer: c.issuer || "",
+            year: c.year || "",
+          })),
+          languages: LANG.map((l) => ({
+            lang: l.lang || "",
+            level: l.level || "",
+          })),
         };
       }
 
-      // ═══════════════════════════════════════════════
-      //  BUILD AI-GENERATED TEMPLATE RESUME
-      // ═══════════════════════════════════════════════
-      function buildAIResume(tpl, d, showBadge) {
-        // Use aiSummary (the applied one) if showBadge=true and it exists
-        const sum = showBadge && aiSummary ? aiSummary : d.sum;
-        const badge =
-          showBadge && aiSummary
-            ? `<span style="display:inline-block;background:#fef3c7;color:#b45309;font-size:8px;font-weight:700;text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-left:5px;">✦ AI Enhanced</span>`
-            : "";
-        const sk = d.skills
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const langs = d.langs
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const hobbies = d.hobbies
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const ct = [
-          d.email,
-          d.phone,
-          d.loc,
-          d.blood ? `Blood: ${d.blood}` : "",
-        ].filter(Boolean);
-        const exps = d.exp.filter((e) => e.company);
-        const edus = d.edu.filter((e) => e.school);
-        const certs = d.cert.filter((c) => c.course);
-        const dur = (f, t) =>
-          f || t ? `${f || ""}${f && t ? " – " : ""}${t || ""}` : "";
-
-        const styleTag = tpl.css ? `<style>${tpl.css}</style>` : "";
-        const contactHtml = ct.map((c) => `<span>${c}</span>`).join(" ");
-        const expHtml = exps
-          .map(
-            (e) =>
-              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${e.role}</span><span class="rt-entry-date">${dur(e.from, e.to)}</span></div><div class="rt-entry-company">${e.company}</div><div class="rt-entry-desc">${e.desc}</div></div>`,
-          )
-          .join("");
-        const eduHtml = edus
-          .map(
-            (e) =>
-              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${e.degree}</span><span class="rt-entry-date">${dur(e.from, e.to)}</span></div><div class="rt-entry-company">${e.school}</div></div>`,
-          )
-          .join("");
-        const certHtml = certs
-          .map(
-            (c) =>
-              `<div class="rt-entry"><div class="rt-entry-row"><span class="rt-entry-role">${c.course}</span><span class="rt-entry-date">${dur(c.from, c.to)}</span></div><div class="rt-entry-company">${c.org}</div></div>`,
-          )
-          .join("");
-        const skHtml = sk
-          .map((s) => `<span class="rt-tag">${s}</span>`)
-          .join("");
-        const langHtml = langs
-          .map((s) => `<span class="rt-tag">${s}</span>`)
-          .join("");
-        const hobHtml = hobbies
-          .map((s) => `<span class="rt-tag">${s}</span>`)
-          .join("");
-
-        if (tpl.layout === "sidebar") {
-          return `${styleTag}<div class="rt-wrap">
-            <div class="rt-sidebar">
-              <div class="rt-name">${d.name || "Your Name"}</div>
-              <div class="rt-title">${d.title || ""}</div>
-              <div class="rt-contact">${ct.map((c) => `<div>${c}</div>`).join("")}</div>
-              ${sk.length ? `<div class="rt-section-title">Skills</div>${sk.map((s) => `<span class="rt-tag">${s}</span>`).join("")}` : ""}
-              ${langs.length ? `<div class="rt-section-title">Languages</div>${langHtml}` : ""}
-              ${hobbies.length ? `<div class="rt-section-title">Hobbies</div>${hobHtml}` : ""}
-            </div>
-            <div class="rt-main">
-              ${sum ? `<div class="rt-section-title">About ${badge}</div><div class="rt-summary">${sum}</div>` : ""}
-              ${exps.length ? `<div class="rt-section-title">Experience</div>${expHtml}` : ""}
-              ${edus.length ? `<div class="rt-section-title">Education</div>${eduHtml}` : ""}
-              ${certs.length ? `<div class="rt-section-title">Certifications</div>${certHtml}` : ""}
-            </div>
-          </div>`;
-        }
-
-        return `${styleTag}<div class="rt-wrap">
-          <div class="rt-header">
-            <div class="rt-name">${d.name || "Your Name"}</div>
-            <div class="rt-title">${d.title || ""}</div>
-            <div class="rt-contact">${contactHtml}</div>
-          </div>
-          ${sum ? `<div class="rt-section-title">Summary ${badge}</div><div class="rt-summary">${sum}</div>` : ""}
-          ${exps.length ? `<div class="rt-section-title">Experience</div>${expHtml}` : ""}
-          ${edus.length ? `<div class="rt-section-title">Education</div>${eduHtml}` : ""}
-          ${certs.length ? `<div class="rt-section-title">Certifications</div>${certHtml}` : ""}
-          ${sk.length ? `<div class="rt-section-title">Skills</div>${skHtml}` : ""}
-          ${langs.length ? `<div class="rt-section-title">Languages</div>${langHtml}` : ""}
-          ${hobbies.length ? `<div class="rt-section-title">Hobbies</div>${hobHtml}` : ""}
-        </div>`;
+      // ══════════════════════════════════════════════════════
+      // NAVIGATION
+      // ══════════════════════════════════════════════════════
+      const NAV_META = {
+        builder: ["Resume Builder", "Fill in your details below"],
+        preview: ["Preview & Export", "See and download your resume"],
+        score: ["Score My Resume", "AI-powered resume analysis"],
+        tailor: ["Tailor to Job", "Match your resume to a job posting"],
+        skills: ["AI Skill Suggester", "Discover the best skills to highlight"],
+        template: [
+          "AI Template Generator",
+          "Create a custom design for your resume",
+        ],
+      };
+      function nav(id) {
+        document
+          .querySelectorAll(".panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        $("panel-" + id).classList.add("active");
+        document.querySelector(`[data-p="${id}"]`)?.classList.add("active");
+        const [t, s] = NAV_META[id] || ["", ""];
+        $("t-title").textContent = t;
+        $("t-sub").textContent = s;
+        closeMenus();
+        if (id === "preview") renderResume();
       }
 
-      // ═══════════════════════════════════════════════
-      //  BUILD PRESET RESUME HTML
-      // ═══════════════════════════════════════════════
-      function buildPresetResume(id, d, showBadge) {
-        const sum = showBadge && aiSummary ? aiSummary : d.sum;
-        const badge =
-          showBadge && aiSummary
-            ? `<span class="ai-badge">✦ AI Enhanced</span>`
-            : "";
-        const sk = d.skills
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const langs = d.langs
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const hobbies = d.hobbies
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const ct = [d.email, d.phone, d.loc].filter(Boolean);
-        const exps = d.exp.filter((e) => e.company);
-        const edus = d.edu.filter((e) => e.school);
-        const certs = d.cert.filter((c) => c.course);
-        const dur = (f, t) =>
-          f || t ? `${f || ""}${f && t ? " – " : ""}${t || ""}` : "";
-        const meta = [d.blood ? `Blood: ${d.blood}` : ""].filter(Boolean);
+      // ══════════════════════════════════════════════════════
+      // EXPORT DROPDOWN (fixed: stopPropagation on item clicks)
+      // ══════════════════════════════════════════════════════
+      function toggleMenu(id, e) {
+        e.stopPropagation();
+        const m = $(id);
+        const isOpen = m.classList.contains("open");
+        closeMenus();
+        if (!isOpen) m.classList.add("open");
+      }
+      function closeMenus() {
+        document
+          .querySelectorAll(".export-menu")
+          .forEach((m) => m.classList.remove("open"));
+      }
+      document.addEventListener("click", closeMenus);
 
-        const expRows = exps
-          .map(
-            (e) =>
-              `<div class="ren"><div class="rer"><span class="rerl">${e.role}</span><span class="rerd">${dur(e.from, e.to)}</span></div><div class="reco">${e.company}</div><div class="rede">${e.desc}</div></div>`,
-          )
-          .join("");
-        const eduRows = edus
-          .map(
-            (e) =>
-              `<div class="ren"><div class="rer"><span class="rerl">${e.degree}</span><span class="rerd">${dur(e.from, e.to)}</span></div><div class="reco">${e.school}</div></div>`,
-          )
-          .join("");
-        const certRows = certs
-          .map(
-            (c) =>
-              `<div class="ren"><div class="rer"><span class="rerl">${c.course}</span><span class="rerd">${dur(c.from, c.to)}</span></div><div class="reco">${c.org}</div></div>`,
-          )
-          .join("");
-
-        if (id === "classic")
-          return `<div style="background:#fff;padding:36px;font-family:Georgia,serif;font-size:12.5px;color:#222;border:1px solid #ddd;border-radius:3px;">
-          <div style="text-align:center;border-bottom:2px solid #333;padding-bottom:12px;margin-bottom:14px;">
-            <div style="font-size:24px;font-weight:700;">${d.name || "Your Name"}</div>
-            <div style="font-size:12px;color:#555;margin-top:2px;">${d.title}</div>
-            <div style="font-size:10px;color:#777;margin-top:5px;display:flex;justify-content:center;flex-wrap:wrap;gap:10px;">${[...ct, ...meta].map((c) => `<span>${c}</span>`).join("")}</div>
-          </div>
-          ${sum ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Summary ${badge}</div><p style="font-size:12px;color:#333;line-height:1.7;">${sum}</p>` : ""}
-          ${exps.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Experience</div>${expRows}` : ""}
-          ${edus.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Education</div>${eduRows}` : ""}
-          ${certs.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Certifications</div>${certRows}` : ""}
-          ${sk.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Skills</div>${sk.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-          ${langs.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Languages</div>${langs.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-          ${hobbies.length ? `<div style="font-size:9.5px;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:#333;border-bottom:1px solid #ccc;padding-bottom:3px;margin:14px 0 8px;">Hobbies</div>${hobbies.map((s) => `<span style="display:inline-block;background:#f3f3f3;border:1px solid #ddd;font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-        </div>`;
-
-        if (id === "modern")
-          return `<div style="display:grid;grid-template-columns:195px 1fr;font-family:'DM Sans',sans-serif;font-size:12.5px;border-radius:3px;overflow:hidden;border:1px solid #1e293b;">
-          <div style="background:#0f172a;padding:24px 16px;color:#e2e8f0;">
-            <div style="font-size:17px;font-weight:700;color:#f1f5f9;margin-bottom:3px;">${d.name || "Your Name"}</div>
-            <div style="font-size:10px;color:#60a5fa;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:12px;">${d.title}</div>
-            <div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Contact</div>
-            ${[...ct, ...meta].map((c) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:4px;">▸ ${c}</div>`).join("")}
-            ${sk.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Skills</div>${sk.map((s, i) => `<div style="margin-bottom:6px;"><div style="font-size:10px;color:#cbd5e1;margin-bottom:2px;">${s}</div><div style="height:3px;background:#1e293b;border-radius:2px;overflow:hidden;"><div style="height:100%;background:#60a5fa;border-radius:2px;width:${65 + ((i * 19) % 30)}%"></div></div></div>`).join("")}` : ""}
-            ${langs.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Languages</div>${langs.map((s) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:3px;">• ${s}</div>`).join("")}` : ""}
-            ${hobbies.length ? `<div style="font-size:8.5px;text-transform:uppercase;color:#334155;font-weight:700;margin:13px 0 5px;">Hobbies</div>${hobbies.map((s) => `<div style="font-size:10px;color:#94a3b8;margin-bottom:3px;">• ${s}</div>`).join("")}` : ""}
-          </div>
-          <div style="background:#1e293b;padding:24px 20px;color:#e2e8f0;">
-            ${sum ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin-bottom:8px;">About ${badge}</div><p style="font-size:12px;color:#cbd5e1;line-height:1.65;">${sum}</p>` : ""}
-            ${exps.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Experience</div>${exps.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${e.role}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(e.from, e.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;margin:1px 0;">${e.company}</div><div style="font-size:11px;color:#94a3b8;line-height:1.6;margin-top:2px;">${e.desc}</div></div>`).join("")}` : ""}
-            ${edus.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Education</div>${edus.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${e.degree}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(e.from, e.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;">${e.school}</div></div>`).join("")}` : ""}
-            ${certs.length ? `<div style="font-size:8.5px;text-transform:uppercase;letter-spacing:.11em;font-weight:700;color:#60a5fa;border-bottom:1px solid #334155;padding-bottom:3px;margin:14px 0 8px;">Certifications</div>${certs.map((c) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;color:#f1f5f9;">${c.course}</span><span style="font-size:9px;color:#64748b;background:#0f172a;padding:1px 5px;border-radius:3px;">${dur(c.from, c.to)}</span></div><div style="color:#60a5fa;font-size:10.5px;">${c.org}</div></div>`).join("")}` : ""}
-          </div>
-        </div>`;
-
-        const colors = {
-          minimal: {
-            bg: "#f8fafc",
-            hd: "#0f172a",
-            ac: "#64748b",
-            sec: "#94a3b8",
-            txt: "#334155",
-            tag: "#e2e8f0",
-            tagTxt: "#0f172a",
-          },
-          bold: {
-            bg: "#7c3aed",
-            hd: "#fff",
-            ac: "#c4b5fd",
-            sec: "#c4b5fd",
-            txt: "#ddd6fe",
-            tag: "#6d28d9",
-            tagTxt: "#c4b5fd",
-          },
-          elegant: {
-            bg: "#fdf6ec",
-            hd: "#3b1f0a",
-            ac: "#92400e",
-            sec: "#92400e",
-            txt: "#57340f",
-            tag: "#fef3e2",
-            tagTxt: "#92400e",
-          },
-          tech: {
-            bg: "#0f172a",
-            hd: "#f0f9ff",
-            ac: "#22d3ee",
-            sec: "#22d3ee",
-            txt: "#94a3b8",
-            tag: "#1e293b",
-            tagTxt: "#22d3ee",
-          },
-        };
-        const C = colors[id] || colors.minimal;
-        return `<div style="background:${C.bg};padding:36px;font-family:'DM Sans',sans-serif;font-size:12.5px;color:${C.hd};border-radius:3px;">
-          <div style="border-bottom:2px solid ${C.ac};padding-bottom:12px;margin-bottom:14px;">
-            <div style="font-size:24px;font-weight:700;">${d.name || "Your Name"}</div>
-            <div style="font-size:12px;color:${C.ac};margin-top:2px;">${d.title}</div>
-            <div style="font-size:10px;color:${C.sec};margin-top:5px;display:flex;flex-wrap:wrap;gap:10px;">${[...ct, ...meta].map((c) => `<span>${c}</span>`).join("")}</div>
-          </div>
-          ${sum ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Summary ${badge}</div><p style="font-size:12px;color:${C.txt};line-height:1.7;">${sum}</p>` : ""}
-          ${exps.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Experience</div>${exps.map((e) => `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${e.role}</span><span style="font-size:10px;color:${C.ac};">${dur(e.from, e.to)}</span></div><div style="color:${C.ac};font-size:11px;margin:1px 0;">${e.company}</div><div style="font-size:11px;color:${C.txt};line-height:1.6;margin-top:2px;">${e.desc}</div></div>`).join("")}` : ""}
-          ${edus.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Education</div>${edus.map((e) => `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${e.degree}</span><span style="font-size:10px;color:${C.ac};">${dur(e.from, e.to)}</span></div><div style="color:${C.ac};font-size:11px;">${e.school}</div></div>`).join("")}` : ""}
-          ${certs.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Certifications</div>${certs.map((c) => `<div style="margin-bottom:8px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:700;">${c.course}</span><span style="font-size:10px;color:${C.ac};">${dur(c.from, c.to)}</span></div><div style="color:${C.ac};font-size:11px;">${c.org}</div></div>`).join("")}` : ""}
-          ${sk.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Skills</div>${sk.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-          ${langs.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Languages</div>${langs.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-          ${hobbies.length ? `<div style="font-size:9px;text-transform:uppercase;letter-spacing:.15em;font-weight:700;color:${C.sec};margin:14px 0 6px;">Hobbies</div>${hobbies.map((s) => `<span style="display:inline-block;background:${C.tag};color:${C.tagTxt};font-size:10.5px;padding:2px 9px;border-radius:3px;margin:2px;">${s}</span>`).join("")}` : ""}
-        </div>`;
+      // ══════════════════════════════════════════════════════
+      // EXPORT FUNCTIONS
+      // ══════════════════════════════════════════════════════
+      function doExport(type) {
+        closeMenus();
+        // Always render into resume-body first so exports have fresh content
+        renderResume();
+        // Small delay so DOM paint completes before print dialog or blob creation
+        setTimeout(() => {
+          if (type === "pdf") exportPDF();
+          else if (type === "html") exportHTML();
+          else if (type === "word") exportWord();
+          else if (type === "txt") exportTXT();
+          else if (type === "json") exportJSON();
+        }, 120);
       }
 
-      // ═══════════════════════════════════════════════
-      //  LIVE PREVIEW
-      // ═══════════════════════════════════════════════
-      function rp() {
-        if (!activeTemplate) {
-          document.getElementById("mini-resume").innerHTML =
-            "<div style='padding:20px;font-size:11px;color:#a8a29e;text-align:center;'>Select a template to preview</div>";
-          return;
-        }
+      function exportPDF() {
+        window.print();
+      }
+
+      function exportHTML() {
+        const th = allThemes[activeTheme] || allThemes[0];
         const d = getData();
-        document.getElementById("mini-resume").innerHTML =
-          activeTemplate.html_fn(d, false);
+        const SC = "</"; // avoid literal </style> breaking the HTML parser
+        const html =
+          '<!DOCTYPE html><html lang="en"><head>' +
+          '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
+          "<title>" +
+          esc(d.name || "Resume") +
+          "</title>" +
+          '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
+          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;}" +
+          th.css +
+          SC +
+          "style>" +
+          SC +
+          "head>" +
+          "<body>" +
+          $("resume-body").innerHTML +
+          SC +
+          "body>" +
+          SC +
+          "html>";
+        dlBlob(
+          new Blob([html], { type: "text/html" }),
+          `${d.name || "resume"}.html`,
+        );
+        toast("✓ HTML downloaded!");
       }
 
-      // ═══════════════════════════════════════════════
-      //  FULL RESUME RENDER (step 5)
-      // ═══════════════════════════════════════════════
-      function renderResume() {
-        if (!activeTemplate) {
-          document.getElementById("resume-out").innerHTML =
-            "<p>No template selected.</p>";
-          return;
+      function exportWord() {
+        const d = getData();
+        const SC = "<" + "/";
+        const css =
+          "body{font-family:Calibri,sans-serif;font-size:11pt;margin:1in 1.2in;}" +
+          ".rt-wrap{}.rt-name{font-size:20pt;font-weight:bold;display:block;margin-bottom:4pt;}" +
+          ".rt-title{font-size:10pt;color:#c8502a;text-transform:uppercase;display:block;margin-bottom:6pt;}" +
+          ".rt-contact{font-size:9pt;color:#555;display:block;margin-bottom:12pt;}" +
+          ".rt-section-title{font-size:9pt;font-weight:bold;text-transform:uppercase;color:#c8502a;border-bottom:1pt solid #c8502a;display:block;margin:12pt 0 5pt;}" +
+          ".rt-entry-role{font-weight:bold;font-size:10pt;display:inline;}" +
+          ".rt-entry-company{color:#555;font-size:9.5pt;}" +
+          ".rt-entry-date{color:#999;font-size:9pt;float:right;}" +
+          ".rt-entry-desc{font-size:9.5pt;display:block;margin:3pt 0 6pt;color:#333;}" +
+          ".rt-tag,.rt-pill{display:inline-block;margin:1pt 2pt;font-size:9pt;}" +
+          ".rt-sidebar{display:none;}.rt-main{display:block;}" +
+          ".rt-header{border-bottom:1.5pt solid #c8502a;margin-bottom:10pt;overflow:hidden;}";
+        const html =
+          '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
+          'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+          '<head><meta charset="UTF-8"/><style>' +
+          css +
+          SC +
+          "style>" +
+          SC +
+          "head>" +
+          "<body>" +
+          $("resume-body").innerHTML +
+          SC +
+          "body>" +
+          SC +
+          "html>";
+        dlBlob(
+          new Blob([html], { type: "application/msword" }),
+          `${d.name || "resume"}.doc`,
+        );
+        toast("✓ Word document downloaded!");
+      }
+
+      function exportTXT() {
+        const d = getData();
+        const hr = "─".repeat(42);
+        let t = `${d.name || "Name"}\n${d.title || ""}\n`;
+        const c = [d.email, d.phone, d.location, d.website]
+          .filter(Boolean)
+          .join(" | ");
+        if (c) t += c + "\n";
+        t += "\n";
+        if (d.summary) t += `PROFESSIONAL SUMMARY\n${hr}\n${d.summary}\n\n`;
+        if (d.experience.length) {
+          t += `WORK EXPERIENCE\n${hr}\n`;
+          d.experience.forEach((e) => {
+            t += `${e.role}${e.company ? " — " + e.company : ""}${e.from || e.to ? "  [" + e.from + (e.to ? " – " + e.to : "") + "]" : ""}\n`;
+            if (e.desc) t += e.desc + "\n";
+            t += "\n";
+          });
         }
-        const d = getData();
-        document.getElementById("resume-out").innerHTML =
-          activeTemplate.html_fn(d, true);
-      }
-
-      // ═══════════════════════════════════════════════
-      //  ENTRY BLOCKS
-      // ═══════════════════════════════════════════════
-      function addExp() {
-        const id = expIdx++;
-        const d = document.createElement("div");
-        d.className = "entry-block";
-        d.id = "exp-" + id;
-        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('exp-${id}')">✕ Remove</button>` : ""}
-          <div class="field-grid">
-            <div class="field"><label>Company <span class="req">*</span></label><input placeholder="Google" oninput="rp()"/><span class="err-msg"></span></div>
-            <div class="field"><label>Role / Position <span class="req">*</span></label><input placeholder="Senior Engineer" oninput="rp()"/><span class="err-msg"></span></div>
-            <div class="field"><label>From Year</label><input placeholder="2020" maxlength="4" oninput="rp()"/></div>
-            <div class="field"><label>To Year</label><input placeholder="2024 or Present" oninput="rp()"/></div>
-            <div class="field full"><label>Key Achievements</label><textarea rows="3" placeholder="Led a team of 5, cut load time by 40%…" oninput="rp()"></textarea></div>
-          </div>`;
-        document.getElementById("exp-list").appendChild(d);
-      }
-      function addEdu() {
-        const id = eduIdx++;
-        const d = document.createElement("div");
-        d.className = "entry-block";
-        d.id = "edu-" + id;
-        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('edu-${id}')">✕ Remove</button>` : ""}
-          <div class="field-grid">
-            <div class="field"><label>School / University</label><input placeholder="MIT" oninput="rp()"/></div>
-            <div class="field"><label>Degree / Qualification</label><input placeholder="B.Sc. Computer Science" oninput="rp()"/></div>
-            <div class="field"><label>From Year</label><input placeholder="2015" maxlength="4" oninput="rp()"/></div>
-            <div class="field"><label>To Year</label><input placeholder="2019 or Present" oninput="rp()"/></div>
-          </div>`;
-        document.getElementById("edu-list").appendChild(d);
-      }
-      function addCert() {
-        const id = certIdx++;
-        const d = document.createElement("div");
-        d.className = "entry-block";
-        d.id = "cert-" + id;
-        d.innerHTML = `${id > 0 ? `<button class="remove-btn" onclick="del('cert-${id}')">✕ Remove</button>` : ""}
-          <div class="field-grid">
-            <div class="field"><label>Course / Certification</label><input placeholder="AWS Solutions Architect" oninput="rp()"/></div>
-            <div class="field"><label>Issuing Organization</label><input placeholder="Amazon Web Services" oninput="rp()"/></div>
-            <div class="field"><label>From Year</label><input placeholder="2022" maxlength="4" oninput="rp()"/></div>
-            <div class="field"><label>To Year / Completed</label><input placeholder="2023" oninput="rp()"/></div>
-          </div>`;
-        document.getElementById("cert-list").appendChild(d);
-      }
-      function del(id) {
-        document.getElementById(id).remove();
-        rp();
-      }
-
-      // ═══════════════════════════════════════════════
-      //  AI SUMMARY ENHANCE  (NEW FLOW)
-      //  1. AI generates → shown in editable textarea
-      //  2. User edits freely
-      //  3. User clicks Apply → aiSummary is set, resume re-renders
-      //  4. User clicks Discard → edit box hides, original summary kept
-      // ═══════════════════════════════════════════════
-      async function enhanceAI() {
-        const d = getData();
-        const btn = document.getElementById("ai-btn");
-        const sp = document.getElementById("spinner");
-        const txt = document.getElementById("ai-btn-text");
-        const err = document.getElementById("error-msg");
-
-        btn.disabled = true;
-        sp.style.display = "block";
-        txt.textContent = "Generating…";
-        err.style.display = "none";
-
-        try {
-          const res = await fetch(
-            "http://127.0.0.1:8080/api/resume/enhance-summary",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: d.name,
-                title: d.title,
-                summary: d.sum,
-                experience: d.exp,
-                skills: d.skills,
-              }),
-            },
+        if (d.education.length) {
+          t += `EDUCATION\n${hr}\n`;
+          d.education.forEach(
+            (e) =>
+              (t += `${e.degree}${e.school ? " — " + e.school : ""}${e.from || e.to ? "  [" + e.from + (e.to ? " – " + e.to : "") + "]" : ""}\n`),
           );
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Server error");
-
-          // Show the editable box with AI output — DO NOT apply yet
-          aiDraftSummary = data.summary;
-          const editBox = document.getElementById("ai-summary-box");
-          const editArea = document.getElementById("ai-summary-edit");
-          editArea.value = aiDraftSummary;
-          editBox.classList.add("visible");
-          editArea.focus();
-
-          // Scroll to the edit box
-          editBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        } catch (e) {
-          err.textContent = "AI enhancement failed: " + e.message;
-          err.style.display = "block";
-        } finally {
-          btn.disabled = false;
-          sp.style.display = "none";
-          txt.textContent = "✦ AI Enhance Summary";
+          t += "\n";
         }
+        if (d.certificates.length) {
+          t += `CERTIFICATIONS\n${hr}\n`;
+          d.certificates.forEach(
+            (c) =>
+              (t += `${c.name}${c.issuer ? " — " + c.issuer : ""}${c.year ? " (" + c.year + ")" : ""}\n`),
+          );
+          t += "\n";
+        }
+        if (d.skills) t += `SKILLS\n${hr}\n${d.skills}\n\n`;
+        if (d.languages.length) {
+          t += `LANGUAGES\n${hr}\n`;
+          d.languages.forEach(
+            (l) => (t += `${l.lang}${l.level ? " (" + l.level + ")" : ""}\n`),
+          );
+          t += "\n";
+        }
+        if (d.hobbies) t += `HOBBIES & INTERESTS\n${hr}\n${d.hobbies}\n`;
+        dlBlob(
+          new Blob([t], { type: "text/plain" }),
+          `${d.name || "resume"}.txt`,
+        );
+        toast("✓ Plain text downloaded!");
       }
 
-      // Live-sync the draft as user types
-      function onAISummaryEdit() {
-        aiDraftSummary = document.getElementById("ai-summary-edit").value;
+      function exportJSON() {
+        const d = getData();
+        dlBlob(
+          new Blob([JSON.stringify(d, null, 2)], { type: "application/json" }),
+          `${d.name || "resume"}-data.json`,
+        );
+        toast("✓ JSON backup downloaded!");
       }
 
-      // Apply the (possibly edited) AI summary to the resume
-      function applyAISummary() {
-        aiSummary = document.getElementById("ai-summary-edit").value.trim();
-        if (!aiSummary) {
-          discardAISummary();
+      function dlBlob(blob, name) {
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = name;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      }
+
+      // ══════════════════════════════════════════════════════
+      // EXPERIENCE
+      // ══════════════════════════════════════════════════════
+      function addExp() {
+        EXP.push({ role: "", company: "", from: "", to: "", desc: "" });
+        renderEXP();
+      }
+      function delExp(i) {
+        EXP.splice(i, 1);
+        renderEXP();
+        qRender();
+      }
+      function renderEXP() {
+        $("exp-list").innerHTML = EXP.map(
+          (e, i) => `
+    <div class="exp-item" id="ei${i}">
+      <div class="exp-header">
+        <div class="exp-num">${i + 1}</div>
+        <div class="exp-title">${esc(e.company || "New Experience")}</div>
+        <button class="btn-del" onclick="delExp(${i})">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Job Title</label>
+          <input value="${esc(e.role)}" placeholder="Software Engineer"
+            oninput="EXP[${i}].role=this.value;updExpTitle(${i});qRender()"></div>
+        <div class="form-group"><label>Company</label>
+          <input value="${esc(e.company)}" placeholder="Acme Corp"
+            oninput="EXP[${i}].company=this.value;updExpTitle(${i});qRender()"></div>
+        <div class="form-group"><label>From</label>
+          <input value="${esc(e.from)}" placeholder="Jan 2021"
+            oninput="EXP[${i}].from=this.value;qRender()"></div>
+        <div class="form-group"><label>To</label>
+          <input value="${esc(e.to)}" placeholder="Present"
+            oninput="EXP[${i}].to=this.value;qRender()"></div>
+        <div class="form-group full"><label>Description / Achievements</label>
+          <textarea rows="3" placeholder="Led a team of 5 engineers to deliver…"
+            oninput="EXP[${i}].desc=this.value;qRender()">${esc(e.desc)}</textarea></div>
+        <div class="form-group full" style="flex-direction:row;gap:8px;margin-top:2px;">
+          <button class="btn btn-secondary btn-sm" onclick="improveBullet(${i})">✨ Improve with AI</button>
+        </div>
+      </div>
+    </div>`,
+        ).join("");
+      }
+      function updExpTitle(i) {
+        const el = document.querySelector(`#ei${i} .exp-title`);
+        if (el) el.textContent = EXP[i].company || "New Experience";
+      }
+
+      // ══════════════════════════════════════════════════════
+      // EDUCATION
+      // ══════════════════════════════════════════════════════
+      function addEdu() {
+        EDU.push({ degree: "", school: "", from: "", to: "" });
+        renderEDU();
+      }
+      function delEdu(i) {
+        EDU.splice(i, 1);
+        renderEDU();
+        qRender();
+      }
+      function renderEDU() {
+        $("edu-list").innerHTML = EDU.map(
+          (e, i) => `
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-num">${i + 1}</div>
+        <div class="exp-title">${esc(e.school || "New Education")}</div>
+        <button class="btn-del" onclick="delEdu(${i})">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Degree</label>
+          <input value="${esc(e.degree)}" placeholder="B.Sc. Computer Science"
+            oninput="EDU[${i}].degree=this.value;qRender()"></div>
+        <div class="form-group"><label>School / University</label>
+          <input value="${esc(e.school)}" placeholder="MIT"
+            oninput="EDU[${i}].school=this.value;qRender()"></div>
+        <div class="form-group"><label>From</label>
+          <input value="${esc(e.from)}" placeholder="2017"
+            oninput="EDU[${i}].from=this.value;qRender()"></div>
+        <div class="form-group"><label>To</label>
+          <input value="${esc(e.to)}" placeholder="2021"
+            oninput="EDU[${i}].to=this.value;qRender()"></div>
+      </div>
+    </div>`,
+        ).join("");
+      }
+
+      // ══════════════════════════════════════════════════════
+      // CERTIFICATES
+      // ══════════════════════════════════════════════════════
+      function addCert() {
+        CERT.push({ name: "", issuer: "", year: "" });
+        renderCERT();
+      }
+      function delCert(i) {
+        CERT.splice(i, 1);
+        renderCERT();
+        qRender();
+      }
+      function renderCERT() {
+        $("cert-list").innerHTML = CERT.map(
+          (c, i) => `
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-num">${i + 1}</div>
+        <div class="exp-title">${esc(c.name || "New Certificate")}</div>
+        <button class="btn-del" onclick="delCert(${i})">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group full"><label>Certificate Name</label>
+          <input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect"
+            oninput="CERT[${i}].name=this.value;qRender()"></div>
+        <div class="form-group"><label>Issuing Organisation</label>
+          <input value="${esc(c.issuer)}" placeholder="Amazon Web Services"
+            oninput="CERT[${i}].issuer=this.value;qRender()"></div>
+        <div class="form-group"><label>Year</label>
+          <input value="${esc(c.year)}" placeholder="2023"
+            oninput="CERT[${i}].year=this.value;qRender()"></div>
+      </div>
+    </div>`,
+        ).join("");
+      }
+
+      // ══════════════════════════════════════════════════════
+      // LANGUAGES
+      // ══════════════════════════════════════════════════════
+      const PROF = ["Native", "Fluent", "Advanced", "Intermediate", "Basic"];
+      function addLang() {
+        LANG.push({ lang: "", level: "Fluent" });
+        renderLANG();
+      }
+      function delLang(i) {
+        LANG.splice(i, 1);
+        renderLANG();
+        qRender();
+      }
+      function renderLANG() {
+        $("lang-list").innerHTML = LANG.map(
+          (l, i) => `
+    <div class="exp-item">
+      <div class="exp-header">
+        <div class="exp-num">${i + 1}</div>
+        <div class="exp-title">${esc(l.lang || "New Language")}</div>
+        <button class="btn-del" onclick="delLang(${i})">✕</button>
+      </div>
+      <div class="form-grid">
+        <div class="form-group"><label>Language</label>
+          <input value="${esc(l.lang)}" placeholder="Spanish"
+            oninput="LANG[${i}].lang=this.value;qRender()"></div>
+        <div class="form-group"><label>Proficiency</label>
+          <select onchange="LANG[${i}].level=this.value;qRender()">
+            ${PROF.map((p) => `<option${l.level === p ? " selected" : ""}>${p}</option>`).join("")}
+          </select></div>
+      </div>
+    </div>`,
+        ).join("");
+      }
+
+      // ══════════════════════════════════════════════════════
+      // RESUME RENDER
+      // Key fix: theme CSS injected into <style id="theme-css"> in <body>
+      // Forest Pro header split into .rt-header-info + contact div
+      // ══════════════════════════════════════════════════════
+      let _rt = null;
+      function qRender() {
+        clearTimeout(_rt);
+        _rt = setTimeout(renderResume, 320);
+      }
+
+      function renderResume() {
+        const d = getData();
+        const th = allThemes[activeTheme] || allThemes[0];
+
+        // Inject theme CSS
+        $("theme-css").textContent = th.css || "";
+        const tn = $("active-theme-name");
+        if (tn) tn.textContent = th.name;
+
+        // Build contact spans
+        const contactParts = [d.email, d.phone, d.location, d.website].filter(
+          Boolean,
+        );
+        const contactHtml = contactParts
+          .map((x) => `<span>${esc(x)}</span>`)
+          .join("");
+
+        // Sections
+        const secExp = d.experience
+          .map(
+            (e) => `
+    <div class="rt-entry">
+      <div class="rt-entry-row">
+        <div><span class="rt-entry-role">${esc(e.role)}</span>${e.company ? ` <span class="rt-entry-company">— ${esc(e.company)}</span>` : ""}</div>
+        <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
+      </div>
+      ${e.desc ? `<div class="rt-entry-desc">${esc(e.desc)}</div>` : ""}
+    </div>`,
+          )
+          .join("");
+
+        const secEdu = d.education
+          .map(
+            (e) => `
+    <div class="rt-entry">
+      <div class="rt-entry-row">
+        <div><span class="rt-entry-role">${esc(e.degree)}</span>${e.school ? ` <span class="rt-entry-company">— ${esc(e.school)}</span>` : ""}</div>
+        <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
+      </div>
+    </div>`,
+          )
+          .join("");
+
+        const secCert = d.certificates
+          .map(
+            (c) => `
+    <div class="rt-entry">
+      <div class="rt-entry-row">
+        <div><span class="rt-entry-role">${esc(c.name)}</span>${c.issuer ? ` <span class="rt-entry-company">— ${esc(c.issuer)}</span>` : ""}</div>
+        ${c.year ? `<span class="rt-entry-date">${esc(c.year)}</span>` : ""}
+      </div>
+    </div>`,
+          )
+          .join("");
+
+        const secSkills = d.skills
+          ? d.skills
+              .split(",")
+              .filter((s) => s.trim())
+              .map((s) => `<span class="rt-tag">${esc(s.trim())}</span>`)
+              .join("")
+          : "";
+        const secLang = d.languages
+          .filter((l) => l.lang)
+          .map(
+            (l) =>
+              `<span class="rt-pill">${esc(l.lang)}${l.level ? " · " + esc(l.level) : ""}</span>`,
+          )
+          .join("");
+        const secHobbies = d.hobbies
+          ? d.hobbies
+              .split(",")
+              .filter((h) => h.trim())
+              .map((h) => `<span class="rt-pill">${esc(h.trim())}</span>`)
+              .join("")
+          : "";
+        const secSummary = d.summary
+          ? `<div class="rt-section-title">Summary</div><div class="rt-summary">${esc(d.summary)}</div>`
+          : "";
+
+        // Forest Pro needs a different header structure (two-column with contact on right)
+        const isForest = th.name === "Forest Pro";
+        const headerHtml = isForest
+          ? `
+    <div class="rt-header">
+      <div class="rt-header-info">
+        <div class="rt-name">${esc(d.name) || "Your Name"}</div>
+        <div class="rt-title">${esc(d.title) || "Your Title"}</div>
+      </div>
+      <div class="rt-contact">${contactHtml}</div>
+    </div>`
+          : `
+    <div class="rt-header">
+      <div class="rt-name">${esc(d.name) || "Your Name"}</div>
+      <div class="rt-title">${esc(d.title) || "Your Title"}</div>
+      <div class="rt-contact">${contactHtml}</div>
+    </div>`;
+
+        let body = "";
+        if (th.layout === "sidebar") {
+          body = `<div class="rt-wrap">
+      ${headerHtml}
+      <div class="rt-sidebar">
+        ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
+        ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
+        ${secHobbies ? `<div class="rt-section-title">Hobbies</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
+        ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
+        ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
+      </div>
+      <div class="rt-main">
+        ${secSummary}
+        ${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}
+      </div>
+    </div>`;
+        } else {
+          body = `<div class="rt-wrap">
+      ${headerHtml}
+      ${secSummary}
+      ${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}
+      ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
+      ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
+      ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
+      ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
+      ${secHobbies ? `<div class="rt-section-title">Hobbies &amp; Interests</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
+    </div>`;
+        }
+        $("resume-body").innerHTML = body;
+      }
+
+      // ══════════════════════════════════════════════════════
+      // TEMPLATE GALLERY
+      // ══════════════════════════════════════════════════════
+      function renderGallery() {
+        $("tgallery").innerHTML = allThemes
+          .map(
+            (t, i) => `
+    <div class="tcard${activeTheme === i ? " sel" : ""}" onclick="applyTheme(${i})">
+      <div class="tcard-dot" style="background:${t.color || "#888"}"></div>
+      <div class="tcard-name">${esc(t.name)}</div>
+      <div class="tcard-layout">${esc(t.layout)} layout</div>
+      <span class="tcard-badge" style="${t.isDefault ? "background:#fde8e1;color:#c8502a" : "background:#e8f5e9;color:#2e7d52"}">
+        ${t.isDefault ? "built-in" : "AI"}
+      </span>
+    </div>`,
+          )
+          .join("");
+      }
+      function applyTheme(i) {
+        activeTheme = i;
+        renderGallery();
+        renderResume();
+        toast(`✓ Theme "${allThemes[i].name}" applied!`);
+      }
+
+      // ══════════════════════════════════════════════════════
+      // API CALLS
+      // ══════════════════════════════════════════════════════
+      async function enhanceSummary() {
+        const d = getData();
+        if (!d.name || !d.title) {
+          toast("⚠ Fill in Name and Title first.");
           return;
         }
-        document.getElementById("ai-summary-box").classList.remove("visible");
-        renderResume();
-        rp();
-        // Update the AI Enhance button label to indicate re-generation is possible
-        document.getElementById("ai-btn-text").textContent =
-          "✦ Re-enhance Summary";
+        setBtn("btn-enhance", true, "✨ Enhance with AI");
+        $("err-summary").classList.remove("show");
+        try {
+          const j = await api(`${API}/api/resume/enhance-summary`, d);
+          summaryDraft = j.summary;
+          $("ai-summary-text").textContent = j.summary;
+          $("ai-summary").classList.add("show");
+          toast("✦ AI summary ready!");
+        } catch (e) {
+          showErr("err-summary", e.message);
+        } finally {
+          setBtn("btn-enhance", false, "✨ Enhance with AI");
+        }
+      }
+      function applySummary() {
+        if (!summaryDraft) return;
+        $("b-summary").value = summaryDraft;
+        qRender();
+        $("ai-summary").classList.remove("show");
+        summaryDraft = "";
+        toast("✓ Summary applied!");
       }
 
-      // Discard: hide the box, do not change aiSummary
-      function discardAISummary() {
-        document.getElementById("ai-summary-box").classList.remove("visible");
-        aiDraftSummary = "";
-        document.getElementById("ai-summary-edit").value = "";
+      async function improveBullet(i) {
+        const e = EXP[i];
+        if (!e.desc) {
+          toast("⚠ Add a description first.");
+          return;
+        }
+        const btn = document.querySelector(`#ei${i} .btn-secondary`);
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = `<span class="spin spin-dark"></span> Improving…`;
+        }
+        try {
+          const j = await api(`${API}/api/resume/improve-bullet`, {
+            bullet: e.desc,
+            role: e.role,
+            company: e.company,
+          });
+          EXP[i].desc = j.bullet;
+          renderEXP();
+          qRender();
+          toast("✦ Bullet improved!");
+        } catch (err) {
+          toast("❌ " + err.message);
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = "✨ Improve with AI";
+          }
+        }
       }
 
-      // ═══════════════════════════════════════════════
-      //  SAVE AS PDF  (browser print dialog)
-      // ═══════════════════════════════════════════════
-      function saveResume() {
-        // Ensure the resume is fully rendered before printing
-        renderResume();
-        // Small delay so DOM can repaint
-        setTimeout(() => window.print(), 120);
+      async function suggestSkills() {
+        const d = getData();
+        if (!d.title) {
+          toast("⚠ Add a job title first.");
+          return;
+        }
+        setBtn("btn-skills", true, "💡 Suggest Skills");
+        $("err-skills").classList.remove("show");
+        try {
+          const j = await api(`${API}/api/resume/suggest-skills`, {
+            title: d.title,
+            experience: d.experience,
+          });
+          $("skills-list").innerHTML = j.skills
+            .map(
+              (s) =>
+                `<span class="tag" onclick="addSkill('${esc(s)}')">${esc(s)}</span>`,
+            )
+            .join("");
+          $("ai-skills").classList.add("show");
+          toast("💡 Click any skill to add it!");
+        } catch (e) {
+          showErr("err-skills", e.message);
+        } finally {
+          setBtn("btn-skills", false, "💡 Suggest Skills for My Role");
+        }
       }
+      function addSkill(s) {
+        const el = $("b-skills");
+        const list = el.value.trim()
+          ? el.value.split(",").map((x) => x.trim())
+          : [];
+        if (!list.includes(s)) {
+          el.value = [...list, s].join(", ");
+          qRender();
+          toast(`✓ "${s}" added!`);
+        } else toast(`"${s}" already in skills.`);
+      }
+
+      async function scoreResume() {
+        const d = getData();
+        if (!d.name && !d.title) {
+          toast("⚠ Build your resume first.");
+          return;
+        }
+        setBtn("btn-score", true, "🎯 Analyse My Resume");
+        $("err-score").classList.remove("show");
+        try {
+          const j = await api(`${API}/api/resume/score-resume`, {
+            resumeData: d,
+          });
+          const sc = Math.min(100, Math.max(0, +j.score || 0));
+          $("score-val").textContent = sc;
+          $("score-donut").style.setProperty("--pct", sc);
+          $("score-grade").textContent = `Grade: ${j.grade || "--"}`;
+          $("score-fb").textContent = j.summary_feedback || "";
+          $("score-str").innerHTML = (j.strengths || [])
+            .map((s) => `<li>${esc(s)}</li>`)
+            .join("");
+          $("score-imp").innerHTML = (j.improvements || [])
+            .map((s) => `<li>${esc(s)}</li>`)
+            .join("");
+          $("score-result").style.display = "block";
+          toast("✓ Resume scored!");
+        } catch (e) {
+          showErr("err-score", e.message);
+        } finally {
+          setBtn("btn-score", false, "🎯 Analyse My Resume");
+        }
+      }
+
+      async function tailorResume() {
+        const jd = $("job-desc").value.trim();
+        if (!jd) {
+          toast("⚠ Paste a job description first.");
+          return;
+        }
+        const d = getData();
+        setBtn("btn-tailor", true, "🎯 Tailor My Resume");
+        $("err-tailor").classList.remove("show");
+        try {
+          const j = await api(`${API}/api/resume/tailor-resume`, {
+            resumeData: d,
+            jobDescription: jd,
+          });
+          tailorDraft = j.tailored_summary || "";
+          $("tailor-summary").textContent = tailorDraft;
+          $("tailor-skills").innerHTML = (j.suggested_skills || [])
+            .map(
+              (s) =>
+                `<span class="tag" onclick="addSkill('${esc(s)}')">${esc(s)}</span>`,
+            )
+            .join("");
+          $("tailor-found").innerHTML = (j.keywords_found || [])
+            .map((k) => `<span class="tag found">${esc(k)}</span>`)
+            .join("");
+          $("tailor-missing").innerHTML = (j.keywords_missing || [])
+            .map((k) => `<span class="tag missing">${esc(k)}</span>`)
+            .join("");
+          $("tailor-out").style.display = "block";
+          toast("✓ Resume tailored!");
+        } catch (e) {
+          showErr("err-tailor", e.message);
+        } finally {
+          setBtn("btn-tailor", false, "🎯 Tailor My Resume");
+        }
+      }
+      function applyTailored() {
+        if (!tailorDraft) return;
+        $("b-summary").value = tailorDraft;
+        qRender();
+        toast("✓ Tailored summary applied!");
+      }
+
+      async function genTemplate() {
+        const prompt = $("tpl-prompt").value.trim();
+        if (!prompt) {
+          toast("⚠ Enter a style prompt first.");
+          return;
+        }
+        setBtn("btn-tpl", true, "🎨 Generating…");
+        $("err-tpl").classList.remove("show");
+        try {
+          const j = await api(`${API}/api/resume/generate-template`, {
+            prompt,
+          });
+          allThemes.push(j);
+          renderGallery();
+          applyTheme(allThemes.length - 1);
+          toast(`✓ Theme "${j.name}" created & applied!`);
+        } catch (e) {
+          showErr("err-tpl", e.message);
+        } finally {
+          setBtn("btn-tpl", false, "🎨 Generate Template");
+        }
+      }
+
+      // ══════════════════════════════════════════════════════
+      // INIT
+      // ══════════════════════════════════════════════════════
+      window.addEventListener("DOMContentLoaded", () => {
+        addExp();
+        addEdu();
+        addCert();
+        addLang();
+        renderGallery();
+        renderResume();
+      });
     </script>
   </body>
 </html>

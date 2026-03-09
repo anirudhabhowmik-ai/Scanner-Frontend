@@ -181,7 +181,7 @@ header .logo a {
 }
 
 /* Mobile Nav */
-@media (max-width: 1200px) {
+@media (max-width: 1340px) {
   .nav-links {
     position: fixed;
     top: 80px;

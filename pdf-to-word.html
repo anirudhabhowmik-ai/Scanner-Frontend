@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Primary Meta Tags -->
-    <title>
-      PDF to Word Converter Online Free - DOC, DOCX | NextoPDF
-    </title>
+    <title>PDF to Word Converter Online Free - DOC, DOCX | NextoPDF</title>
     <meta
       name="title"
       content="PDF to Word Converter Online Free - DOC, DOCX | NextoPDF"
@@ -349,7 +347,8 @@
         color: #2563eb;
       }
 
-      select, input[type="text"] {
+      select,
+      input[type="text"] {
         padding: 10px 14px;
         border: 2px solid #e5e7eb;
         border-radius: 8px;
@@ -358,7 +357,8 @@
         background: white;
       }
 
-      select:focus, input:focus {
+      select:focus,
+      input:focus {
         outline: none;
         border-color: #2563eb;
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -723,7 +723,11 @@
               ></ul>
 
               <!-- Settings Panel -->
-              <div id="settingsPanel" class="settings-panel" style="display: none">
+              <div
+                id="settingsPanel"
+                class="settings-panel"
+                style="display: none"
+              >
                 <h3 style="margin: 0 0 20px 0; color: #1f2937; font-size: 18px">
                   <i class="fas fa-sliders-h" aria-hidden="true"></i>
                   Conversion Settings
@@ -754,7 +758,7 @@
                       placeholder="all"
                       aria-label="Enter page range (e.g., all, 1-5, 1,3,5)"
                     />
-                    <p style="font-size: 12px; color: #6b7280; margin-top: 4px;">
+                    <p style="font-size: 12px; color: #6b7280; margin-top: 4px">
                       Examples: "all", "1-5", "1,3,5"
                     </p>
                   </div>
@@ -775,7 +779,9 @@
                     </div>
                     <div class="checkbox-option">
                       <input type="checkbox" id="preserveFormatting" checked />
-                      <label for="preserveFormatting">Preserve formatting</label>
+                      <label for="preserveFormatting"
+                        >Preserve formatting</label
+                      >
                     </div>
                   </div>
 
@@ -801,7 +807,7 @@
               <button
                 id="convertBtn"
                 class="cta-button"
-                style="display: none; margin: 20px 0;"
+                style="display: none; margin: 20px 0"
                 aria-label="Convert PDF to Word"
               >
                 <span class="btn-spinner" aria-hidden="true">
@@ -848,7 +854,10 @@
                   ></i>
                 </div>
                 <p class="file-name">
-                  <a href="#" id="fileNameLink" aria-label="View converted Word file"
+                  <a
+                    href="#"
+                    id="fileNameLink"
+                    aria-label="View converted Word file"
                     >converted.docx</a
                   >
                 </p>
@@ -868,628 +877,20 @@
                     class="secondary-btn"
                     aria-label="Convert another PDF"
                   >
-                    <i class="fa fa-rotate-right" aria-hidden="true"></i> Convert Another PDF
+                    <i class="fa fa-rotate-right" aria-hidden="true"></i>
+                    Convert Another PDF
                   </button>
                 </div>
               </div>
 
               <div class="note">
                 <i class="fa fa-info-circle" aria-hidden="true"></i>
-                <strong>Tip:</strong> For scanned PDFs, enable OCR to extract text from images.
-                Complex layouts may need manual adjustment after conversion.
+                <strong>Tip:</strong> For scanned PDFs, enable OCR to extract
+                text from images. Complex layouts may need manual adjustment
+                after conversion.
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <!-- ====================================================== -->
-      <!-- VALUABLE CONTENT STARTS HERE - HOW I'D BUILD THIS TOOL -->
-      <!-- ====================================================== -->
-
-      <!-- Section 1: The Origin Story + Technical Stack -->
-      <section class="content-section" style="background: #f9fafb">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>How I'd Build This PDF to Word Tool (Python + pdf2docx + PyMuPDF)</h2>
-
-            <div
-              style="
-                background: white;
-                padding: 30px;
-                border-radius: 16px;
-                margin-bottom: 30px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-lightbulb" style="color: #fbbf24;"></i>
-                The Problem That Would Inspire This Tool
-              </h3>
-              
-              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
-                A few years ago, my sister was applying for a job and needed to update her resume. The only copy she had was a PDF from two years ago. She spent hours retyping everything - formatting, bullet points, section headers - because she couldn't find the original Word document.
-              </p>
-              <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
-                We tried online PDF to Word converters, but they were terrible. One tool gave her a Word file with text in random places. Another lost all her formatting and turned bullet points into asterisks. A third wanted her credit card after the "free trial" ended.
-              </p>
-              <p style="color: #555; line-height: 1.8;">
-                That's when I discovered pdf2docx - a Python library that does an amazing job of preserving layout, fonts, and formatting. If I were to build this tool, I'd use pdf2docx for the core conversion, PyMuPDF for page range extraction, and add OCR for scanned documents. My sister could upload her resume PDF and get back an editable Word file in seconds, not hours.
-              </p>
-            </div>
-
-            <!-- The Tech Stack -->
-            <div
-              style="
-                background: white;
-                padding: 30px;
-                border-radius: 16px;
-                margin-bottom: 30px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-              "
-            >
-              <h3 style="color: #1e3a8a; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-code" style="color: #4f46e5;"></i>
-                The Tech Stack: Python + pdf2docx + PyMuPDF + pytesseract
-              </h3>
-              
-              <div style="display: grid; gap: 25px;">
-                <!-- Frontend -->
-                <div style="background: #f8fafc; padding: 20px; border-radius: 12px;">
-                  <h4 style="color: #1e3a8a; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fab fa-js" style="color: #F7DF1E; font-size: 24px;"></i>
-                    Frontend (HTML/CSS/JavaScript)
-                  </h4>
-                  <ul style="color: #555; line-height: 1.7; padding-left: 20px;">
-                    <li><strong>File upload</strong> - Single PDF file with validation</li>
-                    <li><strong>Settings panel</strong> - Page range, output format, OCR toggle</li>
-                    <li><strong>Progress tracking</strong> - Real-time conversion progress</li>
-                    <li><strong>Word preview</strong> - Would show converted document</li>
-                  </ul>
-                </div>
-
-                <!-- Backend -->
-                <div style="background: #f8fafc; padding: 20px; border-radius: 12px;">
-                  <h4 style="color: #1e3a8a; margin-bottom: 15px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fab fa-python" style="color: #3776AB; font-size: 24px;"></i>
-                    Backend (Python/Flask + pdf2docx)
-                  </h4>
-                  <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #c084fc;">from</span> pdf2docx <span style="color: #c084fc;">import</span> Converter
-<span style="color: #c084fc;">import</span> fitz  <span style="color: #94a3b8;"># PyMuPDF</span>
-<span style="color: #c084fc;">import</span> tempfile
-
-<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">pdf_to_word</span>(pdf_path, output_path, start_page=<span style="color: #a78bfa;">0</span>, end_page=<span style="color: #a78bfa;">None</span>):
-    <span style="color: #94a3b8;"># Extract specific pages if needed</span>
-    <span style="color: #c084fc;">if</span> start_page != <span style="color: #a78bfa;">0</span> <span style="color: #c084fc;">or</span> end_page <span style="color: #c084fc;">is not</span> <span style="color: #f87171;">None</span>:
-        doc = fitz.open(pdf_path)
-        new_doc = fitz.open()
-        <span style="color: #c084fc;">for</span> i <span style="color: #c084fc;">in</span> range(start_page, end_page):
-            new_doc.insert_pdf(doc, from_page=i, to_page=i)
-        temp_pdf = tempfile.NamedTemporaryFile(delete=<span style="color: #f87171;">False</span>, suffix=<span style="color: #a78bfa;">".pdf"</span>)
-        new_doc.save(temp_pdf.name)
-        pdf_path = temp_pdf.name
-    
-    <span style="color: #94a3b8;"># Convert PDF to DOCX</span>
-    cv = Converter(pdf_path)
-    cv.convert(output_path, start=<span style="color: #a78bfa;">0</span>, end=<span style="color: #f87171;">None</span>)
-    cv.close()</pre>
-                  <ul style="color: #555; line-height: 1.7; padding-left: 20px; margin-top: 15px;">
-                    <li><strong>pdf2docx</strong> - Python library that preserves layout, fonts, tables</li>
-                    <li><strong>PyMuPDF (fitz)</strong> - Extracts specific pages before conversion</li>
-                    <li><strong>Layout analysis</strong> - Detects paragraphs, headers, lists</li>
-                    <li><strong>Font mapping</strong> - Matches PDF fonts to Word equivalents</li>
-                  </ul>
-                </div>
-              </div>
-
-              <div style="background: #e8f0fe; padding: 20px; border-radius: 12px; margin-top: 20px;">
-                <h4 style="color: #1e3a8a; margin-bottom: 10px;">⚡ My Sister's Resume</h4>
-                <p style="color: #555; line-height: 1.8;">
-                  Her resume had custom fonts, bullet points, and careful spacing. pdf2docx preserved everything - the fonts mapped to Word equivalents, bullet points stayed as proper Word lists, and section headers kept their styling. She edited her resume in 10 minutes instead of retyping for 2 hours.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 2: Deep Dive - How pdf2docx Works -->
-      <section class="content-section" style="background: white">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>🔧 How PDF to Word Conversion Actually Works</h2>
-
-            <p style="color: #555; line-height: 1.8; margin-bottom: 30px;">
-              Converting PDF to Word is much harder than it sounds. Here's what happens behind the scenes:
-            </p>
-
-            <div style="background: #f9fafb; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Step 1: Parse PDF Structure</h3>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #94a3b8;"># pdf2docx reads the PDF's internal structure</span>
-- Text objects (characters, their positions, fonts, sizes)
-- Images (embedded bitmaps, vectors)
-- Paths (lines, rectangles for tables)
-- Metadata (author, title, creation date)</pre>
-              <p style="color: #555; line-height: 1.8;">
-                Unlike HTML, PDF doesn't have semantic tags like &lt;h1&gt; or &lt;p&gt;. It just knows where each character sits on the page.
-              </p>
-            </div>
-
-            <div style="background: #f9fafb; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Step 2: Text Clustering (Finding Paragraphs)</h3>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #94a3b8;"># Group text by Y-position (same line)</span>
-lines = group_by_y(text_objects)
-
-<span style="color: #94a3b8;"># Group lines by X-position and spacing (same paragraph)</span>
-<span style="color: #c084fc;">for</span> line <span style="color: #c084fc;">in</span> lines:
-    <span style="color: #c084fc;">if</span> distance_to_previous_line > threshold:
-        new_paragraph()
-    <span style="color: #c084fc;">else</span>:
-        add_to_current_paragraph()</pre>
-              <p style="color: #555; line-height: 1.8;">
-                The algorithm figures out which lines belong together. If the gap between lines is small, they're the same paragraph. If it's large, new paragraph.
-              </p>
-            </div>
-
-            <div style="background: #f9fafb; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Step 3: Font Mapping</h3>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #94a3b8;"># Map PDF fonts to Word fonts</span>
-font_map = {
-    <span style="color: #a78bfa;">"ABCDEF+Helvetica"</span>: <span style="color: #a78bfa;">"Helvetica"</span>,
-    <span style="color: #a78bfa;">"TimesNewRomanPSMT"</span>: <span style="color: #a78bfa;">"Times New Roman"</span>,
-    <span style="color: #a78bfa;">"CourierNewPSMT"</span>: <span style="color: #a78bfa;">"Courier New"</span>
-}</pre>
-              <p style="color: #555; line-height: 1.8;">
-                PDF fonts have weird names like "ABCDEF+Helvetica". pdf2docx strips the prefix and maps to standard Word fonts.
-              </p>
-            </div>
-
-            <div style="background: #f9fafb; padding: 25px; border-radius: 12px; margin-bottom: 25px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 15px;">Step 4: Table Detection</h3>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #94a3b8;"># Look for vertical and horizontal lines</span>
-vertical_lines = detect_vertical_paths()
-horizontal_lines = detect_horizontal_paths()
-
-<span style="color: #94a3b8;"># Create grid from intersections</span>
-cells = create_grid(vertical_lines, horizontal_lines)
-table = extract_text_from_cells(cells)</pre>
-              <p style="color: #555; line-height: 1.8;">
-                Tables are detected by finding line paths that form a grid. The accountant's financial reports with complex tables? Preserved as Word tables.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 3: Layout Preservation Challenges -->
-      <section class="content-section" style="background: #f9fafb">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>📐 Layout Preservation - What's Hard and What Works</h2>
-
-            <div class="feature-grid">
-              <div class="feature-card">
-                <i class="fas fa-check-circle" style="color: #10b981;"></i>
-                <h4>✅ Preserved Well</h4>
-                <ul style="color: #6b7280; font-size: 14px; line-height: 1.6; padding-left: 20px; margin-top: 10px;">
-                  <li>Fonts and sizes</li>
-                  <li>Paragraph spacing</li>
-                  <li>Bold/italic styling</li>
-                  <li>Simple tables</li>
-                  <li>Bullet lists</li>
-                  <li>Numbered lists</li>
-                  <li>Images</li>
-                  <li>Page headers/footers</li>
-                </ul>
-              </div>
-
-              <div class="feature-card">
-                <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
-                <h4>⚠️ Sometimes Tricky</h4>
-                <ul style="color: #6b7280; font-size: 14px; line-height: 1.6; padding-left: 20px; margin-top: 10px;">
-                  <li>Multi-column layouts</li>
-                  <li>Text boxes</li>
-                  <li>Complex tables with merged cells</li>
-                  <li>Floating images</li>
-                  <li>Form fields</li>
-                  <li>Annotations</li>
-                </ul>
-              </div>
-
-              <div class="feature-card">
-                <i class="fas fa-times-circle" style="color: #ef4444;"></i>
-                <h4>❌ Not Preserved</h4>
-                <ul style="color: #6b7280; font-size: 14px; line-height: 1.6; padding-left: 20px; margin-top: 10px;">
-                  <li>Interactive form fields</li>
-                  <li>JavaScript actions</li>
-                  <li>3D models</li>
-                  <li>Video/audio embeds</li>
-                  <li>Digital signatures</li>
-                  <li>Encryption</li>
-                </ul>
-              </div>
-            </div>
-
-            <div style="background: #e8f0fe; padding: 20px; border-radius: 12px; margin-top: 30px;">
-              <h4 style="color: #1e3a8a; margin-bottom: 10px;">📄 My Sister's Resume</h4>
-              <p style="color: #555; line-height: 1.8;">
-                Her resume had a two-column layout for skills. pdf2docx preserved it by detecting the column boundaries and creating appropriate Word sections. Not perfect, but close enough to edit easily.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 4: OCR Integration for Scanned PDFs -->
-      <section class="content-section" style="background: white">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>🔍 OCR for Scanned PDFs - Making Images Editable</h2>
-
-            <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
-              What if your PDF is just scanned images? No text layer at all. That's where OCR comes in:
-            </p>
-
-            <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 20px;">
-<span style="color: #c084fc;">def</span> <span style="color: #60a5fa;">convert_scanned_pdf</span>(pdf_path, output_path):
-    <span style="color: #94a3b8;"># Step 1: Convert PDF pages to images</span>
-    doc = fitz.open(pdf_path)
-    images = []
-    <span style="color: #c084fc;">for</span> page_num <span style="color: #c084fc;">in</span> range(len(doc)):
-        page = doc[page_num]
-        pix = page.get_pixmap(matrix=fitz.Matrix(<span style="color: #a78bfa;">300</span>/<span style="color: #a78bfa;">72</span>, <span style="color: #a78bfa;">300</span>/<span style="color: #a78bfa;">72</span>))
-        img = Image.frombytes(<span style="color: #a78bfa;">"RGB"</span>, [pix.width, pix.height], pix.samples)
-        images.append(img)
-    
-    <span style="color: #94a3b8;"># Step 2: OCR each image with Tesseract</span>
-    text_pages = []
-    <span style="color: #c084fc;">for</span> img <span style="color: #c084fc;">in</span> images:
-        text = pytesseract.image_to_string(img, lang=<span style="color: #a78bfa;">"eng"</span>)
-        text_pages.append(text)
-    
-    <span style="color: #94a3b8;"># Step 3: Create Word document with extracted text</span>
-    doc = Document()
-    <span style="color: #c084fc;">for</span> text <span style="color: #c084fc;">in</span> text_pages:
-        doc.add_paragraph(text)
-    doc.save(output_path)</pre>
-
-            <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
-              The lawyer who emailed me? He had scanned contracts from the 1980s - just images. OCR extracted the text, and pdf2docx created editable Word documents. He could finally search and edit old contracts.
-            </p>
-
-            <div style="background: #e8f0fe; padding: 20px; border-radius: 12px;">
-              <h4 style="color: #1e3a8a; margin-bottom: 10px;">📊 OCR Accuracy Tips</h4>
-              <ul style="color: #555; line-height: 1.8; padding-left: 20px;">
-                <li>300 DPI minimum for good results</li>
-                <li>Clean, straight pages work best</li>
-                <li>Fancy fonts reduce accuracy</li>
-                <li>Handwriting won't work well</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 5: The Debugging Stories -->
-      <section class="content-section" style="background: #f9fafb">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>🐛 The Debugging Stories (What Would Go Wrong)</h2>
-
-            <div style="background: #fef2f2; padding: 25px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid #ef4444;">
-              <h3 style="color: #b91c1c; margin-bottom: 15px;">The "Missing Fonts" Disaster</h3>
-              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
-                A user's PDF used a custom corporate font. The converted Word document substituted Arial, and the whole layout shifted - headings were now too long, wrapping to new lines.
-              </p>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px;">
-<span style="color: #94a3b8;"># Solution: Font mapping with fallbacks</span>
-<span style="color: #c084fc;">try</span>:
-    cv.convert(output_path)
-<span style="color: #c084fc;">except</span> FontNotFoundError:
-    cv.convert(output_path, font_mapping={<span style="color: #a78bfa;">"CustomFont"</span>: <span style="color: #a78bfa;">"Arial"</span>})</pre>
-            </div>
-
-            <div style="background: #fef2f2; padding: 25px; border-radius: 12px; margin-bottom: 25px; border-left: 4px solid #ef4444;">
-              <h3 style="color: #b91c1c; margin-bottom: 15px;">The "Table Turned to Text" Bug</h3>
-              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
-                Financial reports with complex tables were converting to plain text with spaces. The table structure was completely lost.
-              </p>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px;">
-<span style="color: #94a3b8;"># Fixed: Enable table detection</span>
-cv = Converter(pdf_path)
-cv.convert(output_path, tables=<span style="color: #f87171;">True</span>)  <span style="color: #94a3b8;"># Force table detection</span></pre>
-            </div>
-
-            <div style="background: #fef2f2; padding: 25px; border-radius: 12px; border-left: 4px solid #ef4444;">
-              <h3 style="color: #b91c1c; margin-bottom: 15px;">The "Multi-Column" Mess</h3>
-              <p style="color: #555; line-height: 1.8; margin-bottom: 15px;">
-                A newsletter with three columns converted to a single column, with text flowing across in the wrong order.
-              </p>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px;">
-<span style="color: #94a3b8;"># Workaround: Use PyMuPDF to extract pages as images first</span>
-<span style="color: #94a3b8;"># then run OCR to reconstruct</span></pre>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 6: Why PDF to Word Is Hard -->
-      <section class="content-section" style="background: white">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>📋 Why PDF to Word Is Surprisingly Difficult</h2>
-
-            <p style="color: #555; line-height: 1.8; margin-bottom: 20px;">
-              PDF and Word are fundamentally different. Here's what makes conversion challenging:
-            </p>
-
-            <div style="display: grid; gap: 15px; margin-bottom: 30px;">
-              <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
-                <h4 style="color: #1e3a8a; margin-bottom: 10px;">1. PDF is Fixed Layout, Word is Flowing</h4>
-                <p style="color: #555;">PDF says "put this character at exactly X=100, Y=200". Word says "here's a paragraph, flow it onto the page." Converting between these models is inherently lossy.</p>
-              </div>
-
-              <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
-                <h4 style="color: #1e3a8a; margin-bottom: 10px;">2. No Semantic Information</h4>
-                <p style="color: #555;">PDF doesn't know what's a heading, what's a paragraph, what's a list item. It just knows where text sits. The converter has to infer structure.</p>
-              </div>
-
-              <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
-                <h4 style="color: #1e3a8a; margin-bottom: 10px;">3. Font Embedding vs Font Substitution</h4>
-                <p style="color: #555;">PDFs can embed fonts. Word uses system fonts. When the exact font isn't available, Word substitutes - and layouts shift.</p>
-              </div>
-
-              <div style="background: #f9fafb; padding: 20px; border-radius: 12px;">
-                <h4 style="color: #1e3a8a; margin-bottom: 10px;">4. Complex Graphics</h4>
-                <p style="color: #555;">PDF graphics are often vector paths that need to be converted to Word's drawing layer. It's not always perfect.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 7: Privacy Architecture -->
-      <section class="content-section" style="background: #f9fafb">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>🔒 Privacy: How I'd Build It So I Never See Your Documents</h2>
-
-            <div style="background: #f0f4ff; padding: 30px; border-radius: 16px; border-left: 4px solid #10b981;">
-              <p style="color: #555; line-height: 1.8; margin-bottom: 20px; font-size: 1.1rem;">
-                <strong>"Do you see my resume and contracts?"</strong> - My sister asked about her job applications.
-              </p>
-
-              <div style="margin-bottom: 25px;">
-                <h3 style="color: #1e3a8a; margin-bottom: 15px;">1. In-Memory Processing</h3>
-                <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 15px;">
-<span style="color: #94a3b8;"># All processing in memory, no disk writes</span>
-pdf_bytes = pdf_file.read()
-<span style="color: #c084fc;">with</span> tempfile.NamedTemporaryFile() <span style="color: #c084fc;">as</span> tmp_input:
-    tmp_input.write(pdf_bytes)
-    cv = Converter(tmp_input.name)
-    output = BytesIO()
-    cv.convert(output)  <span style="color: #94a3b8;"># Write to memory buffer</span></pre>
-                <p style="color: #555; line-height: 1.8;">
-                  Files are processed in memory and never permanently stored. My sister's resume? Gone from our servers before she downloads.
-                </p>
-              </div>
-
-              <div>
-                <h3 style="color: #1e3a8a; margin-bottom: 15px;">2. No Logging, No Tracking</h3>
-                <p style="color: #555; line-height: 1.8;">
-                  Zero logs of filenames or document content. The lawyer's confidential contracts? I'd have no idea what they contained.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 8: Performance Benchmarks -->
-      <section class="content-section" style="background: white">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>⚡ Performance: How Fast Would It Be?</h2>
-
-            <p style="color: #555; line-height: 1.8; margin-bottom: 30px;">
-              Expected benchmarks based on testing pdf2docx:
-            </p>
-
-            <div style="display: grid; gap: 15px; margin-bottom: 30px;">
-              <div style="background: #f9fafb; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <span><strong>1 page, text-only</strong> (simple document)</span>
-                <span style="color: #10b981; font-weight: 600;">0.5 seconds</span>
-              </div>
-              <div style="background: #f9fafb; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <span><strong>10 pages, mixed content</strong> (images + tables)</span>
-                <span style="color: #10b981; font-weight: 600;">2.8 seconds</span>
-              </div>
-              <div style="background: #f9fafb; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <span><strong>50 pages, complex layout</strong> (report with graphics)</span>
-                <span style="color: #f59e0b; font-weight: 600;">6.2 seconds</span>
-              </div>
-              <div style="background: #f9fafb; padding: 15px 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
-                <span><strong>100 pages, scanned PDF + OCR</strong></span>
-                <span style="color: #f59e0b; font-weight: 600;">45 seconds</span>
-              </div>
-            </div>
-
-            <div style="background: #e8f0fe; padding: 20px; border-radius: 12px;">
-              <h4 style="color: #1e3a8a; margin-bottom: 10px;">📈 Why It's Fast</h4>
-              <ul style="color: #555; line-height: 1.8; padding-left: 20px;">
-                <li>pdf2docx is written in C++ with Python bindings</li>
-                <li>PyMuPDF is C-optimized</li>
-                <li>In-memory processing avoids disk I/O</li>
-                <li>Multi-threading for multi-page documents</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 9: FAQ - Technical Questions -->
-      <section class="content-section" style="background: #f9fafb" id="faq">
-        <div class="container">
-          <div class="content-wrapper">
-            <h2>❓ Technical Questions People Would Ask</h2>
-
-            <div style="margin-bottom: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 20px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
-                "How does pdf2docx compare to Adobe's converter?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                pdf2docx is open-source and does an excellent job with layout preservation. In testing, it matches Adobe's output about 90% of the time. For complex layouts, Adobe sometimes does better, but pdf2docx is free and private. My sister's resume converted perfectly.
-              </p>
-            </div>
-
-            <div style="margin-bottom: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 20px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
-                "Will my tables stay as tables?"
-              </h3>
-              <pre style="background: #1e1e2f; color: #e2e8f0; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; margin-bottom: 10px;">
-<span style="color: #94a3b8;"># pdf2docx detects table structures from lines and text alignment</span>
-- Visible borders become Word table borders
-- Aligned text without borders becomes a borderless table
-- Complex merged cells are preserved where possible</pre>
-              <p style="color: #555; line-height: 1.8;">
-                The accountant's financial tables? Preserved as editable Word tables.
-              </p>
-            </div>
-
-            <div style="margin-bottom: 30px; border-bottom: 1px solid #e5e7eb; padding-bottom: 20px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
-                "What about password-protected PDFs?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                pdf2docx can't open encrypted files. Use the Unlock PDF tool first, then convert. The lawyer learned this when his client sent password-protected contracts.
-              </p>
-            </div>
-
-            <div style="margin-bottom: 30px;">
-              <h3 style="color: #1e3a8a; margin-bottom: 10px; font-size: 18px">
-                "Something's not working. Can you help?"
-              </h3>
-              <p style="color: #555; line-height: 1.8">
-                Email me at <strong>nextopdf@gmail.com</strong>. Tell me what happened (file type, number of pages, any error messages). I read everything and would fix it within a day. My sister had issues with her resume - I helped, she got the job.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section 10: Related Tools with Technical Context -->
-      <section class="benefits" style="background: white; padding: 60px 20px">
-        <div class="container">
-          <h2>🔧 Other Tools You Might Need</h2>
-          <p style="text-align: center; color: #555; margin-bottom: 40px">
-            All built with the same transparency
-          </p>
-          <div class="feature-grid">
-            <div class="feature-card">
-              <i
-                class="fas fa-file-pdf"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>PDF to Excel</h3>
-              <p>
-                Extract tables from PDFs to Excel spreadsheets. Uses Tabula/Camelot.
-              </p>
-              <a
-                href="/pdf-to-excel"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-compress"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Compress PDF</h3>
-              <p>
-                Shrink PDFs before conversion. Ghostscript compression.
-              </p>
-              <a
-                href="/compress-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-            <div class="feature-card">
-              <i
-                class="fas fa-lock"
-                style="font-size: 40px; color: #4f46e5; margin-bottom: 15px"
-              ></i>
-              <h3>Unlock PDF</h3>
-              <p>
-                Remove password protection before conversion.
-              </p>
-              <a
-                href="/unprotect-pdf"
-                class="cta-button"
-                style="font-size: 14px; padding: 8px 16px; margin-top: 10px"
-                >Use Tool</a
-              >
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Simple Contact Reminder -->
-      <section
-        style="
-          background: white;
-          padding: 30px 20px;
-          text-align: center;
-          border-top: 1px solid #e5e7eb;
-        "
-      >
-        <div class="container">
-          <p style="font-size: 18px; color: #1e3a8a">
-            Questions? Something not working?
-            <a
-              href="mailto:nextopdf@gmail.com"
-              style="color: #4f46e5; font-weight: bold; text-decoration: none"
-              >nextopdf@gmail.com</a
-            >
-          </p>
-          <p style="color: #555; margin-top: 10px">
-            I actually reply (usually within a day)
-          </p>
-        </div>
-      </section>
-
-      <!-- CTA Section -->
-      <section
-        class="hero"
-        style="
-          padding: 60px 20px;
-          background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-        "
-      >
-        <div class="container">
-          <h2 style="font-size: 32px; margin-bottom: 15px; color: white">
-            Stop Retyping PDFs
-          </h2>
-          <p style="margin-bottom: 25px; color: white">
-            Convert PDFs to editable Word documents in seconds. Perfect for
-            resumes, contracts, and reports. Free, private, and no sign-up.
-          </p>
-          <a
-            href="#"
-            class="cta-button"
-            style="background: white; color: #2563eb"
-            onclick="document.getElementById('pdfUpload').click(); return false;"
-          >
-            <i class="fa fa-file-word"></i> Convert PDF to Word Now
-          </a>
         </div>
       </section>
     </main>
@@ -1502,7 +903,7 @@ pdf_bytes = pdf_file.read()
     <script>
       // This would be the frontend JavaScript for the PDF to Word tool
       // For now, it's a placeholder since the backend isn't implemented
-      
+
       const pdfInput = document.getElementById("pdfUpload");
       const fileList = document.getElementById("fileList");
       const settingsPanel = document.getElementById("settingsPanel");
@@ -1540,7 +941,7 @@ pdf_bytes = pdf_file.read()
 
       pdfInput.addEventListener("change", () => {
         hideError();
-        
+
         if (!pdfInput.files || pdfInput.files.length === 0) {
           return;
         }
@@ -1571,14 +972,16 @@ pdf_bytes = pdf_file.read()
         settingsPanel.style.display = "block";
         convertBtn.style.display = "inline-flex";
 
-        document.getElementById("deleteFileBtn").addEventListener("click", () => {
-          selectedFile = null;
-          fileList.style.display = "none";
-          settingsPanel.style.display = "none";
-          convertBtn.style.display = "none";
-          pdfInput.value = "";
-          hideError();
-        });
+        document
+          .getElementById("deleteFileBtn")
+          .addEventListener("click", () => {
+            selectedFile = null;
+            fileList.style.display = "none";
+            settingsPanel.style.display = "none";
+            convertBtn.style.display = "none";
+            pdfInput.value = "";
+            hideError();
+          });
       });
 
       convertBtn.addEventListener("click", async () => {
@@ -1600,7 +1003,7 @@ pdf_bytes = pdf_file.read()
           progress += 5;
           progressFill.style.width = progress + "%";
           progressPercentage.textContent = progress + "%";
-          
+
           if (progress < 30) {
             progressStatus.textContent = "Extracting text and fonts...";
           } else if (progress < 60) {
@@ -1614,22 +1017,22 @@ pdf_bytes = pdf_file.read()
           } else {
             clearInterval(interval);
             progressStatus.textContent = "Complete!";
-            
+
             // Simulate completion
             setTimeout(() => {
               convertBtn.classList.remove("btn-loading");
-              
+
               // Hide upload UI
               fileList.style.display = "none";
               settingsPanel.style.display = "none";
               convertBtn.style.display = "none";
               uploadSection.style.display = "none";
               document.querySelector(".note").style.display = "none";
-              
+
               // Show result
               resultBtns.style.display = "block";
-              fileNameLink.textContent = `${selectedFile.name.replace('.pdf', '')}.docx`;
-              
+              fileNameLink.textContent = `${selectedFile.name.replace(".pdf", "")}.docx`;
+
               // Create fake download URL (would be real in production)
               const fakeUrl = "#";
               downloadBtn.href = fakeUrl;
@@ -1653,12 +1056,14 @@ pdf_bytes = pdf_file.read()
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
-      document.querySelector(".upload-label").addEventListener("keypress", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          pdfInput.click();
-        }
-      });
+      document
+        .querySelector(".upload-label")
+        .addEventListener("keypress", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            pdfInput.click();
+          }
+        });
     </script>
   </body>
 </html>

@@ -137,134 +137,139 @@
   <body>
     <section id="header-placeholder"></section>
 
-    <div class="scanner-container">
-      <div class="heading-scanner">
-        <h1>📄 NextoPDF - Free Online Document Scanner</h1>
-        <p class="subtitle">
-          NextoPDF - Smart edge detection, auto-crop, OCR text extraction &
-          instant PDF conversion
-        </p>
-      </div>
+    <section id="scanner-tool">
+      <div class="scanner-container">
+        <div class="heading-scanner">
+          <h1>📄 NextoPDF - Free Online Document Scanner</h1>
+          <p class="subtitle">
+            NextoPDF - Smart edge detection, auto-crop, OCR text extraction &
+            instant PDF conversion
+          </p>
+        </div>
 
-      <div class="message-container">
-        <div class="message message-loading" id="loadingMsg">
-          <div class="spinner"></div>
-          <span id="loadingText">Processing...</span>
-        </div>
-        <div class="message message-success" id="successMsg">
-          <span>✓</span>
-          <span id="successText"></span>
-        </div>
-        <div class="message message-error" id="errorMsg">
-          <span>✕</span>
-          <span id="errorText"></span>
-        </div>
-      </div>
-
-      <div class="content-card">
-        <div class="media-container" id="mediaContainer">
-          <div class="placeholder" id="placeholder">
-            <div class="placeholder-icon">📷</div>
-            <div class="placeholder-text">Ready to scan your document</div>
+        <div class="message-container">
+          <div class="message message-loading" id="loadingMsg">
+            <div class="spinner"></div>
+            <span id="loadingText">Processing...</span>
           </div>
-          <video id="video" autoplay playsinline style="display: none"></video>
-          <canvas id="canvas"></canvas>
-          <img id="preview" style="display: none" alt="Document preview" />
+          <div class="message message-success" id="successMsg">
+            <span>✓</span>
+            <span id="successText"></span>
+          </div>
+          <div class="message message-error" id="errorMsg">
+            <span>✕</span>
+            <span id="errorText"></span>
+          </div>
         </div>
 
-        <div class="btn-container" id="btnContainer">
-          <button class="btn-primary" id="openCameraBtn">
-            <span>📷</span>
-            <span>Open Camera</span>
-          </button>
-          <button class="btn-primary" id="uploadBtn">
-            <span>📁</span>
-            <span>Upload Image</span>
-          </button>
-          <input
-            type="file"
-            id="fileInput"
-            accept="image/*"
-            style="display: none"
-          />
+        <div class="content-card">
+          <div class="media-container" id="mediaContainer">
+            <div class="placeholder" id="placeholder">
+              <div class="placeholder-icon">📷</div>
+              <div class="placeholder-text">Ready to scan your document</div>
+            </div>
+            <video
+              id="video"
+              autoplay
+              playsinline
+              style="display: none"
+            ></video>
+            <canvas id="canvas"></canvas>
+            <img id="preview" style="display: none" alt="Document preview" />
+          </div>
 
-          <button class="btn-success" id="captureBtn" style="display: none">
-            <span>📸</span>
-            <span>Capture Document</span>
-          </button>
+          <div class="btn-container" id="btnContainer">
+            <button class="btn-primary" id="openCameraBtn">
+              <span>📷</span>
+              <span>Open Camera</span>
+            </button>
+            <button class="btn-primary" id="uploadBtn">
+              <span>📁</span>
+              <span>Upload Image</span>
+            </button>
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/*"
+              style="display: none"
+            />
 
-          <button class="btn-success" id="cropBtn" style="display: none">
-            <span>✂️</span>
-            <span>Process & Save</span>
-          </button>
+            <button class="btn-success" id="captureBtn" style="display: none">
+              <span>📸</span>
+              <span>Capture Document</span>
+            </button>
 
-          <button class="btn-secondary" id="retakeBtn" style="display: none">
-            <span>🔄</span>
-            <span>Start Over</span>
-          </button>
-        </div>
+            <button class="btn-success" id="cropBtn" style="display: none">
+              <span>✂️</span>
+              <span>Process & Save</span>
+            </button>
 
-        <div class="result-actions" id="resultActions">
-          <button class="btn-ocr" id="ocrBtn">
-            <span>📝</span>
-            <span>Extract Text (OCR)</span>
-          </button>
-          <a
-            class="btn btn-download"
-            id="downloadJpg"
-            href="#"
-            download="scanned.jpg"
-          >
-            <span>📥</span>
-            <span>Download JPG</span>
-          </a>
-          <a
-            class="btn btn-download"
-            id="downloadPdf"
-            href="#"
-            download="scanned.pdf"
-          >
-            <span>📥</span>
-            <span>Download PDF</span>
-          </a>
-          <button class="btn-share" id="shareBtn">
-            <span>📤</span>
-            <span>Share</span>
-          </button>
-        </div>
-      </div>
-    </div>
+            <button class="btn-secondary" id="retakeBtn" style="display: none">
+              <span>🔄</span>
+              <span>Start Over</span>
+            </button>
+          </div>
 
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="loading-content">
-        <div class="loading-spinner"></div>
-        <div class="loading-text">Processing your document...</div>
-      </div>
-    </div>
-
-    <!-- OCR Modal -->
-    <div class="ocr-modal" id="ocrModal">
-      <div class="ocr-content">
-        <div class="ocr-header">
-          <h2>📝 Extracted Text</h2>
-          <button class="ocr-close" id="ocrCloseBtn">×</button>
-        </div>
-        <div class="ocr-body">
-          <div class="ocr-text" id="ocrText">Extracting text...</div>
-        </div>
-        <div class="ocr-footer">
-          <button class="btn-secondary" id="copyTextBtn">
-            <span>📋</span>
-            <span>Copy Text</span>
-          </button>
-          <button class="btn-download" id="downloadTextBtn">
-            <span>📥</span>
-            <span>Download TXT</span>
-          </button>
+          <div class="result-actions" id="resultActions">
+            <button class="btn-ocr" id="ocrBtn">
+              <span>📝</span>
+              <span>Extract Text (OCR)</span>
+            </button>
+            <a
+              class="btn btn-download"
+              id="downloadJpg"
+              href="#"
+              download="scanned.jpg"
+            >
+              <span>📥</span>
+              <span>Download JPG</span>
+            </a>
+            <a
+              class="btn btn-download"
+              id="downloadPdf"
+              href="#"
+              download="scanned.pdf"
+            >
+              <span>📥</span>
+              <span>Download PDF</span>
+            </a>
+            <button class="btn-share" id="shareBtn">
+              <span>📤</span>
+              <span>Share</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
+      <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Processing your document...</div>
+        </div>
+      </div>
+
+      <!-- OCR Modal -->
+      <div class="ocr-modal" id="ocrModal">
+        <div class="ocr-content">
+          <div class="ocr-header">
+            <h2>📝 Extracted Text</h2>
+            <button class="ocr-close" id="ocrCloseBtn">×</button>
+          </div>
+          <div class="ocr-body">
+            <div class="ocr-text" id="ocrText">Extracting text...</div>
+          </div>
+          <div class="ocr-footer">
+            <button class="btn-secondary" id="copyTextBtn">
+              <span>📋</span>
+              <span>Copy Text</span>
+            </button>
+            <button class="btn-download" id="downloadTextBtn">
+              <span>📥</span>
+              <span>Download TXT</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="footer-placeholder"></section>

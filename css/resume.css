@@ -763,3 +763,145 @@ textarea {
     padding: 0 !important;
   }
 }
+
+/* ════════════════════════════════════════════
+   PHOTO & SIGNATURE ADDITIONS (new — do not edit above)
+   ════════════════════════════════════════════ */
+
+/* Upload drop zones */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 8px;
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  background: #fdfcfa;
+}
+.upload-zone:hover {
+  border-color: var(--accent);
+  background: #fff6f3;
+}
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+}
+.upload-zone-icon {
+  font-size: 1.5rem;
+  display: block;
+  margin-bottom: 5px;
+}
+.upload-zone-text {
+  font-size: 0.75rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.upload-zone-text strong {
+  color: var(--accent);
+}
+
+/* Preview strip shown after upload */
+.img-preview-strip {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  padding: 8px 10px;
+  background: #f7f4ef;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+}
+.img-preview-strip.visible {
+  display: flex;
+}
+.img-preview-strip img {
+  object-fit: cover;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.img-preview-strip img.thumb-photo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+}
+.img-preview-strip img.thumb-sign {
+  width: 110px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: contain;
+  background: #fff;
+}
+.img-preview-strip .img-name {
+  font-size: 0.75rem;
+  color: #555;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-remove-img {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #bbb;
+  font-size: 0.82rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition:
+    color 0.13s,
+    background 0.13s;
+  flex-shrink: 0;
+}
+.btn-remove-img:hover {
+  color: var(--accent);
+  background: #fff0eb;
+}
+
+/* Resume-level photo & signature rendered inside #resume-body */
+.rt-photo {
+  display: block;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+.rt-photo-sq {
+  border-radius: 8px; /* square variant used by some themes */
+}
+.rt-sign-wrap {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(0, 0, 0, 0.15);
+  display: inline-block;
+}
+.rt-sign {
+  display: block;
+  max-width: 140px;
+  height: 44px;
+  object-fit: contain;
+}
+
+/* Header layout helper when photo is present */
+.rt-header-with-photo {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.rt-header-with-photo .rt-header-text {
+  flex: 1;
+  min-width: 0;
+}

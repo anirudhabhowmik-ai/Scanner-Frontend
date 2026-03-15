@@ -227,7 +227,7 @@
       <!-- ════════════ MAIN ════════════ -->
       <div class="main">
         <!-- Adsterra Ads -->
-        <section class="adsterra">
+        <!-- <section class="adsterra">
           <script>
             atOptions = {
               key: "8b3acb0193a7ea6a85217b757a7cb0bc",
@@ -238,7 +238,7 @@
             };
           </script>
           <script src="https://www.highperformanceformat.com/8b3acb0193a7ea6a85217b757a7cb0bc/invoke.js"></script>
-        </section>
+        </section> -->
         <div class="topbar">
           <div class="topbar-left">
             <div class="ttitle" id="t-title">Resume Builder</div>
@@ -301,6 +301,39 @@
         <div class="content">
           <!-- ── BUILDER ── -->
           <div class="panel active" id="panel-builder">
+            <div class="card">
+              <div class="card-title">📷 Photo &amp; Signature</div>
+              <div class="card-sub">Optional — appears in your resume when provided</div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Profile Photo</label>
+                  <div class="upload-zone" id="photo-zone">
+                    <input type="file" accept="image/*" id="photo-input" onchange="handlePhoto(event)" />
+                    <span class="upload-zone-icon">🖼</span>
+                    <div class="upload-zone-text">Click or drag photo here<br/><strong>JPG · PNG · WebP</strong></div>
+                  </div>
+                  <div class="img-preview-strip" id="photo-strip">
+                    <img class="thumb-photo" id="photo-thumb" src="" alt="Photo preview" />
+                    <span class="img-name" id="photo-name">photo.jpg</span>
+                    <button class="btn-remove-img" onclick="removePhoto()" title="Remove">✕</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Signature</label>
+                  <div class="upload-zone" id="sign-zone">
+                    <input type="file" accept="image/*" id="sign-input" onchange="handleSign(event)" />
+                    <span class="upload-zone-icon">✍️</span>
+                    <div class="upload-zone-text">Click or drag signature<br/><strong>PNG with transparency ideal</strong></div>
+                  </div>
+                  <div class="img-preview-strip" id="sign-strip">
+                    <img class="thumb-sign" id="sign-thumb" src="" alt="Signature preview" />
+                    <span class="img-name" id="sign-name">signature.png</span>
+                    <button class="btn-remove-img" onclick="removeSign()" title="Remove">✕</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div class="card">
               <div class="card-title">Personal Information</div>
               <div class="card-sub">Your name, title, and contact details</div>
@@ -719,14 +752,14 @@
     <!-- /app -->
 
     <!-- Adsterra Ads -->
-      <section class="Adsterra">
+      <!-- <section class="Adsterra">
         <script
           async="async"
           data-cfasync="false"
           src="https://pl28916519.effectivegatecpm.com/b29375994fdbaaeb8cfe81abc69470ca/invoke.js"
         ></script>
         <div id="container-b29375994fdbaaeb8cfe81abc69470ca"></div>
-      </section>
+      </section> -->
 
     <div id="toast"></div>
     </section>
@@ -2922,9 +2955,193 @@
         renderGallery();
         renderResume();
       });
+
+      // Photo And Sign
+      (function () {
+  "use strict";
+ 
+  /* ─── State ─── */
+  let photoDataURL = null;
+  let signDataURL  = null;
+ 
+  /* ─── Expose handlers to global scope (called from inline HTML) ─── */
+  window.handlePhoto = function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      photoDataURL = ev.target.result;
+      const strip = document.getElementById("photo-strip");
+      const thumb = document.getElementById("photo-thumb");
+      const name  = document.getElementById("photo-name");
+      if (thumb) thumb.src = photoDataURL;
+      if (name)  name.textContent = file.name;
+      if (strip) strip.classList.add("visible");
+      if (typeof qRender === "function") qRender();
+      if (typeof toast  === "function") toast("✓ Photo added!");
+    };
+    reader.readAsDataURL(file);
+  };
+ 
+  window.removePhoto = function () {
+    photoDataURL = null;
+    const strip = document.getElementById("photo-strip");
+    const thumb = document.getElementById("photo-thumb");
+    const input = document.getElementById("photo-input");
+    if (thumb) thumb.src = "";
+    if (strip) strip.classList.remove("visible");
+    if (input) input.value = "";
+    if (typeof qRender === "function") qRender();
+    if (typeof toast  === "function") toast("Photo removed.");
+  };
+ 
+  window.handleSign = function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      signDataURL = ev.target.result;
+      const strip = document.getElementById("sign-strip");
+      const thumb = document.getElementById("sign-thumb");
+      const name  = document.getElementById("sign-name");
+      if (thumb) thumb.src = signDataURL;
+      if (name)  name.textContent = file.name;
+      if (strip) strip.classList.add("visible");
+      if (typeof qRender === "function") qRender();
+      if (typeof toast  === "function") toast("✓ Signature added!");
+    };
+    reader.readAsDataURL(file);
+  };
+ 
+  window.removeSign = function () {
+    signDataURL = null;
+    const strip = document.getElementById("sign-strip");
+    const thumb = document.getElementById("sign-thumb");
+    const input = document.getElementById("sign-input");
+    if (thumb) thumb.src = "";
+    if (strip) strip.classList.remove("visible");
+    if (input) input.value = "";
+    if (typeof qRender === "function") qRender();
+    if (typeof toast  === "function") toast("Signature removed.");
+  };
+ 
+  /* ─── Patch renderResume() after DOM is ready ─── */
+  window.addEventListener("DOMContentLoaded", function () {
+    // Wait one tick to let app.js define renderResume first
+    setTimeout(patchRenderResume, 0);
+  });
+ 
+  function patchRenderResume() {
+    if (typeof renderResume !== "function") {
+      console.warn("photo-sign-addon: renderResume not found — retrying in 200ms");
+      setTimeout(patchRenderResume, 200);
+      return;
+    }
+ 
+    const _originalRenderResume = renderResume;
+ 
+    window.renderResume = function () {
+      /* Run the original first so #resume-body is populated */
+      _originalRenderResume.apply(this, arguments);
+ 
+      const resumeBody = document.getElementById("resume-body");
+      if (!resumeBody) return;
+ 
+      /* ── Inject profile photo ── */
+      if (photoDataURL) {
+        const wrap = resumeBody.querySelector(".rt-wrap");
+        if (!wrap) return;
+ 
+        const header = wrap.querySelector(".rt-header");
+        if (!header) return;
+ 
+        /* Don't double-inject */
+        if (header.querySelector(".rt-photo")) {
+          header.querySelector(".rt-photo").src = photoDataURL;
+        } else {
+          const nameEl  = header.querySelector(".rt-name");
+          const titleEl = header.querySelector(".rt-title");
+          const contactEl = header.querySelector(".rt-contact");
+ 
+          if (nameEl) {
+            /* Build wrapper div so photo sits beside name+title */
+            const photoImg = document.createElement("img");
+            photoImg.src       = photoDataURL;
+            photoImg.alt       = "Profile photo";
+            photoImg.className = "rt-photo";
+ 
+            /* Check if this is a sidebar layout header (full-width, grid-column 1/-1)
+               In that case inject photo before the name text */
+            const isSidebarLayout = wrap.classList.contains("rt-wrap") &&
+              getComputedStyle(header).gridColumn === "1 / -1";
+ 
+            if (isSidebarLayout) {
+              /* Place photo before name on its own line */
+              header.insertBefore(photoImg, nameEl);
+            } else {
+              /* Single layout: wrap name+title in flex row with photo */
+              const wrapper = document.createElement("div");
+              wrapper.className = "rt-header-with-photo";
+ 
+              const textBlock = document.createElement("div");
+              textBlock.className = "rt-header-text";
+ 
+              /* Move name, title (and optionally contact for Forest Pro) into textBlock */
+              const children = Array.from(header.children);
+              children.forEach(function (child) {
+                if (child !== contactEl) textBlock.appendChild(child);
+              });
+ 
+              wrapper.appendChild(photoImg);
+              wrapper.appendChild(textBlock);
+              header.insertBefore(wrapper, contactEl || header.firstChild);
+              if (contactEl) header.appendChild(contactEl);
+            }
+          }
+        }
+      }
+ 
+      /* ── Inject signature ── */
+      if (signDataURL) {
+        const wrap = resumeBody.querySelector(".rt-wrap");
+        if (!wrap) return;
+ 
+        /* Don't double-inject */
+        if (wrap.querySelector(".rt-sign")) {
+          wrap.querySelector(".rt-sign").src = signDataURL;
+          return;
+        }
+ 
+        const signWrap = document.createElement("div");
+        signWrap.className = "rt-sign-wrap";
+ 
+        const sectionTitle = document.createElement("div");
+        sectionTitle.className = "rt-section-title";
+        sectionTitle.textContent = "Signature";
+ 
+        const signImg = document.createElement("img");
+        signImg.src       = signDataURL;
+        signImg.alt       = "Signature";
+        signImg.className = "rt-sign";
+ 
+        signWrap.appendChild(sectionTitle);
+        signWrap.appendChild(signImg);
+ 
+        /* Append to rt-main if sidebar layout, else to rt-wrap */
+        const mainDiv = wrap.querySelector(".rt-main");
+        if (mainDiv) {
+          mainDiv.appendChild(signWrap);
+        } else {
+          wrap.appendChild(signWrap);
+        }
+      }
+    };
+  }
+ 
+})();
     </script>
     <!-- Adsterra Ads -->
-    <script src="https://pl28916850.effectivegatecpm.com/de/d8/32/ded8323936beed162a8a1f081418dbff.js"></script>
+    <!-- <script src="https://pl28916850.effectivegatecpm.com/de/d8/32/ded8323936beed162a8a1f081418dbff.js"></script> -->
   
   </body>
 </html>

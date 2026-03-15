@@ -1023,19 +1023,12 @@ function exportWord() {
   renderResume();
   toast("⏳ Generating Word document…");
 
-  const photoThumb = document.getElementById("photo-thumb");
-  const signThumb  = document.getElementById("sign-thumb");
-  const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
-  const signData   = (signThumb  && signThumb.src  && signThumb.src.startsWith("data:"))  ? signThumb.src  : null;
-
   fetch(API + "/api/resume/export-word", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      html:      buildFullHTML(),
-      name:      getData().name || "resume",
-      photoData: photoData,
-      signData:  signData
+      html: buildFullHTML(),
+      name: getData().name || "resume"
     })
   })
   .then(function(res) {

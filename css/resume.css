@@ -869,6 +869,29 @@ textarea {
   background: #fff0eb;
 }
 
+/* ─── PDF PAGE BREAK FIX ─── */
+
+/* prevent resume sections from splitting across pages */
+.rt-entry,
+.rt-tag-list,
+.rt-pill-list,
+.rt-sign-wrap {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* keep section title with its content */
+.rt-section-title {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+/* prevent tags/skills from splitting */
+.rt-tag,
+.rt-pill {
+  page-break-inside: avoid;
+}
+
 /* Resume-level photo & signature rendered inside #resume-body */
 .rt-photo {
   display: block;

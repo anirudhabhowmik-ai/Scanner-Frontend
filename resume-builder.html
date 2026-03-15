@@ -768,6 +768,7 @@
     <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="./js/app.js"></script>
     <script src="./js/resume-theme.js"></script>
     <script>
@@ -957,63 +958,49 @@
       }
 
 function exportPDF() {
-  renderResume();
-  const resumeBody = document.getElementById("resume-body");
-  if (!resumeBody) return;
-  const th = allThemes[activeTheme] || allThemes[0];
 
-  const tempDiv = document.createElement("div");
-  tempDiv.innerHTML = resumeBody.innerHTML;
-  tempDiv.querySelectorAll("script").forEach(function(s) { s.remove(); });
-  const cleanHTML = tempDiv.innerHTML;
-  const themeCSS = (th.css || "").replace(/`/g, "'");
+  const original = document.getElementById("resume-body");
+  const clone = original.cloneNode(true);
 
-  const iframe = document.createElement("iframe");
-  iframe.style.position = "fixed";
-  iframe.style.top = "-9999px";
-  iframe.style.left = "-9999px";
-  iframe.style.width = "794px";
-  iframe.style.height = "1123px";
-  document.body.appendChild(iframe);
+  const wrapper = document.createElement("div");
+  wrapper.style.background = "#fff";
+  wrapper.style.padding = "20px";
+  wrapper.style.margin = "0";
+  wrapper.style.width = "794px";
 
-  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  wrapper.appendChild(clone);
 
-  const html = '<!DOCTYPE html>' +
-    '<html><head>' +
-    '<meta charset="UTF-8">' +
-    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
-    '<style>' +
-    '* { box-sizing: border-box; margin: 0; padding: 0;' +
-    '  -webkit-print-color-adjust: exact !important;' +
-    '  print-color-adjust: exact !important;' +
-    '  color-adjust: exact !important; }' +
-    'html, body { background: #fff !important;' +
-    '  -webkit-print-color-adjust: exact !important;' +
-    '  print-color-adjust: exact !important; }' +
-    '.rt-photo { display: block; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.7); flex-shrink: 0; }' +
-    '.rt-sign { display: block; max-width: 140px; height: 44px; object-fit: contain; }' +
-    '@media print {' +
-    '  * { -webkit-print-color-adjust: exact !important;' +
-    '      print-color-adjust: exact !important; }' +
-    '  body { margin: 0 !important; }' +
-    '}' +
-    '@page { margin: 0; size: A4; }' +
-    themeCSS +
-    '</style>' +
-    '</head>' +
-    '<body>' +
-    cleanHTML +
-    '</body></html>';
-
-  doc.open();
-  doc.write(html);
-  doc.close();
-
-  iframe.contentWindow.focus();
-  setTimeout(function() {
-    iframe.contentWindow.print();
-    setTimeout(function() { document.body.removeChild(iframe); }, 1000);
-  }, 800);
+  setTimeout(() => {
+    html2pdf()
+      .from(wrapper)
+      .set({
+        filename: "resume.pdf",
+        margin: 0,
+        html2canvas: {
+          scale: 2,
+          scrollY: 0,
+          onclone: function(clonedDoc) {
+            // html2canvas cannot render -webkit-background-clip:text
+            // So we remove the gradient and use solid color instead
+            clonedDoc.querySelectorAll(".rt-name").forEach(function(el) {
+              el.style.backgroundImage = "none";
+              el.style.background = "none";
+              el.style.webkitBackgroundClip = "unset";
+              el.style.backgroundClip = "unset";
+              el.style.webkitTextFillColor = "unset";
+              el.style.color = "#e11d48"; // use the theme's main color as solid
+            });
+          }
+        },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
+        jsPDF: {
+          unit: "px",
+          format: [794, 1123],
+          orientation: "portrait"
+        }
+      })
+      .save();
+  }, 300);
 }
       
 function exportHTML() {

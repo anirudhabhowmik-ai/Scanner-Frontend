@@ -958,44 +958,55 @@
       }
 
 function exportPDF() {
+  renderResume();
+  const resumeBody = document.getElementById("resume-body");
+  if (!resumeBody) return;
+  const th = allThemes[activeTheme] || allThemes[0];
 
-  const original = document.getElementById("resume-body");
+  // Strip any injected scripts (e.g. live-server) from the content
+  const tempDiv = document.createElement("div");
+  tempDiv.innerHTML = resumeBody.innerHTML;
+  tempDiv.querySelectorAll("script").forEach(s => s.remove());
+  const cleanHTML = tempDiv.innerHTML;
 
-  const clone = original.cloneNode(true);
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.top = "-9999px";
+  iframe.style.left = "-9999px";
+  iframe.style.width = "794px";
+  iframe.style.height = "1123px";
+  document.body.appendChild(iframe);
 
-  const wrapper = document.createElement("div");
-  wrapper.style.background = "#fff";
-  wrapper.style.padding = "20px";
-  wrapper.style.margin = "0";
-  wrapper.style.width = "794px";   // exact A4 width
+  const doc = iframe.contentDocument || iframe.contentWindow.document;
+  const themeCSS = (th.css || "").replace(/`/g, "'"); // safety: escape any backticks in CSS
 
-  wrapper.appendChild(clone);
+  doc.open();
+  doc.write(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .rt-photo { display: block; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.7); flex-shrink: 0; }
+    .rt-sign { display: block; max-width: 140px; height: 44px; object-fit: contain; }
+    @page { margin: 0; size: A4; }
+    ${themeCSS}
+  </style>
+</head>
+<body>${cleanHTML}</body>
+</html>`);
+  doc.close();
 
-  // wait for layout to stabilize
+  iframe.contentWindow.focus();
   setTimeout(() => {
+    iframe.contentWindow.print();
+    setTimeout(() => document.body.removeChild(iframe), 1000);
+  }, 800);
+}  
 
-    html2pdf()
-      .from(wrapper)
-      .set({
-        filename: "resume.pdf",
-        margin: 0,
-        html2canvas: {
-          scale: 2,
-          scrollY: 0
-        },
-        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-        jsPDF: {
-          unit: "px",
-          format: [794, 1123],   // exact A4 size
-          orientation: "portrait"
-        }
-      })
-      .save();
-
-  }, 300);
-}
-
-      function exportHTML() {
+function exportHTML() {
         const th = allThemes[activeTheme] || allThemes[0];
         const d = getData();
         const SC = "</"; // avoid literal </style> breaking the HTML parser

@@ -1021,8 +1021,11 @@ function exportPDF() {
 
 function exportWord() {
   const d = getData();
-  
-  // Collect photo and signature dataURLs if present
+  const th = allThemes[activeTheme] || allThemes[0];
+
+  // Extract accent color from theme — use theme's color property
+  const themeColor = th.color || "#C8502A";
+
   const photoThumb = document.getElementById("photo-thumb");
   const signThumb  = document.getElementById("sign-thumb");
   const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
@@ -1033,10 +1036,12 @@ function exportWord() {
   fetch(API + "/api/resume/export-word", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ 
+    body: JSON.stringify({
       resumeData: d,
       photoData: photoData,
-      signData: signData
+      signData: signData,
+      themeColor: themeColor,
+      themeName: th.name
     })
   })
   .then(function(res) {

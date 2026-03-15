@@ -1020,15 +1020,28 @@ function exportPDF() {
 }
 
 function exportWord() {
-  renderResume();
+  const d = getData();
+  const th = allThemes[activeTheme] || allThemes[0];
+
+  // Extract accent color from theme — use theme's color property
+  const themeColor = th.color || "#C8502A";
+
+  const photoThumb = document.getElementById("photo-thumb");
+  const signThumb  = document.getElementById("sign-thumb");
+  const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
+  const signData   = (signThumb  && signThumb.src  && signThumb.src.startsWith("data:"))  ? signThumb.src  : null;
+
   toast("⏳ Generating Word document…");
 
   fetch(API + "/api/resume/export-word", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      html: buildFullHTML(),
-      name: getData().name || "resume"
+      resumeData: d,
+      photoData: photoData,
+      signData: signData,
+      themeColor: themeColor,
+      themeName: th.name
     })
   })
   .then(function(res) {
@@ -1036,7 +1049,6 @@ function exportWord() {
     return res.blob();
   })
   .then(function(blob) {
-    const d = getData();
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";

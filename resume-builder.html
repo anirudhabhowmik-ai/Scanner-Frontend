@@ -768,7 +768,6 @@
     <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="./js/app.js"></script>
     <script src="./js/resume-theme.js"></script>
     <script>
@@ -963,11 +962,11 @@ function exportPDF() {
   if (!resumeBody) return;
   const th = allThemes[activeTheme] || allThemes[0];
 
-  // Strip any injected scripts (e.g. live-server) from the content
   const tempDiv = document.createElement("div");
   tempDiv.innerHTML = resumeBody.innerHTML;
-  tempDiv.querySelectorAll("script").forEach(s => s.remove());
+  tempDiv.querySelectorAll("script").forEach(function(s) { s.remove(); });
   const cleanHTML = tempDiv.innerHTML;
+  const themeCSS = (th.css || "").replace(/`/g, "'");
 
   const iframe = document.createElement("iframe");
   iframe.style.position = "fixed";
@@ -978,34 +977,45 @@ function exportPDF() {
   document.body.appendChild(iframe);
 
   const doc = iframe.contentDocument || iframe.contentWindow.document;
-  const themeCSS = (th.css || "").replace(/`/g, "'"); // safety: escape any backticks in CSS
+
+  const html = '<!DOCTYPE html>' +
+    '<html><head>' +
+    '<meta charset="UTF-8">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
+    '<style>' +
+    '* { box-sizing: border-box; margin: 0; padding: 0;' +
+    '  -webkit-print-color-adjust: exact !important;' +
+    '  print-color-adjust: exact !important;' +
+    '  color-adjust: exact !important; }' +
+    'html, body { background: #fff !important;' +
+    '  -webkit-print-color-adjust: exact !important;' +
+    '  print-color-adjust: exact !important; }' +
+    '.rt-photo { display: block; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.7); flex-shrink: 0; }' +
+    '.rt-sign { display: block; max-width: 140px; height: 44px; object-fit: contain; }' +
+    '@media print {' +
+    '  * { -webkit-print-color-adjust: exact !important;' +
+    '      print-color-adjust: exact !important; }' +
+    '  body { margin: 0 !important; }' +
+    '}' +
+    '@page { margin: 0; size: A4; }' +
+    themeCSS +
+    '</style>' +
+    '</head>' +
+    '<body>' +
+    cleanHTML +
+    '</body></html>';
 
   doc.open();
-  doc.write(`<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .rt-photo { display: block; width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.7); flex-shrink: 0; }
-    .rt-sign { display: block; max-width: 140px; height: 44px; object-fit: contain; }
-    @page { margin: 0; size: A4; }
-    ${themeCSS}
-  </style>
-</head>
-<body>${cleanHTML}</body>
-</html>`);
+  doc.write(html);
   doc.close();
 
   iframe.contentWindow.focus();
-  setTimeout(() => {
+  setTimeout(function() {
     iframe.contentWindow.print();
-    setTimeout(() => document.body.removeChild(iframe), 1000);
+    setTimeout(function() { document.body.removeChild(iframe); }, 1000);
   }, 800);
-}  
-
+}
+      
 function exportHTML() {
         const th = allThemes[activeTheme] || allThemes[0];
         const d = getData();

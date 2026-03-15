@@ -885,7 +885,6 @@ textarea {
 .rt-sign-wrap {
   margin-top: 14px;
   padding-top: 10px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.15);
   display: inline-block;
 }
 .rt-sign {

@@ -768,7 +768,6 @@
     <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="./js/app.js"></script>
     <script src="./js/resume-theme.js"></script>
     <script>
@@ -957,50 +956,93 @@
         }, 120);
       }
 
+function getAllPageCSS() {
+  let css = "";
+  const sheets = document.styleSheets;
+  for (let i = 0; i < sheets.length; i++) {
+    try {
+      const rules = sheets[i].cssRules || sheets[i].rules;
+      if (!rules) continue;
+      for (let j = 0; j < rules.length; j++) {
+        css += rules[j].cssText + "\n";
+      }
+    } catch(e) {}
+  }
+  return css;
+}
+
+function buildFullHTML() {
+  const th = allThemes[activeTheme] || allThemes[0];
+  const clone = document.getElementById("resume-body").cloneNode(true);
+  clone.querySelectorAll("script").forEach(function(s) { s.remove(); });
+
+  return '<!DOCTYPE html><html><head>' +
+    '<meta charset="UTF-8">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
+    '<style>' +
+    '* { box-sizing: border-box; margin: 0; padding: 0; }' +
+    'body { width: 794px; background: #fff; }' +
+    '.rt-photo { display:block; width:80px; height:80px; border-radius:50%; object-fit:cover; flex-shrink:0; }' +
+    '.rt-sign { display:block; max-width:140px; height:44px; object-fit:contain; }' +
+    getAllPageCSS() +
+    (th.css || "") +
+    '</style>' +
+    '</head><body>' +
+    clone.outerHTML +
+    '</body></html>';
+}
+
 function exportPDF() {
+  renderResume();
+  toast("⏳ Generating PDF…");
 
-  const original = document.getElementById("resume-body");
-  const clone = original.cloneNode(true);
+  fetch(API + "/api/resume/export-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ html: buildFullHTML() })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Server error " + res.status);
+    return res.blob();
+  })
+  .then(function(blob) {
+    const d = getData();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".pdf";
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+    toast("✓ PDF saved — text is selectable!");
+  })
+  .catch(function(err) {
+    toast("❌ " + err.message);
+  });
+}
 
-  const wrapper = document.createElement("div");
-  wrapper.style.background = "#fff";
-  wrapper.style.padding = "20px";
-  wrapper.style.margin = "0";
-  wrapper.style.width = "794px";
+function exportWord() {
+  const d = getData();
+  toast("⏳ Generating Word document…");
 
-  wrapper.appendChild(clone);
-
-  setTimeout(() => {
-    html2pdf()
-      .from(wrapper)
-      .set({
-        filename: "resume.pdf",
-        margin: 0,
-        html2canvas: {
-          scale: 2,
-          scrollY: 0,
-          onclone: function(clonedDoc) {
-            // html2canvas cannot render -webkit-background-clip:text
-            // So we remove the gradient and use solid color instead
-            clonedDoc.querySelectorAll(".rt-name").forEach(function(el) {
-              el.style.backgroundImage = "none";
-              el.style.background = "none";
-              el.style.webkitBackgroundClip = "unset";
-              el.style.backgroundClip = "unset";
-              el.style.webkitTextFillColor = "unset";
-              el.style.color = "#e11d48"; // use the theme's main color as solid
-            });
-          }
-        },
-        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
-        jsPDF: {
-          unit: "px",
-          format: [794, 1123],
-          orientation: "portrait"
-        }
-      })
-      .save();
-  }, 300);
+  fetch(API + "/api/resume/export-word", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ resumeData: d })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Server error " + res.status);
+    return res.blob();
+  })
+  .then(function(blob) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+    toast("✓ Word document saved!");
+  })
+  .catch(function(err) {
+    toast("❌ " + err.message);
+  });
 }
       
 function exportHTML() {
@@ -1031,44 +1073,6 @@ function exportHTML() {
           `${d.name || "resume"}.html`,
         );
         toast("✓ HTML downloaded!");
-      }
-
-      function exportWord() {
-        const d = getData();
-        const SC = "<" + "/";
-        const css =
-          "body{font-family:Calibri,sans-serif;font-size:11pt;margin:1in 1.2in;}" +
-          ".rt-wrap{}.rt-name{font-size:20pt;font-weight:bold;display:block;margin-bottom:4pt;}" +
-          ".rt-title{font-size:10pt;color:#c8502a;text-transform:uppercase;display:block;margin-bottom:6pt;}" +
-          ".rt-contact{font-size:9pt;color:#555;display:block;margin-bottom:12pt;}" +
-          ".rt-section-title{font-size:9pt;font-weight:bold;text-transform:uppercase;color:#c8502a;border-bottom:1pt solid #c8502a;display:block;margin:12pt 0 5pt;}" +
-          ".rt-entry-role{font-weight:bold;font-size:10pt;display:inline;}" +
-          ".rt-entry-company{color:#555;font-size:9.5pt;}" +
-          ".rt-entry-date{color:#999;font-size:9pt;float:right;}" +
-          ".rt-entry-desc{font-size:9.5pt;display:block;margin:3pt 0 6pt;color:#333;}" +
-          ".rt-tag,.rt-pill{display:inline-block;margin:1pt 2pt;font-size:9pt;}" +
-          ".rt-sidebar{display:none;}.rt-main{display:block;}" +
-          ".rt-header{border-bottom:1.5pt solid #c8502a;margin-bottom:10pt;overflow:hidden;}";
-        const html =
-          '<html xmlns:o="urn:schemas-microsoft-com:office:office" ' +
-          'xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
-          '<head><meta charset="UTF-8"/><style>' +
-          css +
-          SC +
-          "style>" +
-          SC +
-          "head>" +
-          "<body>" +
-          $("resume-body").innerHTML +
-          SC +
-          "body>" +
-          SC +
-          "html>";
-        dlBlob(
-          new Blob([html], { type: "application/msword" }),
-          `${d.name || "resume"}.doc`,
-        );
-        toast("✓ Word document downloaded!");
       }
 
       function exportTXT() {

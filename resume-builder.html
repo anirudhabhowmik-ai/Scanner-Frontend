@@ -1021,12 +1021,23 @@ function exportPDF() {
 
 function exportWord() {
   const d = getData();
+  
+  // Collect photo and signature dataURLs if present
+  const photoThumb = document.getElementById("photo-thumb");
+  const signThumb  = document.getElementById("sign-thumb");
+  const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
+  const signData   = (signThumb  && signThumb.src  && signThumb.src.startsWith("data:"))  ? signThumb.src  : null;
+
   toast("⏳ Generating Word document…");
 
   fetch(API + "/api/resume/export-word", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resumeData: d })
+    body: JSON.stringify({ 
+      resumeData: d,
+      photoData: photoData,
+      signData: signData
+    })
   })
   .then(function(res) {
     if (!res.ok) throw new Error("Server error " + res.status);
@@ -1044,7 +1055,7 @@ function exportWord() {
     toast("❌ " + err.message);
   });
 }
-      
+
 function exportHTML() {
         const th = allThemes[activeTheme] || allThemes[0];
         const d = getData();

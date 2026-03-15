@@ -958,18 +958,29 @@
       }
 
       function exportPDF() {
-        const element = $("resume-body");
 
-        html2pdf()
-          .from(element)
-          .set({
-            filename: "resume.pdf",
-            margin: 10,
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-          })
-          .save();
-      }
+  const original = document.getElementById("resume-body");
+
+  // clone resume only
+  const clone = original.cloneNode(true);
+
+  const wrapper = document.createElement("div");
+  wrapper.style.background = "#fff";
+  wrapper.style.padding = "0";
+  wrapper.style.margin = "0";
+
+  wrapper.appendChild(clone);
+
+  html2pdf()
+    .from(wrapper)
+    .set({
+      filename: "resume.pdf",
+      margin: 0,
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    })
+    .save();
+}
 
       function exportHTML() {
         const th = allThemes[activeTheme] || allThemes[0];

@@ -92,7 +92,7 @@ const THEMES = [
 .rt-summary{font-size:.86rem;line-height:1.76;color:#333;}
 .rt-entry{margin-bottom:12px;}
 .rt-entry-row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:3px;align-items:baseline;}
-.rt-entry-role{font-weight:700;font-size:.87rem;color:#12112a;}
+.rt-entry-role{font-weight:700;font-size:.87rem;color:#9a9abf;}
 .rt-entry-company{color:#555;font-size:.81rem;}
 .rt-entry-date{font-size:.72rem;color:#999;white-space:nowrap;}
 .rt-entry-desc{font-size:.83rem;line-height:1.65;margin-top:4px;color:#444;}

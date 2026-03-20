@@ -25,7 +25,7 @@
     />
     <link rel="canonical" href="https://nextopdf.com/resume-builder" />
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://nextopdf.com/resume-builder" />
     <meta
@@ -34,7 +34,7 @@
     />
     <meta
       property="og:description"
-      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement. Used by job seekers who struggled with Word formatting at 2 AM."
+      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes. Single or sidebar layouts, PDF export, and AI-powered content enhancement."
     />
     <meta
       property="og:image"
@@ -52,7 +52,7 @@
     />
     <meta
       name="twitter:description"
-      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement."
+      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes."
     />
     <meta
       name="twitter:image"
@@ -69,17 +69,10 @@
         "@type": "WebApplication",
         "name": "NextoPDF AI Resume Builder",
         "url": "https://nextopdf.com/resume-builder",
-        "description": "Free AI-powered resume builder with 50+ professional themes. Create, customize, and download resumes in PDF, Word, or HTML format.",
+        "description": "Free AI-powered resume builder with 50+ professional themes.",
         "applicationCategory": "BusinessApplication",
         "operatingSystem": "Any",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
-        },
-        "featureList": "AI summary enhancement, 50+ built-in themes, Single and sidebar layouts, PDF export, HTML export, Word export, JSON backup, Resume scoring, Job description tailoring, Skill suggestion, AI template generation, Gemini AI integration",
-        "screenshot": "https://nextopdf.com/images/resume-builder-screenshot.png",
-        "softwareVersion": "1.0",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "author": {
           "@type": "Organization",
           "name": "NextoPDF",
@@ -88,7 +81,7 @@
       }
     </script>
 
-    <!-- Font preconnects -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -105,11 +98,11 @@
       referrerpolicy="no-referrer"
     />
 
-    <!-- Main CSS -->
+    <!-- Stylesheets -->
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/resume.css" />
 
-    <!-- Favicon -->
+    <!-- Favicons -->
     <link
       rel="icon"
       type="image/png"
@@ -226,19 +219,6 @@
 
       <!-- ════════════ MAIN ════════════ -->
       <div class="main">
-        <!-- Adsterra Ads -->
-        <!-- <section class="adsterra">
-          <script>
-            atOptions = {
-              key: "8b3acb0193a7ea6a85217b757a7cb0bc",
-              format: "iframe",
-              height: 250,
-              width: 300,
-              params: {},
-            };
-          </script>
-          <script src="https://www.highperformanceformat.com/8b3acb0193a7ea6a85217b757a7cb0bc/invoke.js"></script>
-        </section> -->
         <div class="topbar">
           <div class="topbar-left">
             <div class="ttitle" id="t-title">Resume Builder</div>
@@ -303,32 +283,80 @@
           <div class="panel active" id="panel-builder">
             <div class="card">
               <div class="card-title">📷 Photo &amp; Signature</div>
-              <div class="card-sub">Optional — appears in your resume when provided</div>
+              <div class="card-sub">
+                Optional — appears in your resume when provided
+              </div>
               <div class="form-grid">
                 <div class="form-group">
                   <label>Profile Photo</label>
                   <div class="upload-zone" id="photo-zone">
-                    <input type="file" accept="image/*" id="photo-input" onchange="handlePhoto(event)" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="photo-input"
+                      onchange="handlePhoto(event)"
+                    />
                     <span class="upload-zone-icon">🖼</span>
-                    <div class="upload-zone-text">Click or drag photo here<br/><strong>JPG · PNG · WebP</strong></div>
+                    <div class="upload-zone-text">
+                      Click or drag photo here<br /><strong
+                        >JPG · PNG · WebP</strong
+                      >
+                    </div>
                   </div>
                   <div class="img-preview-strip" id="photo-strip">
-                    <img class="thumb-photo" id="photo-thumb" src="" alt="Photo preview" />
+                    <img
+                      class="thumb-photo"
+                      id="photo-thumb"
+                      src=""
+                      alt="Photo preview"
+                    />
                     <span class="img-name" id="photo-name">photo.jpg</span>
-                    <button class="btn-remove-img" onclick="removePhoto()" title="Remove">✕</button>
+                    <button class="btn-edit-img" onclick="openPhotoEditor()">
+                      ✏ Edit
+                    </button>
+                    <button
+                      class="btn-remove-img"
+                      onclick="removePhoto()"
+                      title="Remove"
+                    >
+                      ✕
+                    </button>
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Signature</label>
                   <div class="upload-zone" id="sign-zone">
-                    <input type="file" accept="image/*" id="sign-input" onchange="handleSign(event)" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="sign-input"
+                      onchange="handleSign(event)"
+                    />
                     <span class="upload-zone-icon">✍️</span>
-                    <div class="upload-zone-text">Click or drag signature<br/><strong>PNG with transparency ideal</strong></div>
+                    <div class="upload-zone-text">
+                      Click or drag signature<br /><strong
+                        >PNG with transparency ideal</strong
+                      >
+                    </div>
                   </div>
                   <div class="img-preview-strip" id="sign-strip">
-                    <img class="thumb-sign" id="sign-thumb" src="" alt="Signature preview" />
+                    <img
+                      class="thumb-sign"
+                      id="sign-thumb"
+                      src=""
+                      alt="Signature preview"
+                    />
                     <span class="img-name" id="sign-name">signature.png</span>
-                    <button class="btn-remove-img" onclick="removeSign()" title="Remove">✕</button>
+                    <button class="btn-edit-img" onclick="openSignEditor()">
+                      ✏ Edit &amp; Erase
+                    </button>
+                    <button
+                      class="btn-remove-img"
+                      onclick="removeSign()"
+                      title="Remove"
+                    >
+                      ✕
+                    </button>
                   </div>
                 </div>
               </div>
@@ -740,39 +768,408 @@
               <div class="tgallery" id="tgallery"></div>
             </div>
           </div>
+
           <section id="header-placeholder"></section>
-    
         </div>
-        
-         
+        <!-- /content -->
       </div>
-      
       <!-- /main -->
     </div>
     <!-- /app -->
 
-    <!-- Adsterra Ads -->
-      <!-- <section class="Adsterra">
-        <script
-          async="async"
-          data-cfasync="false"
-          src="https://pl28916519.effectivegatecpm.com/b29375994fdbaaeb8cfe81abc69470ca/invoke.js"
-        ></script>
-        <div id="container-b29375994fdbaaeb8cfe81abc69470ca"></div>
-      </section> -->
+    <!-- ══════════════════════════════════════════════
+         PHOTO EDITOR MODAL
+    ══════════════════════════════════════════════ -->
+    <div class="img-editor-overlay" id="photo-editor-overlay">
+      <div class="img-editor-modal">
+        <div class="img-editor-header">
+          <h3>✏ Edit Profile Photo</h3>
+          <button class="img-editor-close" onclick="closePhotoEditor()">
+            ✕
+          </button>
+        </div>
+        <div class="img-editor-body">
+          <div class="img-editor-preview-col">
+            <div class="img-editor-preview-label">Live Preview</div>
+            <img id="photo-preview-img" src="" alt="Preview" />
+          </div>
+          <div class="img-editor-controls-col">
+            <!-- Size -->
+            <div class="iec-group">
+              <label>📐 Size</label>
+              <div class="iec-row">
+                <input
+                  type="range"
+                  class="iec-slider"
+                  id="photo-size"
+                  min="40"
+                  max="160"
+                  value="80"
+                  oninput="updatePhotoPreview()"
+                />
+                <span class="iec-val" id="photo-size-val">80px</span>
+              </div>
+            </div>
+            <!-- Border Radius -->
+            <div class="iec-group">
+              <label>⬭ Border Radius</label>
+              <div class="iec-row">
+                <input
+                  type="range"
+                  class="iec-slider"
+                  id="photo-radius"
+                  min="0"
+                  max="50"
+                  value="50"
+                  oninput="updatePhotoPreview()"
+                />
+                <span class="iec-val" id="photo-radius-val">50%</span>
+              </div>
+              <div class="iec-shape-row">
+                <button class="iec-bw-btn" onclick="setRadius(0)">
+                  Square
+                </button>
+                <button class="iec-bw-btn" onclick="setRadius(12)">
+                  Rounded
+                </button>
+                <button class="iec-bw-btn active" onclick="setRadius(50)">
+                  Circle
+                </button>
+              </div>
+            </div>
+            <!-- Border Width -->
+            <div class="iec-group">
+              <label>🖼 Border Width</label>
+              <div class="iec-border-width-wrap">
+                <button
+                  class="iec-bw-btn active"
+                  onclick="setBorderWidth(0, this)"
+                >
+                  None
+                </button>
+                <button class="iec-bw-btn" onclick="setBorderWidth(2, this)">
+                  Thin
+                </button>
+                <button class="iec-bw-btn" onclick="setBorderWidth(4, this)">
+                  Medium
+                </button>
+                <button class="iec-bw-btn" onclick="setBorderWidth(6, this)">
+                  Thick
+                </button>
+              </div>
+            </div>
+            <!-- Border Color -->
+            <div class="iec-group">
+              <label>🎨 Border Color</label>
+              <div class="iec-border-row">
+                <div
+                  class="iec-color-btn active"
+                  style="background: #ffffff; box-shadow: 0 0 0 1px #ddd"
+                  onclick="setBorderColor('#ffffff', this)"
+                  title="White"
+                ></div>
+                <div
+                  class="iec-color-btn"
+                  style="background: #c8502a"
+                  onclick="setBorderColor('#C8502A', this)"
+                  title="Crimson"
+                ></div>
+                <div
+                  class="iec-color-btn"
+                  style="background: #1a1a2e"
+                  onclick="setBorderColor('#1a1a2e', this)"
+                  title="Navy"
+                ></div>
+                <div
+                  class="iec-color-btn"
+                  style="background: #2e7d52"
+                  onclick="setBorderColor('#2e7d52', this)"
+                  title="Forest"
+                ></div>
+                <div
+                  class="iec-color-btn"
+                  style="background: #7c4dff"
+                  onclick="setBorderColor('#7c4dff', this)"
+                  title="Purple"
+                ></div>
+                <div
+                  class="iec-color-btn"
+                  style="background: #f0b429"
+                  onclick="setBorderColor('#f0b429', this)"
+                  title="Gold"
+                ></div>
+                <div class="iec-color-picker-wrap" title="Custom color">
+                  <input
+                    type="color"
+                    id="photo-border-color-picker"
+                    value="#C8502A"
+                    onchange="setBorderColor(this.value, null)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="img-editor-footer">
+          <button class="ied-btn ied-btn-cancel" onclick="closePhotoEditor()">
+            Cancel
+          </button>
+          <button class="ied-btn ied-btn-apply" onclick="applyPhotoEdits()">
+            ✓ Apply Changes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════
+         SIGNATURE EDITOR MODAL
+    ══════════════════════════════════════════════ -->
+    <div class="img-editor-overlay" id="sign-editor-overlay">
+      <div class="img-editor-modal sign-editor-modal">
+        <div class="img-editor-header">
+          <h3>✏ Edit Signature</h3>
+          <button class="img-editor-close" onclick="closeSignEditor()">
+            ✕
+          </button>
+        </div>
+
+        <div class="sign-editor-body">
+          <!-- Tab bar -->
+          <div class="sign-tab-bar">
+            <button
+              class="sign-tab-btn active"
+              onclick="switchSignTab('erase', this)"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <path d="M20 20H7L3 16l10-10 7 7-3.5 3.5" />
+                <path d="M6.5 17.5l4-4" />
+              </svg>
+              Eraser Tool
+            </button>
+            <button
+              class="sign-tab-btn"
+              onclick="switchSignTab('bgremove', this)"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M3 9h18M9 21V9" />
+              </svg>
+              Auto Remove BG
+            </button>
+          </div>
+
+          <!-- ── Tab: Eraser ── -->
+          <div class="sign-tab-pane active" id="sign-tab-erase">
+            <!-- Toolbar -->
+            <div class="eraser-toolbar">
+              <button
+                class="eraser-tool-btn active"
+                id="btn-erase-mode"
+                onclick="setEraserMode('erase', this)"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                >
+                  <path d="M20 20H7L3 16l10-10 7 7-3.5 3.5" />
+                  <path d="M6.5 17.5l4-4" />
+                </svg>
+                Erase
+              </button>
+              <button
+                class="eraser-tool-btn"
+                id="btn-restore-mode"
+                onclick="setEraserMode('restore', this)"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                >
+                  <path d="M12 2a10 10 0 1 0 10 10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
+                Restore
+              </button>
+              <button
+                class="eraser-tool-btn"
+                id="btn-undo-erase"
+                onclick="undoErase()"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                >
+                  <path d="M9 14L4 9l5-5" />
+                  <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
+                </svg>
+                Undo
+              </button>
+              <button
+                class="eraser-tool-btn danger"
+                onclick="resetEraseCanvas()"
+              >
+                <svg
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                >
+                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
+                </svg>
+                Reset
+              </button>
+              <!-- Brush size -->
+              <div class="eraser-size-row">
+                <label>Size</label>
+                <input
+                  type="range"
+                  class="iec-slider"
+                  id="eraser-size"
+                  min="4"
+                  max="60"
+                  value="18"
+                  oninput="updateEraserSize()"
+                />
+                <span class="iec-val" id="eraser-size-val">18</span>
+              </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="eraser-canvas-wrap" id="eraser-canvas-wrap">
+              <canvas id="sign-eraser-canvas"></canvas>
+              <div id="eraser-cursor-ring"></div>
+            </div>
+            <p class="eraser-hint">
+              🖱 Click &amp; drag to erase · Switch to Restore to paint back
+              pixels
+            </p>
+          </div>
+
+          <!-- ── Tab: Auto Remove BG ── -->
+          <div class="sign-tab-pane" id="sign-tab-bgremove">
+            <div class="bg-remove-controls">
+              <div class="bg-remove-title">🪄 Automatic Background Removal</div>
+              <div class="bg-remove-hint">
+                Choose the method that matches your signature's background
+                colour.
+              </div>
+              <div class="bg-remove-row">
+                <button
+                  class="bg-method-btn active"
+                  onclick="selectBgMethod('white', this)"
+                >
+                  White
+                </button>
+                <button
+                  class="bg-method-btn"
+                  onclick="selectBgMethod('light', this)"
+                >
+                  Light / Cream
+                </button>
+                <button
+                  class="bg-method-btn"
+                  onclick="selectBgMethod('dark', this)"
+                >
+                  Dark
+                </button>
+                <button
+                  class="bg-method-btn"
+                  onclick="selectBgMethod('auto', this)"
+                >
+                  Auto Detect
+                </button>
+              </div>
+              <div class="bg-threshold-row">
+                <label>Tolerance</label>
+                <input
+                  type="range"
+                  class="iec-slider"
+                  id="bg-threshold"
+                  min="5"
+                  max="120"
+                  value="30"
+                  oninput="
+                    document.getElementById('bg-threshold-val').textContent =
+                      this.value
+                  "
+                />
+                <span class="iec-val" id="bg-threshold-val">30</span>
+              </div>
+              <div class="bg-threshold-hint">
+                Higher = removes more background pixels
+              </div>
+              <button
+                class="bg-remove-btn"
+                id="btn-bg-remove"
+                onclick="removeSignBackground()"
+              >
+                <span id="bg-remove-icon">🪄</span>
+                <span id="bg-remove-label">Remove Background</span>
+              </button>
+              <button
+                class="bg-restore-btn"
+                id="btn-bg-restore"
+                onclick="restoreSignOriginal()"
+                style="display: none"
+              >
+                ↺ Restore Original
+              </button>
+            </div>
+          </div>
+        </div>
+        <!-- /sign-editor-body -->
+
+        <div class="sign-editor-footer">
+          <button class="ied-btn ied-btn-cancel" onclick="closeSignEditor()">
+            Cancel
+          </button>
+          <button class="ied-btn ied-btn-apply" onclick="applySignEdits()">
+            ✓ Apply to Resume
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div id="toast"></div>
-    </section>
-
     <section id="footer-placeholder"></section>
+
     <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
     <script src="./js/app.js"></script>
     <script src="./js/resume-theme.js"></script>
+
     <script>
       "use strict";
-      
+
       const API = `${BACKEND_BASE_URL}`;
       let EXP = [],
         EDU = [],
@@ -783,9 +1180,7 @@
       let summaryDraft = "",
         tailorDraft = "";
 
-      // ══════════════════════════════════════════════════════
-      // UTILS
-      // ══════════════════════════════════════════════════════
+      /* ── utils ── */
       const $ = (id) => document.getElementById(id);
       function esc(s) {
         return (s || "")
@@ -816,7 +1211,6 @@
         b.innerHTML = loading ? `<span class="spin"></span> Working…` : label;
       }
 
-      // Robust fetch — reads raw text first, never throws on empty/non-JSON
       async function api(url, body) {
         let res, txt;
         try {
@@ -833,7 +1227,7 @@
         }
         if (!txt || !txt.trim())
           throw new Error(
-            `Server returned empty response (HTTP ${res.status}). Check Flask route returns JSON.`,
+            `Server returned empty response (HTTP ${res.status}).`,
           );
         let s = txt.trim();
         const BT = "\x60\x60\x60";
@@ -892,9 +1286,7 @@
         };
       }
 
-      // ══════════════════════════════════════════════════════
-      // NAVIGATION
-      // ══════════════════════════════════════════════════════
+      /* ── navigation ── */
       const NAV_META = {
         builder: ["Resume Builder", "Fill in your details below"],
         preview: ["Preview & Export", "See and download your resume"],
@@ -922,9 +1314,7 @@
         if (id === "preview") renderResume();
       }
 
-      // ══════════════════════════════════════════════════════
-      // EXPORT DROPDOWN (fixed: stopPropagation on item clicks)
-      // ══════════════════════════════════════════════════════
+      /* ── export dropdown ── */
       function toggleMenu(id, e) {
         e.stopPropagation();
         const m = $(id);
@@ -939,14 +1329,10 @@
       }
       document.addEventListener("click", closeMenus);
 
-      // ══════════════════════════════════════════════════════
-      // EXPORT FUNCTIONS
-      // ══════════════════════════════════════════════════════
+      /* ── exports ── */
       function doExport(type) {
         closeMenus();
-        // Always render into resume-body first so exports have fresh content
         renderResume();
-        // Small delay so DOM paint completes before print dialog or blob creation
         setTimeout(() => {
           if (type === "pdf") exportPDF();
           else if (type === "html") exportHTML();
@@ -956,129 +1342,111 @@
         }, 120);
       }
 
-function getAllPageCSS() {
-  let css = "";
-  const sheets = document.styleSheets;
-  for (let i = 0; i < sheets.length; i++) {
-    try {
-      const rules = sheets[i].cssRules || sheets[i].rules;
-      if (!rules) continue;
-      for (let j = 0; j < rules.length; j++) {
-        css += rules[j].cssText + "\n";
+      function getAllPageCSS() {
+        let css = "";
+        const sheets = document.styleSheets;
+        for (let i = 0; i < sheets.length; i++) {
+          try {
+            const rules = sheets[i].cssRules || sheets[i].rules;
+            if (!rules) continue;
+            for (let j = 0; j < rules.length; j++)
+              css += rules[j].cssText + "\n";
+          } catch (e) {}
+        }
+        return css;
       }
-    } catch(e) {}
-  }
-  return css;
-}
 
-function buildFullHTML() {
-  const th = allThemes[activeTheme] || allThemes[0];
-  const clone = document.getElementById("resume-body").cloneNode(true);
-  clone.querySelectorAll("script").forEach(function(s) { s.remove(); });
-
-  return '<!DOCTYPE html><html><head>' +
-    '<meta charset="UTF-8">' +
-    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
-    '<style>' +
-    '* { box-sizing: border-box; margin: 0; padding: 0; }' +
-    'body { width: 794px; background: #fff; }' +
-    '.rt-photo { display:block; width:80px; height:80px; border-radius:50%; object-fit:cover; flex-shrink:0; }' +
-    '.rt-sign { display:block; max-width:140px; height:44px; object-fit:contain; }' +
-    getAllPageCSS() +
-    (th.css || "") +
-    '</style>' +
-    '</head><body>' +
-    clone.outerHTML +
-    '</body></html>';
-}
-
-function exportPDF() {
-  renderResume();
-  toast("⏳ Generating PDF…");
-
-  fetch(API + "/api/resume/export-pdf", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ html: buildFullHTML() })
-  })
-  .then(function(res) {
-    if (!res.ok) throw new Error("Server error " + res.status);
-    return res.blob();
-  })
-  .then(function(blob) {
-    const d = getData();
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".pdf";
-    a.click();
-    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-    toast("✓ PDF saved — text is selectable!");
-  })
-  .catch(function(err) {
-    toast("❌ " + err.message);
-  });
-}
-
-function exportWord() {
-  const d = getData();
-  const th = allThemes[activeTheme] || allThemes[0];
-
-  // Extract accent color from theme — use theme's color property
-  const themeColor = th.color || "#C8502A";
-
-  const photoThumb = document.getElementById("photo-thumb");
-  const signThumb  = document.getElementById("sign-thumb");
-  const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
-  const signData   = (signThumb  && signThumb.src  && signThumb.src.startsWith("data:"))  ? signThumb.src  : null;
-
-  toast("⏳ Generating Word document…");
-
-  fetch(API + "/api/resume/export-word", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      resumeData: d,
-      photoData: photoData,
-      signData: signData,
-      themeColor: themeColor,
-      themeName: th.name
-    })
-  })
-  .then(function(res) {
-    if (!res.ok) throw new Error("Server error " + res.status);
-    return res.blob();
-  })
-  .then(function(blob) {
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";
-    a.click();
-    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
-    toast("✓ Word document saved!");
-  })
-  .catch(function(err) {
-    toast("❌ " + err.message);
-  });
-}
-
-function exportHTML() {
+      function buildFullHTML() {
         const th = allThemes[activeTheme] || allThemes[0];
-        const d = getData();
-        const SC = "</"; // avoid literal </style> breaking the HTML parser
+        const clone = document.getElementById("resume-body").cloneNode(true);
+        clone.querySelectorAll("script").forEach((s) => s.remove());
+        return (
+          '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+          '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
+          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{width:794px;background:#fff;}.rt-photo{display:block;object-fit:cover;flex-shrink:0;}.rt-sign{display:block;max-width:140px;height:44px;object-fit:contain;}" +
+          getAllPageCSS() +
+          (th.css || "") +
+          "</style></head><body>" +
+          clone.outerHTML +
+          "</body></html>"
+        );
+      }
+
+      function exportPDF() {
+        renderResume();
+        toast("⏳ Generating PDF…");
+        fetch(API + "/api/resume/export-pdf", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ html: buildFullHTML() }),
+        })
+          .then((r) => {
+            if (!r.ok) throw new Error("Server error " + r.status);
+            return r.blob();
+          })
+          .then((blob) => {
+            const d = getData(),
+              a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = (d.name || "resume").replace(/\s+/g, "_") + ".pdf";
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            toast("✓ PDF saved!");
+          })
+          .catch((err) => toast("❌ " + err.message));
+      }
+
+      function exportWord() {
+        const d = getData(),
+          th = allThemes[activeTheme] || allThemes[0];
+        const pt = $("photo-thumb"),
+          st = $("sign-thumb");
+        const photoData =
+          pt && pt.src && pt.src.startsWith("data:") ? pt.src : null;
+        const signData =
+          st && st.src && st.src.startsWith("data:") ? st.src : null;
+        toast("⏳ Generating Word document…");
+        fetch(API + "/api/resume/export-word", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            resumeData: d,
+            photoData,
+            signData,
+            themeColor: th.color || "#C8502A",
+            themeName: th.name,
+          }),
+        })
+          .then((r) => {
+            if (!r.ok) throw new Error("Server error " + r.status);
+            return r.blob();
+          })
+          .then((blob) => {
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+            toast("✓ Word saved!");
+          })
+          .catch((err) => toast("❌ " + err.message));
+      }
+
+      function exportHTML() {
+        const th = allThemes[activeTheme] || allThemes[0],
+          d = getData(),
+          SC = "</";
         const html =
-          '<!DOCTYPE html><html lang="en"><head>' +
-          '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
-          "<title>" +
+          '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><title>' +
           esc(d.name || "Resume") +
           "</title>" +
           '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
-          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;}.rt-photo{display: block;width: 80px;height: 80px;border-radius: 50%;object-fit: cover;border: 3px solid rgba(255, 255, 255, 0.7);flex-shrink: 0;}.rt-sign{display: block;max-width: 140px;height: 44px;object-fit: contain;}" +
+          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;}.rt-photo{display:block;object-fit:cover;flex-shrink:0;}.rt-sign{display:block;max-width:140px;height:44px;object-fit:contain;}" +
           th.css +
           SC +
           "style>" +
           SC +
-          "head>" +
-          "<body>" +
+          "head><body>" +
           $("resume-body").innerHTML +
           SC +
           "body>" +
@@ -1092,8 +1460,8 @@ function exportHTML() {
       }
 
       function exportTXT() {
-        const d = getData();
-        const hr = "─".repeat(42);
+        const d = getData(),
+          hr = "─".repeat(42);
         let t = `${d.name || "Name"}\n${d.title || ""}\n`;
         const c = [d.email, d.phone, d.location, d.website]
           .filter(Boolean)
@@ -1149,7 +1517,6 @@ function exportHTML() {
         );
         toast("✓ JSON backup downloaded!");
       }
-
       function dlBlob(blob, name) {
         const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
@@ -1158,9 +1525,7 @@ function exportHTML() {
         setTimeout(() => URL.revokeObjectURL(a.href), 1000);
       }
 
-      // ══════════════════════════════════════════════════════
-      // EXPERIENCE
-      // ══════════════════════════════════════════════════════
+      /* ── experience / education / cert / lang ── */
       function addExp() {
         EXP.push({ role: "", company: "", from: "", to: "", desc: "" });
         renderEXP();
@@ -1173,33 +1538,23 @@ function exportHTML() {
       function renderEXP() {
         $("exp-list").innerHTML = EXP.map(
           (e, i) => `
-    <div class="exp-item" id="ei${i}">
-      <div class="exp-header">
-        <div class="exp-num">${i + 1}</div>
-        <div class="exp-title">${esc(e.company || "New Experience")}</div>
-        <button class="btn-del" onclick="delExp(${i})">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group"><label>Job Title</label>
-          <input value="${esc(e.role)}" placeholder="Software Engineer"
-            oninput="EXP[${i}].role=this.value;updExpTitle(${i});qRender()"></div>
-        <div class="form-group"><label>Company</label>
-          <input value="${esc(e.company)}" placeholder="Acme Corp"
-            oninput="EXP[${i}].company=this.value;updExpTitle(${i});qRender()"></div>
-        <div class="form-group"><label>From</label>
-          <input value="${esc(e.from)}" placeholder="Jan 2021"
-            oninput="EXP[${i}].from=this.value;qRender()"></div>
-        <div class="form-group"><label>To</label>
-          <input value="${esc(e.to)}" placeholder="Present"
-            oninput="EXP[${i}].to=this.value;qRender()"></div>
-        <div class="form-group full"><label>Description / Achievements</label>
-          <textarea rows="3" placeholder="Led a team of 5 engineers to deliver…"
-            oninput="EXP[${i}].desc=this.value;qRender()">${esc(e.desc)}</textarea></div>
-        <div class="form-group full" style="flex-direction:row;gap:8px;margin-top:2px;">
-          <button class="btn btn-secondary btn-sm" onclick="improveBullet(${i})">✨ Improve with AI</button>
-        </div>
-      </div>
-    </div>`,
+        <div class="exp-item" id="ei${i}">
+          <div class="exp-header">
+            <div class="exp-num">${i + 1}</div>
+            <div class="exp-title">${esc(e.company || "New Experience")}</div>
+            <button class="btn-del" onclick="delExp(${i})">✕</button>
+          </div>
+          <div class="form-grid">
+            <div class="form-group"><label>Job Title</label><input value="${esc(e.role)}" placeholder="Software Engineer" oninput="EXP[${i}].role=this.value;updExpTitle(${i});qRender()"></div>
+            <div class="form-group"><label>Company</label><input value="${esc(e.company)}" placeholder="Acme Corp" oninput="EXP[${i}].company=this.value;updExpTitle(${i});qRender()"></div>
+            <div class="form-group"><label>From</label><input value="${esc(e.from)}" placeholder="Jan 2021" oninput="EXP[${i}].from=this.value;qRender()"></div>
+            <div class="form-group"><label>To</label><input value="${esc(e.to)}" placeholder="Present" oninput="EXP[${i}].to=this.value;qRender()"></div>
+            <div class="form-group full"><label>Description / Achievements</label><textarea rows="3" placeholder="Led a team of 5 engineers…" oninput="EXP[${i}].desc=this.value;qRender()">${esc(e.desc)}</textarea></div>
+            <div class="form-group full" style="flex-direction:row;gap:8px;margin-top:2px">
+              <button class="btn btn-secondary btn-sm" onclick="improveBullet(${i})">✨ Improve with AI</button>
+            </div>
+          </div>
+        </div>`,
         ).join("");
       }
       function updExpTitle(i) {
@@ -1207,9 +1562,6 @@ function exportHTML() {
         if (el) el.textContent = EXP[i].company || "New Experience";
       }
 
-      // ══════════════════════════════════════════════════════
-      // EDUCATION
-      // ══════════════════════════════════════════════════════
       function addEdu() {
         EDU.push({ degree: "", school: "", from: "", to: "" });
         renderEDU();
@@ -1222,33 +1574,18 @@ function exportHTML() {
       function renderEDU() {
         $("edu-list").innerHTML = EDU.map(
           (e, i) => `
-    <div class="exp-item">
-      <div class="exp-header">
-        <div class="exp-num">${i + 1}</div>
-        <div class="exp-title">${esc(e.school || "New Education")}</div>
-        <button class="btn-del" onclick="delEdu(${i})">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group"><label>Degree</label>
-          <input value="${esc(e.degree)}" placeholder="B.Sc. Computer Science"
-            oninput="EDU[${i}].degree=this.value;qRender()"></div>
-        <div class="form-group"><label>School / University</label>
-          <input value="${esc(e.school)}" placeholder="MIT"
-            oninput="EDU[${i}].school=this.value;qRender()"></div>
-        <div class="form-group"><label>From</label>
-          <input value="${esc(e.from)}" placeholder="2017"
-            oninput="EDU[${i}].from=this.value;qRender()"></div>
-        <div class="form-group"><label>To</label>
-          <input value="${esc(e.to)}" placeholder="2021"
-            oninput="EDU[${i}].to=this.value;qRender()"></div>
-      </div>
-    </div>`,
+        <div class="exp-item">
+          <div class="exp-header"><div class="exp-num">${i + 1}</div><div class="exp-title">${esc(e.school || "New Education")}</div><button class="btn-del" onclick="delEdu(${i})">✕</button></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Degree</label><input value="${esc(e.degree)}" placeholder="B.Sc. Computer Science" oninput="EDU[${i}].degree=this.value;qRender()"></div>
+            <div class="form-group"><label>School / University</label><input value="${esc(e.school)}" placeholder="MIT" oninput="EDU[${i}].school=this.value;qRender()"></div>
+            <div class="form-group"><label>From</label><input value="${esc(e.from)}" placeholder="2017" oninput="EDU[${i}].from=this.value;qRender()"></div>
+            <div class="form-group"><label>To</label><input value="${esc(e.to)}" placeholder="2021" oninput="EDU[${i}].to=this.value;qRender()"></div>
+          </div>
+        </div>`,
         ).join("");
       }
 
-      // ══════════════════════════════════════════════════════
-      // CERTIFICATES
-      // ══════════════════════════════════════════════════════
       function addCert() {
         CERT.push({ name: "", issuer: "", year: "" });
         renderCERT();
@@ -1261,30 +1598,17 @@ function exportHTML() {
       function renderCERT() {
         $("cert-list").innerHTML = CERT.map(
           (c, i) => `
-    <div class="exp-item">
-      <div class="exp-header">
-        <div class="exp-num">${i + 1}</div>
-        <div class="exp-title">${esc(c.name || "New Certificate")}</div>
-        <button class="btn-del" onclick="delCert(${i})">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group full"><label>Certificate Name</label>
-          <input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect"
-            oninput="CERT[${i}].name=this.value;qRender()"></div>
-        <div class="form-group"><label>Issuing Organisation</label>
-          <input value="${esc(c.issuer)}" placeholder="Amazon Web Services"
-            oninput="CERT[${i}].issuer=this.value;qRender()"></div>
-        <div class="form-group"><label>Year</label>
-          <input value="${esc(c.year)}" placeholder="2023"
-            oninput="CERT[${i}].year=this.value;qRender()"></div>
-      </div>
-    </div>`,
+        <div class="exp-item">
+          <div class="exp-header"><div class="exp-num">${i + 1}</div><div class="exp-title">${esc(c.name || "New Certificate")}</div><button class="btn-del" onclick="delCert(${i})">✕</button></div>
+          <div class="form-grid">
+            <div class="form-group full"><label>Certificate Name</label><input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect" oninput="CERT[${i}].name=this.value;qRender()"></div>
+            <div class="form-group"><label>Issuing Organisation</label><input value="${esc(c.issuer)}" placeholder="Amazon Web Services" oninput="CERT[${i}].issuer=this.value;qRender()"></div>
+            <div class="form-group"><label>Year</label><input value="${esc(c.year)}" placeholder="2023" oninput="CERT[${i}].year=this.value;qRender()"></div>
+          </div>
+        </div>`,
         ).join("");
       }
 
-      // ══════════════════════════════════════════════════════
-      // LANGUAGES
-      // ══════════════════════════════════════════════════════
       const PROF = ["Native", "Fluent", "Advanced", "Intermediate", "Basic"];
       function addLang() {
         LANG.push({ lang: "", level: "Fluent" });
@@ -1298,30 +1622,19 @@ function exportHTML() {
       function renderLANG() {
         $("lang-list").innerHTML = LANG.map(
           (l, i) => `
-    <div class="exp-item">
-      <div class="exp-header">
-        <div class="exp-num">${i + 1}</div>
-        <div class="exp-title">${esc(l.lang || "New Language")}</div>
-        <button class="btn-del" onclick="delLang(${i})">✕</button>
-      </div>
-      <div class="form-grid">
-        <div class="form-group"><label>Language</label>
-          <input value="${esc(l.lang)}" placeholder="Spanish"
-            oninput="LANG[${i}].lang=this.value;qRender()"></div>
-        <div class="form-group"><label>Proficiency</label>
-          <select onchange="LANG[${i}].level=this.value;qRender()">
-            ${PROF.map((p) => `<option${l.level === p ? " selected" : ""}>${p}</option>`).join("")}
-          </select></div>
-      </div>
-    </div>`,
+        <div class="exp-item">
+          <div class="exp-header"><div class="exp-num">${i + 1}</div><div class="exp-title">${esc(l.lang || "New Language")}</div><button class="btn-del" onclick="delLang(${i})">✕</button></div>
+          <div class="form-grid">
+            <div class="form-group"><label>Language</label><input value="${esc(l.lang)}" placeholder="Spanish" oninput="LANG[${i}].lang=this.value;qRender()"></div>
+            <div class="form-group"><label>Proficiency</label>
+              <select onchange="LANG[${i}].level=this.value;qRender()">${PROF.map((p) => `<option${l.level === p ? " selected" : ""}>${p}</option>`).join("")}</select>
+            </div>
+          </div>
+        </div>`,
         ).join("");
       }
 
-      // ══════════════════════════════════════════════════════
-      // RESUME RENDER
-      // Key fix: theme CSS injected into <style id="theme-css"> in <body>
-      // Forest Pro header split into .rt-header-info + contact div
-      // ══════════════════════════════════════════════════════
+      /* ── resume render ── */
       let _rt = null;
       function qRender() {
         clearTimeout(_rt);
@@ -1329,57 +1642,51 @@ function exportHTML() {
       }
 
       function renderResume() {
-        const d = getData();
-        const th = allThemes[activeTheme] || allThemes[0];
-
-        // Inject theme CSS
+        const d = getData(),
+          th = allThemes[activeTheme] || allThemes[0];
         $("theme-css").textContent = th.css || "";
         const tn = $("active-theme-name");
         if (tn) tn.textContent = th.name;
 
-        // Build contact spans
-        const contactParts = [d.email, d.phone, d.location, d.website].filter(
-          Boolean,
-        );
-        const contactHtml = contactParts
+        const contactHtml = [d.email, d.phone, d.location, d.website]
+          .filter(Boolean)
           .map((x) => `<span>${esc(x)}</span>`)
           .join("");
 
-        // Sections
         const secExp = d.experience
           .map(
             (e) => `
-    <div class="rt-entry">
-      <div class="rt-entry-row">
-        <div><span class="rt-entry-role">${esc(e.role)}</span>${e.company ? ` <span class="rt-entry-company">— ${esc(e.company)}</span>` : ""}</div>
-        <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
-      </div>
-      ${e.desc ? `<div class="rt-entry-desc">${esc(e.desc)}</div>` : ""}
-    </div>`,
+        <div class="rt-entry">
+          <div class="rt-entry-row">
+            <div><span class="rt-entry-role">${esc(e.role)}</span>${e.company ? ` <span class="rt-entry-company">— ${esc(e.company)}</span>` : ""}</div>
+            <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
+          </div>
+          ${e.desc ? `<div class="rt-entry-desc">${esc(e.desc)}</div>` : ""}
+        </div>`,
           )
           .join("");
 
         const secEdu = d.education
           .map(
             (e) => `
-    <div class="rt-entry">
-      <div class="rt-entry-row">
-        <div><span class="rt-entry-role">${esc(e.degree)}</span>${e.school ? ` <span class="rt-entry-company">— ${esc(e.school)}</span>` : ""}</div>
-        <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
-      </div>
-    </div>`,
+        <div class="rt-entry">
+          <div class="rt-entry-row">
+            <div><span class="rt-entry-role">${esc(e.degree)}</span>${e.school ? ` <span class="rt-entry-company">— ${esc(e.school)}</span>` : ""}</div>
+            <span class="rt-entry-date">${esc(e.from)}${e.to ? " – " + esc(e.to) : ""}</span>
+          </div>
+        </div>`,
           )
           .join("");
 
         const secCert = d.certificates
           .map(
             (c) => `
-    <div class="rt-entry">
-      <div class="rt-entry-row">
-        <div><span class="rt-entry-role">${esc(c.name)}</span>${c.issuer ? ` <span class="rt-entry-company">— ${esc(c.issuer)}</span>` : ""}</div>
-        ${c.year ? `<span class="rt-entry-date">${esc(c.year)}</span>` : ""}
-      </div>
-    </div>`,
+        <div class="rt-entry">
+          <div class="rt-entry-row">
+            <div><span class="rt-entry-role">${esc(c.name)}</span>${c.issuer ? ` <span class="rt-entry-company">— ${esc(c.issuer)}</span>` : ""}</div>
+            ${c.year ? `<span class="rt-entry-date">${esc(c.year)}</span>` : ""}
+          </div>
+        </div>`,
           )
           .join("");
 
@@ -1408,70 +1715,56 @@ function exportHTML() {
           ? `<div class="rt-section-title">Summary</div><div class="rt-summary">${esc(d.summary)}</div>`
           : "";
 
-        // Forest Pro needs a different header structure (two-column with contact on right)
         const isForest = th.name === "Forest Pro";
         const headerHtml = isForest
           ? `
-    <div class="rt-header">
-      <div class="rt-header-info">
-        <div class="rt-name">${esc(d.name) || "Your Name"}</div>
-        <div class="rt-title">${esc(d.title) || "Your Title"}</div>
-      </div>
-      <div class="rt-contact">${contactHtml}</div>
-    </div>`
+        <div class="rt-header">
+          <div class="rt-header-info"><div class="rt-name">${esc(d.name) || "Your Name"}</div><div class="rt-title">${esc(d.title) || "Your Title"}</div></div>
+          <div class="rt-contact">${contactHtml}</div>
+        </div>`
           : `
-    <div class="rt-header">
-      <div class="rt-name">${esc(d.name) || "Your Name"}</div>
-      <div class="rt-title">${esc(d.title) || "Your Title"}</div>
-      <div class="rt-contact">${contactHtml}</div>
-    </div>`;
+        <div class="rt-header">
+          <div class="rt-name">${esc(d.name) || "Your Name"}</div>
+          <div class="rt-title">${esc(d.title) || "Your Title"}</div>
+          <div class="rt-contact">${contactHtml}</div>
+        </div>`;
 
         let body = "";
         if (th.layout === "sidebar") {
-          body = `<div class="rt-wrap">
-      ${headerHtml}
-      <div class="rt-sidebar">
-        ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
-        ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
-        ${secHobbies ? `<div class="rt-section-title">Hobbies</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
-        ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
-        ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
-      </div>
-      <div class="rt-main">
-        ${secSummary}
-        ${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}
-      </div>
-    </div>`;
+          body = `<div class="rt-wrap">${headerHtml}
+          <div class="rt-sidebar">
+            ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
+            ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
+            ${secHobbies ? `<div class="rt-section-title">Hobbies</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
+            ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
+            ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
+          </div>
+          <div class="rt-main">${secSummary}${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}</div>
+          </div>`;
         } else {
-          body = `<div class="rt-wrap">
-      ${headerHtml}
-      ${secSummary}
-      ${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}
-      ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
-      ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
-      ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
-      ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
-      ${secHobbies ? `<div class="rt-section-title">Hobbies &amp; Interests</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
-    </div>`;
+          body = `<div class="rt-wrap">${headerHtml}${secSummary}
+          ${secExp ? `<div class="rt-section-title">Experience</div>${secExp}` : ""}
+          ${secEdu ? `<div class="rt-section-title">Education</div>${secEdu}` : ""}
+          ${secCert ? `<div class="rt-section-title">Certifications</div>${secCert}` : ""}
+          ${secSkills ? `<div class="rt-section-title">Skills</div><div class="rt-tag-list">${secSkills}</div>` : ""}
+          ${secLang ? `<div class="rt-section-title">Languages</div><div class="rt-pill-list">${secLang}</div>` : ""}
+          ${secHobbies ? `<div class="rt-section-title">Hobbies &amp; Interests</div><div class="rt-pill-list">${secHobbies}</div>` : ""}
+          </div>`;
         }
         $("resume-body").innerHTML = body;
       }
 
-      // ══════════════════════════════════════════════════════
-      // TEMPLATE GALLERY
-      // ══════════════════════════════════════════════════════
+      /* ── template gallery ── */
       function renderGallery() {
         $("tgallery").innerHTML = allThemes
           .map(
             (t, i) => `
-    <div class="tcard${activeTheme === i ? " sel" : ""}" onclick="applyTheme(${i})">
-      <div class="tcard-dot" style="background:${t.color || "#888"}"></div>
-      <div class="tcard-name">${esc(t.name)}</div>
-      <div class="tcard-layout">${esc(t.layout)} layout</div>
-      <span class="tcard-badge" style="${t.isDefault ? "background:#fde8e1;color:#c8502a" : "background:#e8f5e9;color:#2e7d52"}">
-        ${t.isDefault ? "built-in" : "AI"}
-      </span>
-    </div>`,
+        <div class="tcard${activeTheme === i ? " sel" : ""}" onclick="applyTheme(${i})">
+          <div class="tcard-dot" style="background:${t.color || "#888"}"></div>
+          <div class="tcard-name">${esc(t.name)}</div>
+          <div class="tcard-layout">${esc(t.layout)} layout</div>
+          <span class="tcard-badge" style="${t.isDefault ? "background:#fde8e1;color:#c8502a" : "background:#e8f5e9;color:#2e7d52"}">${t.isDefault ? "built-in" : "AI"}</span>
+        </div>`,
           )
           .join("");
       }
@@ -1482,9 +1775,7 @@ function exportHTML() {
         toast(`✓ Theme "${allThemes[i].name}" applied!`);
       }
 
-      // ══════════════════════════════════════════════════════
-      // API CALLS
-      // ══════════════════════════════════════════════════════
+      /* ── AI features ── */
       async function enhanceSummary() {
         const d = getData();
         if (!d.name || !d.title) {
@@ -1681,9 +1972,7 @@ function exportHTML() {
         }
       }
 
-      // ══════════════════════════════════════════════════════
-      // INIT
-      // ══════════════════════════════════════════════════════
+      /* ── init ── */
       window.addEventListener("DOMContentLoaded", () => {
         addExp();
         addEdu();
@@ -1693,192 +1982,766 @@ function exportHTML() {
         renderResume();
       });
 
-      // Photo And Sign
+      /* ══════════════════════════════════════════════════════
+         PHOTO & SIGNATURE MODULE
+      ══════════════════════════════════════════════════════ */
       (function () {
-  "use strict";
- 
-  /* ─── State ─── */
-  let photoDataURL = null;
-  let signDataURL  = null;
- 
-  /* ─── Expose handlers to global scope (called from inline HTML) ─── */
-  window.handlePhoto = function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      photoDataURL = ev.target.result;
-      const strip = document.getElementById("photo-strip");
-      const thumb = document.getElementById("photo-thumb");
-      const name  = document.getElementById("photo-name");
-      if (thumb) thumb.src = photoDataURL;
-      if (name)  name.textContent = file.name;
-      if (strip) strip.classList.add("visible");
-      if (typeof qRender === "function") qRender();
-      if (typeof toast  === "function") toast("✓ Photo added!");
-    };
-    reader.readAsDataURL(file);
-  };
- 
-  window.removePhoto = function () {
-    photoDataURL = null;
-    const strip = document.getElementById("photo-strip");
-    const thumb = document.getElementById("photo-thumb");
-    const input = document.getElementById("photo-input");
-    if (thumb) thumb.src = "";
-    if (strip) strip.classList.remove("visible");
-    if (input) input.value = "";
-    if (typeof qRender === "function") qRender();
-    if (typeof toast  === "function") toast("Photo removed.");
-  };
- 
-  window.handleSign = function (e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function (ev) {
-      signDataURL = ev.target.result;
-      const strip = document.getElementById("sign-strip");
-      const thumb = document.getElementById("sign-thumb");
-      const name  = document.getElementById("sign-name");
-      if (thumb) thumb.src = signDataURL;
-      if (name)  name.textContent = file.name;
-      if (strip) strip.classList.add("visible");
-      if (typeof qRender === "function") qRender();
-      if (typeof toast  === "function") toast("✓ Signature added!");
-    };
-    reader.readAsDataURL(file);
-  };
- 
-  window.removeSign = function () {
-    signDataURL = null;
-    const strip = document.getElementById("sign-strip");
-    const thumb = document.getElementById("sign-thumb");
-    const input = document.getElementById("sign-input");
-    if (thumb) thumb.src = "";
-    if (strip) strip.classList.remove("visible");
-    if (input) input.value = "";
-    if (typeof qRender === "function") qRender();
-    if (typeof toast  === "function") toast("Signature removed.");
-  };
- 
-  /* ─── Patch renderResume() after DOM is ready ─── */
-  window.addEventListener("DOMContentLoaded", function () {
-    // Wait one tick to let app.js define renderResume first
-    setTimeout(patchRenderResume, 0);
-  });
- 
-  function patchRenderResume() {
-    if (typeof renderResume !== "function") {
-      console.warn("photo-sign-addon: renderResume not found — retrying in 200ms");
-      setTimeout(patchRenderResume, 200);
-      return;
-    }
- 
-    const _originalRenderResume = renderResume;
- 
-    window.renderResume = function () {
-      /* Run the original first so #resume-body is populated */
-      _originalRenderResume.apply(this, arguments);
- 
-      const resumeBody = document.getElementById("resume-body");
-      if (!resumeBody) return;
- 
-      /* ── Inject profile photo ── */
-      if (photoDataURL) {
-        const wrap = resumeBody.querySelector(".rt-wrap");
-        if (!wrap) return;
- 
-        const header = wrap.querySelector(".rt-header");
-        if (!header) return;
- 
-        /* Don't double-inject */
-        if (header.querySelector(".rt-photo")) {
-          header.querySelector(".rt-photo").src = photoDataURL;
-        } else {
-          const nameEl  = header.querySelector(".rt-name");
-          const titleEl = header.querySelector(".rt-title");
-          const contactEl = header.querySelector(".rt-contact");
- 
-          if (nameEl) {
-            /* Build wrapper div so photo sits beside name+title */
-            const photoImg = document.createElement("img");
-            photoImg.src       = photoDataURL;
-            photoImg.alt       = "Profile photo";
-            photoImg.className = "rt-photo";
- 
-            /* Check if this is a sidebar layout header (full-width, grid-column 1/-1)
-               In that case inject photo before the name text */
-            const isSidebarLayout = wrap.classList.contains("rt-wrap") &&
-              getComputedStyle(header).gridColumn === "1 / -1";
- 
-            if (isSidebarLayout) {
-              /* Place photo before name on its own line */
-              header.insertBefore(photoImg, nameEl);
-            } else {
-              /* Single layout: wrap name+title in flex row with photo */
-              const wrapper = document.createElement("div");
-              wrapper.className = "rt-header-with-photo";
- 
-              const textBlock = document.createElement("div");
-              textBlock.className = "rt-header-text";
- 
-              /* Move name, title (and optionally contact for Forest Pro) into textBlock */
-              const children = Array.from(header.children);
-              children.forEach(function (child) {
-                if (child !== contactEl) textBlock.appendChild(child);
-              });
- 
-              wrapper.appendChild(photoImg);
-              wrapper.appendChild(textBlock);
-              header.insertBefore(wrapper, contactEl || header.firstChild);
-              if (contactEl) header.appendChild(contactEl);
+        "use strict";
+
+        /* ── state ── */
+        let photoDataURL = null; // applied (may be styled)
+        let photoOrigURL = null; // raw upload
+        let signDataURL = null; // applied signature
+        let signOrigURL = null; // raw upload
+
+        const photoState = {
+          size: 80,
+          radius: 50,
+          borderWidth: 0,
+          borderColor: "#ffffff",
+        };
+        let bgMethod = "white";
+
+        /* ─────────────────────────────────────
+           UPLOAD HANDLERS
+        ───────────────────────────────────── */
+        window.handlePhoto = function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          const r = new FileReader();
+          r.onload = function (ev) {
+            photoOrigURL = ev.target.result;
+            photoDataURL = ev.target.result;
+            const strip = $("photo-strip"),
+              thumb = $("photo-thumb"),
+              name = $("photo-name");
+            if (thumb) thumb.src = photoDataURL;
+            if (name) name.textContent = file.name;
+            if (strip) strip.classList.add("visible");
+            if (typeof qRender === "function") qRender();
+            toast("✓ Photo added! Click ✏ Edit to customise.");
+          };
+          r.readAsDataURL(file);
+        };
+
+        window.removePhoto = function () {
+          photoDataURL = null;
+          photoOrigURL = null;
+          const strip = $("photo-strip"),
+            thumb = $("photo-thumb"),
+            input = $("photo-input");
+          if (thumb) thumb.src = "";
+          if (strip) strip.classList.remove("visible");
+          if (input) input.value = "";
+          if (typeof qRender === "function") qRender();
+          toast("Photo removed.");
+        };
+
+        window.handleSign = function (e) {
+          const file = e.target.files[0];
+          if (!file) return;
+          const r = new FileReader();
+          r.onload = function (ev) {
+            signOrigURL = ev.target.result;
+            signDataURL = ev.target.result;
+            const strip = $("sign-strip"),
+              thumb = $("sign-thumb"),
+              name = $("sign-name");
+            if (thumb) thumb.src = signDataURL;
+            if (name) name.textContent = file.name;
+            if (strip) strip.classList.add("visible");
+            if (typeof qRender === "function") qRender();
+            toast("✓ Signature added! Click ✏ Edit & Erase to refine.");
+          };
+          r.readAsDataURL(file);
+        };
+
+        window.removeSign = function () {
+          signDataURL = null;
+          signOrigURL = null;
+          const strip = $("sign-strip"),
+            thumb = $("sign-thumb"),
+            input = $("sign-input");
+          if (thumb) thumb.src = "";
+          if (strip) strip.classList.remove("visible");
+          if (input) input.value = "";
+          if (typeof qRender === "function") qRender();
+          toast("Signature removed.");
+        };
+
+        /* ─────────────────────────────────────
+           PHOTO EDITOR
+        ───────────────────────────────────── */
+        window.openPhotoEditor = function () {
+          if (!photoOrigURL) {
+            toast("⚠ Upload a photo first.");
+            return;
+          }
+          $("photo-size").value = photoState.size;
+          $("photo-radius").value = photoState.radius;
+          $("photo-size-val").textContent = photoState.size + "px";
+          $("photo-radius-val").textContent = photoState.radius + "%";
+          updatePhotoPreview();
+          $("photo-editor-overlay").classList.add("open");
+        };
+        window.closePhotoEditor = function () {
+          $("photo-editor-overlay").classList.remove("open");
+        };
+
+        window.updatePhotoPreview = function () {
+          const size = +$("photo-size").value,
+            radius = +$("photo-radius").value;
+          photoState.size = size;
+          photoState.radius = radius;
+          $("photo-size-val").textContent = size + "px";
+          $("photo-radius-val").textContent = radius + "%";
+          const img = $("photo-preview-img");
+          img.src = photoOrigURL;
+          img.style.cssText = `width:${size}px;height:${size}px;border-radius:${radius}%;object-fit:cover;display:block;border:${photoState.borderWidth > 0 ? `${photoState.borderWidth}px solid ${photoState.borderColor}` : "none"};`;
+        };
+
+        window.setRadius = function (val) {
+          $("photo-radius").value = val;
+          document
+            .querySelectorAll(".iec-shape-row .iec-bw-btn")
+            .forEach((b) => {
+              b.classList.toggle(
+                "active",
+                b.getAttribute("onclick") === `setRadius(${val})`,
+              );
+            });
+          updatePhotoPreview();
+        };
+
+        window.setBorderWidth = function (val, btn) {
+          photoState.borderWidth = val;
+          document
+            .querySelectorAll(".iec-border-width-wrap .iec-bw-btn")
+            .forEach((b) => b.classList.remove("active"));
+          if (btn) btn.classList.add("active");
+          updatePhotoPreview();
+        };
+
+        window.setBorderColor = function (color, el) {
+          photoState.borderColor = color;
+          document
+            .querySelectorAll(".iec-color-btn")
+            .forEach((b) => b.classList.remove("active"));
+          if (el) el.classList.add("active");
+          updatePhotoPreview();
+        };
+
+        window.applyPhotoEdits = function () {
+          const size = photoState.size,
+            radius = photoState.radius,
+            bw = photoState.borderWidth,
+            bc = photoState.borderColor;
+          const canvas = document.createElement("canvas");
+          const total = size + bw * 2;
+          canvas.width = canvas.height = total;
+          const ctx = canvas.getContext("2d");
+          if (bw > 0) {
+            ctx.beginPath();
+            ctx.arc(total / 2, total / 2, total / 2, 0, Math.PI * 2);
+            ctx.fillStyle = bc;
+            ctx.fill();
+          }
+          ctx.save();
+          const ox = bw,
+            oy = bw;
+          ctx.beginPath();
+          if (radius >= 50) {
+            ctx.arc(total / 2, total / 2, size / 2, 0, Math.PI * 2);
+          } else {
+            const rr = (radius / 50) * (size / 2);
+            ctx.moveTo(ox + rr, oy);
+            ctx.lineTo(ox + size - rr, oy);
+            ctx.quadraticCurveTo(ox + size, oy, ox + size, oy + rr);
+            ctx.lineTo(ox + size, oy + size - rr);
+            ctx.quadraticCurveTo(
+              ox + size,
+              oy + size,
+              ox + size - rr,
+              oy + size,
+            );
+            ctx.lineTo(ox + rr, oy + size);
+            ctx.quadraticCurveTo(ox, oy + size, ox, oy + size - rr);
+            ctx.lineTo(ox, oy + rr);
+            ctx.quadraticCurveTo(ox, oy, ox + rr, oy);
+          }
+          ctx.closePath();
+          ctx.clip();
+          const img = new Image();
+          img.onload = function () {
+            ctx.drawImage(img, ox, oy, size, size);
+            ctx.restore();
+            photoDataURL = canvas.toDataURL("image/png");
+            const thumb = $("photo-thumb");
+            if (thumb) thumb.src = photoDataURL;
+            if (typeof qRender === "function") qRender();
+            closePhotoEditor();
+            toast("✓ Photo style applied!");
+          };
+          img.src = photoOrigURL;
+        };
+
+        /* ─────────────────────────────────────
+           SIGNATURE EDITOR — TABS
+        ───────────────────────────────────── */
+        window.switchSignTab = function (tab, btn) {
+          document
+            .querySelectorAll(".sign-tab-btn")
+            .forEach((b) => b.classList.remove("active"));
+          document
+            .querySelectorAll(".sign-tab-pane")
+            .forEach((p) => p.classList.remove("active"));
+          btn.classList.add("active");
+          $("sign-tab-" + tab).classList.add("active");
+        };
+
+        window.openSignEditor = function () {
+          if (!signOrigURL) {
+            toast("⚠ Upload a signature first.");
+            return;
+          }
+          initEraserCanvas();
+          $("sign-editor-overlay").classList.add("open");
+        };
+        window.closeSignEditor = function () {
+          $("sign-editor-overlay").classList.remove("open");
+          destroyEraserListeners();
+        };
+
+        window.applySignEdits = function () {
+          // Export current canvas state as the new signDataURL
+          const canvas = $("sign-eraser-canvas");
+          if (canvas && canvas.width > 0) {
+            signDataURL = canvas.toDataURL("image/png");
+          }
+          const thumb = $("sign-thumb");
+          if (thumb) thumb.src = signDataURL;
+          if (typeof qRender === "function") qRender();
+          closeSignEditor();
+          toast("✓ Signature applied to resume!");
+        };
+
+        /* ─────────────────────────────────────
+           ERASER CANVAS ENGINE
+        ───────────────────────────────────── */
+        let eraserCanvas = null,
+          eraserCtx = null;
+        let eraserMode = "erase"; // "erase" | "restore"
+        let eraserSize = 18;
+        let isDrawing = false;
+        let undoStack = []; // stack of ImageData snapshots
+        let origImgData = null; // original image data for restore mode
+
+        function initEraserCanvas() {
+          eraserCanvas = $("sign-eraser-canvas");
+          eraserCtx = eraserCanvas.getContext("2d", {
+            willReadFrequently: true,
+          });
+          undoStack = [];
+          eraserMode = "erase";
+
+          // Set active state on Erase button
+          $("btn-erase-mode").classList.add("active");
+          $("btn-restore-mode").classList.remove("active");
+          eraserCanvas.classList.remove("restore-mode");
+          eraserCanvas.classList.add("eraser-mode");
+
+          const img = new Image();
+          img.onload = function () {
+            // Fit canvas to the wrap container (max 560px wide)
+            const wrap = $("eraser-canvas-wrap");
+            const maxW = wrap.clientWidth || 520;
+            const scale = Math.min(1, maxW / img.width);
+            eraserCanvas.width = Math.round(img.width * scale);
+            eraserCanvas.height = Math.round(img.height * scale);
+            eraserCtx.clearRect(0, 0, eraserCanvas.width, eraserCanvas.height);
+            eraserCtx.drawImage(
+              img,
+              0,
+              0,
+              eraserCanvas.width,
+              eraserCanvas.height,
+            );
+            // Save original pixel data for restore mode
+            origImgData = eraserCtx.getImageData(
+              0,
+              0,
+              eraserCanvas.width,
+              eraserCanvas.height,
+            );
+            pushUndo();
+            attachEraserListeners();
+          };
+          img.src = signDataURL || signOrigURL;
+        }
+
+        function destroyEraserListeners() {
+          if (!eraserCanvas) return;
+          eraserCanvas.removeEventListener("mousedown", onEraserDown);
+          eraserCanvas.removeEventListener("mousemove", onEraserMove);
+          eraserCanvas.removeEventListener("mouseup", onEraserUp);
+          eraserCanvas.removeEventListener("mouseleave", onEraserLeave);
+          eraserCanvas.removeEventListener("touchstart", onEraserTouchStart);
+          eraserCanvas.removeEventListener("touchmove", onEraserTouchMove);
+          eraserCanvas.removeEventListener("touchend", onEraserUp);
+          eraserCanvas.removeEventListener("mousemove", moveCursorRing);
+          eraserCanvas.removeEventListener("mouseleave", hideCursorRing);
+        }
+
+        function attachEraserListeners() {
+          eraserCanvas.addEventListener("mousedown", onEraserDown);
+          eraserCanvas.addEventListener("mousemove", onEraserMove);
+          eraserCanvas.addEventListener("mouseup", onEraserUp);
+          eraserCanvas.addEventListener("mouseleave", onEraserLeave);
+          eraserCanvas.addEventListener("touchstart", onEraserTouchStart, {
+            passive: false,
+          });
+          eraserCanvas.addEventListener("touchmove", onEraserTouchMove, {
+            passive: false,
+          });
+          eraserCanvas.addEventListener("touchend", onEraserUp);
+          eraserCanvas.addEventListener("mousemove", moveCursorRing);
+          eraserCanvas.addEventListener("mouseleave", hideCursorRing);
+        }
+
+        /* cursor ring */
+        function moveCursorRing(e) {
+          const ring = $("eraser-cursor-ring");
+          const rect = eraserCanvas.getBoundingClientRect();
+          ring.style.display = "block";
+          ring.style.left = e.clientX - rect.left + "px";
+          ring.style.top = e.clientY - rect.top + "px";
+          ring.style.width = eraserSize + "px";
+          ring.style.height = eraserSize + "px";
+        }
+        function hideCursorRing() {
+          $("eraser-cursor-ring").style.display = "none";
+        }
+
+        /* pointer helpers */
+        function getPos(e) {
+          const rect = eraserCanvas.getBoundingClientRect();
+          const scaleX = eraserCanvas.width / rect.width;
+          const scaleY = eraserCanvas.height / rect.height;
+          return {
+            x: (e.clientX - rect.left) * scaleX,
+            y: (e.clientY - rect.top) * scaleY,
+          };
+        }
+
+        function onEraserDown(e) {
+          e.preventDefault();
+          isDrawing = true;
+          pushUndo();
+          paintAt(getPos(e));
+        }
+        function onEraserMove(e) {
+          if (!isDrawing) return;
+          paintAt(getPos(e));
+        }
+        function onEraserUp() {
+          isDrawing = false;
+        }
+        function onEraserLeave() {
+          isDrawing = false;
+          hideCursorRing();
+        }
+
+        function onEraserTouchStart(e) {
+          e.preventDefault();
+          isDrawing = true;
+          pushUndo();
+          paintAt(getTouchPos(e));
+        }
+        function onEraserTouchMove(e) {
+          e.preventDefault();
+          if (!isDrawing) return;
+          paintAt(getTouchPos(e));
+        }
+        function getTouchPos(e) {
+          const rect = eraserCanvas.getBoundingClientRect();
+          const t = e.touches[0];
+          const scaleX = eraserCanvas.width / rect.width;
+          const scaleY = eraserCanvas.height / rect.height;
+          return {
+            x: (t.clientX - rect.left) * scaleX,
+            y: (t.clientY - rect.top) * scaleY,
+          };
+        }
+
+        function paintAt({ x, y }) {
+          const r = eraserSize / 2;
+          if (eraserMode === "erase") {
+            // Use destination-out to punch transparent holes
+            eraserCtx.save();
+            eraserCtx.globalCompositeOperation = "destination-out";
+            eraserCtx.beginPath();
+            eraserCtx.arc(x, y, r, 0, Math.PI * 2);
+            // Soft radial gradient for feathered edge
+            const grd = eraserCtx.createRadialGradient(x, y, 0, x, y, r);
+            grd.addColorStop(0, "rgba(0,0,0,1)");
+            grd.addColorStop(0.6, "rgba(0,0,0,0.8)");
+            grd.addColorStop(1, "rgba(0,0,0,0)");
+            eraserCtx.fillStyle = grd;
+            eraserCtx.fill();
+            eraserCtx.restore();
+          } else {
+            // Restore: copy pixels from origImgData within brush circle
+            if (!origImgData) return;
+            const rd = Math.ceil(r);
+            const x0 = Math.max(0, Math.floor(x - rd)),
+              y0 = Math.max(0, Math.floor(y - rd));
+            const x1 = Math.min(eraserCanvas.width, Math.floor(x + rd) + 1);
+            const y1 = Math.min(eraserCanvas.height, Math.floor(y + rd) + 1);
+            const curr = eraserCtx.getImageData(x0, y0, x1 - x0, y1 - y0);
+            const orig = origImgData;
+            for (let py = y0; py < y1; py++) {
+              for (let px = x0; px < x1; px++) {
+                const dist = Math.sqrt((px - x) ** 2 + (py - y) ** 2);
+                if (dist > r) continue;
+                const fade = 1 - dist / r; // soft brush
+                const ci = ((py - y0) * (x1 - x0) + (px - x0)) * 4;
+                const oi = (py * orig.width + px) * 4;
+                curr.data[ci] = orig.data[oi];
+                curr.data[ci + 1] = orig.data[oi + 1];
+                curr.data[ci + 2] = orig.data[oi + 2];
+                curr.data[ci + 3] = Math.round(
+                  orig.data[oi + 3] * fade + curr.data[ci + 3] * (1 - fade),
+                );
+              }
             }
+            eraserCtx.putImageData(curr, x0, y0);
           }
         }
-      }
- 
-      /* ── Inject signature ── */
-      if (signDataURL) {
-        const wrap = resumeBody.querySelector(".rt-wrap");
-        if (!wrap) return;
- 
-        /* Don't double-inject */
-        if (wrap.querySelector(".rt-sign")) {
-          wrap.querySelector(".rt-sign").src = signDataURL;
-          return;
+
+        /* undo */
+        function pushUndo() {
+          if (!eraserCtx) return;
+          if (undoStack.length > 40) undoStack.shift();
+          undoStack.push(
+            eraserCtx.getImageData(
+              0,
+              0,
+              eraserCanvas.width,
+              eraserCanvas.height,
+            ),
+          );
         }
- 
-        const signWrap = document.createElement("div");
-        signWrap.className = "rt-sign-wrap";
- 
-        const sectionTitle = document.createElement("div");
-        sectionTitle.className = "rt-section-title";
-        sectionTitle.textContent = "Signature";
- 
-        const signImg = document.createElement("img");
-        signImg.src       = signDataURL;
-        signImg.alt       = "Signature";
-        signImg.className = "rt-sign";
- 
-        signWrap.appendChild(sectionTitle);
-        signWrap.appendChild(signImg);
- 
-        /* Append to rt-main if sidebar layout, else to rt-wrap */
-        const mainDiv = wrap.querySelector(".rt-main");
-        if (mainDiv) {
-          mainDiv.appendChild(signWrap);
-        } else {
-          wrap.appendChild(signWrap);
+        window.undoErase = function () {
+          if (undoStack.length <= 1) {
+            toast("Nothing to undo.");
+            return;
+          }
+          undoStack.pop();
+          eraserCtx.putImageData(undoStack[undoStack.length - 1], 0, 0);
+          toast("↺ Undone");
+        };
+        window.resetEraseCanvas = function () {
+          if (!origImgData || !eraserCtx) return;
+          eraserCtx.clearRect(0, 0, eraserCanvas.width, eraserCanvas.height);
+          eraserCtx.putImageData(origImgData, 0, 0);
+          undoStack = [];
+          pushUndo();
+          toast("↺ Canvas reset to original.");
+        };
+
+        /* tool mode + size */
+        window.setEraserMode = function (mode, btn) {
+          eraserMode = mode;
+          $("btn-erase-mode").classList.toggle("active", mode === "erase");
+          $("btn-restore-mode").classList.toggle("active", mode === "restore");
+          if (eraserCanvas) {
+            eraserCanvas.classList.toggle("eraser-mode", mode === "erase");
+            eraserCanvas.classList.toggle("restore-mode", mode === "restore");
+          }
+        };
+        window.updateEraserSize = function () {
+          eraserSize = +$("eraser-size").value;
+          $("eraser-size-val").textContent = eraserSize;
+          const ring = $("eraser-cursor-ring");
+          ring.style.width = eraserSize + "px";
+          ring.style.height = eraserSize + "px";
+        };
+
+        /* ─────────────────────────────────────
+           AUTO BG REMOVAL (tab 2)
+        ───────────────────────────────────── */
+        window.selectBgMethod = function (method, el) {
+          bgMethod = method;
+          document
+            .querySelectorAll(".bg-method-btn")
+            .forEach((b) => b.classList.remove("active"));
+          el.classList.add("active");
+        };
+
+        window.removeSignBackground = function () {
+          const btn = $("btn-bg-remove"),
+            icon = $("bg-remove-icon"),
+            label = $("bg-remove-label");
+          btn.disabled = true;
+          icon.innerHTML = '<span class="spin-icon"></span>';
+          label.textContent = "Processing…";
+          const threshold = +$("bg-threshold").value;
+          const img = new Image();
+          img.onload = function () {
+            const canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(
+              0,
+              0,
+              canvas.width,
+              canvas.height,
+            );
+            const data = imageData.data;
+
+            let targetR, targetG, targetB;
+            if (bgMethod === "white") {
+              targetR = 255;
+              targetG = 255;
+              targetB = 255;
+            } else if (bgMethod === "light") {
+              targetR = 245;
+              targetG = 240;
+              targetB = 230;
+            } else if (bgMethod === "dark") {
+              targetR = 0;
+              targetG = 0;
+              targetB = 0;
+            } else {
+              const s = [
+                [0, 1, 2],
+                [
+                  (canvas.width - 1) * 4,
+                  (canvas.width - 1) * 4 + 1,
+                  (canvas.width - 1) * 4 + 2,
+                ],
+                [
+                  (canvas.height - 1) * canvas.width * 4,
+                  (canvas.height - 1) * canvas.width * 4 + 1,
+                  (canvas.height - 1) * canvas.width * 4 + 2,
+                ],
+                [
+                  (canvas.height * canvas.width - 1) * 4,
+                  (canvas.height * canvas.width - 1) * 4 + 1,
+                  (canvas.height * canvas.width - 1) * 4 + 2,
+                ],
+              ];
+              targetR = Math.round(s.reduce((a, x) => a + data[x[0]], 0) / 4);
+              targetG = Math.round(s.reduce((a, x) => a + data[x[1]], 0) / 4);
+              targetB = Math.round(s.reduce((a, x) => a + data[x[2]], 0) / 4);
+            }
+
+            for (let i = 0; i < data.length; i += 4) {
+              const dist = Math.sqrt(
+                (data[i] - targetR) ** 2 +
+                  (data[i + 1] - targetG) ** 2 +
+                  (data[i + 2] - targetB) ** 2,
+              );
+              if (dist < threshold)
+                data[i + 3] = Math.max(
+                  0,
+                  Math.min(255, Math.round((dist / threshold) * 255)),
+                );
+            }
+            // feather
+            const out = new Uint8ClampedArray(data);
+            for (let y = 1; y < canvas.height - 1; y++) {
+              for (let x = 0; x < canvas.width; x++) {
+                const idx = (y * canvas.width + x) * 4;
+                if (data[idx + 3] < 255 && data[idx + 3] > 0) {
+                  const nb = [
+                    data[((y - 1) * canvas.width + x) * 4 + 3],
+                    data[((y + 1) * canvas.width + x) * 4 + 3],
+                    x > 0
+                      ? data[(y * canvas.width + x - 1) * 4 + 3]
+                      : data[idx + 3],
+                    x < canvas.width - 1
+                      ? data[(y * canvas.width + x + 1) * 4 + 3]
+                      : data[idx + 3],
+                  ];
+                  out[idx + 3] = Math.round(
+                    nb.reduce((a, v) => a + v, data[idx + 3]) / (nb.length + 1),
+                  );
+                }
+              }
+            }
+            ctx.putImageData(
+              new ImageData(out, canvas.width, canvas.height),
+              0,
+              0,
+            );
+
+            // Push result into eraser canvas so user can fine-tune
+            const resultURL = canvas.toDataURL("image/png");
+            signDataURL = resultURL;
+            // Reload eraser canvas with the BG-removed result
+            const eCanvas = $("sign-eraser-canvas");
+            if (eCanvas) {
+              const eCtx = eCanvas.getContext("2d", {
+                willReadFrequently: true,
+              });
+              const ri = new Image();
+              ri.onload = function () {
+                eCtx.clearRect(0, 0, eCanvas.width, eCanvas.height);
+                eCtx.drawImage(ri, 0, 0, eCanvas.width, eCanvas.height);
+                origImgData = eCtx.getImageData(
+                  0,
+                  0,
+                  eCanvas.width,
+                  eCanvas.height,
+                );
+                undoStack = [];
+                pushUndo();
+              };
+              ri.src = resultURL;
+            }
+
+            $("btn-bg-restore").style.display = "block";
+            btn.disabled = false;
+            icon.textContent = "✓";
+            label.textContent = "Done! Switch to Eraser to fine-tune";
+            setTimeout(() => {
+              icon.textContent = "🪄";
+              label.textContent = "Remove Background";
+            }, 3000);
+            toast("✓ Background removed! Switch to Eraser tab to fine-tune.");
+          };
+          img.onerror = function () {
+            btn.disabled = false;
+            icon.textContent = "🪄";
+            label.textContent = "Remove Background";
+            toast("❌ Could not process image.");
+          };
+          img.src = signOrigURL;
+        };
+
+        window.restoreSignOriginal = function () {
+          signDataURL = signOrigURL;
+          // Reload eraser canvas
+          if (eraserCanvas && signOrigURL) {
+            const img = new Image();
+            img.onload = function () {
+              eraserCtx.clearRect(
+                0,
+                0,
+                eraserCanvas.width,
+                eraserCanvas.height,
+              );
+              eraserCtx.drawImage(
+                img,
+                0,
+                0,
+                eraserCanvas.width,
+                eraserCanvas.height,
+              );
+              origImgData = eraserCtx.getImageData(
+                0,
+                0,
+                eraserCanvas.width,
+                eraserCanvas.height,
+              );
+              undoStack = [];
+              pushUndo();
+            };
+            img.src = signOrigURL;
+          }
+          $("btn-bg-restore").style.display = "none";
+          $("bg-remove-icon").textContent = "🪄";
+          $("bg-remove-label").textContent = "Remove Background";
+          toast("↺ Restored to original.");
+        };
+
+        /* ─────────────────────────────────────
+           PATCH renderResume
+        ───────────────────────────────────── */
+        window.addEventListener("DOMContentLoaded", function () {
+          setTimeout(patchRenderResume, 0);
+        });
+
+        function patchRenderResume() {
+          if (typeof renderResume !== "function") {
+            setTimeout(patchRenderResume, 200);
+            return;
+          }
+          const _orig = renderResume;
+          window.renderResume = function () {
+            _orig.apply(this, arguments);
+            const resumeBody = $("resume-body");
+            if (!resumeBody) return;
+
+            /* photo */
+            if (photoDataURL) {
+              const wrap = resumeBody.querySelector(".rt-wrap");
+              if (!wrap) return;
+              const header = wrap.querySelector(".rt-header");
+              if (!header) return;
+              if (header.querySelector(".rt-photo")) {
+                const ex = header.querySelector(".rt-photo");
+                ex.src = photoDataURL;
+                ex.style.width = photoState.size + "px";
+                ex.style.height = photoState.size + "px";
+                ex.style.borderRadius = photoState.radius + "%";
+                ex.style.border =
+                  photoState.borderWidth > 0
+                    ? `${photoState.borderWidth}px solid ${photoState.borderColor}`
+                    : "none";
+              } else {
+                const photoImg = document.createElement("img");
+                photoImg.src = photoDataURL;
+                photoImg.alt = "Profile photo";
+                photoImg.className = "rt-photo";
+                photoImg.style.cssText = `width:${photoState.size}px;height:${photoState.size}px;border-radius:${photoState.radius}%;object-fit:cover;flex-shrink:0;border:${photoState.borderWidth > 0 ? `${photoState.borderWidth}px solid ${photoState.borderColor}` : "none"};`;
+                const nameEl = header.querySelector(".rt-name");
+                const contactEl = header.querySelector(".rt-contact");
+                if (nameEl) {
+                  const wrapper = document.createElement("div");
+                  wrapper.className = "rt-header-with-photo";
+                  const textBlock = document.createElement("div");
+                  textBlock.className = "rt-header-text";
+                  Array.from(header.children).forEach((child) => {
+                    if (child !== contactEl) textBlock.appendChild(child);
+                  });
+                  wrapper.appendChild(photoImg);
+                  wrapper.appendChild(textBlock);
+                  header.insertBefore(wrapper, contactEl || header.firstChild);
+                  if (contactEl) header.appendChild(contactEl);
+                }
+              }
+            }
+
+            /* signature */
+            if (signDataURL) {
+              const wrap = resumeBody.querySelector(".rt-wrap");
+              if (!wrap) return;
+              if (wrap.querySelector(".rt-sign")) {
+                wrap.querySelector(".rt-sign").src = signDataURL;
+                return;
+              }
+              const signWrap = document.createElement("div");
+              signWrap.className = "rt-sign-wrap";
+              const st = document.createElement("div");
+              st.className = "rt-section-title";
+              st.textContent = "Signature";
+              const si = document.createElement("img");
+              si.src = signDataURL;
+              si.alt = "Signature";
+              si.className = "rt-sign";
+              signWrap.appendChild(st);
+              signWrap.appendChild(si);
+              const mainDiv = wrap.querySelector(".rt-main");
+              if (mainDiv) mainDiv.appendChild(signWrap);
+              else wrap.appendChild(signWrap);
+            }
+          };
         }
-      }
-    };
-  }
- 
-})();
+      })();
     </script>
-    <!-- Adsterra Ads -->
-    <!-- <script src="https://pl28916850.effectivegatecpm.com/de/d8/32/ded8323936beed162a8a1f081418dbff.js"></script> -->
-  
   </body>
 </html>

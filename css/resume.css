@@ -927,3 +927,706 @@ textarea {
   flex: 1;
   min-width: 0;
 }
+
+/* ════════════════════════════════════════════
+   PHOTO EDITOR MODAL
+   ════════════════════════════════════════════ */
+
+/* Shared overlay backdrop */
+.img-editor-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 20, 0.72);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.img-editor-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Shared modal shell */
+.img-editor-modal {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
+  width: min(560px, 96vw);
+  overflow: hidden;
+  transform: translateY(24px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.img-editor-overlay.open .img-editor-modal {
+  transform: translateY(0) scale(1);
+}
+
+/* Modal header */
+.img-editor-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.img-editor-header h3 {
+  font-family: "Playfair Display", serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0;
+}
+.img-editor-close {
+  background: var(--paper);
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.img-editor-close:hover {
+  background: #e8e4df;
+}
+
+/* ── Photo editor: two-column body ── */
+.img-editor-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+
+/* Left: live preview */
+.img-editor-preview-col {
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f2fb 100%);
+  border-right: 1px solid #f0f0f0;
+  min-height: 270px;
+}
+.img-editor-preview-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+#photo-preview-img {
+  display: block;
+  object-fit: cover;
+  transition: all 0.2s;
+  max-width: 160px;
+  max-height: 160px;
+}
+
+/* Right: controls */
+.img-editor-controls-col {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+/* Control group */
+.iec-group label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #444;
+  margin-bottom: 7px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.iec-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Range slider — reset to avoid inheriting global input styles */
+.iec-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 99px;
+  background: #e0dcd6;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  min-height: unset;
+  width: auto;
+}
+.iec-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(200, 80, 42, 0.4);
+  border: none;
+}
+.iec-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: none;
+}
+.iec-val {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--ink);
+  min-width: 38px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Shape quick-pick and border-width buttons */
+.iec-shape-row,
+.iec-border-width-wrap {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.iec-bw-btn {
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  font-size: 0.71rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--card);
+  color: #555;
+  font-family: "DM Sans", sans-serif;
+  transition: all 0.16s;
+}
+.iec-bw-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.iec-bw-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Border color swatches */
+.iec-border-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
+.iec-color-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    border-color 0.15s;
+  flex-shrink: 0;
+}
+.iec-color-btn:hover,
+.iec-color-btn.active {
+  transform: scale(1.2);
+  border-color: var(--ink) !important;
+}
+
+/* Custom color picker — override global input styles */
+.iec-color-picker-wrap input[type="color"] {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  outline: none;
+  min-height: unset;
+}
+
+/* Modal footer — shared by both modals */
+.img-editor-footer,
+.sign-editor-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  padding: 14px 22px 18px;
+  border-top: 1px solid #f0f0f0;
+  background: #fafafa;
+}
+.ied-btn {
+  padding: 9px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  transition: all 0.16s;
+}
+.ied-btn-cancel {
+  background: var(--paper);
+  color: #555;
+  border: 1.5px solid var(--border);
+}
+.ied-btn-cancel:hover {
+  background: #ece9e4;
+}
+.ied-btn-apply {
+  background: var(--accent);
+  color: #fff;
+}
+.ied-btn-apply:hover {
+  background: #b0431e;
+}
+
+/* ════════════════════════════════════════════
+   SIGNATURE EDITOR MODAL
+   ════════════════════════════════════════════ */
+
+/* Modal body for sign editor */
+.sign-editor-body {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Side-by-side original / result preview */
+.sign-preview-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.sign-preview-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sign-preview-box {
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 90px;
+  padding: 12px;
+  background: #f9f8f6;
+}
+/* Checkerboard = transparency indicator */
+.sign-preview-box.checker {
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%),
+    linear-gradient(-45deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-size: 12px 12px;
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0px;
+}
+.sign-preview-box img {
+  max-width: 100%;
+  max-height: 72px;
+  object-fit: contain;
+  display: block;
+  border: none;
+  background: none;
+}
+.sign-preview-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* BG removal control panel */
+.bg-remove-controls {
+  background: #f8f9ff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1.5px solid #e4e8f8;
+}
+.bg-remove-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bg-remove-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+  line-height: 1.45;
+}
+
+/* Method selector buttons */
+.bg-remove-row {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.bg-method-btn {
+  padding: 5px 13px;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--card);
+  color: #555;
+  font-family: "DM Sans", sans-serif;
+  transition: all 0.16s;
+}
+.bg-method-btn:hover {
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+.bg-method-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+/* Tolerance slider row */
+.bg-threshold-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.bg-threshold-row label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.bg-threshold-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+/* Remove BG action button */
+.bg-remove-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--ink) 0%, #2d2d4e 100%);
+  color: #fff;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
+  margin-top: 6px;
+}
+.bg-remove-btn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.bg-remove-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Restore original button */
+.bg-restore-btn {
+  width: 100%;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--paper);
+  color: #555;
+  border: 1.5px solid var(--border);
+  font-size: 0.76rem;
+  font-weight: 600;
+  font-family: "DM Sans", sans-serif;
+  cursor: pointer;
+  margin-top: 7px;
+  transition: background 0.16s;
+}
+.bg-restore-btn:hover {
+  background: #ece9e4;
+}
+
+/* ── Edit button in preview strip ── */
+.btn-edit-img {
+  background: #eef3ff;
+  border: 1px solid #c0d4f5;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent2);
+  cursor: pointer;
+  font-family: "DM Sans", sans-serif;
+  transition:
+    background 0.16s,
+    color 0.16s;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.btn-edit-img:hover {
+  background: var(--accent2);
+  color: #fff;
+}
+
+/* ── Spinner used inside bg-remove-btn ── */
+@keyframes spin-icon {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spin-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin-icon 0.65s linear infinite;
+  vertical-align: middle;
+}
+
+/* ── Responsive: stack modal columns on small screens ── */
+@media (max-width: 600px) {
+  .img-editor-body {
+    grid-template-columns: 1fr;
+  }
+  .img-editor-preview-col {
+    border-right: none;
+    border-bottom: 1px solid #f0f0f0;
+    min-height: 160px;
+  }
+  .img-editor-controls-col {
+    max-height: none;
+  }
+  .sign-preview-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ════════════════════════════════════════════
+   SIGNATURE EDITOR — TABS & ERASER TOOL
+   (appended — do not edit above)
+   ════════════════════════════════════════════ */
+
+/* Wider modal for the signature editor */
+#sign-editor-overlay .img-editor-modal {
+  width: min(680px, 96vw);
+}
+
+/* Tab bar */
+.sign-tab-bar {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+.sign-tab-btn {
+  flex: 1;
+  padding: 11px 6px;
+  border: none;
+  background: none;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.sign-tab-btn:hover {
+  color: var(--ink);
+}
+.sign-tab-btn.active {
+  color: var(--ink);
+  border-bottom-color: var(--accent);
+}
+
+/* Tab panes */
+.sign-tab-pane {
+  display: none;
+  padding: 16px 20px;
+}
+.sign-tab-pane.active {
+  display: block;
+}
+
+/* ── Eraser toolbar ── */
+.eraser-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.eraser-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 13px;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #555;
+  transition: all 0.14s;
+  white-space: nowrap;
+}
+.eraser-tool-btn:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.eraser-tool-btn.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+.eraser-tool-btn.danger {
+  border-color: #f5c4b0;
+  color: var(--accent);
+}
+.eraser-tool-btn.danger:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* Brush size controls pushed to the right */
+.eraser-size-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+.eraser-size-row label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #666;
+  white-space: nowrap;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Canvas wrapper — checkerboard shows transparency */
+.eraser-canvas-wrap {
+  position: relative;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #ddd 25%, transparent 25%),
+    linear-gradient(-45deg, #ddd 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ddd 75%),
+    linear-gradient(-45deg, transparent 75%, #ddd 75%);
+  background-size: 12px 12px;
+  background-position:
+    0 0,
+    0 6px,
+    6px -6px,
+    -6px 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  max-height: 320px;
+}
+#sign-eraser-canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 300px;
+  touch-action: none;
+}
+#sign-eraser-canvas.eraser-mode {
+  cursor: cell;
+}
+#sign-eraser-canvas.restore-mode {
+  cursor: cell;
+}
+
+/* Floating cursor ring overlay */
+#eraser-cursor-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid rgba(200, 80, 42, 0.75);
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: none;
+  background: rgba(200, 80, 42, 0.08);
+}
+
+/* Hint text below canvas */
+.eraser-hint {
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* ── Responsive: stack on small screens ── */
+@media (max-width: 600px) {
+  #sign-editor-overlay .img-editor-modal {
+    width: 96vw;
+  }
+  .eraser-toolbar {
+    gap: 6px;
+  }
+  .eraser-size-row {
+    margin-left: 0;
+    width: 100%;
+  }
+}

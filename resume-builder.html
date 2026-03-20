@@ -348,7 +348,7 @@
                     />
                     <span class="img-name" id="sign-name">signature.png</span>
                     <button class="btn-edit-img" onclick="openSignEditor()">
-                      ✏ Edit &amp; Erase
+                      🪄 Remove BG
                     </button>
                     <button
                       class="btn-remove-img"
@@ -925,224 +925,100 @@
          SIGNATURE EDITOR MODAL
     ══════════════════════════════════════════════ -->
     <div class="img-editor-overlay" id="sign-editor-overlay">
-      <div class="img-editor-modal sign-editor-modal">
+      <div class="img-editor-modal">
         <div class="img-editor-header">
-          <h3>✏ Edit Signature</h3>
+          <h3>🪄 Remove Signature Background</h3>
           <button class="img-editor-close" onclick="closeSignEditor()">
             ✕
           </button>
         </div>
 
         <div class="sign-editor-body">
-          <!-- Tab bar -->
-          <div class="sign-tab-bar">
-            <button
-              class="sign-tab-btn active"
-              onclick="switchSignTab('erase', this)"
-            >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-              >
-                <path d="M20 20H7L3 16l10-10 7 7-3.5 3.5" />
-                <path d="M6.5 17.5l4-4" />
-              </svg>
-              Eraser Tool
-            </button>
-            <button
-              class="sign-tab-btn"
-              onclick="switchSignTab('bgremove', this)"
-            >
-              <svg
-                width="13"
-                height="13"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2.2"
-              >
-                <rect x="3" y="3" width="18" height="18" rx="2" />
-                <path d="M3 9h18M9 21V9" />
-              </svg>
-              Auto Remove BG
-            </button>
+          <!-- Side-by-side preview -->
+          <div class="sign-preview-wrap">
+            <div class="sign-preview-col">
+              <div class="sign-preview-box">
+                <img id="sign-orig-preview" src="" alt="Original" />
+              </div>
+              <div class="sign-preview-label">Original</div>
+            </div>
+            <div class="sign-preview-col">
+              <div class="sign-preview-box checker">
+                <img id="sign-result-preview" src="" alt="Result" />
+              </div>
+              <div class="sign-preview-label">
+                Result (checkerboard = transparent)
+              </div>
+            </div>
           </div>
 
-          <!-- ── Tab: Eraser ── -->
-          <div class="sign-tab-pane active" id="sign-tab-erase">
-            <!-- Toolbar -->
-            <div class="eraser-toolbar">
-              <button
-                class="eraser-tool-btn active"
-                id="btn-erase-mode"
-                onclick="setEraserMode('erase', this)"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.2"
-                >
-                  <path d="M20 20H7L3 16l10-10 7 7-3.5 3.5" />
-                  <path d="M6.5 17.5l4-4" />
-                </svg>
-                Erase
-              </button>
-              <button
-                class="eraser-tool-btn"
-                id="btn-restore-mode"
-                onclick="setEraserMode('restore', this)"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.2"
-                >
-                  <path d="M12 2a10 10 0 1 0 10 10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
-                Restore
-              </button>
-              <button
-                class="eraser-tool-btn"
-                id="btn-undo-erase"
-                onclick="undoErase()"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.2"
-                >
-                  <path d="M9 14L4 9l5-5" />
-                  <path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11" />
-                </svg>
-                Undo
-              </button>
-              <button
-                class="eraser-tool-btn danger"
-                onclick="resetEraseCanvas()"
-              >
-                <svg
-                  width="13"
-                  height="13"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.2"
-                >
-                  <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6" />
-                </svg>
-                Reset
-              </button>
-              <!-- Brush size -->
-              <div class="eraser-size-row">
-                <label>Size</label>
-                <input
-                  type="range"
-                  class="iec-slider"
-                  id="eraser-size"
-                  min="4"
-                  max="60"
-                  value="18"
-                  oninput="updateEraserSize()"
-                />
-                <span class="iec-val" id="eraser-size-val">18</span>
-              </div>
+          <!-- Controls -->
+          <div class="bg-remove-controls">
+            <div class="bg-remove-title">Choose background type</div>
+            <div class="bg-remove-hint">
+              Pick the method that matches your signature's background colour.
             </div>
-
-            <!-- Canvas -->
-            <div class="eraser-canvas-wrap" id="eraser-canvas-wrap">
-              <canvas id="sign-eraser-canvas"></canvas>
-              <div id="eraser-cursor-ring"></div>
-            </div>
-            <p class="eraser-hint">
-              🖱 Click &amp; drag to erase · Switch to Restore to paint back
-              pixels
-            </p>
-          </div>
-
-          <!-- ── Tab: Auto Remove BG ── -->
-          <div class="sign-tab-pane" id="sign-tab-bgremove">
-            <div class="bg-remove-controls">
-              <div class="bg-remove-title">🪄 Automatic Background Removal</div>
-              <div class="bg-remove-hint">
-                Choose the method that matches your signature's background
-                colour.
-              </div>
-              <div class="bg-remove-row">
-                <button
-                  class="bg-method-btn active"
-                  onclick="selectBgMethod('white', this)"
-                >
-                  White
-                </button>
-                <button
-                  class="bg-method-btn"
-                  onclick="selectBgMethod('light', this)"
-                >
-                  Light / Cream
-                </button>
-                <button
-                  class="bg-method-btn"
-                  onclick="selectBgMethod('dark', this)"
-                >
-                  Dark
-                </button>
-                <button
-                  class="bg-method-btn"
-                  onclick="selectBgMethod('auto', this)"
-                >
-                  Auto Detect
-                </button>
-              </div>
-              <div class="bg-threshold-row">
-                <label>Tolerance</label>
-                <input
-                  type="range"
-                  class="iec-slider"
-                  id="bg-threshold"
-                  min="5"
-                  max="120"
-                  value="30"
-                  oninput="
-                    document.getElementById('bg-threshold-val').textContent =
-                      this.value
-                  "
-                />
-                <span class="iec-val" id="bg-threshold-val">30</span>
-              </div>
-              <div class="bg-threshold-hint">
-                Higher = removes more background pixels
-              </div>
+            <div class="bg-remove-row">
               <button
-                class="bg-remove-btn"
-                id="btn-bg-remove"
-                onclick="removeSignBackground()"
+                class="bg-method-btn active"
+                onclick="selectBgMethod('white', this)"
               >
-                <span id="bg-remove-icon">🪄</span>
-                <span id="bg-remove-label">Remove Background</span>
+                White
               </button>
               <button
-                class="bg-restore-btn"
-                id="btn-bg-restore"
-                onclick="restoreSignOriginal()"
-                style="display: none"
+                class="bg-method-btn"
+                onclick="selectBgMethod('light', this)"
               >
-                ↺ Restore Original
+                Light / Cream
+              </button>
+              <button
+                class="bg-method-btn"
+                onclick="selectBgMethod('dark', this)"
+              >
+                Dark
+              </button>
+              <button
+                class="bg-method-btn"
+                onclick="selectBgMethod('auto', this)"
+              >
+                Auto Detect
               </button>
             </div>
+            <div class="bg-threshold-row">
+              <label>Tolerance</label>
+              <input
+                type="range"
+                class="iec-slider"
+                id="bg-threshold"
+                min="5"
+                max="120"
+                value="30"
+                oninput="
+                  document.getElementById('bg-threshold-val').textContent =
+                    this.value
+                "
+              />
+              <span class="iec-val" id="bg-threshold-val">30</span>
+            </div>
+            <div class="bg-threshold-hint">
+              Higher = removes more background pixels
+            </div>
+            <button
+              class="bg-remove-btn"
+              id="btn-bg-remove"
+              onclick="removeSignBackground()"
+            >
+              <span id="bg-remove-icon">🪄</span>
+              <span id="bg-remove-label">Remove Background</span>
+            </button>
+            <button
+              class="bg-restore-btn"
+              id="btn-bg-restore"
+              onclick="restoreSignOriginal()"
+              style="display: none"
+            >
+              ↺ Restore Original
+            </button>
           </div>
         </div>
         <!-- /sign-editor-body -->
@@ -2051,7 +1927,9 @@
             if (name) name.textContent = file.name;
             if (strip) strip.classList.add("visible");
             if (typeof qRender === "function") qRender();
-            toast("✓ Signature added! Click ✏ Edit & Erase to refine.");
+            toast(
+              "✓ Signature added! Click 🪄 Remove BG to remove background.",
+            );
           };
           r.readAsDataURL(file);
         };
@@ -2186,38 +2064,28 @@
         };
 
         /* ─────────────────────────────────────
-           SIGNATURE EDITOR — TABS
+           SIGNATURE EDITOR
         ───────────────────────────────────── */
-        window.switchSignTab = function (tab, btn) {
-          document
-            .querySelectorAll(".sign-tab-btn")
-            .forEach((b) => b.classList.remove("active"));
-          document
-            .querySelectorAll(".sign-tab-pane")
-            .forEach((p) => p.classList.remove("active"));
-          btn.classList.add("active");
-          $("sign-tab-" + tab).classList.add("active");
-        };
+        let signProcessedURL = null;
 
         window.openSignEditor = function () {
           if (!signOrigURL) {
             toast("⚠ Upload a signature first.");
             return;
           }
-          initEraserCanvas();
+          $("sign-orig-preview").src = signOrigURL;
+          $("sign-result-preview").src = signProcessedURL || signOrigURL;
+          $("btn-bg-restore").style.display = signProcessedURL
+            ? "block"
+            : "none";
           $("sign-editor-overlay").classList.add("open");
         };
         window.closeSignEditor = function () {
           $("sign-editor-overlay").classList.remove("open");
-          destroyEraserListeners();
         };
 
         window.applySignEdits = function () {
-          // Export current canvas state as the new signDataURL
-          const canvas = $("sign-eraser-canvas");
-          if (canvas && canvas.width > 0) {
-            signDataURL = canvas.toDataURL("image/png");
-          }
+          signDataURL = signProcessedURL || signOrigURL;
           const thumb = $("sign-thumb");
           if (thumb) thumb.src = signDataURL;
           if (typeof qRender === "function") qRender();
@@ -2226,249 +2094,7 @@
         };
 
         /* ─────────────────────────────────────
-           ERASER CANVAS ENGINE
-        ───────────────────────────────────── */
-        let eraserCanvas = null,
-          eraserCtx = null;
-        let eraserMode = "erase"; // "erase" | "restore"
-        let eraserSize = 18;
-        let isDrawing = false;
-        let undoStack = []; // stack of ImageData snapshots
-        let origImgData = null; // original image data for restore mode
-
-        function initEraserCanvas() {
-          eraserCanvas = $("sign-eraser-canvas");
-          eraserCtx = eraserCanvas.getContext("2d", {
-            willReadFrequently: true,
-          });
-          undoStack = [];
-          eraserMode = "erase";
-
-          // Set active state on Erase button
-          $("btn-erase-mode").classList.add("active");
-          $("btn-restore-mode").classList.remove("active");
-          eraserCanvas.classList.remove("restore-mode");
-          eraserCanvas.classList.add("eraser-mode");
-
-          const img = new Image();
-          img.onload = function () {
-            // Fit canvas to the wrap container (max 560px wide)
-            const wrap = $("eraser-canvas-wrap");
-            const maxW = wrap.clientWidth || 520;
-            const scale = Math.min(1, maxW / img.width);
-            eraserCanvas.width = Math.round(img.width * scale);
-            eraserCanvas.height = Math.round(img.height * scale);
-            eraserCtx.clearRect(0, 0, eraserCanvas.width, eraserCanvas.height);
-            eraserCtx.drawImage(
-              img,
-              0,
-              0,
-              eraserCanvas.width,
-              eraserCanvas.height,
-            );
-            // Save original pixel data for restore mode
-            origImgData = eraserCtx.getImageData(
-              0,
-              0,
-              eraserCanvas.width,
-              eraserCanvas.height,
-            );
-            pushUndo();
-            attachEraserListeners();
-          };
-          img.src = signDataURL || signOrigURL;
-        }
-
-        function destroyEraserListeners() {
-          if (!eraserCanvas) return;
-          eraserCanvas.removeEventListener("mousedown", onEraserDown);
-          eraserCanvas.removeEventListener("mousemove", onEraserMove);
-          eraserCanvas.removeEventListener("mouseup", onEraserUp);
-          eraserCanvas.removeEventListener("mouseleave", onEraserLeave);
-          eraserCanvas.removeEventListener("touchstart", onEraserTouchStart);
-          eraserCanvas.removeEventListener("touchmove", onEraserTouchMove);
-          eraserCanvas.removeEventListener("touchend", onEraserUp);
-          eraserCanvas.removeEventListener("mousemove", moveCursorRing);
-          eraserCanvas.removeEventListener("mouseleave", hideCursorRing);
-        }
-
-        function attachEraserListeners() {
-          eraserCanvas.addEventListener("mousedown", onEraserDown);
-          eraserCanvas.addEventListener("mousemove", onEraserMove);
-          eraserCanvas.addEventListener("mouseup", onEraserUp);
-          eraserCanvas.addEventListener("mouseleave", onEraserLeave);
-          eraserCanvas.addEventListener("touchstart", onEraserTouchStart, {
-            passive: false,
-          });
-          eraserCanvas.addEventListener("touchmove", onEraserTouchMove, {
-            passive: false,
-          });
-          eraserCanvas.addEventListener("touchend", onEraserUp);
-          eraserCanvas.addEventListener("mousemove", moveCursorRing);
-          eraserCanvas.addEventListener("mouseleave", hideCursorRing);
-        }
-
-        /* cursor ring */
-        function moveCursorRing(e) {
-          const ring = $("eraser-cursor-ring");
-          const rect = eraserCanvas.getBoundingClientRect();
-          ring.style.display = "block";
-          ring.style.left = e.clientX - rect.left + "px";
-          ring.style.top = e.clientY - rect.top + "px";
-          ring.style.width = eraserSize + "px";
-          ring.style.height = eraserSize + "px";
-        }
-        function hideCursorRing() {
-          $("eraser-cursor-ring").style.display = "none";
-        }
-
-        /* pointer helpers */
-        function getPos(e) {
-          const rect = eraserCanvas.getBoundingClientRect();
-          const scaleX = eraserCanvas.width / rect.width;
-          const scaleY = eraserCanvas.height / rect.height;
-          return {
-            x: (e.clientX - rect.left) * scaleX,
-            y: (e.clientY - rect.top) * scaleY,
-          };
-        }
-
-        function onEraserDown(e) {
-          e.preventDefault();
-          isDrawing = true;
-          pushUndo();
-          paintAt(getPos(e));
-        }
-        function onEraserMove(e) {
-          if (!isDrawing) return;
-          paintAt(getPos(e));
-        }
-        function onEraserUp() {
-          isDrawing = false;
-        }
-        function onEraserLeave() {
-          isDrawing = false;
-          hideCursorRing();
-        }
-
-        function onEraserTouchStart(e) {
-          e.preventDefault();
-          isDrawing = true;
-          pushUndo();
-          paintAt(getTouchPos(e));
-        }
-        function onEraserTouchMove(e) {
-          e.preventDefault();
-          if (!isDrawing) return;
-          paintAt(getTouchPos(e));
-        }
-        function getTouchPos(e) {
-          const rect = eraserCanvas.getBoundingClientRect();
-          const t = e.touches[0];
-          const scaleX = eraserCanvas.width / rect.width;
-          const scaleY = eraserCanvas.height / rect.height;
-          return {
-            x: (t.clientX - rect.left) * scaleX,
-            y: (t.clientY - rect.top) * scaleY,
-          };
-        }
-
-        function paintAt({ x, y }) {
-          const r = eraserSize / 2;
-          if (eraserMode === "erase") {
-            // Use destination-out to punch transparent holes
-            eraserCtx.save();
-            eraserCtx.globalCompositeOperation = "destination-out";
-            eraserCtx.beginPath();
-            eraserCtx.arc(x, y, r, 0, Math.PI * 2);
-            // Soft radial gradient for feathered edge
-            const grd = eraserCtx.createRadialGradient(x, y, 0, x, y, r);
-            grd.addColorStop(0, "rgba(0,0,0,1)");
-            grd.addColorStop(0.6, "rgba(0,0,0,0.8)");
-            grd.addColorStop(1, "rgba(0,0,0,0)");
-            eraserCtx.fillStyle = grd;
-            eraserCtx.fill();
-            eraserCtx.restore();
-          } else {
-            // Restore: copy pixels from origImgData within brush circle
-            if (!origImgData) return;
-            const rd = Math.ceil(r);
-            const x0 = Math.max(0, Math.floor(x - rd)),
-              y0 = Math.max(0, Math.floor(y - rd));
-            const x1 = Math.min(eraserCanvas.width, Math.floor(x + rd) + 1);
-            const y1 = Math.min(eraserCanvas.height, Math.floor(y + rd) + 1);
-            const curr = eraserCtx.getImageData(x0, y0, x1 - x0, y1 - y0);
-            const orig = origImgData;
-            for (let py = y0; py < y1; py++) {
-              for (let px = x0; px < x1; px++) {
-                const dist = Math.sqrt((px - x) ** 2 + (py - y) ** 2);
-                if (dist > r) continue;
-                const fade = 1 - dist / r; // soft brush
-                const ci = ((py - y0) * (x1 - x0) + (px - x0)) * 4;
-                const oi = (py * orig.width + px) * 4;
-                curr.data[ci] = orig.data[oi];
-                curr.data[ci + 1] = orig.data[oi + 1];
-                curr.data[ci + 2] = orig.data[oi + 2];
-                curr.data[ci + 3] = Math.round(
-                  orig.data[oi + 3] * fade + curr.data[ci + 3] * (1 - fade),
-                );
-              }
-            }
-            eraserCtx.putImageData(curr, x0, y0);
-          }
-        }
-
-        /* undo */
-        function pushUndo() {
-          if (!eraserCtx) return;
-          if (undoStack.length > 40) undoStack.shift();
-          undoStack.push(
-            eraserCtx.getImageData(
-              0,
-              0,
-              eraserCanvas.width,
-              eraserCanvas.height,
-            ),
-          );
-        }
-        window.undoErase = function () {
-          if (undoStack.length <= 1) {
-            toast("Nothing to undo.");
-            return;
-          }
-          undoStack.pop();
-          eraserCtx.putImageData(undoStack[undoStack.length - 1], 0, 0);
-          toast("↺ Undone");
-        };
-        window.resetEraseCanvas = function () {
-          if (!origImgData || !eraserCtx) return;
-          eraserCtx.clearRect(0, 0, eraserCanvas.width, eraserCanvas.height);
-          eraserCtx.putImageData(origImgData, 0, 0);
-          undoStack = [];
-          pushUndo();
-          toast("↺ Canvas reset to original.");
-        };
-
-        /* tool mode + size */
-        window.setEraserMode = function (mode, btn) {
-          eraserMode = mode;
-          $("btn-erase-mode").classList.toggle("active", mode === "erase");
-          $("btn-restore-mode").classList.toggle("active", mode === "restore");
-          if (eraserCanvas) {
-            eraserCanvas.classList.toggle("eraser-mode", mode === "erase");
-            eraserCanvas.classList.toggle("restore-mode", mode === "restore");
-          }
-        };
-        window.updateEraserSize = function () {
-          eraserSize = +$("eraser-size").value;
-          $("eraser-size-val").textContent = eraserSize;
-          const ring = $("eraser-cursor-ring");
-          ring.style.width = eraserSize + "px";
-          ring.style.height = eraserSize + "px";
-        };
-
-        /* ─────────────────────────────────────
-           AUTO BG REMOVAL (tab 2)
+           AUTO BG REMOVAL
         ───────────────────────────────────── */
         window.selectBgMethod = function (method, el) {
           bgMethod = method;
@@ -2515,7 +2141,7 @@
               targetG = 0;
               targetB = 0;
             } else {
-              const s = [
+              const corners = [
                 [0, 1, 2],
                 [
                   (canvas.width - 1) * 4,
@@ -2533,9 +2159,15 @@
                   (canvas.height * canvas.width - 1) * 4 + 2,
                 ],
               ];
-              targetR = Math.round(s.reduce((a, x) => a + data[x[0]], 0) / 4);
-              targetG = Math.round(s.reduce((a, x) => a + data[x[1]], 0) / 4);
-              targetB = Math.round(s.reduce((a, x) => a + data[x[2]], 0) / 4);
+              targetR = Math.round(
+                corners.reduce((a, x) => a + data[x[0]], 0) / 4,
+              );
+              targetG = Math.round(
+                corners.reduce((a, x) => a + data[x[1]], 0) / 4,
+              );
+              targetB = Math.round(
+                corners.reduce((a, x) => a + data[x[2]], 0) / 4,
+              );
             }
 
             for (let i = 0; i < data.length; i += 4) {
@@ -2550,7 +2182,7 @@
                   Math.min(255, Math.round((dist / threshold) * 255)),
                 );
             }
-            // feather
+            // feather edges
             const out = new Uint8ClampedArray(data);
             for (let y = 1; y < canvas.height - 1; y++) {
               for (let x = 0; x < canvas.width; x++) {
@@ -2578,40 +2210,17 @@
               0,
             );
 
-            // Push result into eraser canvas so user can fine-tune
-            const resultURL = canvas.toDataURL("image/png");
-            signDataURL = resultURL;
-            // Reload eraser canvas with the BG-removed result
-            const eCanvas = $("sign-eraser-canvas");
-            if (eCanvas) {
-              const eCtx = eCanvas.getContext("2d", {
-                willReadFrequently: true,
-              });
-              const ri = new Image();
-              ri.onload = function () {
-                eCtx.clearRect(0, 0, eCanvas.width, eCanvas.height);
-                eCtx.drawImage(ri, 0, 0, eCanvas.width, eCanvas.height);
-                origImgData = eCtx.getImageData(
-                  0,
-                  0,
-                  eCanvas.width,
-                  eCanvas.height,
-                );
-                undoStack = [];
-                pushUndo();
-              };
-              ri.src = resultURL;
-            }
-
+            signProcessedURL = canvas.toDataURL("image/png");
+            $("sign-result-preview").src = signProcessedURL;
             $("btn-bg-restore").style.display = "block";
             btn.disabled = false;
             icon.textContent = "✓";
-            label.textContent = "Done! Switch to Eraser to fine-tune";
+            label.textContent = "Done!";
             setTimeout(() => {
               icon.textContent = "🪄";
               label.textContent = "Remove Background";
             }, 3000);
-            toast("✓ Background removed! Switch to Eraser tab to fine-tune.");
+            toast("✓ Background removed!");
           };
           img.onerror = function () {
             btn.disabled = false;
@@ -2623,35 +2232,8 @@
         };
 
         window.restoreSignOriginal = function () {
-          signDataURL = signOrigURL;
-          // Reload eraser canvas
-          if (eraserCanvas && signOrigURL) {
-            const img = new Image();
-            img.onload = function () {
-              eraserCtx.clearRect(
-                0,
-                0,
-                eraserCanvas.width,
-                eraserCanvas.height,
-              );
-              eraserCtx.drawImage(
-                img,
-                0,
-                0,
-                eraserCanvas.width,
-                eraserCanvas.height,
-              );
-              origImgData = eraserCtx.getImageData(
-                0,
-                0,
-                eraserCanvas.width,
-                eraserCanvas.height,
-              );
-              undoStack = [];
-              pushUndo();
-            };
-            img.src = signOrigURL;
-          }
+          signProcessedURL = null;
+          $("sign-result-preview").src = signOrigURL;
           $("btn-bg-restore").style.display = "none";
           $("bg-remove-icon").textContent = "🪄";
           $("bg-remove-label").textContent = "Remove Background";

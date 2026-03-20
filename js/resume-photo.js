@@ -1,43 +1,34 @@
 /*
  * PHOTO + SIGN ADDON
  *
- * Features:
- *   • Border colour, border width, and border-radius controls for profile photo
- *     → panel is hidden until a photo is uploaded, then shown below the strip
- *   • Remove Background button for signature (Canvas-based white/light pixel erasure)
- *     → panel is hidden until a signature is uploaded
- *
- * KEY FIX: UI panels (_buildPhotoControls / _buildRemoveBgBtn) are now built
- * eagerly on DOMContentLoaded — independent of renderResume being ready.
- * Only _patchRenderResume() waits for renderResume to exist.
+ * FIX: Controls panel is now appended inside the .form-group that wraps
+ * #photo-strip, not after the hidden #photo-strip element itself.
+ * This ensures it is never clipped/hidden by a parent's overflow or display rules.
  */
 
 (function () {
   "use strict";
-console.log("edeef")
+
   /* ════════════════════════════════════════════════
      STATE
   ════════════════════════════════════════════════ */
   let photoDataURL    = null;
-  let signDataURL     = null;       // current (possibly bg-removed) data URL
-  let signOriginalURL = null;       // always the unmodified original
+  let signDataURL     = null;
+  let signOriginalURL = null;
 
   const photoStyle = {
     borderColor : "#ffffff",
-    borderWidth : 3,    // px
-    borderRadius: 50,   // % — 50 = circle, 0 = square
+    borderWidth : 3,
+    borderRadius: 50,
   };
 
   /* ════════════════════════════════════════════════
-     INIT — build UI panels immediately on DOM ready,
-     patch renderResume separately (needs retry loop)
+     INIT
   ════════════════════════════════════════════════ */
   window.addEventListener("DOMContentLoaded", function () {
     _injectStyles();
-    _buildPhotoControls();   // always safe — only needs #photo-strip in DOM
-    _buildRemoveBgBtn();     // always safe — only needs #sign-strip in DOM
-
-    // Patch renderResume separately — it may not exist yet
+    _buildPhotoControls();
+    _buildRemoveBgBtn();
     _waitForRenderResume();
   });
 
@@ -67,19 +58,19 @@ console.log("edeef")
 
   window.removePhoto = function () {
     photoDataURL = null;
-    _setEl("photo-thumb",          el => el.src = "");
-    _setEl("photo-input",          el => el.value = "");
-    _stripVisible("photo-strip",   false);
+    _setEl("photo-thumb",  el => el.src = "");
+    _setEl("photo-input",  el => el.value = "");
+    _stripVisible("photo-strip", false);
     _panelVisible("photo-style-controls", false);
     if (typeof qRender === "function") qRender();
     if (typeof toast   === "function") toast("Photo removed.");
   };
 
   function _syncPhotoThumb (filename) {
-    _setEl("photo-thumb",  el => el.src = photoDataURL);
-    _setEl("photo-name",   el => { if (filename) el.textContent = filename; });
-    _stripVisible("photo-strip",          true);
-    _panelVisible("photo-style-controls", true);   // ← reveal controls
+    _setEl("photo-thumb", el => el.src = photoDataURL);
+    _setEl("photo-name",  el => { if (filename) el.textContent = filename; });
+    _stripVisible("photo-strip", true);
+    _panelVisible("photo-style-controls", true);
     _applyPhotoStyleToThumb();
   }
 
@@ -90,16 +81,29 @@ console.log("edeef")
     thumb.style.borderRadius = `${photoStyle.borderRadius}%`;
   }
 
-  /* ── Build photo border/radius controls ── */
+  /* ── Build photo controls ──
+     Appended as a child of the .form-group that contains #photo-strip.
+     This guarantees it sits in the normal document flow and is never
+     hidden by a parent's display/overflow rule.
+  ── */
   function _buildPhotoControls () {
     if (document.getElementById("photo-style-controls")) return;
-    const anchor = document.getElementById("photo-strip");
-    if (!anchor) return;
+
+    // Walk up from #photo-strip to find its .form-group parent
+    const strip = document.getElementById("photo-strip");
+    if (!strip) {
+      console.warn("[PSA] #photo-strip not found — retrying in 200ms");
+      setTimeout(_buildPhotoControls, 200);
+      return;
+    }
+
+    // Anchor = closest .form-group ancestor, or fall back to strip's parentNode
+    const anchor = strip.closest(".form-group") || strip.parentNode;
 
     const wrap = document.createElement("div");
     wrap.id            = "photo-style-controls";
     wrap.className     = "psa-panel";
-    wrap.style.display = "none";   // hidden until photo uploaded
+    wrap.style.display = "none";
 
     wrap.innerHTML = `
       <div class="psa-panel-title">📷 Photo Style</div>
@@ -118,7 +122,8 @@ console.log("edeef")
         <span class="psa-val" id="psc-br-val">${photoStyle.borderRadius}%</span>
       </div>`;
 
-    anchor.insertAdjacentElement("afterend", wrap);
+    // Append inside the form-group so it flows naturally after the strip
+    anchor.appendChild(wrap);
 
     document.getElementById("psc-color").addEventListener("input", function () {
       photoStyle.borderColor = this.value;
@@ -159,8 +164,8 @@ console.log("edeef")
   window.removeSign = function () {
     signDataURL     = null;
     signOriginalURL = null;
-    _setEl("sign-thumb",  el => el.src = "");
-    _setEl("sign-input",  el => el.value = "");
+    _setEl("sign-thumb", el => el.src = "");
+    _setEl("sign-input", el => el.value = "");
     _stripVisible("sign-strip", false);
     _syncRemoveBgPanel();
     if (typeof qRender === "function") qRender();
@@ -174,16 +179,25 @@ console.log("edeef")
     _syncRemoveBgPanel();
   }
 
-  /* ── Build signature remove-bg controls ── */
+  /* ── Build signature remove-bg controls ──
+     Same pattern: appended inside the .form-group of #sign-strip.
+  ── */
   function _buildRemoveBgBtn () {
     if (document.getElementById("sign-rmbg-wrap")) return;
-    const anchor = document.getElementById("sign-strip");
-    if (!anchor) return;
+
+    const strip = document.getElementById("sign-strip");
+    if (!strip) {
+      console.warn("[PSA] #sign-strip not found — retrying in 200ms");
+      setTimeout(_buildRemoveBgBtn, 200);
+      return;
+    }
+
+    const anchor = strip.closest(".form-group") || strip.parentNode;
 
     const wrap = document.createElement("div");
     wrap.id            = "sign-rmbg-wrap";
     wrap.className     = "psa-panel";
-    wrap.style.display = "none";   // hidden until signature uploaded
+    wrap.style.display = "none";
 
     wrap.innerHTML = `
       <div class="psa-panel-title">✍️ Signature Tools</div>
@@ -201,7 +215,7 @@ console.log("edeef")
         <span class="psa-val" id="rmbg-thresh-val">200</span>
       </div>`;
 
-    anchor.insertAdjacentElement("afterend", wrap);
+    anchor.appendChild(wrap);
 
     document.getElementById("rmbg-thresh").addEventListener("input", function () {
       document.getElementById("rmbg-thresh-val").textContent = this.value;
@@ -210,7 +224,6 @@ console.log("edeef")
 
   function _syncRemoveBgPanel () {
     _panelVisible("sign-rmbg-wrap", !!signDataURL);
-    // Always reset undo button when sign state changes
     _setEl("btn-rmbg-undo", el => el.style.display = "none");
   }
 
@@ -220,30 +233,39 @@ console.log("edeef")
     const threshold = +(document.getElementById("rmbg-thresh")?.value ?? 200);
 
     const img = new Image();
+    img.crossOrigin = "anonymous";
     img.onload = function () {
-      const canvas  = document.createElement("canvas");
-      canvas.width  = img.width;
-      canvas.height = img.height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0);
+      try {
+        const canvas  = document.createElement("canvas");
+        canvas.width  = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0);
 
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const d       = imgData.data;
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d       = imgData.data;
 
-      for (let i = 0; i < d.length; i += 4) {
-        if (d[i] >= threshold && d[i+1] >= threshold && d[i+2] >= threshold) {
-          d[i+3] = 0;   // transparent
+        for (let i = 0; i < d.length; i += 4) {
+          if (d[i] >= threshold && d[i+1] >= threshold && d[i+2] >= threshold) {
+            d[i+3] = 0;
+          }
         }
+
+        ctx.putImageData(imgData, 0, 0);
+        signDataURL = canvas.toDataURL("image/png");
+
+        _setEl("sign-thumb",    el => el.src = signDataURL);
+        _setEl("btn-rmbg-undo", el => el.style.display = "inline-flex");
+
+        if (typeof qRender === "function") qRender();
+        if (typeof toast   === "function") toast("✓ Background removed!");
+      } catch (err) {
+        console.error("[PSA] Canvas error:", err);
+        if (typeof toast === "function") toast("❌ Could not process image: " + err.message);
       }
-
-      ctx.putImageData(imgData, 0, 0);
-      signDataURL = canvas.toDataURL("image/png");
-
-      _setEl("sign-thumb",    el => el.src = signDataURL);
-      _setEl("btn-rmbg-undo", el => el.style.display = "inline-flex");
-
-      if (typeof qRender === "function") qRender();
-      if (typeof toast   === "function") toast("✓ Background removed!");
+    };
+    img.onerror = function () {
+      if (typeof toast === "function") toast("❌ Image failed to load.");
     };
     img.src = signOriginalURL;
   };
@@ -269,7 +291,7 @@ console.log("edeef")
       const resumeBody = document.getElementById("resume-body");
       if (!resumeBody) return;
 
-      /* ── Inject photo ── */
+      /* ── Photo ── */
       if (photoDataURL) {
         const wrap   = resumeBody.querySelector(".rt-wrap");
         if (!wrap) return;
@@ -318,7 +340,7 @@ console.log("edeef")
         }
       }
 
-      /* ── Inject signature ── */
+      /* ── Signature ── */
       if (signDataURL) {
         const wrap = resumeBody.querySelector(".rt-wrap");
         if (!wrap) return;
@@ -329,15 +351,15 @@ console.log("edeef")
           return;
         }
 
-        const signWrap         = document.createElement("div");
-        signWrap.className     = "rt-sign-wrap";
-        const secTitle         = document.createElement("div");
-        secTitle.className     = "rt-section-title";
-        secTitle.textContent   = "Signature";
-        const signImg          = document.createElement("img");
-        signImg.src            = signDataURL;
-        signImg.alt            = "Signature";
-        signImg.className      = "rt-sign";
+        const signWrap       = document.createElement("div");
+        signWrap.className   = "rt-sign-wrap";
+        const secTitle       = document.createElement("div");
+        secTitle.className   = "rt-section-title";
+        secTitle.textContent = "Signature";
+        const signImg        = document.createElement("img");
+        signImg.src          = signDataURL;
+        signImg.alt          = "Signature";
+        signImg.className    = "rt-sign";
 
         signWrap.appendChild(secTitle);
         signWrap.appendChild(signImg);
@@ -359,8 +381,7 @@ console.log("edeef")
   function _stripVisible (id, visible) {
     const el = document.getElementById(id);
     if (!el) return;
-    if (visible) el.classList.add("visible");
-    else el.classList.remove("visible");
+    el.classList.toggle("visible", visible);
   }
   function _panelVisible (id, visible) {
     const el = document.getElementById(id);
@@ -376,7 +397,6 @@ console.log("edeef")
     const style = document.createElement("style");
     style.id = "psa-css";
     style.textContent = `
-      /* Shared panel wrapper */
       .psa-panel {
         flex-direction: column;
         gap: 10px;
@@ -393,7 +413,6 @@ console.log("edeef")
         color: var(--muted, #888);
         text-transform: uppercase;
         letter-spacing: 0.04em;
-        margin-bottom: 2px;
       }
       .psa-row {
         display: flex;

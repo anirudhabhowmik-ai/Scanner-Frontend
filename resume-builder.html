@@ -1065,6 +1065,14 @@
       let summaryDraft = "",
         tailorDraft = "";
 
+      /* ── photoState moved here to fix "photoState is not defined" in exportWord ── */
+      const photoState = {
+        size: 80,
+        radius: 50,
+        borderWidth: 0,
+        borderColor: "#ffffff",
+      };
+
       /* ── utils ── */
       const $ = (id) => document.getElementById(id);
       function esc(s) {
@@ -1885,17 +1893,13 @@
         "use strict";
 
         /* ── state ── */
+        /* NOTE: photoState is declared in the outer scope above so that
+           exportWord() can access it. Do NOT re-declare it here. */
         let photoDataURL = null; // applied (may be styled)
         let photoOrigURL = null; // raw upload
         let signDataURL = null; // applied signature
         let signOrigURL = null; // raw upload
 
-        const photoState = {
-          size: 80,
-          radius: 50,
-          borderWidth: 0,
-          borderColor: "#ffffff",
-        };
         let bgMethod = "white";
 
         /* ─────────────────────────────────────

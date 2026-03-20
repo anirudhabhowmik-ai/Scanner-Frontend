@@ -1621,13 +1621,11 @@
 
         const isForest = th.name === "Forest Pro";
         const headerHtml = isForest
-          ? `
-        <div class="rt-header">
+          ? `<div class="rt-header">
           <div class="rt-header-info"><div class="rt-name">${esc(d.name) || "Your Name"}</div><div class="rt-title">${esc(d.title) || "Your Title"}</div></div>
           <div class="rt-contact">${contactHtml}</div>
         </div>`
-          : `
-        <div class="rt-header">
+          : `<div class="rt-header">
           <div class="rt-name">${esc(d.name) || "Your Name"}</div>
           <div class="rt-title">${esc(d.title) || "Your Title"}</div>
           <div class="rt-contact">${contactHtml}</div>
@@ -1892,35 +1890,39 @@
       (function () {
         "use strict";
 
-        /* ── state ── */
-        /* NOTE: photoState is declared in outer scope — do NOT re-declare here */
+        /* photoState is declared in the outer scope — do NOT re-declare here */
         let photoDataURL = null;
         let photoOrigURL = null;
         let signDataURL = null;
         let signOrigURL = null;
-
         let bgMethod = "white";
 
-        /* ══════════════════════════════════════
-           SIGNATURE CROP STATE
-        ══════════════════════════════════════ */
+        /* ── Signature editor state ── */
+        let signProcessedURL = null; // from bg-remove
+        let signCroppedURL = null; // from crop
+
+        /* ══════════════════════════════════
+           CROP STATE
+        ══════════════════════════════════ */
         const cropState = {
-          active: false, // is crop mode on?
+          active: false,
           imgNaturalW: 0,
           imgNaturalH: 0,
           canvasW: 0,
           canvasH: 0,
-          scale: 1, // canvas-display / natural-pixel ratio
-          offsetX: 0, // image left offset inside canvas display area
+          imgDispW: 0,
+          imgDispH: 0,
+          scale: 1,
+          offsetX: 0,
           offsetY: 0,
-          // crop rect in DISPLAY coordinates
+          // crop rect in display coordinates
           x: 0,
           y: 0,
           w: 0,
           h: 0,
           dragging: false,
           resizing: false,
-          resizeHandle: "", // "tl","tr","bl","br","t","b","l","r"
+          resizeHandle: "",
           dragStartX: 0,
           dragStartY: 0,
           dragOrigX: 0,
@@ -1929,13 +1931,12 @@
           dragOrigH: 0,
         };
 
-        /* CSS injected once for crop UI */
+        /* ── Inject crop CSS once ── */
         (function injectCropStyles() {
           if (document.getElementById("sign-crop-styles")) return;
           const style = document.createElement("style");
           style.id = "sign-crop-styles";
           style.textContent = `
-            /* ── Crop tab toggle ── */
             .sign-tab-row {
               display: flex;
               gap: 0;
@@ -1959,18 +1960,9 @@
               color: var(--accent, #C8502A);
               border-bottom-color: var(--accent, #C8502A);
             }
-
-            /* ── Crop canvas wrapper ── */
-            #sign-crop-panel {
-              display: none;
-            }
-            #sign-crop-panel.active {
-              display: block;
-            }
-            #sign-bg-panel.hidden {
-              display: none;
-            }
-
+            #sign-crop-panel { display: none; }
+            #sign-crop-panel.active { display: block; }
+            #sign-bg-panel.hidden { display: none; }
             .crop-canvas-wrap {
               position: relative;
               display: flex;
@@ -1979,7 +1971,7 @@
               background: #1a1a1a;
               border-radius: 8px;
               overflow: hidden;
-              min-height: 160px;
+              min-height: 180px;
               margin-bottom: 10px;
               user-select: none;
             }
@@ -1988,7 +1980,6 @@
               cursor: crosshair;
               max-width: 100%;
             }
-
             .crop-action-row {
               display: flex;
               gap: 8px;
@@ -2006,14 +1997,8 @@
               transition: opacity .15s;
             }
             .crop-btn:hover { opacity: .85; }
-            .crop-btn-apply {
-              background: var(--accent, #C8502A);
-              color: #fff;
-            }
-            .crop-btn-reset {
-              background: #f0f0f0;
-              color: #333;
-            }
+            .crop-btn-apply { background: var(--accent, #C8502A); color: #fff; }
+            .crop-btn-reset { background: #f0f0f0; color: #333; }
             .crop-hint {
               font-size: 0.74rem;
               color: #999;
@@ -2023,9 +2008,9 @@
           document.head.appendChild(style);
         })();
 
-        /* ─────────────────────────────────────
+        /* ══════════════════════════════════
            UPLOAD HANDLERS
-        ───────────────────────────────────── */
+        ══════════════════════════════════ */
         window.handlePhoto = function (e) {
           const file = e.target.files[0];
           if (!file) return;
@@ -2065,6 +2050,8 @@
           r.onload = function (ev) {
             signOrigURL = ev.target.result;
             signDataURL = ev.target.result;
+            signProcessedURL = null;
+            signCroppedURL = null;
             const strip = $("sign-strip"),
               thumb = $("sign-thumb"),
               name = $("sign-name");
@@ -2072,7 +2059,7 @@
             if (name) name.textContent = file.name;
             if (strip) strip.classList.add("visible");
             if (typeof qRender === "function") qRender();
-            toast("✓ Signature added! Click 🪄 Remove BG or ✂ Crop to edit.");
+            toast("✓ Signature added! Click ✏ Remove BG or ✂ Crop to edit.");
           };
           r.readAsDataURL(file);
         };
@@ -2080,6 +2067,8 @@
         window.removeSign = function () {
           signDataURL = null;
           signOrigURL = null;
+          signProcessedURL = null;
+          signCroppedURL = null;
           const strip = $("sign-strip"),
             thumb = $("sign-thumb"),
             input = $("sign-input");
@@ -2090,9 +2079,9 @@
           toast("Signature removed.");
         };
 
-        /* ─────────────────────────────────────
+        /* ══════════════════════════════════
            PHOTO EDITOR
-        ───────────────────────────────────── */
+        ══════════════════════════════════ */
         window.openPhotoEditor = function () {
           if (!photoOrigURL) {
             toast("⚠ Upload a photo first.");
@@ -2206,40 +2195,38 @@
           img.src = photoOrigURL;
         };
 
-        /* ─────────────────────────────────────
-           SIGNATURE EDITOR — with tabs
-        ───────────────────────────────────── */
-        let signProcessedURL = null; // from bg-remove
-        let signCroppedURL = null; // from crop
+        /* ══════════════════════════════════
+           SIGNATURE EDITOR — tabbed
+        ══════════════════════════════════ */
 
-        /* Patch the sign editor modal to inject tab UI — runs once */
+        /* Inject tab UI into the modal body — runs once */
         function patchSignEditorModal() {
           const body = document.querySelector(".sign-editor-body");
           if (!body || body.dataset.tabsInjected) return;
           body.dataset.tabsInjected = "1";
 
-          /* Build tab row */
+          /* Tab row */
           const tabRow = document.createElement("div");
           tabRow.className = "sign-tab-row";
           tabRow.innerHTML = `
             <button class="sign-tab-btn active" id="sign-tab-bg"   onclick="switchSignTab('bg')">
               <i class="fa-solid fa-wand-magic-sparkles" style="margin-right:5px"></i>Remove BG
             </button>
-            <button class="sign-tab-btn"        id="sign-tab-crop" onclick="switchSignTab('crop')">
+            <button class="sign-tab-btn" id="sign-tab-crop" onclick="switchSignTab('crop')">
               ✂ Crop
             </button>`;
           body.insertBefore(tabRow, body.firstChild);
 
-          /* Wrap existing bg-remove content */
-          const existingBg = body.querySelector(".sign-preview-wrap");
+          /* Wrap existing BG content in a named panel */
+          const existingPreview = body.querySelector(".sign-preview-wrap");
           const existingControls = body.querySelector(".bg-remove-controls");
           const bgPanel = document.createElement("div");
           bgPanel.id = "sign-bg-panel";
-          if (existingBg) bgPanel.appendChild(existingBg);
+          if (existingPreview) bgPanel.appendChild(existingPreview);
           if (existingControls) bgPanel.appendChild(existingControls);
           body.appendChild(bgPanel);
 
-          /* Build crop panel */
+          /* Crop panel */
           const cropPanel = document.createElement("div");
           cropPanel.id = "sign-crop-panel";
           cropPanel.innerHTML = `
@@ -2247,13 +2234,13 @@
               <canvas id="sign-crop-canvas"></canvas>
             </div>
             <div class="crop-action-row">
-              <button class="crop-btn crop-btn-reset"  onclick="signCropReset()">↺ Reset Selection</button>
+              <button class="crop-btn crop-btn-reset"  onclick="signCropReset()">↺ Reset</button>
               <button class="crop-btn crop-btn-apply"  onclick="signCropApply()">✂ Apply Crop</button>
-              <span class="crop-hint">Drag to select · Drag corners to resize</span>
+              <span class="crop-hint">Drag to select · Drag corners/edges to resize</span>
             </div>`;
           body.appendChild(cropPanel);
 
-          /* Wire canvas events */
+          /* Bind canvas events after DOM is ready */
           setTimeout(bindCropCanvas, 0);
         }
 
@@ -2267,7 +2254,8 @@
           if (tab === "crop") initCropCanvas();
         };
 
-        window.openSignEditor = function () {
+        /* openSignEditor now accepts an optional defaultTab ('bg' | 'crop') */
+        window.openSignEditor = function (defaultTab) {
           if (!signOrigURL) {
             toast("⚠ Upload a signature first.");
             return;
@@ -2281,8 +2269,7 @@
           const restoreBtn = $("btn-bg-restore");
           if (restoreBtn)
             restoreBtn.style.display = signProcessedURL ? "block" : "none";
-          /* default to BG tab */
-          switchSignTab("bg");
+          switchSignTab(defaultTab || "bg");
           $("sign-editor-overlay").classList.add("open");
         };
 
@@ -2291,8 +2278,8 @@
           cropState.active = false;
         };
 
+        /* Priority: cropped > bg-removed > original */
         window.applySignEdits = function () {
-          /* Priority: cropped > bg-removed > original */
           signDataURL = signCroppedURL || signProcessedURL || signOrigURL;
           const thumb = $("sign-thumb");
           if (thumb) thumb.src = signDataURL;
@@ -2301,16 +2288,16 @@
           toast("✓ Signature applied to resume!");
         };
 
-        /* ─────────────────────────────────────
+        /* ══════════════════════════════════
            CROP ENGINE
-        ───────────────────────────────────── */
-        const HANDLE_SIZE = 9; // px radius of resize handles
+        ══════════════════════════════════ */
+        const HANDLE_R = 7; // handle circle radius px
 
         function getSourceURL() {
-          /* Crop from bg-removed if available, else original */
           return signProcessedURL || signOrigURL;
         }
 
+        /* Initialize / re-initialize the crop canvas */
         function initCropCanvas() {
           const canvas = $("sign-crop-canvas");
           if (!canvas) return;
@@ -2323,34 +2310,44 @@
             cropState.imgNaturalW = img.naturalWidth;
             cropState.imgNaturalH = img.naturalHeight;
 
-            /* Fit image into wrap width */
-            const maxW = wrap.clientWidth || 480;
-            const maxH = 260;
+            /* Canvas fills wrap width; fixed height */
+            const canvasW = Math.max(wrap.clientWidth || 480, 200);
+            const canvasH = 220;
+
+            /* Scale image to fit inside canvas with padding */
+            const pad = 20;
             const scale = Math.min(
-              maxW / img.naturalWidth,
-              maxH / img.naturalHeight,
+              (canvasW - pad * 2) / img.naturalWidth,
+              (canvasH - pad * 2) / img.naturalHeight,
               1,
             );
-            const dispW = Math.round(img.naturalWidth * scale);
-            const dispH = Math.round(img.naturalHeight * scale);
+            const imgDispW = Math.round(img.naturalWidth * scale);
+            const imgDispH = Math.round(img.naturalHeight * scale);
 
-            canvas.width = dispW;
-            canvas.height = dispH;
-            cropState.canvasW = dispW;
-            cropState.canvasH = dispH;
+            /* Center image inside canvas */
+            const offsetX = Math.round((canvasW - imgDispW) / 2);
+            const offsetY = Math.round((canvasH - imgDispH) / 2);
+
+            canvas.width = canvasW;
+            canvas.height = canvasH;
+
+            cropState.canvasW = canvasW;
+            cropState.canvasH = canvasH;
+            cropState.imgDispW = imgDispW;
+            cropState.imgDispH = imgDispH;
             cropState.scale = scale;
-            cropState.offsetX = 0;
-            cropState.offsetY = 0;
+            cropState.offsetX = offsetX;
+            cropState.offsetY = offsetY;
 
-            /* Default crop = full image */
-            cropState.x = 0;
-            cropState.y = 0;
-            cropState.w = dispW;
-            cropState.h = dispH;
+            /* Default crop = full image bounds */
+            cropState.x = offsetX;
+            cropState.y = offsetY;
+            cropState.w = imgDispW;
+            cropState.h = imgDispH;
             cropState.active = true;
 
-            drawCrop(img);
             canvas._cachedImg = img;
+            drawCrop(img);
           };
           img.src = src;
         }
@@ -2361,27 +2358,32 @@
           const img = imgOrCached || canvas._cachedImg;
           if (!img) return;
           const ctx = canvas.getContext("2d");
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-          /* Draw image */
-          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          /* Background for letterbox areas */
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "#2a2a2a";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          /* Draw image centered with offset */
+          const { offsetX, offsetY, imgDispW, imgDispH } = cropState;
+          ctx.drawImage(img, offsetX, offsetY, imgDispW, imgDispH);
 
           if (!cropState.active) return;
 
           const { x, y, w, h } = cropState;
 
-          /* Darken outside crop */
+          /* Darken outside crop — only over image area */
           ctx.save();
-          ctx.fillStyle = "rgba(0,0,0,0.52)";
+          ctx.fillStyle = "rgba(0,0,0,0.55)";
           ctx.beginPath();
-          ctx.rect(0, 0, canvas.width, canvas.height);
-          ctx.rect(x, y, w, h);
+          ctx.rect(offsetX, offsetY, imgDispW, imgDispH); // image bounds
+          ctx.rect(x, y, w, h); // crop hole
           ctx.fill("evenodd");
           ctx.restore();
 
           /* Crop border */
           ctx.save();
-          ctx.strokeStyle = "#fff";
+          ctx.strokeStyle = "#ffffff";
           ctx.lineWidth = 1.5;
           ctx.setLineDash([5, 3]);
           ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
@@ -2389,7 +2391,7 @@
 
           /* Rule-of-thirds grid */
           ctx.save();
-          ctx.strokeStyle = "rgba(255,255,255,0.25)";
+          ctx.strokeStyle = "rgba(255,255,255,0.22)";
           ctx.lineWidth = 0.8;
           ctx.setLineDash([]);
           for (let i = 1; i < 3; i++) {
@@ -2404,15 +2406,14 @@
           }
           ctx.restore();
 
-          /* Corner + edge handles */
-          const handles = getHandlePositions(x, y, w, h);
-          handles.forEach(({ hx, hy }) => {
+          /* Resize handles */
+          getHandlePositions(x, y, w, h).forEach(({ hx, hy }) => {
             ctx.save();
-            ctx.fillStyle = "#fff";
+            ctx.fillStyle = "#ffffff";
             ctx.strokeStyle = "var(--accent, #C8502A)";
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(hx, hy, HANDLE_SIZE, 0, Math.PI * 2);
+            ctx.arc(hx, hy, HANDLE_R, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
             ctx.restore();
@@ -2434,10 +2435,9 @@
 
         function hitHandle(mx, my) {
           const { x, y, w, h } = cropState;
-          const handles = getHandlePositions(x, y, w, h);
-          for (const { id, hx, hy } of handles) {
-            const dist = Math.sqrt((mx - hx) ** 2 + (my - hy) ** 2);
-            if (dist <= HANDLE_SIZE + 3) return id;
+          for (const { id, hx, hy } of getHandlePositions(x, y, w, h)) {
+            if (Math.sqrt((mx - hx) ** 2 + (my - hy) ** 2) <= HANDLE_R + 4)
+              return id;
           }
           return null;
         }
@@ -2488,18 +2488,23 @@
               cropState.dragging = true;
               cropState.resizing = false;
             } else {
-              /* Start new crop rect */
-              cropState.x = mx;
-              cropState.y = my;
+              /* Start a brand-new crop rect — clamp start to image area */
+              const { offsetX, offsetY, imgDispW, imgDispH } = cropState;
+              const cx = clamp(mx, offsetX, offsetX + imgDispW);
+              const cy = clamp(my, offsetY, offsetY + imgDispH);
+              cropState.x = cx;
+              cropState.y = cy;
               cropState.w = 1;
               cropState.h = 1;
+              cropState.dragOrigX = cx;
+              cropState.dragOrigY = cy;
+              cropState.dragOrigW = 0;
+              cropState.dragOrigH = 0;
               cropState.dragging = false;
               cropState.resizing = true;
               cropState.resizeHandle = "br";
-              cropState.dragOrigX = mx;
-              cropState.dragOrigY = my;
-              cropState.dragOrigW = 0;
-              cropState.dragOrigH = 0;
+              cropState.dragStartX = cx;
+              cropState.dragStartY = cy;
             }
           }
 
@@ -2507,20 +2512,22 @@
             if (!cropState.active) return;
             e.preventDefault();
             const { mx, my } = getPos(e);
-            const { canvasW: cW, canvasH: cH } = cropState;
+            const { offsetX, offsetY, imgDispW, imgDispH } = cropState;
+            const imgR = offsetX + imgDispW;
+            const imgB = offsetY + imgDispH;
 
             if (cropState.dragging) {
               const dx = mx - cropState.dragStartX;
               const dy = my - cropState.dragStartY;
               cropState.x = clamp(
                 cropState.dragOrigX + dx,
-                0,
-                cW - cropState.w,
+                offsetX,
+                imgR - cropState.w,
               );
               cropState.y = clamp(
                 cropState.dragOrigY + dy,
-                0,
-                cH - cropState.h,
+                offsetY,
+                imgB - cropState.h,
               );
             } else if (cropState.resizing) {
               const ox = cropState.dragOrigX,
@@ -2532,51 +2539,55 @@
                 nw = cropState.w,
                 nh = cropState.h;
 
+              /* Clamp pointer to image area */
+              const cmx = clamp(mx, offsetX, imgR);
+              const cmy = clamp(my, offsetY, imgB);
+
               switch (cropState.resizeHandle) {
                 case "br":
-                  nw = clamp(mx - ox, 4, cW - ox);
-                  nh = clamp(my - oy, 4, cH - oy);
+                  nw = clamp(cmx - ox, 4, imgR - ox);
+                  nh = clamp(cmy - oy, 4, imgB - oy);
                   nx = ox;
                   ny = oy;
                   break;
                 case "bl":
-                  nx = clamp(mx, 0, ox + ow - 4);
+                  nx = clamp(cmx, offsetX, ox + ow - 4);
                   nw = ox + ow - nx;
-                  nh = clamp(my - oy, 4, cH - oy);
+                  nh = clamp(cmy - oy, 4, imgB - oy);
                   ny = oy;
                   break;
                 case "tr":
-                  nw = clamp(mx - ox, 4, cW - ox);
-                  ny = clamp(my, 0, oy + oh - 4);
+                  nw = clamp(cmx - ox, 4, imgR - ox);
+                  ny = clamp(cmy, offsetY, oy + oh - 4);
                   nh = oy + oh - ny;
                   nx = ox;
                   break;
                 case "tl":
-                  nx = clamp(mx, 0, ox + ow - 4);
+                  nx = clamp(cmx, offsetX, ox + ow - 4);
                   nw = ox + ow - nx;
-                  ny = clamp(my, 0, oy + oh - 4);
+                  ny = clamp(cmy, offsetY, oy + oh - 4);
                   nh = oy + oh - ny;
                   break;
                 case "r":
-                  nw = clamp(mx - ox, 4, cW - ox);
+                  nw = clamp(cmx - ox, 4, imgR - ox);
                   nx = ox;
                   ny = oy;
                   nh = oh;
                   break;
                 case "l":
-                  nx = clamp(mx, 0, ox + ow - 4);
+                  nx = clamp(cmx, offsetX, ox + ow - 4);
                   nw = ox + ow - nx;
                   ny = oy;
                   nh = oh;
                   break;
                 case "b":
-                  nh = clamp(my - oy, 4, cH - oy);
+                  nh = clamp(cmy - oy, 4, imgB - oy);
                   nx = ox;
                   ny = oy;
                   nw = ow;
                   break;
                 case "t":
-                  ny = clamp(my, 0, oy + oh - 4);
+                  ny = clamp(cmy, offsetY, oy + oh - 4);
                   nh = oy + oh - ny;
                   nx = ox;
                   nw = ow;
@@ -2611,7 +2622,7 @@
           function onUp() {
             cropState.dragging = false;
             cropState.resizing = false;
-            /* Normalise negative width/height */
+            /* Normalise negative dimensions */
             if (cropState.w < 0) {
               cropState.x += cropState.w;
               cropState.w = Math.abs(cropState.w);
@@ -2628,16 +2639,17 @@
           canvas.addEventListener("mousedown", onDown, { passive: false });
           canvas.addEventListener("mousemove", onMove, { passive: false });
           canvas.addEventListener("mouseup", onUp);
+          canvas.addEventListener("mouseleave", onUp);
           canvas.addEventListener("touchstart", onDown, { passive: false });
           canvas.addEventListener("touchmove", onMove, { passive: false });
           canvas.addEventListener("touchend", onUp);
         }
 
         window.signCropReset = function () {
-          cropState.x = 0;
-          cropState.y = 0;
-          cropState.w = cropState.canvasW;
-          cropState.h = cropState.canvasH;
+          cropState.x = cropState.offsetX;
+          cropState.y = cropState.offsetY;
+          cropState.w = cropState.imgDispW;
+          cropState.h = cropState.imgDispH;
           drawCrop();
           toast("Selection reset to full image.");
         };
@@ -2650,20 +2662,40 @@
           const src = getSourceURL();
           const img = new Image();
           img.onload = function () {
-            /* Map display coords → natural pixel coords */
-            const sx = Math.round(cropState.x / cropState.scale);
-            const sy = Math.round(cropState.y / cropState.scale);
+            /* Map display coords → natural pixel coords, accounting for offset */
+            const sx = Math.round(
+              (cropState.x - cropState.offsetX) / cropState.scale,
+            );
+            const sy = Math.round(
+              (cropState.y - cropState.offsetY) / cropState.scale,
+            );
             const sw = Math.round(cropState.w / cropState.scale);
             const sh = Math.round(cropState.h / cropState.scale);
 
+            /* Clamp to actual image size */
+            const safeSX = clamp(sx, 0, cropState.imgNaturalW);
+            const safeSY = clamp(sy, 0, cropState.imgNaturalH);
+            const safeSW = clamp(sw, 1, cropState.imgNaturalW - safeSX);
+            const safeSH = clamp(sh, 1, cropState.imgNaturalH - safeSY);
+
             const out = document.createElement("canvas");
-            out.width = sw;
-            out.height = sh;
+            out.width = safeSW;
+            out.height = safeSH;
             const ctx = out.getContext("2d");
-            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+            ctx.drawImage(
+              img,
+              safeSX,
+              safeSY,
+              safeSW,
+              safeSH,
+              0,
+              0,
+              safeSW,
+              safeSH,
+            );
             signCroppedURL = out.toDataURL("image/png");
 
-            /* Update the BG tab result preview too */
+            /* Refresh BG tab result preview */
             const rp = $("sign-result-preview");
             if (rp) rp.src = signCroppedURL;
 
@@ -2673,9 +2705,9 @@
           img.src = src;
         };
 
-        /* ─────────────────────────────────────
-           AUTO BG REMOVAL
-        ───────────────────────────────────── */
+        /* ══════════════════════════════════
+           BACKGROUND REMOVAL
+        ══════════════════════════════════ */
         window.selectBgMethod = function (method, el) {
           bgMethod = method;
           document
@@ -2685,13 +2717,14 @@
         };
 
         window.removeSignBackground = function () {
-          const btn = $("btn-bg-remove"),
-            icon = $("bg-remove-icon"),
-            label = $("bg-remove-label");
+          const btn = $("btn-bg-remove");
+          const icon = $("bg-remove-icon");
+          const label = $("bg-remove-label");
           btn.disabled = true;
           icon.className = "fa-solid fa-spinner fa-spin";
           label.textContent = "Processing…";
           const threshold = +$("bg-threshold").value;
+
           const img = new Image();
           img.onload = function () {
             const canvas = document.createElement("canvas");
@@ -2790,7 +2823,7 @@
               0,
             );
             signProcessedURL = canvas.toDataURL("image/png");
-            signCroppedURL = null; /* reset crop when bg changes */
+            signCroppedURL = null; // reset crop when bg changes
 
             const rp = $("sign-result-preview");
             if (rp) rp.src = signProcessedURL;
@@ -2825,9 +2858,9 @@
           toast("↺ Restored to original.");
         };
 
-        /* ─────────────────────────────────────
+        /* ══════════════════════════════════
            PATCH renderResume
-        ───────────────────────────────────── */
+        ══════════════════════════════════ */
         window.addEventListener("DOMContentLoaded", function () {
           setTimeout(patchRenderResume, 0);
         });

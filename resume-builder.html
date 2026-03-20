@@ -1065,7 +1065,7 @@
       let summaryDraft = "",
         tailorDraft = "";
 
-      /* ── photoState moved here to fix "photoState is not defined" in exportWord ── */
+      /* ── photoState in outer scope so exportWord() can access it ── */
       const photoState = {
         size: 80,
         radius: 50,
@@ -1893,14 +1893,135 @@
         "use strict";
 
         /* ── state ── */
-        /* NOTE: photoState is declared in the outer scope above so that
-           exportWord() can access it. Do NOT re-declare it here. */
-        let photoDataURL = null; // applied (may be styled)
-        let photoOrigURL = null; // raw upload
-        let signDataURL = null; // applied signature
-        let signOrigURL = null; // raw upload
+        /* NOTE: photoState is declared in outer scope — do NOT re-declare here */
+        let photoDataURL = null;
+        let photoOrigURL = null;
+        let signDataURL = null;
+        let signOrigURL = null;
 
         let bgMethod = "white";
+
+        /* ══════════════════════════════════════
+           SIGNATURE CROP STATE
+        ══════════════════════════════════════ */
+        const cropState = {
+          active: false, // is crop mode on?
+          imgNaturalW: 0,
+          imgNaturalH: 0,
+          canvasW: 0,
+          canvasH: 0,
+          scale: 1, // canvas-display / natural-pixel ratio
+          offsetX: 0, // image left offset inside canvas display area
+          offsetY: 0,
+          // crop rect in DISPLAY coordinates
+          x: 0,
+          y: 0,
+          w: 0,
+          h: 0,
+          dragging: false,
+          resizing: false,
+          resizeHandle: "", // "tl","tr","bl","br","t","b","l","r"
+          dragStartX: 0,
+          dragStartY: 0,
+          dragOrigX: 0,
+          dragOrigY: 0,
+          dragOrigW: 0,
+          dragOrigH: 0,
+        };
+
+        /* CSS injected once for crop UI */
+        (function injectCropStyles() {
+          if (document.getElementById("sign-crop-styles")) return;
+          const style = document.createElement("style");
+          style.id = "sign-crop-styles";
+          style.textContent = `
+            /* ── Crop tab toggle ── */
+            .sign-tab-row {
+              display: flex;
+              gap: 0;
+              border-bottom: 2px solid #eee;
+              margin-bottom: 14px;
+            }
+            .sign-tab-btn {
+              flex: 1;
+              padding: 8px 0;
+              background: none;
+              border: none;
+              border-bottom: 3px solid transparent;
+              margin-bottom: -2px;
+              cursor: pointer;
+              font-size: 0.82rem;
+              font-weight: 600;
+              color: #888;
+              transition: color .18s, border-color .18s;
+            }
+            .sign-tab-btn.active {
+              color: var(--accent, #C8502A);
+              border-bottom-color: var(--accent, #C8502A);
+            }
+
+            /* ── Crop canvas wrapper ── */
+            #sign-crop-panel {
+              display: none;
+            }
+            #sign-crop-panel.active {
+              display: block;
+            }
+            #sign-bg-panel.hidden {
+              display: none;
+            }
+
+            .crop-canvas-wrap {
+              position: relative;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              background: #1a1a1a;
+              border-radius: 8px;
+              overflow: hidden;
+              min-height: 160px;
+              margin-bottom: 10px;
+              user-select: none;
+            }
+            #sign-crop-canvas {
+              display: block;
+              cursor: crosshair;
+              max-width: 100%;
+            }
+
+            .crop-action-row {
+              display: flex;
+              gap: 8px;
+              flex-wrap: wrap;
+              align-items: center;
+              margin-top: 4px;
+            }
+            .crop-btn {
+              padding: 7px 16px;
+              border-radius: 7px;
+              border: none;
+              cursor: pointer;
+              font-size: 0.8rem;
+              font-weight: 600;
+              transition: opacity .15s;
+            }
+            .crop-btn:hover { opacity: .85; }
+            .crop-btn-apply {
+              background: var(--accent, #C8502A);
+              color: #fff;
+            }
+            .crop-btn-reset {
+              background: #f0f0f0;
+              color: #333;
+            }
+            .crop-hint {
+              font-size: 0.74rem;
+              color: #999;
+              margin-left: auto;
+            }
+          `;
+          document.head.appendChild(style);
+        })();
 
         /* ─────────────────────────────────────
            UPLOAD HANDLERS
@@ -1951,9 +2072,7 @@
             if (name) name.textContent = file.name;
             if (strip) strip.classList.add("visible");
             if (typeof qRender === "function") qRender();
-            toast(
-              "✓ Signature added! Click 🪄 Remove BG to remove background.",
-            );
+            toast("✓ Signature added! Click 🪄 Remove BG or ✂ Crop to edit.");
           };
           r.readAsDataURL(file);
         };
@@ -2088,33 +2207,470 @@
         };
 
         /* ─────────────────────────────────────
-           SIGNATURE EDITOR
+           SIGNATURE EDITOR — with tabs
         ───────────────────────────────────── */
-        let signProcessedURL = null;
+        let signProcessedURL = null; // from bg-remove
+        let signCroppedURL = null; // from crop
+
+        /* Patch the sign editor modal to inject tab UI — runs once */
+        function patchSignEditorModal() {
+          const body = document.querySelector(".sign-editor-body");
+          if (!body || body.dataset.tabsInjected) return;
+          body.dataset.tabsInjected = "1";
+
+          /* Build tab row */
+          const tabRow = document.createElement("div");
+          tabRow.className = "sign-tab-row";
+          tabRow.innerHTML = `
+            <button class="sign-tab-btn active" id="sign-tab-bg"   onclick="switchSignTab('bg')">
+              <i class="fa-solid fa-wand-magic-sparkles" style="margin-right:5px"></i>Remove BG
+            </button>
+            <button class="sign-tab-btn"        id="sign-tab-crop" onclick="switchSignTab('crop')">
+              ✂ Crop
+            </button>`;
+          body.insertBefore(tabRow, body.firstChild);
+
+          /* Wrap existing bg-remove content */
+          const existingBg = body.querySelector(".sign-preview-wrap");
+          const existingControls = body.querySelector(".bg-remove-controls");
+          const bgPanel = document.createElement("div");
+          bgPanel.id = "sign-bg-panel";
+          if (existingBg) bgPanel.appendChild(existingBg);
+          if (existingControls) bgPanel.appendChild(existingControls);
+          body.appendChild(bgPanel);
+
+          /* Build crop panel */
+          const cropPanel = document.createElement("div");
+          cropPanel.id = "sign-crop-panel";
+          cropPanel.innerHTML = `
+            <div class="crop-canvas-wrap" id="sign-crop-wrap">
+              <canvas id="sign-crop-canvas"></canvas>
+            </div>
+            <div class="crop-action-row">
+              <button class="crop-btn crop-btn-reset"  onclick="signCropReset()">↺ Reset Selection</button>
+              <button class="crop-btn crop-btn-apply"  onclick="signCropApply()">✂ Apply Crop</button>
+              <span class="crop-hint">Drag to select · Drag corners to resize</span>
+            </div>`;
+          body.appendChild(cropPanel);
+
+          /* Wire canvas events */
+          setTimeout(bindCropCanvas, 0);
+        }
+
+        window.switchSignTab = function (tab) {
+          $("sign-tab-bg").classList.toggle("active", tab === "bg");
+          $("sign-tab-crop").classList.toggle("active", tab === "crop");
+          const bgPanel = $("sign-bg-panel");
+          const cropPanel = $("sign-crop-panel");
+          if (bgPanel) bgPanel.classList.toggle("hidden", tab !== "bg");
+          if (cropPanel) cropPanel.classList.toggle("active", tab === "crop");
+          if (tab === "crop") initCropCanvas();
+        };
 
         window.openSignEditor = function () {
           if (!signOrigURL) {
             toast("⚠ Upload a signature first.");
             return;
           }
-          $("sign-orig-preview").src = signOrigURL;
-          $("sign-result-preview").src = signProcessedURL || signOrigURL;
-          $("btn-bg-restore").style.display = signProcessedURL
-            ? "block"
-            : "none";
+          patchSignEditorModal();
+          const origPreview = $("sign-orig-preview");
+          const resultPreview = $("sign-result-preview");
+          if (origPreview) origPreview.src = signOrigURL;
+          if (resultPreview)
+            resultPreview.src = signProcessedURL || signOrigURL;
+          const restoreBtn = $("btn-bg-restore");
+          if (restoreBtn)
+            restoreBtn.style.display = signProcessedURL ? "block" : "none";
+          /* default to BG tab */
+          switchSignTab("bg");
           $("sign-editor-overlay").classList.add("open");
         };
+
         window.closeSignEditor = function () {
           $("sign-editor-overlay").classList.remove("open");
+          cropState.active = false;
         };
 
         window.applySignEdits = function () {
-          signDataURL = signProcessedURL || signOrigURL;
+          /* Priority: cropped > bg-removed > original */
+          signDataURL = signCroppedURL || signProcessedURL || signOrigURL;
           const thumb = $("sign-thumb");
           if (thumb) thumb.src = signDataURL;
           if (typeof qRender === "function") qRender();
           closeSignEditor();
           toast("✓ Signature applied to resume!");
+        };
+
+        /* ─────────────────────────────────────
+           CROP ENGINE
+        ───────────────────────────────────── */
+        const HANDLE_SIZE = 9; // px radius of resize handles
+
+        function getSourceURL() {
+          /* Crop from bg-removed if available, else original */
+          return signProcessedURL || signOrigURL;
+        }
+
+        function initCropCanvas() {
+          const canvas = $("sign-crop-canvas");
+          if (!canvas) return;
+          const wrap = $("sign-crop-wrap");
+          const src = getSourceURL();
+          if (!src) return;
+
+          const img = new Image();
+          img.onload = function () {
+            cropState.imgNaturalW = img.naturalWidth;
+            cropState.imgNaturalH = img.naturalHeight;
+
+            /* Fit image into wrap width */
+            const maxW = wrap.clientWidth || 480;
+            const maxH = 260;
+            const scale = Math.min(
+              maxW / img.naturalWidth,
+              maxH / img.naturalHeight,
+              1,
+            );
+            const dispW = Math.round(img.naturalWidth * scale);
+            const dispH = Math.round(img.naturalHeight * scale);
+
+            canvas.width = dispW;
+            canvas.height = dispH;
+            cropState.canvasW = dispW;
+            cropState.canvasH = dispH;
+            cropState.scale = scale;
+            cropState.offsetX = 0;
+            cropState.offsetY = 0;
+
+            /* Default crop = full image */
+            cropState.x = 0;
+            cropState.y = 0;
+            cropState.w = dispW;
+            cropState.h = dispH;
+            cropState.active = true;
+
+            drawCrop(img);
+            canvas._cachedImg = img;
+          };
+          img.src = src;
+        }
+
+        function drawCrop(imgOrCached) {
+          const canvas = $("sign-crop-canvas");
+          if (!canvas) return;
+          const img = imgOrCached || canvas._cachedImg;
+          if (!img) return;
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          /* Draw image */
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          if (!cropState.active) return;
+
+          const { x, y, w, h } = cropState;
+
+          /* Darken outside crop */
+          ctx.save();
+          ctx.fillStyle = "rgba(0,0,0,0.52)";
+          ctx.beginPath();
+          ctx.rect(0, 0, canvas.width, canvas.height);
+          ctx.rect(x, y, w, h);
+          ctx.fill("evenodd");
+          ctx.restore();
+
+          /* Crop border */
+          ctx.save();
+          ctx.strokeStyle = "#fff";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([5, 3]);
+          ctx.strokeRect(x + 0.5, y + 0.5, w - 1, h - 1);
+          ctx.restore();
+
+          /* Rule-of-thirds grid */
+          ctx.save();
+          ctx.strokeStyle = "rgba(255,255,255,0.25)";
+          ctx.lineWidth = 0.8;
+          ctx.setLineDash([]);
+          for (let i = 1; i < 3; i++) {
+            ctx.beginPath();
+            ctx.moveTo(x + (w / 3) * i, y);
+            ctx.lineTo(x + (w / 3) * i, y + h);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y + (h / 3) * i);
+            ctx.lineTo(x + w, y + (h / 3) * i);
+            ctx.stroke();
+          }
+          ctx.restore();
+
+          /* Corner + edge handles */
+          const handles = getHandlePositions(x, y, w, h);
+          handles.forEach(({ hx, hy }) => {
+            ctx.save();
+            ctx.fillStyle = "#fff";
+            ctx.strokeStyle = "var(--accent, #C8502A)";
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.arc(hx, hy, HANDLE_SIZE, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          });
+        }
+
+        function getHandlePositions(x, y, w, h) {
+          return [
+            { id: "tl", hx: x, hy: y },
+            { id: "tr", hx: x + w, hy: y },
+            { id: "bl", hx: x, hy: y + h },
+            { id: "br", hx: x + w, hy: y + h },
+            { id: "t", hx: x + w / 2, hy: y },
+            { id: "b", hx: x + w / 2, hy: y + h },
+            { id: "l", hx: x, hy: y + h / 2 },
+            { id: "r", hx: x + w, hy: y + h / 2 },
+          ];
+        }
+
+        function hitHandle(mx, my) {
+          const { x, y, w, h } = cropState;
+          const handles = getHandlePositions(x, y, w, h);
+          for (const { id, hx, hy } of handles) {
+            const dist = Math.sqrt((mx - hx) ** 2 + (my - hy) ** 2);
+            if (dist <= HANDLE_SIZE + 3) return id;
+          }
+          return null;
+        }
+
+        function hitInside(mx, my) {
+          const { x, y, w, h } = cropState;
+          return mx >= x && mx <= x + w && my >= y && my <= y + h;
+        }
+
+        function clamp(v, lo, hi) {
+          return Math.max(lo, Math.min(hi, v));
+        }
+
+        function bindCropCanvas() {
+          const canvas = $("sign-crop-canvas");
+          if (!canvas || canvas._cropBound) return;
+          canvas._cropBound = true;
+
+          function getPos(e) {
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+            const src = e.touches ? e.touches[0] : e;
+            return {
+              mx: (src.clientX - rect.left) * scaleX,
+              my: (src.clientY - rect.top) * scaleY,
+            };
+          }
+
+          function onDown(e) {
+            if (!cropState.active) return;
+            e.preventDefault();
+            const { mx, my } = getPos(e);
+            const handle = hitHandle(mx, my);
+
+            cropState.dragStartX = mx;
+            cropState.dragStartY = my;
+            cropState.dragOrigX = cropState.x;
+            cropState.dragOrigY = cropState.y;
+            cropState.dragOrigW = cropState.w;
+            cropState.dragOrigH = cropState.h;
+
+            if (handle) {
+              cropState.resizing = true;
+              cropState.dragging = false;
+              cropState.resizeHandle = handle;
+            } else if (hitInside(mx, my)) {
+              cropState.dragging = true;
+              cropState.resizing = false;
+            } else {
+              /* Start new crop rect */
+              cropState.x = mx;
+              cropState.y = my;
+              cropState.w = 1;
+              cropState.h = 1;
+              cropState.dragging = false;
+              cropState.resizing = true;
+              cropState.resizeHandle = "br";
+              cropState.dragOrigX = mx;
+              cropState.dragOrigY = my;
+              cropState.dragOrigW = 0;
+              cropState.dragOrigH = 0;
+            }
+          }
+
+          function onMove(e) {
+            if (!cropState.active) return;
+            e.preventDefault();
+            const { mx, my } = getPos(e);
+            const { canvasW: cW, canvasH: cH } = cropState;
+
+            if (cropState.dragging) {
+              const dx = mx - cropState.dragStartX;
+              const dy = my - cropState.dragStartY;
+              cropState.x = clamp(
+                cropState.dragOrigX + dx,
+                0,
+                cW - cropState.w,
+              );
+              cropState.y = clamp(
+                cropState.dragOrigY + dy,
+                0,
+                cH - cropState.h,
+              );
+            } else if (cropState.resizing) {
+              const ox = cropState.dragOrigX,
+                oy = cropState.dragOrigY;
+              const ow = cropState.dragOrigW,
+                oh = cropState.dragOrigH;
+              let nx = cropState.x,
+                ny = cropState.y,
+                nw = cropState.w,
+                nh = cropState.h;
+
+              switch (cropState.resizeHandle) {
+                case "br":
+                  nw = clamp(mx - ox, 4, cW - ox);
+                  nh = clamp(my - oy, 4, cH - oy);
+                  nx = ox;
+                  ny = oy;
+                  break;
+                case "bl":
+                  nx = clamp(mx, 0, ox + ow - 4);
+                  nw = ox + ow - nx;
+                  nh = clamp(my - oy, 4, cH - oy);
+                  ny = oy;
+                  break;
+                case "tr":
+                  nw = clamp(mx - ox, 4, cW - ox);
+                  ny = clamp(my, 0, oy + oh - 4);
+                  nh = oy + oh - ny;
+                  nx = ox;
+                  break;
+                case "tl":
+                  nx = clamp(mx, 0, ox + ow - 4);
+                  nw = ox + ow - nx;
+                  ny = clamp(my, 0, oy + oh - 4);
+                  nh = oy + oh - ny;
+                  break;
+                case "r":
+                  nw = clamp(mx - ox, 4, cW - ox);
+                  nx = ox;
+                  ny = oy;
+                  nh = oh;
+                  break;
+                case "l":
+                  nx = clamp(mx, 0, ox + ow - 4);
+                  nw = ox + ow - nx;
+                  ny = oy;
+                  nh = oh;
+                  break;
+                case "b":
+                  nh = clamp(my - oy, 4, cH - oy);
+                  nx = ox;
+                  ny = oy;
+                  nw = ow;
+                  break;
+                case "t":
+                  ny = clamp(my, 0, oy + oh - 4);
+                  nh = oy + oh - ny;
+                  nx = ox;
+                  nw = ow;
+                  break;
+              }
+              cropState.x = nx;
+              cropState.y = ny;
+              cropState.w = nw;
+              cropState.h = nh;
+            } else {
+              /* Hover cursor */
+              const handle = hitHandle(mx, my);
+              const cursors = {
+                tl: "nw-resize",
+                tr: "ne-resize",
+                bl: "sw-resize",
+                br: "se-resize",
+                t: "n-resize",
+                b: "s-resize",
+                l: "w-resize",
+                r: "e-resize",
+              };
+              canvas.style.cursor = handle
+                ? cursors[handle] || "pointer"
+                : hitInside(mx, my)
+                  ? "move"
+                  : "crosshair";
+            }
+            drawCrop();
+          }
+
+          function onUp() {
+            cropState.dragging = false;
+            cropState.resizing = false;
+            /* Normalise negative width/height */
+            if (cropState.w < 0) {
+              cropState.x += cropState.w;
+              cropState.w = Math.abs(cropState.w);
+            }
+            if (cropState.h < 0) {
+              cropState.y += cropState.h;
+              cropState.h = Math.abs(cropState.h);
+            }
+            cropState.w = Math.max(cropState.w, 4);
+            cropState.h = Math.max(cropState.h, 4);
+            drawCrop();
+          }
+
+          canvas.addEventListener("mousedown", onDown, { passive: false });
+          canvas.addEventListener("mousemove", onMove, { passive: false });
+          canvas.addEventListener("mouseup", onUp);
+          canvas.addEventListener("touchstart", onDown, { passive: false });
+          canvas.addEventListener("touchmove", onMove, { passive: false });
+          canvas.addEventListener("touchend", onUp);
+        }
+
+        window.signCropReset = function () {
+          cropState.x = 0;
+          cropState.y = 0;
+          cropState.w = cropState.canvasW;
+          cropState.h = cropState.canvasH;
+          drawCrop();
+          toast("Selection reset to full image.");
+        };
+
+        window.signCropApply = function () {
+          if (!cropState.active || cropState.w < 4 || cropState.h < 4) {
+            toast("⚠ Draw a crop area first.");
+            return;
+          }
+          const src = getSourceURL();
+          const img = new Image();
+          img.onload = function () {
+            /* Map display coords → natural pixel coords */
+            const sx = Math.round(cropState.x / cropState.scale);
+            const sy = Math.round(cropState.y / cropState.scale);
+            const sw = Math.round(cropState.w / cropState.scale);
+            const sh = Math.round(cropState.h / cropState.scale);
+
+            const out = document.createElement("canvas");
+            out.width = sw;
+            out.height = sh;
+            const ctx = out.getContext("2d");
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+            signCroppedURL = out.toDataURL("image/png");
+
+            /* Update the BG tab result preview too */
+            const rp = $("sign-result-preview");
+            if (rp) rp.src = signCroppedURL;
+
+            toast("✓ Crop applied! Click 'Apply to Resume' to save.");
+            drawCrop();
+          };
+          img.src = src;
         };
 
         /* ─────────────────────────────────────
@@ -2206,7 +2762,7 @@
                   Math.min(255, Math.round((dist / threshold) * 255)),
                 );
             }
-            // feather edges
+            /* feather edges */
             const out = new Uint8ClampedArray(data);
             for (let y = 1; y < canvas.height - 1; y++) {
               for (let x = 0; x < canvas.width; x++) {
@@ -2233,9 +2789,11 @@
               0,
               0,
             );
-
             signProcessedURL = canvas.toDataURL("image/png");
-            $("sign-result-preview").src = signProcessedURL;
+            signCroppedURL = null; /* reset crop when bg changes */
+
+            const rp = $("sign-result-preview");
+            if (rp) rp.src = signProcessedURL;
             $("btn-bg-restore").style.display = "block";
             btn.disabled = false;
             icon.className = "fa-solid fa-check";
@@ -2257,12 +2815,12 @@
 
         window.restoreSignOriginal = function () {
           signProcessedURL = null;
-          $("sign-result-preview").src = signOrigURL;
+          signCroppedURL = null;
+          const rp = $("sign-result-preview");
+          if (rp) rp.src = signOrigURL;
           $("btn-bg-restore").style.display = "none";
           const icon2 = $("bg-remove-icon");
-          if (icon2) {
-            icon2.className = "fa-solid fa-wand-magic-sparkles";
-          }
+          if (icon2) icon2.className = "fa-solid fa-wand-magic-sparkles";
           $("bg-remove-label").textContent = "Remove Background";
           toast("↺ Restored to original.");
         };

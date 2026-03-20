@@ -671,7 +671,7 @@ textarea {
   opacity: 0;
   transition: all 0.22s;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 999999;
   max-width: 320px;
 }
 #toast.show {

@@ -12,458 +12,128 @@
     />
     <meta
       name="description"
-      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement."
+      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement. Used by job seekers who struggled with Word formatting at 2 AM."
+    />
+    <meta
+      name="keywords"
+      content="AI resume builder, free resume maker, resume templates, professional resume themes, resume PDF export, ATS-friendly resume, job application tool, resume formatting, CV builder, AI resume writer, resume score checker, tailor resume to job, resume skills suggester"
     />
     <meta name="author" content="NextoPDF" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <link rel="canonical" href="https://nextopdf.com/resume-builder" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nextopdf.com/resume-builder" />
+    <meta
+      property="og:title"
+      content="AI Resume Builder with 50+ Themes - Free Online Resume Maker | NextoPDF"
+    />
+    <meta
+      property="og:description"
+      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement. Used by job seekers who struggled with Word formatting at 2 AM."
+    />
+    <meta
+      property="og:image"
+      content="https://nextopdf.com/images/resume-builder-og.png"
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://nextopdf.com/resume-builder" />
+    <meta
+      name="twitter:title"
+      content="AI Resume Builder with 50+ Themes - Free Online Resume Maker | NextoPDF"
+    />
+    <meta
+      name="twitter:description"
+      content="Build professional resumes with AI assistance. Choose from 50+ stylish themes including Classic Crimson, Midnight Gold, and Lavender Luxe. Single or sidebar layouts, PDF export, and AI-powered content enhancement."
+    />
+    <meta
+      name="twitter:image"
+      content="https://nextopdf.com/images/resume-builder-twitter.png"
+    />
+
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NextoPDF AI Resume Builder",
+        "url": "https://nextopdf.com/resume-builder",
+        "description": "Free AI-powered resume builder with 50+ professional themes. Create, customize, and download resumes in PDF, Word, or HTML format.",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": "AI summary enhancement, 50+ built-in themes, Single and sidebar layouts, PDF export, HTML export, Word export, JSON backup, Resume scoring, Job description tailoring, Skill suggestion, AI template generation, Gemini AI integration",
+        "screenshot": "https://nextopdf.com/images/resume-builder-screenshot.png",
+        "softwareVersion": "1.0",
+        "author": {
+          "@type": "Organization",
+          "name": "NextoPDF",
+          "url": "https://nextopdf.com"
+        }
+      }
+    </script>
+
+    <!-- Font preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
+
+    <!-- Main CSS -->
     <link rel="stylesheet" href="./css/style.css" />
     <link rel="stylesheet" href="./css/resume.css" />
 
-    <style>
-      /* ══════════════════════════════════════════
-         PHOTO EDITOR MODAL
-      ══════════════════════════════════════════ */
-      .img-editor-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(10, 10, 20, 0.72);
-        backdrop-filter: blur(6px);
-        z-index: 9999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.25s;
-      }
-      .img-editor-overlay.open {
-        opacity: 1;
-        pointer-events: all;
-      }
-      .img-editor-modal {
-        background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28);
-        width: min(560px, 96vw);
-        overflow: hidden;
-        transform: translateY(24px) scale(0.97);
-        transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
-      }
-      .img-editor-overlay.open .img-editor-modal {
-        transform: translateY(0) scale(1);
-      }
-      .img-editor-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 18px 22px 14px;
-        border-bottom: 1px solid #f0f0f0;
-      }
-      .img-editor-header h3 {
-        font-family: "Playfair Display", serif;
-        font-size: 1.08rem;
-        color: #1a1a2e;
-        margin: 0;
-      }
-      .img-editor-close {
-        background: #f5f5f5;
-        border: none;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 1.1rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: background 0.2s;
-      }
-      .img-editor-close:hover {
-        background: #e8e8e8;
-      }
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./images/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./images/apple-touch-icon.png"
+    />
 
-      .img-editor-body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0;
-      }
-      .img-editor-preview-col {
-        padding: 24px 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        background: linear-gradient(135deg, #f8f9ff 0%, #f0f2fb 100%);
-        border-right: 1px solid #f0f0f0;
-        min-height: 260px;
-      }
-      .img-editor-preview-label {
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #999;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 16px;
-      }
-      #photo-preview-img {
-        display: block;
-        object-fit: cover;
-        transition: all 0.25s;
-        max-width: 160px;
-        max-height: 160px;
-      }
-
-      .img-editor-controls-col {
-        padding: 20px 22px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .iec-group label {
-        display: block;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #555;
-        margin-bottom: 6px;
-        letter-spacing: 0.04em;
-      }
-      .iec-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-      .iec-slider {
-        flex: 1;
-        -webkit-appearance: none;
-        height: 4px;
-        border-radius: 99px;
-        background: #e0e0e0;
-        outline: none;
-        cursor: pointer;
-      }
-      .iec-slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: #c8502a;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(200, 80, 42, 0.35);
-      }
-      .iec-val {
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: #333;
-        min-width: 36px;
-        text-align: right;
-      }
-      .iec-border-row {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-      }
-      .iec-color-btn {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        border: 3px solid transparent;
-        cursor: pointer;
-        transition:
-          transform 0.15s,
-          border-color 0.15s;
-        flex-shrink: 0;
-      }
-      .iec-color-btn:hover,
-      .iec-color-btn.active {
-        transform: scale(1.18);
-        border-color: #333;
-      }
-      .iec-color-picker-wrap {
-        position: relative;
-      }
-      .iec-color-picker-wrap input[type="color"] {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        border: 3px solid #ddd;
-        padding: 0;
-        cursor: pointer;
-        background: none;
-      }
-      .iec-border-width-wrap {
-        display: flex;
-        gap: 6px;
-        margin-top: 4px;
-      }
-      .iec-bw-btn {
-        padding: 4px 10px;
-        border-radius: 99px;
-        border: 1.5px solid #ddd;
-        font-size: 0.72rem;
-        font-weight: 600;
-        cursor: pointer;
-        background: #fff;
-        color: #555;
-        transition: all 0.18s;
-      }
-      .iec-bw-btn.active,
-      .iec-bw-btn:hover {
-        background: #c8502a;
-        border-color: #c8502a;
-        color: #fff;
-      }
-
-      .img-editor-footer {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        padding: 14px 22px 18px;
-        border-top: 1px solid #f0f0f0;
-        background: #fafafa;
-      }
-      .ied-btn {
-        padding: 9px 20px;
-        border-radius: 8px;
-        border: none;
-        font-size: 0.82rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.18s;
-      }
-      .ied-btn-cancel {
-        background: #f0f0f0;
-        color: #555;
-      }
-      .ied-btn-cancel:hover {
-        background: #e5e5e5;
-      }
-      .ied-btn-apply {
-        background: #c8502a;
-        color: #fff;
-      }
-      .ied-btn-apply:hover {
-        background: #a83e1e;
-      }
-
-      /* ══════════════════════════════════════════
-         SIGNATURE EDITOR MODAL
-      ══════════════════════════════════════════ */
-      .sign-editor-body {
-        padding: 22px;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .sign-preview-wrap {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-      }
-      .sign-preview-box {
-        flex: 1;
-        border-radius: 12px;
-        border: 1.5px solid #eee;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100px;
-        padding: 12px;
-        background: #f9f9f9;
-      }
-      .sign-preview-box.checker {
-        background-image:
-          linear-gradient(45deg, #ccc 25%, transparent 25%),
-          linear-gradient(-45deg, #ccc 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #ccc 75%),
-          linear-gradient(-45deg, transparent 75%, #ccc 75%);
-        background-size: 12px 12px;
-        background-position:
-          0 0,
-          0 6px,
-          6px -6px,
-          -6px 0px;
-      }
-      .sign-preview-box img {
-        max-width: 100%;
-        max-height: 80px;
-        object-fit: contain;
-      }
-      .sign-preview-label {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #999;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        text-align: center;
-        margin-top: 6px;
-      }
-      .sign-preview-col {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .bg-remove-controls {
-        background: #f8f9ff;
-        border-radius: 12px;
-        padding: 16px;
-        border: 1.5px solid #eef0fb;
-      }
-      .bg-remove-title {
-        font-size: 0.8rem;
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-      .bg-remove-row {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 10px;
-      }
-      .bg-method-btn {
-        padding: 6px 14px;
-        border-radius: 99px;
-        border: 1.5px solid #ddd;
-        font-size: 0.74rem;
-        font-weight: 600;
-        cursor: pointer;
-        background: #fff;
-        color: #555;
-        transition: all 0.18s;
-      }
-      .bg-method-btn.active,
-      .bg-method-btn:hover {
-        background: #1a1a2e;
-        border-color: #1a1a2e;
-        color: #fff;
-      }
-      .bg-threshold-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 4px;
-      }
-      .bg-threshold-row label {
-        font-size: 0.73rem;
-        font-weight: 600;
-        color: #666;
-        white-space: nowrap;
-      }
-      .bg-remove-btn {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #1a1a2e, #2d2d4e);
-        color: #fff;
-        border: none;
-        font-size: 0.83rem;
-        font-weight: 700;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: all 0.2s;
-        margin-top: 4px;
-      }
-      .bg-remove-btn:hover {
-        opacity: 0.88;
-        transform: translateY(-1px);
-      }
-      .bg-remove-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-      .bg-restore-btn {
-        width: 100%;
-        padding: 8px;
-        border-radius: 10px;
-        background: #f0f0f0;
-        color: #555;
-        border: none;
-        font-size: 0.78rem;
-        font-weight: 600;
-        cursor: pointer;
-        margin-top: 6px;
-        transition: background 0.18s;
-      }
-      .bg-restore-btn:hover {
-        background: #e5e5e5;
-      }
-
-      .sign-editor-footer {
-        display: flex;
-        gap: 10px;
-        justify-content: flex-end;
-        padding: 14px 22px 18px;
-        border-top: 1px solid #f0f0f0;
-        background: #fafafa;
-      }
-
-      /* Edit button on strip */
-      .btn-edit-img {
-        background: #eef3ff;
-        border: none;
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 0.74rem;
-        font-weight: 600;
-        color: #3b5bdb;
-        cursor: pointer;
-        transition: background 0.18s;
-      }
-      .btn-edit-img:hover {
-        background: #dce8ff;
-      }
-
-      .img-preview-strip {
-        display: none;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-        background: #f8f9ff;
-        border-radius: 10px;
-        padding: 8px 12px;
-        border: 1.5px solid #eef0fb;
-      }
-      .img-preview-strip.visible {
-        display: flex;
-      }
-
-      /* Spin */
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
-      }
-      .spin-icon {
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        border: 2px solid rgba(255, 255, 255, 0.4);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 0.7s linear infinite;
-      }
-    </style>
+    <!-- Google AdSense -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5797619165090350"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div class="app">
@@ -556,6 +226,19 @@
 
       <!-- ════════════ MAIN ════════════ -->
       <div class="main">
+        <!-- Adsterra Ads -->
+        <!-- <section class="adsterra">
+          <script>
+            atOptions = {
+              key: "8b3acb0193a7ea6a85217b757a7cb0bc",
+              format: "iframe",
+              height: 250,
+              width: 300,
+              params: {},
+            };
+          </script>
+          <script src="https://www.highperformanceformat.com/8b3acb0193a7ea6a85217b757a7cb0bc/invoke.js"></script>
+        </section> -->
         <div class="topbar">
           <div class="topbar-left">
             <div class="ttitle" id="t-title">Resume Builder</div>
@@ -620,93 +303,32 @@
           <div class="panel active" id="panel-builder">
             <div class="card">
               <div class="card-title">📷 Photo &amp; Signature</div>
-              <div class="card-sub">
-                Optional — appears in your resume when provided
-              </div>
+              <div class="card-sub">Optional — appears in your resume when provided</div>
               <div class="form-grid">
                 <div class="form-group">
                   <label>Profile Photo</label>
                   <div class="upload-zone" id="photo-zone">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      id="photo-input"
-                      onchange="handlePhoto(event)"
-                    />
+                    <input type="file" accept="image/*" id="photo-input" onchange="handlePhoto(event)" />
                     <span class="upload-zone-icon">🖼</span>
-                    <div class="upload-zone-text">
-                      Click or drag photo here<br /><strong
-                        >JPG · PNG · WebP</strong
-                      >
-                    </div>
+                    <div class="upload-zone-text">Click or drag photo here<br/><strong>JPG · PNG · WebP</strong></div>
                   </div>
                   <div class="img-preview-strip" id="photo-strip">
-                    <img
-                      class="thumb-photo"
-                      id="photo-thumb"
-                      src=""
-                      alt="Photo preview"
-                      style="
-                        width: 42px;
-                        height: 42px;
-                        border-radius: 50%;
-                        object-fit: cover;
-                        flex-shrink: 0;
-                      "
-                    />
+                    <img class="thumb-photo" id="photo-thumb" src="" alt="Photo preview" />
                     <span class="img-name" id="photo-name">photo.jpg</span>
-                    <button class="btn-edit-img" onclick="openPhotoEditor()">
-                      ✏ Edit
-                    </button>
-                    <button
-                      class="btn-remove-img"
-                      onclick="removePhoto()"
-                      title="Remove"
-                    >
-                      ✕
-                    </button>
+                    <button class="btn-remove-img" onclick="removePhoto()" title="Remove">✕</button>
                   </div>
                 </div>
                 <div class="form-group">
                   <label>Signature</label>
                   <div class="upload-zone" id="sign-zone">
-                    <input
-                      type="file"
-                      accept="image/*"
-                      id="sign-input"
-                      onchange="handleSign(event)"
-                    />
+                    <input type="file" accept="image/*" id="sign-input" onchange="handleSign(event)" />
                     <span class="upload-zone-icon">✍️</span>
-                    <div class="upload-zone-text">
-                      Click or drag signature<br /><strong
-                        >PNG with transparency ideal</strong
-                      >
-                    </div>
+                    <div class="upload-zone-text">Click or drag signature<br/><strong>PNG with transparency ideal</strong></div>
                   </div>
                   <div class="img-preview-strip" id="sign-strip">
-                    <img
-                      class="thumb-sign"
-                      id="sign-thumb"
-                      src=""
-                      alt="Signature preview"
-                      style="
-                        max-width: 80px;
-                        max-height: 36px;
-                        object-fit: contain;
-                        flex-shrink: 0;
-                      "
-                    />
+                    <img class="thumb-sign" id="sign-thumb" src="" alt="Signature preview" />
                     <span class="img-name" id="sign-name">signature.png</span>
-                    <button class="btn-edit-img" onclick="openSignEditor()">
-                      ✏ Edit / Remove BG
-                    </button>
-                    <button
-                      class="btn-remove-img"
-                      onclick="removeSign()"
-                      title="Remove"
-                    >
-                      ✕
-                    </button>
+                    <button class="btn-remove-img" onclick="removeSign()" title="Remove">✕</button>
                   </div>
                 </div>
               </div>
@@ -880,6 +502,7 @@
               </div>
             </div>
           </div>
+          <!-- /builder -->
 
           <!-- ── PREVIEW ── -->
           <div class="panel" id="panel-preview">
@@ -950,6 +573,7 @@
               <div id="resume-body"></div>
             </div>
           </div>
+          <!-- /preview -->
 
           <!-- ── SCORE ── -->
           <div class="panel" id="panel-score">
@@ -1117,286 +741,38 @@
             </div>
           </div>
           <section id="header-placeholder"></section>
+    
         </div>
+        
+         
       </div>
+      
+      <!-- /main -->
     </div>
+    <!-- /app -->
 
-    <!-- ══════════════════════════════════════════════
-         PHOTO EDITOR MODAL
-    ══════════════════════════════════════════════ -->
-    <div class="img-editor-overlay" id="photo-editor-overlay">
-      <div class="img-editor-modal">
-        <div class="img-editor-header">
-          <h3>✏ Edit Profile Photo</h3>
-          <button class="img-editor-close" onclick="closePhotoEditor()">
-            ✕
-          </button>
-        </div>
-        <div class="img-editor-body">
-          <!-- Preview -->
-          <div class="img-editor-preview-col">
-            <div class="img-editor-preview-label">Live Preview</div>
-            <img id="photo-preview-img" src="" alt="Preview" />
-          </div>
-          <!-- Controls -->
-          <div class="img-editor-controls-col">
-            <!-- Size -->
-            <div class="iec-group">
-              <label>📐 Size</label>
-              <div class="iec-row">
-                <input
-                  type="range"
-                  class="iec-slider"
-                  id="photo-size"
-                  min="40"
-                  max="160"
-                  value="80"
-                  oninput="updatePhotoPreview()"
-                />
-                <span class="iec-val" id="photo-size-val">80px</span>
-              </div>
-            </div>
-            <!-- Border Radius -->
-            <div class="iec-group">
-              <label>⬭ Border Radius</label>
-              <div class="iec-row">
-                <input
-                  type="range"
-                  class="iec-slider"
-                  id="photo-radius"
-                  min="0"
-                  max="50"
-                  value="50"
-                  oninput="updatePhotoPreview()"
-                />
-                <span class="iec-val" id="photo-radius-val">50%</span>
-              </div>
-              <div style="display: flex; gap: 6px; margin-top: 6px">
-                <button class="iec-bw-btn" onclick="setRadius(0)">
-                  Square
-                </button>
-                <button class="iec-bw-btn" onclick="setRadius(12)">
-                  Rounded
-                </button>
-                <button class="iec-bw-btn active" onclick="setRadius(50)">
-                  Circle
-                </button>
-              </div>
-            </div>
-            <!-- Border Width -->
-            <div class="iec-group">
-              <label>🖼 Border Width</label>
-              <div class="iec-border-width-wrap">
-                <button class="iec-bw-btn active" onclick="setBorderWidth(0)">
-                  None
-                </button>
-                <button class="iec-bw-btn" onclick="setBorderWidth(2)">
-                  Thin
-                </button>
-                <button class="iec-bw-btn" onclick="setBorderWidth(4)">
-                  Medium
-                </button>
-                <button class="iec-bw-btn" onclick="setBorderWidth(6)">
-                  Thick
-                </button>
-              </div>
-            </div>
-            <!-- Border Color -->
-            <div class="iec-group">
-              <label>🎨 Border Color</label>
-              <div class="iec-border-row">
-                <div
-                  class="iec-color-btn active"
-                  style="background: #ffffff; box-shadow: 0 0 0 1px #ddd"
-                  onclick="setBorderColor('#ffffff', this)"
-                  title="White"
-                ></div>
-                <div
-                  class="iec-color-btn"
-                  style="background: #c8502a"
-                  onclick="setBorderColor('#C8502A', this)"
-                  title="Crimson"
-                ></div>
-                <div
-                  class="iec-color-btn"
-                  style="background: #1a1a2e"
-                  onclick="setBorderColor('#1a1a2e', this)"
-                  title="Navy"
-                ></div>
-                <div
-                  class="iec-color-btn"
-                  style="background: #2e7d52"
-                  onclick="setBorderColor('#2e7d52', this)"
-                  title="Forest"
-                ></div>
-                <div
-                  class="iec-color-btn"
-                  style="background: #7c4dff"
-                  onclick="setBorderColor('#7c4dff', this)"
-                  title="Purple"
-                ></div>
-                <div
-                  class="iec-color-btn"
-                  style="background: #f0b429"
-                  onclick="setBorderColor('#f0b429', this)"
-                  title="Gold"
-                ></div>
-                <div class="iec-color-picker-wrap" title="Custom color">
-                  <input
-                    type="color"
-                    id="photo-border-color-picker"
-                    value="#C8502A"
-                    onchange="setBorderColor(this.value, null)"
-                    title="Pick custom color"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="img-editor-footer">
-          <button class="ied-btn ied-btn-cancel" onclick="closePhotoEditor()">
-            Cancel
-          </button>
-          <button class="ied-btn ied-btn-apply" onclick="applyPhotoEdits()">
-            ✓ Apply Changes
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- ══════════════════════════════════════════════
-         SIGNATURE EDITOR MODAL
-    ══════════════════════════════════════════════ -->
-    <div class="img-editor-overlay" id="sign-editor-overlay">
-      <div class="img-editor-modal">
-        <div class="img-editor-header">
-          <h3>✏ Edit Signature &amp; Remove Background</h3>
-          <button class="img-editor-close" onclick="closeSignEditor()">
-            ✕
-          </button>
-        </div>
-        <div class="sign-editor-body">
-          <!-- Previews -->
-          <div class="sign-preview-wrap">
-            <div class="sign-preview-col">
-              <div class="sign-preview-box">
-                <img id="sign-orig-preview" src="" alt="Original" />
-              </div>
-              <div class="sign-preview-label">Original</div>
-            </div>
-            <div class="sign-preview-col">
-              <div class="sign-preview-box checker">
-                <img id="sign-result-preview" src="" alt="Result" />
-              </div>
-              <div class="sign-preview-label">
-                Result (checkerboard = transparent)
-              </div>
-            </div>
-          </div>
-
-          <!-- BG Remove Controls -->
-          <div class="bg-remove-controls">
-            <div class="bg-remove-title">🪄 Background Removal</div>
-
-            <div
-              style="
-                font-size: 0.75rem;
-                color: #666;
-                margin-bottom: 10px;
-                line-height: 1.5;
-              "
-            >
-              Choose a method based on your signature background:
-            </div>
-
-            <div class="bg-remove-row">
-              <button
-                class="bg-method-btn active"
-                id="bg-method-white"
-                onclick="selectBgMethod('white', this)"
-              >
-                White Background
-              </button>
-              <button
-                class="bg-method-btn"
-                id="bg-method-light"
-                onclick="selectBgMethod('light', this)"
-              >
-                Light / Cream
-              </button>
-              <button
-                class="bg-method-btn"
-                id="bg-method-dark"
-                onclick="selectBgMethod('dark', this)"
-              >
-                Dark Background
-              </button>
-              <button
-                class="bg-method-btn"
-                id="bg-method-auto"
-                onclick="selectBgMethod('auto', this)"
-              >
-                Auto Detect
-              </button>
-            </div>
-
-            <div class="bg-threshold-row">
-              <label>Tolerance:</label>
-              <input
-                type="range"
-                class="iec-slider"
-                id="bg-threshold"
-                min="5"
-                max="120"
-                value="30"
-                style="flex: 1"
-              />
-              <span class="iec-val" id="bg-threshold-val">30</span>
-            </div>
-            <div style="font-size: 0.71rem; color: #999; margin-top: 3px">
-              Higher = removes more background pixels
-            </div>
-
-            <button
-              class="bg-remove-btn"
-              id="btn-bg-remove"
-              onclick="removeSignBackground()"
-            >
-              <span id="bg-remove-icon">🪄</span>
-              <span id="bg-remove-label">Remove Background</span>
-            </button>
-            <button
-              class="bg-restore-btn"
-              id="btn-bg-restore"
-              onclick="restoreSignOriginal()"
-              style="display: none"
-            >
-              ↺ Restore Original
-            </button>
-          </div>
-        </div>
-        <div class="sign-editor-footer">
-          <button class="ied-btn ied-btn-cancel" onclick="closeSignEditor()">
-            Cancel
-          </button>
-          <button class="ied-btn ied-btn-apply" onclick="applySignEdits()">
-            ✓ Apply to Resume
-          </button>
-        </div>
-      </div>
-    </div>
+    <!-- Adsterra Ads -->
+      <!-- <section class="Adsterra">
+        <script
+          async="async"
+          data-cfasync="false"
+          src="https://pl28916519.effectivegatecpm.com/b29375994fdbaaeb8cfe81abc69470ca/invoke.js"
+        ></script>
+        <div id="container-b29375994fdbaaeb8cfe81abc69470ca"></div>
+      </section> -->
 
     <div id="toast"></div>
+    </section>
+
     <section id="footer-placeholder"></section>
+    <!-- Theme CSS injected by JS at runtime -->
     <style id="theme-css"></style>
 
     <script src="./js/app.js"></script>
     <script src="./js/resume-theme.js"></script>
-
     <script>
       "use strict";
-
+      
       const API = `${BACKEND_BASE_URL}`;
       let EXP = [],
         EDU = [],
@@ -1440,6 +816,7 @@
         b.innerHTML = loading ? `<span class="spin"></span> Working…` : label;
       }
 
+      // Robust fetch — reads raw text first, never throws on empty/non-JSON
       async function api(url, body) {
         let res, txt;
         try {
@@ -1456,7 +833,7 @@
         }
         if (!txt || !txt.trim())
           throw new Error(
-            `Server returned empty response (HTTP ${res.status}).`,
+            `Server returned empty response (HTTP ${res.status}). Check Flask route returns JSON.`,
           );
         let s = txt.trim();
         const BT = "\x60\x60\x60";
@@ -1545,6 +922,9 @@
         if (id === "preview") renderResume();
       }
 
+      // ══════════════════════════════════════════════════════
+      // EXPORT DROPDOWN (fixed: stopPropagation on item clicks)
+      // ══════════════════════════════════════════════════════
       function toggleMenu(id, e) {
         e.stopPropagation();
         const m = $(id);
@@ -1564,7 +944,9 @@
       // ══════════════════════════════════════════════════════
       function doExport(type) {
         closeMenus();
+        // Always render into resume-body first so exports have fresh content
         renderResume();
+        // Small delay so DOM paint completes before print dialog or blob creation
         setTimeout(() => {
           if (type === "pdf") exportPDF();
           else if (type === "html") exportHTML();
@@ -1574,107 +956,115 @@
         }, 120);
       }
 
-      function getAllPageCSS() {
-        let css = "";
-        const sheets = document.styleSheets;
-        for (let i = 0; i < sheets.length; i++) {
-          try {
-            const rules = sheets[i].cssRules || sheets[i].rules;
-            if (!rules) continue;
-            for (let j = 0; j < rules.length; j++)
-              css += rules[j].cssText + "\n";
-          } catch (e) {}
-        }
-        return css;
+function getAllPageCSS() {
+  let css = "";
+  const sheets = document.styleSheets;
+  for (let i = 0; i < sheets.length; i++) {
+    try {
+      const rules = sheets[i].cssRules || sheets[i].rules;
+      if (!rules) continue;
+      for (let j = 0; j < rules.length; j++) {
+        css += rules[j].cssText + "\n";
       }
+    } catch(e) {}
+  }
+  return css;
+}
 
-      function buildFullHTML() {
+function buildFullHTML() {
+  const th = allThemes[activeTheme] || allThemes[0];
+  const clone = document.getElementById("resume-body").cloneNode(true);
+  clone.querySelectorAll("script").forEach(function(s) { s.remove(); });
+
+  return '<!DOCTYPE html><html><head>' +
+    '<meta charset="UTF-8">' +
+    '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
+    '<style>' +
+    '* { box-sizing: border-box; margin: 0; padding: 0; }' +
+    'body { width: 794px; background: #fff; }' +
+    '.rt-photo { display:block; width:80px; height:80px; border-radius:50%; object-fit:cover; flex-shrink:0; }' +
+    '.rt-sign { display:block; max-width:140px; height:44px; object-fit:contain; }' +
+    getAllPageCSS() +
+    (th.css || "") +
+    '</style>' +
+    '</head><body>' +
+    clone.outerHTML +
+    '</body></html>';
+}
+
+function exportPDF() {
+  renderResume();
+  toast("⏳ Generating PDF…");
+
+  fetch(API + "/api/resume/export-pdf", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ html: buildFullHTML() })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Server error " + res.status);
+    return res.blob();
+  })
+  .then(function(blob) {
+    const d = getData();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".pdf";
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+    toast("✓ PDF saved — text is selectable!");
+  })
+  .catch(function(err) {
+    toast("❌ " + err.message);
+  });
+}
+
+function exportWord() {
+  const d = getData();
+  const th = allThemes[activeTheme] || allThemes[0];
+
+  // Extract accent color from theme — use theme's color property
+  const themeColor = th.color || "#C8502A";
+
+  const photoThumb = document.getElementById("photo-thumb");
+  const signThumb  = document.getElementById("sign-thumb");
+  const photoData  = (photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")) ? photoThumb.src : null;
+  const signData   = (signThumb  && signThumb.src  && signThumb.src.startsWith("data:"))  ? signThumb.src  : null;
+
+  toast("⏳ Generating Word document…");
+
+  fetch(API + "/api/resume/export-word", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      resumeData: d,
+      photoData: photoData,
+      signData: signData,
+      themeColor: themeColor,
+      themeName: th.name
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Server error " + res.status);
+    return res.blob();
+  })
+  .then(function(blob) {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";
+    a.click();
+    setTimeout(function() { URL.revokeObjectURL(a.href); }, 1000);
+    toast("✓ Word document saved!");
+  })
+  .catch(function(err) {
+    toast("❌ " + err.message);
+  });
+}
+
+function exportHTML() {
         const th = allThemes[activeTheme] || allThemes[0];
-        const clone = document.getElementById("resume-body").cloneNode(true);
-        clone.querySelectorAll("script").forEach((s) => s.remove());
-        return (
-          "<!DOCTYPE html><html><head>" +
-          '<meta charset="UTF-8">' +
-          '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
-          "<style>* { box-sizing: border-box; margin: 0; padding: 0; }body { width: 794px; background: #fff; }.rt-photo { display:block; object-fit:cover; flex-shrink:0; }.rt-sign { display:block; max-width:140px; height:44px; object-fit:contain; }" +
-          getAllPageCSS() +
-          (th.css || "") +
-          "</style>" +
-          "</head><body>" +
-          clone.outerHTML +
-          "</body></html>"
-        );
-      }
-
-      function exportPDF() {
-        renderResume();
-        toast("⏳ Generating PDF…");
-        fetch(API + "/api/resume/export-pdf", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ html: buildFullHTML() }),
-        })
-          .then((res) => {
-            if (!res.ok) throw new Error("Server error " + res.status);
-            return res.blob();
-          })
-          .then((blob) => {
-            const d = getData();
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = (d.name || "resume").replace(/\s+/g, "_") + ".pdf";
-            a.click();
-            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-            toast("✓ PDF saved — text is selectable!");
-          })
-          .catch((err) => toast("❌ " + err.message));
-      }
-
-      function exportWord() {
         const d = getData();
-        const th = allThemes[activeTheme] || allThemes[0];
-        const themeColor = th.color || "#C8502A";
-        const photoThumb = document.getElementById("photo-thumb");
-        const signThumb = document.getElementById("sign-thumb");
-        const photoData =
-          photoThumb && photoThumb.src && photoThumb.src.startsWith("data:")
-            ? photoThumb.src
-            : null;
-        const signData =
-          signThumb && signThumb.src && signThumb.src.startsWith("data:")
-            ? signThumb.src
-            : null;
-        toast("⏳ Generating Word document…");
-        fetch(API + "/api/resume/export-word", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            resumeData: d,
-            photoData,
-            signData,
-            themeColor,
-            themeName: th.name,
-          }),
-        })
-          .then((res) => {
-            if (!res.ok) throw new Error("Server error " + res.status);
-            return res.blob();
-          })
-          .then((blob) => {
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(blob);
-            a.download = (d.name || "resume").replace(/\s+/g, "_") + ".docx";
-            a.click();
-            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-            toast("✓ Word document saved!");
-          })
-          .catch((err) => toast("❌ " + err.message));
-      }
-
-      function exportHTML() {
-        const th = allThemes[activeTheme] || allThemes[0];
-        const d = getData();
-        const SC = "</";
+        const SC = "</"; // avoid literal </style> breaking the HTML parser
         const html =
           '<!DOCTYPE html><html lang="en"><head>' +
           '<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>' +
@@ -1682,12 +1072,13 @@
           esc(d.name || "Resume") +
           "</title>" +
           '<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>' +
-          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;}.rt-photo{display:block;object-fit:cover;flex-shrink:0;}.rt-sign{display:block;max-width:140px;height:44px;object-fit:contain;}" +
+          "<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#fff;}.rt-photo{display: block;width: 80px;height: 80px;border-radius: 50%;object-fit: cover;border: 3px solid rgba(255, 255, 255, 0.7);flex-shrink: 0;}.rt-sign{display: block;max-width: 140px;height: 44px;object-fit: contain;}" +
           th.css +
           SC +
           "style>" +
           SC +
-          "head><body>" +
+          "head>" +
+          "<body>" +
           $("resume-body").innerHTML +
           SC +
           "body>" +
@@ -1768,7 +1159,7 @@
       }
 
       // ══════════════════════════════════════════════════════
-      // EXPERIENCE / EDUCATION / CERT / LANG
+      // EXPERIENCE
       // ══════════════════════════════════════════════════════
       function addExp() {
         EXP.push({ role: "", company: "", from: "", to: "", desc: "" });
@@ -1790,16 +1181,21 @@
       </div>
       <div class="form-grid">
         <div class="form-group"><label>Job Title</label>
-          <input value="${esc(e.role)}" placeholder="Software Engineer" oninput="EXP[${i}].role=this.value;updExpTitle(${i});qRender()"></div>
+          <input value="${esc(e.role)}" placeholder="Software Engineer"
+            oninput="EXP[${i}].role=this.value;updExpTitle(${i});qRender()"></div>
         <div class="form-group"><label>Company</label>
-          <input value="${esc(e.company)}" placeholder="Acme Corp" oninput="EXP[${i}].company=this.value;updExpTitle(${i});qRender()"></div>
+          <input value="${esc(e.company)}" placeholder="Acme Corp"
+            oninput="EXP[${i}].company=this.value;updExpTitle(${i});qRender()"></div>
         <div class="form-group"><label>From</label>
-          <input value="${esc(e.from)}" placeholder="Jan 2021" oninput="EXP[${i}].from=this.value;qRender()"></div>
+          <input value="${esc(e.from)}" placeholder="Jan 2021"
+            oninput="EXP[${i}].from=this.value;qRender()"></div>
         <div class="form-group"><label>To</label>
-          <input value="${esc(e.to)}" placeholder="Present" oninput="EXP[${i}].to=this.value;qRender()"></div>
+          <input value="${esc(e.to)}" placeholder="Present"
+            oninput="EXP[${i}].to=this.value;qRender()"></div>
         <div class="form-group full"><label>Description / Achievements</label>
-          <textarea rows="3" placeholder="Led a team of 5 engineers to deliver…" oninput="EXP[${i}].desc=this.value;qRender()">${esc(e.desc)}</textarea></div>
-        <div class="form-group full" style="flex-direction:row;gap:8px;margin-top:2px">
+          <textarea rows="3" placeholder="Led a team of 5 engineers to deliver…"
+            oninput="EXP[${i}].desc=this.value;qRender()">${esc(e.desc)}</textarea></div>
+        <div class="form-group full" style="flex-direction:row;gap:8px;margin-top:2px;">
           <button class="btn btn-secondary btn-sm" onclick="improveBullet(${i})">✨ Improve with AI</button>
         </div>
       </div>
@@ -1811,6 +1207,9 @@
         if (el) el.textContent = EXP[i].company || "New Experience";
       }
 
+      // ══════════════════════════════════════════════════════
+      // EDUCATION
+      // ══════════════════════════════════════════════════════
       function addEdu() {
         EDU.push({ degree: "", school: "", from: "", to: "" });
         renderEDU();
@@ -1831,18 +1230,25 @@
       </div>
       <div class="form-grid">
         <div class="form-group"><label>Degree</label>
-          <input value="${esc(e.degree)}" placeholder="B.Sc. Computer Science" oninput="EDU[${i}].degree=this.value;qRender()"></div>
+          <input value="${esc(e.degree)}" placeholder="B.Sc. Computer Science"
+            oninput="EDU[${i}].degree=this.value;qRender()"></div>
         <div class="form-group"><label>School / University</label>
-          <input value="${esc(e.school)}" placeholder="MIT" oninput="EDU[${i}].school=this.value;qRender()"></div>
+          <input value="${esc(e.school)}" placeholder="MIT"
+            oninput="EDU[${i}].school=this.value;qRender()"></div>
         <div class="form-group"><label>From</label>
-          <input value="${esc(e.from)}" placeholder="2017" oninput="EDU[${i}].from=this.value;qRender()"></div>
+          <input value="${esc(e.from)}" placeholder="2017"
+            oninput="EDU[${i}].from=this.value;qRender()"></div>
         <div class="form-group"><label>To</label>
-          <input value="${esc(e.to)}" placeholder="2021" oninput="EDU[${i}].to=this.value;qRender()"></div>
+          <input value="${esc(e.to)}" placeholder="2021"
+            oninput="EDU[${i}].to=this.value;qRender()"></div>
       </div>
     </div>`,
         ).join("");
       }
 
+      // ══════════════════════════════════════════════════════
+      // CERTIFICATES
+      // ══════════════════════════════════════════════════════
       function addCert() {
         CERT.push({ name: "", issuer: "", year: "" });
         renderCERT();
@@ -1863,16 +1269,22 @@
       </div>
       <div class="form-grid">
         <div class="form-group full"><label>Certificate Name</label>
-          <input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect" oninput="CERT[${i}].name=this.value;qRender()"></div>
+          <input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect"
+            oninput="CERT[${i}].name=this.value;qRender()"></div>
         <div class="form-group"><label>Issuing Organisation</label>
-          <input value="${esc(c.issuer)}" placeholder="Amazon Web Services" oninput="CERT[${i}].issuer=this.value;qRender()"></div>
+          <input value="${esc(c.issuer)}" placeholder="Amazon Web Services"
+            oninput="CERT[${i}].issuer=this.value;qRender()"></div>
         <div class="form-group"><label>Year</label>
-          <input value="${esc(c.year)}" placeholder="2023" oninput="CERT[${i}].year=this.value;qRender()"></div>
+          <input value="${esc(c.year)}" placeholder="2023"
+            oninput="CERT[${i}].year=this.value;qRender()"></div>
       </div>
     </div>`,
         ).join("");
       }
 
+      // ══════════════════════════════════════════════════════
+      // LANGUAGES
+      // ══════════════════════════════════════════════════════
       const PROF = ["Native", "Fluent", "Advanced", "Intermediate", "Basic"];
       function addLang() {
         LANG.push({ lang: "", level: "Fluent" });
@@ -1894,7 +1306,8 @@
       </div>
       <div class="form-grid">
         <div class="form-group"><label>Language</label>
-          <input value="${esc(l.lang)}" placeholder="Spanish" oninput="LANG[${i}].lang=this.value;qRender()"></div>
+          <input value="${esc(l.lang)}" placeholder="Spanish"
+            oninput="LANG[${i}].lang=this.value;qRender()"></div>
         <div class="form-group"><label>Proficiency</label>
           <select onchange="LANG[${i}].level=this.value;qRender()">
             ${PROF.map((p) => `<option${l.level === p ? " selected" : ""}>${p}</option>`).join("")}
@@ -1906,6 +1319,8 @@
 
       // ══════════════════════════════════════════════════════
       // RESUME RENDER
+      // Key fix: theme CSS injected into <style id="theme-css"> in <body>
+      // Forest Pro header split into .rt-header-info + contact div
       // ══════════════════════════════════════════════════════
       let _rt = null;
       function qRender() {
@@ -1916,10 +1331,13 @@
       function renderResume() {
         const d = getData();
         const th = allThemes[activeTheme] || allThemes[0];
+
+        // Inject theme CSS
         $("theme-css").textContent = th.css || "";
         const tn = $("active-theme-name");
         if (tn) tn.textContent = th.name;
 
+        // Build contact spans
         const contactParts = [d.email, d.phone, d.location, d.website].filter(
           Boolean,
         );
@@ -1927,6 +1345,7 @@
           .map((x) => `<span>${esc(x)}</span>`)
           .join("");
 
+        // Sections
         const secExp = d.experience
           .map(
             (e) => `
@@ -1989,6 +1408,7 @@
           ? `<div class="rt-section-title">Summary</div><div class="rt-summary">${esc(d.summary)}</div>`
           : "";
 
+        // Forest Pro needs a different header structure (two-column with contact on right)
         const isForest = th.name === "Forest Pro";
         const headerHtml = isForest
           ? `
@@ -2063,7 +1483,7 @@
       }
 
       // ══════════════════════════════════════════════════════
-      // AI FEATURES
+      // API CALLS
       // ══════════════════════════════════════════════════════
       async function enhanceSummary() {
         const d = getData();
@@ -2271,520 +1691,194 @@
         addLang();
         renderGallery();
         renderResume();
-        // Init BG threshold display
-        const thr = $("bg-threshold");
-        if (thr)
-          thr.addEventListener("input", () => {
-            $("bg-threshold-val").textContent = thr.value;
-          });
       });
 
-      // ══════════════════════════════════════════════════════
-      //  PHOTO & SIGN — UPLOAD, EDIT, RENDER PATCH
-      // ══════════════════════════════════════════════════════
+      // Photo And Sign
       (function () {
-        "use strict";
-
-        /* ─── State ─── */
-        let photoDataURL = null; // current applied data URL (possibly styled)
-        let photoOrigURL = null; // raw original upload, never modified
-        let signDataURL = null; // current applied signature data URL
-        let signOrigURL = null; // raw original upload
-
-        /* Photo editor state */
-        const photoState = {
-          size: 80,
-          radius: 50,
-          borderWidth: 0,
-          borderColor: "#ffffff",
-        };
-        /* Signature BG removal state */
-        let signProcessedURL = null; // result after bg remove
-        let bgMethod = "white";
-
-        /* ─── UPLOAD HANDLERS ─── */
-        window.handlePhoto = function (e) {
-          const file = e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = function (ev) {
-            photoOrigURL = ev.target.result;
-            photoDataURL = ev.target.result;
-            const strip = $("photo-strip"),
-              thumb = $("photo-thumb"),
-              name = $("photo-name");
-            if (thumb) thumb.src = photoDataURL;
-            if (name) name.textContent = file.name;
-            if (strip) strip.classList.add("visible");
-            if (typeof qRender === "function") qRender();
-            toast("✓ Photo added! Click ✏ Edit to customise.");
-          };
-          reader.readAsDataURL(file);
-        };
-
-        window.removePhoto = function () {
-          photoDataURL = null;
-          photoOrigURL = null;
-          const strip = $("photo-strip"),
-            thumb = $("photo-thumb"),
-            input = $("photo-input");
-          if (thumb) thumb.src = "";
-          if (strip) strip.classList.remove("visible");
-          if (input) input.value = "";
-          if (typeof qRender === "function") qRender();
-          toast("Photo removed.");
-        };
-
-        window.handleSign = function (e) {
-          const file = e.target.files[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = function (ev) {
-            signOrigURL = ev.target.result;
-            signDataURL = ev.target.result;
-            signProcessedURL = null;
-            const strip = $("sign-strip"),
-              thumb = $("sign-thumb"),
-              name = $("sign-name");
-            if (thumb) thumb.src = signDataURL;
-            if (name) name.textContent = file.name;
-            if (strip) strip.classList.add("visible");
-            if (typeof qRender === "function") qRender();
-            toast("✓ Signature added! Click ✏ Edit to remove background.");
-          };
-          reader.readAsDataURL(file);
-        };
-
-        window.removeSign = function () {
-          signDataURL = null;
-          signOrigURL = null;
-          signProcessedURL = null;
-          const strip = $("sign-strip"),
-            thumb = $("sign-thumb"),
-            input = $("sign-input");
-          if (thumb) thumb.src = "";
-          if (strip) strip.classList.remove("visible");
-          if (input) input.value = "";
-          if (typeof qRender === "function") qRender();
-          toast("Signature removed.");
-        };
-
-        // ────────────────────────────────────────────────────
-        //  PHOTO EDITOR
-        // ────────────────────────────────────────────────────
-        window.openPhotoEditor = function () {
-          if (!photoOrigURL) {
-            toast("⚠ Upload a photo first.");
-            return;
-          }
-          // Sync sliders to current state
-          $("photo-size").value = photoState.size;
-          $("photo-radius").value = photoState.radius;
-          $("photo-size-val").textContent = photoState.size + "px";
-          $("photo-radius-val").textContent = photoState.radius + "%";
-          updatePhotoPreview();
-          $("photo-editor-overlay").classList.add("open");
-        };
-
-        window.closePhotoEditor = function () {
-          $("photo-editor-overlay").classList.remove("open");
-        };
-
-        window.updatePhotoPreview = function () {
-          const size = +$("photo-size").value;
-          const radius = +$("photo-radius").value;
-          photoState.size = size;
-          photoState.radius = radius;
-          $("photo-size-val").textContent = size + "px";
-          $("photo-radius-val").textContent = radius + "%";
-          const img = $("photo-preview-img");
-          img.src = photoOrigURL;
-          img.style.width = size + "px";
-          img.style.height = size + "px";
-          img.style.borderRadius = radius + "%";
-          img.style.objectFit = "cover";
-          img.style.border =
-            photoState.borderWidth > 0
-              ? `${photoState.borderWidth}px solid ${photoState.borderColor}`
-              : "none";
-          img.style.display = "block";
-        };
-
-        window.setRadius = function (val) {
-          $("photo-radius").value = val;
-          // Update active state on shape buttons
-          document
-            .querySelectorAll(".img-editor-controls-col .iec-bw-btn")
-            .forEach((b) => b.classList.remove("active"));
-          // Find matching button by its onclick text
-          document
-            .querySelectorAll(".img-editor-controls-col .iec-bw-btn")
-            .forEach((b) => {
-              if (b.getAttribute("onclick") === `setRadius(${val})`)
-                b.classList.add("active");
-            });
-          updatePhotoPreview();
-        };
-
-        window.setBorderWidth = function (val) {
-          photoState.borderWidth = val;
-          document
-            .querySelectorAll(".iec-border-width-wrap .iec-bw-btn")
-            .forEach((b) => b.classList.remove("active"));
-          event.target.classList.add("active");
-          updatePhotoPreview();
-        };
-
-        window.setBorderColor = function (color, el) {
-          photoState.borderColor = color;
-          document
-            .querySelectorAll(".iec-color-btn")
-            .forEach((b) => b.classList.remove("active"));
-          if (el) el.classList.add("active");
-          updatePhotoPreview();
-        };
-
-        /* Apply: generate a styled canvas image (baked-in size/radius/border) */
-        window.applyPhotoEdits = function () {
-          const size = photoState.size;
-          const radius = photoState.radius;
-          const bw = photoState.borderWidth;
-          const bc = photoState.borderColor;
-
-          const canvas = document.createElement("canvas");
-          const total = size + bw * 2;
-          canvas.width = canvas.height = total;
-          const ctx = canvas.getContext("2d");
-
-          // Draw border circle
-          if (bw > 0) {
-            ctx.beginPath();
-            ctx.arc(total / 2, total / 2, total / 2, 0, Math.PI * 2);
-            ctx.fillStyle = bc;
-            ctx.fill();
-          }
-
-          // Clip to rounded/circle region
-          ctx.save();
-          const r = (size / 2) * (radius / 50); // convert % to px radius
-          const actualRadius = Math.min(r, size / 2);
-          const ox = bw,
-            oy = bw;
-
-          ctx.beginPath();
-          if (radius >= 50) {
-            ctx.arc(total / 2, total / 2, size / 2, 0, Math.PI * 2);
-          } else {
-            const rr = (actualRadius / size) * size;
-            ctx.moveTo(ox + rr, oy);
-            ctx.lineTo(ox + size - rr, oy);
-            ctx.quadraticCurveTo(ox + size, oy, ox + size, oy + rr);
-            ctx.lineTo(ox + size, oy + size - rr);
-            ctx.quadraticCurveTo(
-              ox + size,
-              oy + size,
-              ox + size - rr,
-              oy + size,
-            );
-            ctx.lineTo(ox + rr, oy + size);
-            ctx.quadraticCurveTo(ox, oy + size, ox, oy + size - rr);
-            ctx.lineTo(ox, oy + rr);
-            ctx.quadraticCurveTo(ox, oy, ox + rr, oy);
-          }
-          ctx.closePath();
-          ctx.clip();
-
-          // Draw image
-          const img = new Image();
-          img.onload = function () {
-            ctx.drawImage(img, ox, oy, size, size);
-            ctx.restore();
-            const styledURL = canvas.toDataURL("image/png");
-            photoDataURL = styledURL;
-            const thumb = $("photo-thumb");
-            if (thumb) thumb.src = styledURL;
-            if (typeof qRender === "function") qRender();
-            closePhotoEditor();
-            toast("✓ Photo style applied!");
-          };
-          img.src = photoOrigURL;
-        };
-
-        // ────────────────────────────────────────────────────
-        //  SIGNATURE EDITOR & BG REMOVAL
-        // ────────────────────────────────────────────────────
-        window.openSignEditor = function () {
-          if (!signOrigURL) {
-            toast("⚠ Upload a signature first.");
-            return;
-          }
-          $("sign-orig-preview").src = signOrigURL;
-          $("sign-result-preview").src = signProcessedURL || signOrigURL;
-          $("btn-bg-restore").style.display = signProcessedURL
-            ? "block"
-            : "none";
-          $("sign-editor-overlay").classList.add("open");
-        };
-
-        window.closeSignEditor = function () {
-          $("sign-editor-overlay").classList.remove("open");
-        };
-
-        window.selectBgMethod = function (method, el) {
-          bgMethod = method;
-          document
-            .querySelectorAll(".bg-method-btn")
-            .forEach((b) => b.classList.remove("active"));
-          el.classList.add("active");
-        };
-
-        window.removeSignBackground = function () {
-          const btn = $("btn-bg-remove");
-          const icon = $("bg-remove-icon"),
-            label = $("bg-remove-label");
-          btn.disabled = true;
-          icon.innerHTML = '<span class="spin-icon"></span>';
-          label.textContent = "Processing…";
-
-          const threshold = +$("bg-threshold").value;
-
-          const img = new Image();
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            canvas.width = img.width;
-            canvas.height = img.height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(
-              0,
-              0,
-              canvas.width,
-              canvas.height,
-            );
-            const data = imageData.data;
-
-            // Determine target color based on method
-            let targetR, targetG, targetB;
-            if (bgMethod === "white") {
-              targetR = 255;
-              targetG = 255;
-              targetB = 255;
-            } else if (bgMethod === "light") {
-              targetR = 245;
-              targetG = 240;
-              targetB = 230;
-            } else if (bgMethod === "dark") {
-              targetR = 0;
-              targetG = 0;
-              targetB = 0;
+  "use strict";
+ 
+  /* ─── State ─── */
+  let photoDataURL = null;
+  let signDataURL  = null;
+ 
+  /* ─── Expose handlers to global scope (called from inline HTML) ─── */
+  window.handlePhoto = function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      photoDataURL = ev.target.result;
+      const strip = document.getElementById("photo-strip");
+      const thumb = document.getElementById("photo-thumb");
+      const name  = document.getElementById("photo-name");
+      if (thumb) thumb.src = photoDataURL;
+      if (name)  name.textContent = file.name;
+      if (strip) strip.classList.add("visible");
+      if (typeof qRender === "function") qRender();
+      if (typeof toast  === "function") toast("✓ Photo added!");
+    };
+    reader.readAsDataURL(file);
+  };
+ 
+  window.removePhoto = function () {
+    photoDataURL = null;
+    const strip = document.getElementById("photo-strip");
+    const thumb = document.getElementById("photo-thumb");
+    const input = document.getElementById("photo-input");
+    if (thumb) thumb.src = "";
+    if (strip) strip.classList.remove("visible");
+    if (input) input.value = "";
+    if (typeof qRender === "function") qRender();
+    if (typeof toast  === "function") toast("Photo removed.");
+  };
+ 
+  window.handleSign = function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (ev) {
+      signDataURL = ev.target.result;
+      const strip = document.getElementById("sign-strip");
+      const thumb = document.getElementById("sign-thumb");
+      const name  = document.getElementById("sign-name");
+      if (thumb) thumb.src = signDataURL;
+      if (name)  name.textContent = file.name;
+      if (strip) strip.classList.add("visible");
+      if (typeof qRender === "function") qRender();
+      if (typeof toast  === "function") toast("✓ Signature added!");
+    };
+    reader.readAsDataURL(file);
+  };
+ 
+  window.removeSign = function () {
+    signDataURL = null;
+    const strip = document.getElementById("sign-strip");
+    const thumb = document.getElementById("sign-thumb");
+    const input = document.getElementById("sign-input");
+    if (thumb) thumb.src = "";
+    if (strip) strip.classList.remove("visible");
+    if (input) input.value = "";
+    if (typeof qRender === "function") qRender();
+    if (typeof toast  === "function") toast("Signature removed.");
+  };
+ 
+  /* ─── Patch renderResume() after DOM is ready ─── */
+  window.addEventListener("DOMContentLoaded", function () {
+    // Wait one tick to let app.js define renderResume first
+    setTimeout(patchRenderResume, 0);
+  });
+ 
+  function patchRenderResume() {
+    if (typeof renderResume !== "function") {
+      console.warn("photo-sign-addon: renderResume not found — retrying in 200ms");
+      setTimeout(patchRenderResume, 200);
+      return;
+    }
+ 
+    const _originalRenderResume = renderResume;
+ 
+    window.renderResume = function () {
+      /* Run the original first so #resume-body is populated */
+      _originalRenderResume.apply(this, arguments);
+ 
+      const resumeBody = document.getElementById("resume-body");
+      if (!resumeBody) return;
+ 
+      /* ── Inject profile photo ── */
+      if (photoDataURL) {
+        const wrap = resumeBody.querySelector(".rt-wrap");
+        if (!wrap) return;
+ 
+        const header = wrap.querySelector(".rt-header");
+        if (!header) return;
+ 
+        /* Don't double-inject */
+        if (header.querySelector(".rt-photo")) {
+          header.querySelector(".rt-photo").src = photoDataURL;
+        } else {
+          const nameEl  = header.querySelector(".rt-name");
+          const titleEl = header.querySelector(".rt-title");
+          const contactEl = header.querySelector(".rt-contact");
+ 
+          if (nameEl) {
+            /* Build wrapper div so photo sits beside name+title */
+            const photoImg = document.createElement("img");
+            photoImg.src       = photoDataURL;
+            photoImg.alt       = "Profile photo";
+            photoImg.className = "rt-photo";
+ 
+            /* Check if this is a sidebar layout header (full-width, grid-column 1/-1)
+               In that case inject photo before the name text */
+            const isSidebarLayout = wrap.classList.contains("rt-wrap") &&
+              getComputedStyle(header).gridColumn === "1 / -1";
+ 
+            if (isSidebarLayout) {
+              /* Place photo before name on its own line */
+              header.insertBefore(photoImg, nameEl);
             } else {
-              // Auto: sample the 4 corners to detect background color
-              const samples = [
-                [data[0], data[1], data[2]],
-                [
-                  data[(canvas.width - 1) * 4],
-                  data[(canvas.width - 1) * 4 + 1],
-                  data[(canvas.width - 1) * 4 + 2],
-                ],
-                [
-                  data[(canvas.height - 1) * canvas.width * 4],
-                  data[(canvas.height - 1) * canvas.width * 4 + 1],
-                  data[(canvas.height - 1) * canvas.width * 4 + 2],
-                ],
-                [
-                  data[(canvas.height * canvas.width - 1) * 4],
-                  data[(canvas.height * canvas.width - 1) * 4 + 1],
-                  data[(canvas.height * canvas.width - 1) * 4 + 2],
-                ],
-              ];
-              targetR = Math.round(
-                samples.reduce((a, s) => a + s[0], 0) / samples.length,
-              );
-              targetG = Math.round(
-                samples.reduce((a, s) => a + s[1], 0) / samples.length,
-              );
-              targetB = Math.round(
-                samples.reduce((a, s) => a + s[2], 0) / samples.length,
-              );
+              /* Single layout: wrap name+title in flex row with photo */
+              const wrapper = document.createElement("div");
+              wrapper.className = "rt-header-with-photo";
+ 
+              const textBlock = document.createElement("div");
+              textBlock.className = "rt-header-text";
+ 
+              /* Move name, title (and optionally contact for Forest Pro) into textBlock */
+              const children = Array.from(header.children);
+              children.forEach(function (child) {
+                if (child !== contactEl) textBlock.appendChild(child);
+              });
+ 
+              wrapper.appendChild(photoImg);
+              wrapper.appendChild(textBlock);
+              header.insertBefore(wrapper, contactEl || header.firstChild);
+              if (contactEl) header.appendChild(contactEl);
             }
-
-            // Remove pixels close to target color
-            for (let i = 0; i < data.length; i += 4) {
-              const r = data[i],
-                g = data[i + 1],
-                b = data[i + 2];
-              const dist = Math.sqrt(
-                (r - targetR) ** 2 + (g - targetG) ** 2 + (b - targetB) ** 2,
-              );
-              if (dist < threshold) {
-                // Make transparent, smoothly fade near edges
-                const alpha = Math.max(
-                  0,
-                  Math.min(255, (dist / threshold) * 255),
-                );
-                data[i + 3] = alpha;
-              }
-            }
-
-            // Feather edges: second pass to smooth jagged edges
-            const featherData = new Uint8ClampedArray(data);
-            for (let y = 1; y < canvas.height - 1; y++) {
-              for (let x = 1; x < canvas.width - 1; x++) {
-                const idx = (y * canvas.width + x) * 4;
-                if (data[idx + 3] < 255 && data[idx + 3] > 0) {
-                  const neighbors = [
-                    data[((y - 1) * canvas.width + x) * 4 + 3],
-                    data[((y + 1) * canvas.width + x) * 4 + 3],
-                    data[(y * canvas.width + x - 1) * 4 + 3],
-                    data[(y * canvas.width + x + 1) * 4 + 3],
-                  ];
-                  featherData[idx + 3] = Math.round(
-                    neighbors.reduce((a, v) => a + v, data[idx + 3]) /
-                      (neighbors.length + 1),
-                  );
-                }
-              }
-            }
-
-            ctx.putImageData(
-              new ImageData(featherData, canvas.width, canvas.height),
-              0,
-              0,
-            );
-            signProcessedURL = canvas.toDataURL("image/png");
-            $("sign-result-preview").src = signProcessedURL;
-            $("btn-bg-restore").style.display = "block";
-            btn.disabled = false;
-            icon.textContent = "✓";
-            label.textContent = "Done! Adjust & retry if needed";
-            setTimeout(() => {
-              icon.textContent = "🪄";
-              label.textContent = "Remove Background";
-            }, 3000);
-            toast("✓ Background removed!");
-          };
-          img.onerror = function () {
-            btn.disabled = false;
-            icon.textContent = "🪄";
-            label.textContent = "Remove Background";
-            toast("❌ Could not process image.");
-          };
-          img.src = signOrigURL;
-        };
-
-        window.restoreSignOriginal = function () {
-          signProcessedURL = null;
-          $("sign-result-preview").src = signOrigURL;
-          $("btn-bg-restore").style.display = "none";
-          $("bg-remove-icon").textContent = "🪄";
-          $("bg-remove-label").textContent = "Remove Background";
-          toast("↺ Restored to original.");
-        };
-
-        window.applySignEdits = function () {
-          signDataURL = signProcessedURL || signOrigURL;
-          const thumb = $("sign-thumb");
-          if (thumb) thumb.src = signDataURL;
-          if (typeof qRender === "function") qRender();
-          closeSignEditor();
-          toast("✓ Signature applied to resume!");
-        };
-
-        // ────────────────────────────────────────────────────
-        //  PATCH renderResume to inject photo + signature
-        // ────────────────────────────────────────────────────
-        window.addEventListener("DOMContentLoaded", function () {
-          setTimeout(patchRenderResume, 0);
-        });
-
-        function patchRenderResume() {
-          if (typeof renderResume !== "function") {
-            setTimeout(patchRenderResume, 200);
-            return;
           }
-          const _orig = renderResume;
-          window.renderResume = function () {
-            _orig.apply(this, arguments);
-            const resumeBody = $("resume-body");
-            if (!resumeBody) return;
-
-            /* ── Inject photo ── */
-            if (photoDataURL) {
-              const wrap = resumeBody.querySelector(".rt-wrap");
-              if (!wrap) return;
-              const header = wrap.querySelector(".rt-header");
-              if (!header) return;
-              if (header.querySelector(".rt-photo")) {
-                const existing = header.querySelector(".rt-photo");
-                existing.src = photoDataURL;
-                // Re-apply stored style (size etc.)
-                existing.style.width = photoState.size + "px";
-                existing.style.height = photoState.size + "px";
-                existing.style.borderRadius = photoState.radius + "%";
-                existing.style.border =
-                  photoState.borderWidth > 0
-                    ? `${photoState.borderWidth}px solid ${photoState.borderColor}`
-                    : "none";
-              } else {
-                const photoImg = document.createElement("img");
-                photoImg.src = photoDataURL;
-                photoImg.alt = "Profile photo";
-                photoImg.className = "rt-photo";
-                photoImg.style.width = photoState.size + "px";
-                photoImg.style.height = photoState.size + "px";
-                photoImg.style.borderRadius = photoState.radius + "%";
-                photoImg.style.objectFit = "cover";
-                photoImg.style.border =
-                  photoState.borderWidth > 0
-                    ? `${photoState.borderWidth}px solid ${photoState.borderColor}`
-                    : "none";
-                photoImg.style.flexShrink = "0";
-
-                const nameEl = header.querySelector(".rt-name");
-                const contactEl = header.querySelector(".rt-contact");
-
-                if (nameEl) {
-                  const wrapper = document.createElement("div");
-                  wrapper.className = "rt-header-with-photo";
-                  const textBlock = document.createElement("div");
-                  textBlock.className = "rt-header-text";
-                  Array.from(header.children).forEach((child) => {
-                    if (child !== contactEl) textBlock.appendChild(child);
-                  });
-                  wrapper.appendChild(photoImg);
-                  wrapper.appendChild(textBlock);
-                  header.insertBefore(wrapper, contactEl || header.firstChild);
-                  if (contactEl) header.appendChild(contactEl);
-                }
-              }
-            }
-
-            /* ── Inject signature ── */
-            if (signDataURL) {
-              const wrap = resumeBody.querySelector(".rt-wrap");
-              if (!wrap) return;
-              if (wrap.querySelector(".rt-sign")) {
-                wrap.querySelector(".rt-sign").src = signDataURL;
-                return;
-              }
-              const signWrap = document.createElement("div");
-              signWrap.className = "rt-sign-wrap";
-              const sectionTitle = document.createElement("div");
-              sectionTitle.className = "rt-section-title";
-              sectionTitle.textContent = "Signature";
-              const signImg = document.createElement("img");
-              signImg.src = signDataURL;
-              signImg.alt = "Signature";
-              signImg.className = "rt-sign";
-              signWrap.appendChild(sectionTitle);
-              signWrap.appendChild(signImg);
-              const mainDiv = wrap.querySelector(".rt-main");
-              if (mainDiv) mainDiv.appendChild(signWrap);
-              else wrap.appendChild(signWrap);
-            }
-          };
         }
-      })();
+      }
+ 
+      /* ── Inject signature ── */
+      if (signDataURL) {
+        const wrap = resumeBody.querySelector(".rt-wrap");
+        if (!wrap) return;
+ 
+        /* Don't double-inject */
+        if (wrap.querySelector(".rt-sign")) {
+          wrap.querySelector(".rt-sign").src = signDataURL;
+          return;
+        }
+ 
+        const signWrap = document.createElement("div");
+        signWrap.className = "rt-sign-wrap";
+ 
+        const sectionTitle = document.createElement("div");
+        sectionTitle.className = "rt-section-title";
+        sectionTitle.textContent = "Signature";
+ 
+        const signImg = document.createElement("img");
+        signImg.src       = signDataURL;
+        signImg.alt       = "Signature";
+        signImg.className = "rt-sign";
+ 
+        signWrap.appendChild(sectionTitle);
+        signWrap.appendChild(signImg);
+ 
+        /* Append to rt-main if sidebar layout, else to rt-wrap */
+        const mainDiv = wrap.querySelector(".rt-main");
+        if (mainDiv) {
+          mainDiv.appendChild(signWrap);
+        } else {
+          wrap.appendChild(signWrap);
+        }
+      }
+    };
+  }
+ 
+})();
     </script>
+    <!-- Adsterra Ads -->
+    <!-- <script src="https://pl28916850.effectivegatecpm.com/de/d8/32/ded8323936beed162a8a1f081418dbff.js"></script> -->
+  
   </body>
 </html>

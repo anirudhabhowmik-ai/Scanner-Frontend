@@ -348,7 +348,7 @@
                     />
                     <span class="img-name" id="sign-name">signature.png</span>
                     <button class="btn-edit-img" onclick="openSignEditor()">
-                      🪄 Remove BG
+                      <i class="fa-solid fa-wand-magic-sparkles"></i> Remove BG
                     </button>
                     <button
                       class="btn-remove-img"
@@ -927,7 +927,13 @@
     <div class="img-editor-overlay" id="sign-editor-overlay">
       <div class="img-editor-modal">
         <div class="img-editor-header">
-          <h3>🪄 Remove Signature Background</h3>
+          <h3>
+            <i
+              class="fa-solid fa-wand-magic-sparkles"
+              style="color: var(--accent); margin-right: 6px"
+            ></i
+            >Remove Signature Background
+          </h3>
           <button class="img-editor-close" onclick="closeSignEditor()">
             ✕
           </button>
@@ -1008,7 +1014,10 @@
               id="btn-bg-remove"
               onclick="removeSignBackground()"
             >
-              <span id="bg-remove-icon">🪄</span>
+              <i
+                id="bg-remove-icon"
+                class="fa-solid fa-wand-magic-sparkles"
+              ></i>
               <span id="bg-remove-label">Remove Background</span>
             </button>
             <button
@@ -1154,6 +1163,8 @@
             name: c.name || "",
             issuer: c.issuer || "",
             year: c.year || "",
+            from: c.from || "",
+            to: c.to || "",
           })),
           languages: LANG.map((l) => ({
             lang: l.lang || "",
@@ -1291,6 +1302,12 @@
             signData,
             themeColor: th.color || "#C8502A",
             themeName: th.name,
+            photoStyle: {
+              size: photoState.size,
+              borderRadius: photoState.radius,
+              borderWidth: photoState.borderWidth,
+              borderColor: photoState.borderColor,
+            },
           }),
         })
           .then((r) => {
@@ -1363,10 +1380,11 @@
         }
         if (d.certificates.length) {
           t += `CERTIFICATIONS\n${hr}\n`;
-          d.certificates.forEach(
-            (c) =>
-              (t += `${c.name}${c.issuer ? " — " + c.issuer : ""}${c.year ? " (" + c.year + ")" : ""}\n`),
-          );
+          d.certificates.forEach((c) => {
+            const dateStr =
+              c.from || c.to ? `${c.from}${c.to ? " – " + c.to : ""}` : c.year;
+            t += `${c.name}${c.issuer ? " — " + c.issuer : ""}${dateStr ? " (" + dateStr + ")" : ""}\n`;
+          });
           t += "\n";
         }
         if (d.skills) t += `SKILLS\n${hr}\n${d.skills}\n\n`;
@@ -1463,7 +1481,7 @@
       }
 
       function addCert() {
-        CERT.push({ name: "", issuer: "", year: "" });
+        CERT.push({ name: "", issuer: "", year: "", from: "", to: "" });
         renderCERT();
       }
       function delCert(i) {
@@ -1479,7 +1497,9 @@
           <div class="form-grid">
             <div class="form-group full"><label>Certificate Name</label><input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect" oninput="CERT[${i}].name=this.value;qRender()"></div>
             <div class="form-group"><label>Issuing Organisation</label><input value="${esc(c.issuer)}" placeholder="Amazon Web Services" oninput="CERT[${i}].issuer=this.value;qRender()"></div>
-            <div class="form-group"><label>Year</label><input value="${esc(c.year)}" placeholder="2023" oninput="CERT[${i}].year=this.value;qRender()"></div>
+            <div class="form-group"><label>Issued Year</label><input value="${esc(c.year)}" placeholder="2023" oninput="CERT[${i}].year=this.value;qRender()"></div>
+            <div class="form-group"><label>From</label><input value="${esc(c.from)}" placeholder="Jan 2023" oninput="CERT[${i}].from=this.value;qRender()"></div>
+            <div class="form-group"><label>To / Expiry</label><input value="${esc(c.to)}" placeholder="Jan 2026 or No Expiry" oninput="CERT[${i}].to=this.value;qRender()"></div>
           </div>
         </div>`,
         ).join("");
@@ -1560,7 +1580,7 @@
         <div class="rt-entry">
           <div class="rt-entry-row">
             <div><span class="rt-entry-role">${esc(c.name)}</span>${c.issuer ? ` <span class="rt-entry-company">— ${esc(c.issuer)}</span>` : ""}</div>
-            ${c.year ? `<span class="rt-entry-date">${esc(c.year)}</span>` : ""}
+            <span class="rt-entry-date">${c.from || c.to ? esc(c.from) + (c.to ? " – " + esc(c.to) : "") : esc(c.year)}</span>
           </div>
         </div>`,
           )
@@ -2109,7 +2129,7 @@
             icon = $("bg-remove-icon"),
             label = $("bg-remove-label");
           btn.disabled = true;
-          icon.innerHTML = '<span class="spin-icon"></span>';
+          icon.className = "fa-solid fa-spinner fa-spin";
           label.textContent = "Processing…";
           const threshold = +$("bg-threshold").value;
           const img = new Image();
@@ -2214,17 +2234,17 @@
             $("sign-result-preview").src = signProcessedURL;
             $("btn-bg-restore").style.display = "block";
             btn.disabled = false;
-            icon.textContent = "✓";
+            icon.className = "fa-solid fa-check";
             label.textContent = "Done!";
             setTimeout(() => {
-              icon.textContent = "🪄";
+              icon.className = "fa-solid fa-wand-magic-sparkles";
               label.textContent = "Remove Background";
             }, 3000);
             toast("✓ Background removed!");
           };
           img.onerror = function () {
             btn.disabled = false;
-            icon.textContent = "🪄";
+            icon.className = "fa-solid fa-wand-magic-sparkles";
             label.textContent = "Remove Background";
             toast("❌ Could not process image.");
           };
@@ -2235,7 +2255,10 @@
           signProcessedURL = null;
           $("sign-result-preview").src = signOrigURL;
           $("btn-bg-restore").style.display = "none";
-          $("bg-remove-icon").textContent = "🪄";
+          const icon2 = $("bg-remove-icon");
+          if (icon2) {
+            icon2.className = "fa-solid fa-wand-magic-sparkles";
+          }
           $("bg-remove-label").textContent = "Remove Background";
           toast("↺ Restored to original.");
         };

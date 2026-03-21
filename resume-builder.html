@@ -2147,29 +2147,62 @@
             bw = photoState.borderWidth,
             bc = photoState.borderColor;
           const canvas = document.createElement("canvas");
-          canvas.width = canvas.height = size;
+          const total = size + bw * 2;
+          canvas.width = canvas.height = total;
           const ctx = canvas.getContext("2d");
+
+          // Draw border background shape first (if any)
+          if (bw > 0) {
+            ctx.beginPath();
+            if (radius >= 50) {
+              ctx.arc(total / 2, total / 2, total / 2, 0, Math.PI * 2);
+            } else {
+              const rr = Math.max(0, (radius / 50) * (size / 2));
+              const outerR = rr + bw;
+              ctx.moveTo(outerR, 0);
+              ctx.lineTo(total - outerR, 0);
+              ctx.quadraticCurveTo(total, 0, total, outerR);
+              ctx.lineTo(total, total - outerR);
+              ctx.quadraticCurveTo(total, total, total - outerR, total);
+              ctx.lineTo(outerR, total);
+              ctx.quadraticCurveTo(0, total, 0, total - outerR);
+              ctx.lineTo(0, outerR);
+              ctx.quadraticCurveTo(0, 0, outerR, 0);
+            }
+            ctx.closePath();
+            ctx.fillStyle = bc;
+            ctx.fill();
+          }
+
+          // Clip and draw image inside the border
           ctx.save();
           ctx.beginPath();
           if (radius >= 50) {
-            ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+            ctx.arc(total / 2, total / 2, size / 2, 0, Math.PI * 2);
           } else {
-            const rr = (radius / 50) * (size / 2);
-            ctx.moveTo(rr, 0);
-            ctx.lineTo(size - rr, 0);
-            ctx.quadraticCurveTo(size, 0, size, rr);
-            ctx.lineTo(size, size - rr);
-            ctx.quadraticCurveTo(size, size, size - rr, size);
-            ctx.lineTo(rr, size);
-            ctx.quadraticCurveTo(0, size, 0, size - rr);
-            ctx.lineTo(0, rr);
-            ctx.quadraticCurveTo(0, 0, rr, 0);
+            const rr = Math.max(0, (radius / 50) * (size / 2));
+            const ox = bw,
+              oy = bw;
+            ctx.moveTo(ox + rr, oy);
+            ctx.lineTo(ox + size - rr, oy);
+            ctx.quadraticCurveTo(ox + size, oy, ox + size, oy + rr);
+            ctx.lineTo(ox + size, oy + size - rr);
+            ctx.quadraticCurveTo(
+              ox + size,
+              oy + size,
+              ox + size - rr,
+              oy + size,
+            );
+            ctx.lineTo(ox + rr, oy + size);
+            ctx.quadraticCurveTo(ox, oy + size, ox, oy + size - rr);
+            ctx.lineTo(ox, oy + rr);
+            ctx.quadraticCurveTo(ox, oy, ox + rr, oy);
           }
           ctx.closePath();
           ctx.clip();
           const img = new Image();
           img.onload = function () {
-            ctx.drawImage(img, 0, 0, size, size);
+            ctx.drawImage(img, bw, bw, size, size);
             ctx.restore();
             photoDataURL = canvas.toDataURL("image/png");
             const thumb = $("photo-thumb");
@@ -2871,19 +2904,18 @@
               if (header.querySelector(".rt-photo")) {
                 const ex = header.querySelector(".rt-photo");
                 ex.src = photoDataURL;
-                ex.style.width = photoState.size + "px";
-                ex.style.height = photoState.size + "px";
-                ex.style.borderRadius = photoState.radius + "%";
-                ex.style.border =
-                  photoState.borderWidth > 0
-                    ? `${photoState.borderWidth}px solid ${photoState.borderColor}`
-                    : "none";
+                const totalSize = photoState.size + photoState.borderWidth * 2;
+                ex.style.width = totalSize + "px";
+                ex.style.height = totalSize + "px";
+                ex.style.borderRadius = photoState.radius >= 50 ? "50%" : "0";
+                ex.style.border = "none";
               } else {
                 const photoImg = document.createElement("img");
                 photoImg.src = photoDataURL;
                 photoImg.alt = "Profile photo";
                 photoImg.className = "rt-photo";
-                photoImg.style.cssText = `width:${photoState.size}px;height:${photoState.size}px;border-radius:${photoState.radius}%;object-fit:cover;flex-shrink:0;border:${photoState.borderWidth > 0 ? `${photoState.borderWidth}px solid ${photoState.borderColor}` : "none"};`;
+                const totalSize = photoState.size + photoState.borderWidth * 2;
+                photoImg.style.cssText = `width:${totalSize}px;height:${totalSize}px;border-radius:${photoState.radius >= 50 ? "50%" : "0"};object-fit:cover;flex-shrink:0;border:none;`;
                 const nameEl = header.querySelector(".rt-name");
                 const contactEl = header.querySelector(".rt-contact");
                 if (nameEl) {

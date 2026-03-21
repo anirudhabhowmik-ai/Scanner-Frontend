@@ -58,7 +58,7 @@ header .logo a {
   display: flex;
 }
 
-header .logo a img{
+header .logo a img {
   width: 140px;
 }
 
@@ -757,11 +757,17 @@ pre {
   max-width: 100%;
 }
 
-.youtube-video{
+.youtube-video {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 40px 20px;
+}
+.youtube-video h6 {
+  color: #f59e0b;
+  font-size: 20px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 452px) {

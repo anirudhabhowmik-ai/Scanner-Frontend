@@ -1170,7 +1170,6 @@
           certificates: CERT.map((c) => ({
             name: c.name || "",
             issuer: c.issuer || "",
-            year: c.year || "",
             from: c.from || "",
             to: c.to || "",
           })),
@@ -1306,7 +1305,7 @@
         const normalisedCerts = d.certificates.map((c) => ({
           ...c,
           dateDisplay:
-            c.from || c.to ? c.from + (c.to ? " – " + c.to : "") : c.year || "",
+            c.from || c.to ? c.from + (c.to ? " – " + c.to : "") : "",
         }));
         d.certificates = normalisedCerts;
 
@@ -1400,7 +1399,7 @@
           t += `CERTIFICATIONS\n${hr}\n`;
           d.certificates.forEach((c) => {
             const dateStr =
-              c.from || c.to ? `${c.from}${c.to ? " – " + c.to : ""}` : c.year;
+              c.from || c.to ? `${c.from}${c.to ? " – " + c.to : ""}` : "";
             t += `${c.name}${c.issuer ? " — " + c.issuer : ""}${dateStr ? " (" + dateStr + ")" : ""}\n`;
           });
           t += "\n";
@@ -1499,7 +1498,7 @@
       }
 
       function addCert() {
-        CERT.push({ name: "", issuer: "", year: "", from: "", to: "" });
+        CERT.push({ name: "", issuer: "", from: "", to: "" });
         renderCERT();
       }
       function delCert(i) {
@@ -1515,7 +1514,6 @@
           <div class="form-grid">
             <div class="form-group full"><label>Certificate Name</label><input value="${esc(c.name)}" placeholder="AWS Certified Solutions Architect" oninput="CERT[${i}].name=this.value;qRender()"></div>
             <div class="form-group"><label>Issuing Organisation</label><input value="${esc(c.issuer)}" placeholder="Amazon Web Services" oninput="CERT[${i}].issuer=this.value;qRender()"></div>
-            <div class="form-group"><label>Issued Year</label><input value="${esc(c.year)}" placeholder="2023" oninput="CERT[${i}].year=this.value;qRender()"></div>
             <div class="form-group"><label>From</label><input value="${esc(c.from)}" placeholder="Jan 2023" oninput="CERT[${i}].from=this.value;qRender()"></div>
             <div class="form-group"><label>To / Expiry</label><input value="${esc(c.to)}" placeholder="Jan 2026 or No Expiry" oninput="CERT[${i}].to=this.value;qRender()"></div>
           </div>
@@ -1598,7 +1596,7 @@
         <div class="rt-entry">
           <div class="rt-entry-row">
             <div><span class="rt-entry-role">${esc(c.name)}</span>${c.issuer ? ` <span class="rt-entry-company">— ${esc(c.issuer)}</span>` : ""}</div>
-            <span class="rt-entry-date">${c.from || c.to ? esc(c.from) + (c.to ? " – " + esc(c.to) : "") : esc(c.year)}</span>
+            <span class="rt-entry-date">${c.from || c.to ? esc(c.from) + (c.to ? " – " + esc(c.to) : "") : ""}</span>
           </div>
         </div>`,
           )

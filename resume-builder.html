@@ -2107,7 +2107,7 @@
           $("photo-radius-val").textContent = radius + "%";
           const img = $("photo-preview-img");
           img.src = photoOrigURL;
-          img.style.cssText = `width:${size}px;height:${size}px;border-radius:${radius}%;object-fit:cover;display:block;border:${photoState.borderWidth > 0 ? `${photoState.borderWidth}px solid ${photoState.borderColor}` : "none"};`;
+          img.style.cssText = `width:${size}px;height:${size}px;border-radius:${radius}%;object-fit:cover;display:block;border:${photoState.borderWidth > 0 ? `${photoState.borderWidth}px solid ${photoState.borderColor}` : "none"};box-sizing:content-box;`;
         };
 
         window.setRadius = function (val) {
@@ -2147,59 +2147,29 @@
             bw = photoState.borderWidth,
             bc = photoState.borderColor;
           const canvas = document.createElement("canvas");
-          const total = size + bw * 2;
-          canvas.width = canvas.height = total;
+          canvas.width = canvas.height = size;
           const ctx = canvas.getContext("2d");
-          if (bw > 0) {
-            ctx.beginPath();
-            if (radius >= 50) {
-              // Circle border
-              ctx.arc(total / 2, total / 2, total / 2, 0, Math.PI * 2);
-            } else {
-              // Rounded-rect or square border matching the image clip shape
-              const rr = (radius / 50) * (size / 2);
-              const outerR = rr + bw; // scale corner radius to outer rect
-              ctx.moveTo(outerR, 0);
-              ctx.lineTo(total - outerR, 0);
-              ctx.quadraticCurveTo(total, 0, total, outerR);
-              ctx.lineTo(total, total - outerR);
-              ctx.quadraticCurveTo(total, total, total - outerR, total);
-              ctx.lineTo(outerR, total);
-              ctx.quadraticCurveTo(0, total, 0, total - outerR);
-              ctx.lineTo(0, outerR);
-              ctx.quadraticCurveTo(0, 0, outerR, 0);
-            }
-            ctx.fillStyle = bc;
-            ctx.fill();
-          }
           ctx.save();
-          const ox = bw,
-            oy = bw;
           ctx.beginPath();
           if (radius >= 50) {
-            ctx.arc(total / 2, total / 2, size / 2, 0, Math.PI * 2);
+            ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
           } else {
             const rr = (radius / 50) * (size / 2);
-            ctx.moveTo(ox + rr, oy);
-            ctx.lineTo(ox + size - rr, oy);
-            ctx.quadraticCurveTo(ox + size, oy, ox + size, oy + rr);
-            ctx.lineTo(ox + size, oy + size - rr);
-            ctx.quadraticCurveTo(
-              ox + size,
-              oy + size,
-              ox + size - rr,
-              oy + size,
-            );
-            ctx.lineTo(ox + rr, oy + size);
-            ctx.quadraticCurveTo(ox, oy + size, ox, oy + size - rr);
-            ctx.lineTo(ox, oy + rr);
-            ctx.quadraticCurveTo(ox, oy, ox + rr, oy);
+            ctx.moveTo(rr, 0);
+            ctx.lineTo(size - rr, 0);
+            ctx.quadraticCurveTo(size, 0, size, rr);
+            ctx.lineTo(size, size - rr);
+            ctx.quadraticCurveTo(size, size, size - rr, size);
+            ctx.lineTo(rr, size);
+            ctx.quadraticCurveTo(0, size, 0, size - rr);
+            ctx.lineTo(0, rr);
+            ctx.quadraticCurveTo(0, 0, rr, 0);
           }
           ctx.closePath();
           ctx.clip();
           const img = new Image();
           img.onload = function () {
-            ctx.drawImage(img, ox, oy, size, size);
+            ctx.drawImage(img, 0, 0, size, size);
             ctx.restore();
             photoDataURL = canvas.toDataURL("image/png");
             const thumb = $("photo-thumb");

@@ -1300,6 +1300,16 @@
           pt && pt.src && pt.src.startsWith("data:") ? pt.src : null;
         const signData =
           st && st.src && st.src.startsWith("data:") ? st.src : null;
+
+        // Normalise certificate dates: add a `dateDisplay` field that mirrors
+        // what the resume preview renders, so the backend has one clear field.
+        const normalisedCerts = d.certificates.map((c) => ({
+          ...c,
+          dateDisplay:
+            c.from || c.to ? c.from + (c.to ? " – " + c.to : "") : c.year || "",
+        }));
+        d.certificates = normalisedCerts;
+
         toast("⏳ Generating Word document…");
         fetch(API + "/api/resume/export-word", {
           method: "POST",

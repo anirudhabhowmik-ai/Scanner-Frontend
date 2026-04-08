@@ -670,105 +670,84 @@
         vertical-align: middle;
       }
 
-      /* Content sections styling */
-      .content-section {
-        background: white;
-        padding: 60px 20px;
+      /* SEO Content Styles */
+      .seo-content-wrapper {
+        background: #ffffff;
+        border-radius: 24px;
+        padding: 40px;
+        margin-top: 48px;
+        margin-bottom: 32px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eef2ff;
       }
-
-      .content-section h2 {
-        color: #1e3a8a;
-        margin-bottom: 20px;
+      .seo-content-wrapper h2 {
         font-size: 28px;
-      }
-
-      .content-section h3 {
-        color: #1e3a8a;
-        margin-bottom: 15px;
-        margin-top: 35px;
-        font-size: 22px;
-      }
-
-      .content-section p {
-        color: #555;
-        line-height: 1.8;
+        font-weight: 700;
+        color: #111827;
         margin-bottom: 20px;
+        font-family: "Montserrat", sans-serif;
       }
-
-      .content-section ul {
-        color: #555;
-        line-height: 1.8;
-        margin-bottom: 25px;
-        padding-left: 25px;
-      }
-
-      .content-section li {
-        margin-bottom: 10px;
-      }
-
-      .content-wrapper {
-        max-width: 900px;
-        margin: 0 auto;
-        text-align: left;
-      }
-
-      .feature-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 20px;
-        margin-top: 30px;
-      }
-
-      .feature-card {
-        background: #f9fafb;
-        padding: 25px;
-        border-radius: 12px;
-        border: 1px solid #e5e7eb;
-      }
-
-      .feature-card i {
-        font-size: 40px;
-        color: #667eea;
-        margin-bottom: 15px;
-      }
-
-      .feature-card h4 {
-        font-size: 18px;
-        margin-bottom: 10px;
-        color: #1f2937;
-      }
-
-      .feature-card p {
-        color: #6b7280;
-        font-size: 14px;
-        line-height: 1.6;
-        margin-bottom: 0;
-      }
-
-      .code-block {
-        background: #1e1e2f;
-        color: #e2e8f0;
-        padding: 15px;
-        border-radius: 8px;
-        overflow-x: auto;
-        font-family: monospace;
-        font-size: 14px;
-        line-height: 1.6;
-        margin: 20px 0;
-      }
-
-      .badge {
-        display: inline-block;
-        background: #667eea;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 12px;
+      .seo-content-wrapper h3 {
+        font-size: 20px;
         font-weight: 600;
-        margin-left: 10px;
+        color: #1f2937;
+        margin: 28px 0 12px 0;
+        font-family: "Montserrat", sans-serif;
       }
-
+      .seo-content-wrapper p {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #4b5563;
+        margin-bottom: 16px;
+        font-family: "Inter", sans-serif;
+      }
+      .seo-content-wrapper ul,
+      .seo-content-wrapper ol {
+        margin: 16px 0 16px 24px;
+        color: #4b5563;
+        font-family: "Inter", sans-serif;
+      }
+      .seo-content-wrapper li {
+        margin-bottom: 8px;
+        line-height: 1.5;
+      }
+      .seo-badge {
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin: 24px 0;
+      }
+      .internal-tools-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 16px;
+        margin-bottom: 8px;
+      }
+      .internal-tool-link {
+        background: #f3f4f6;
+        padding: 8px 16px;
+        border-radius: 40px;
+        text-decoration: none;
+        color: #2563eb;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        font-family: "Inter", sans-serif;
+        display: inline-block;
+      }
+      .internal-tool-link:hover {
+        background: #e0e7ff;
+        color: #1d4ed8;
+      }
       @media (max-width: 768px) {
+        .seo-content-wrapper {
+          padding: 24px;
+        }
+        .seo-content-wrapper h2 {
+          font-size: 24px;
+        }
         .subtitle {
           font-size: 16px;
         }
@@ -976,98 +955,243 @@
       </section>
     </main>
 
-    <!-- ════════════════════════════════════════════════════════ OCR CHOICE DIALOG -->
-    <div
-      id="ocrChoiceDialog"
-      class="ocr-dialog"
-      role="dialog"
-      aria-labelledby="ocrDialogTitle"
-      aria-modal="true"
-    >
-      <div class="ocr-dialog-content">
-        <h3 id="ocrDialogTitle">
-          <i
-            class="fa fa-scan-image"
-            aria-hidden="true"
-            style="margin-right: 10px; color: #667eea"
-          ></i>
-          Scanned PDF Detected
-        </h3>
+    <!-- NEW SEO CONTENT SECTION - STRONG SEO FOR BETTER RANKINGS -->
+    <div class="container">
+      <div class="seo-content-wrapper">
+        <h2>Why Convert PDF to PowerPoint Online?</h2>
         <p>
-          Your PDF appears to be <strong>image-based</strong> (scanned document
-          or images).
+          Converting PDF documents to PowerPoint presentations is essential when
+          you need to edit, customize, or present content from PDF files.
+          Whether you're repurposing report slides for a presentation,
+          extracting content from a brochure, or converting training materials,
+          our PDF to PPTX converter preserves your original layout while making
+          text fully editable in PowerPoint.
         </p>
-        <p>No selectable text was found. Choose how to process it:</p>
-        <p class="dialog-subtitle">Choose conversion method:</p>
-        <div class="ocr-dialog-options">
-          <button
-            id="ocrOption"
-            class="cta-button"
-            aria-label="Process with Google AI OCR"
-          >
-            <i
-              class="fa fa-robot"
-              aria-hidden="true"
-              style="font-size: 24px; margin-bottom: 8px"
-            ></i>
-            <span class="option-title">Google AI OCR</span>
-            <span class="option-desc"
-              >Google Gemini Vision reads the text — text becomes editable and
-              searchable in PowerPoint. Best quality, slightly slower.</span
-            >
-          </button>
-          <button
-            id="imageOption"
-            class="secondary-btn"
-            aria-label="Convert as images only"
-          >
-            <i
-              class="fa fa-image"
-              aria-hidden="true"
-              style="font-size: 24px; margin-bottom: 8px"
-            ></i>
-            <span class="option-title">Image-Only</span>
-            <span class="option-desc"
-              >Convert pages as images — fast, but text won't be selectable or
-              editable.</span
-            >
-          </button>
-        </div>
-        <button
-          id="cancelOption"
-          class="text-btn"
-          aria-label="Cancel conversion"
-        >
-          <i class="fa fa-times" aria-hidden="true"></i>
-        </button>
-      </div>
-    </div>
 
-    <!-- ════════════════════════════════════════════════════════ PROCESSING DIALOG -->
-    <div
-      id="processingDialog"
-      class="processing-dialog"
-      role="dialog"
-      aria-labelledby="processingTitle"
-      aria-modal="true"
-    >
-      <div class="processing-dialog-content">
-        <div class="spinner" aria-hidden="true"></div>
-        <h3
-          id="processingTitle"
-          style="color: #1f2937; margin-bottom: 10px; font-size: 22px"
-        >
-          Converting PDF to PowerPoint
-        </h3>
-        <p
-          style="color: #6b7280; margin-bottom: 8px; font-size: 15px"
-          id="processingMsg"
-        >
-          Analysing your document…
+        <div class="seo-badge">
+          <strong>✓ 100% Free & Secure:</strong> No registration required. No
+          watermark added. All PDFs are processed in real-time and automatically
+          deleted from our servers after conversion. Your privacy is our
+          priority.
+        </div>
+
+        <h3>Two Conversion Methods for Different PDF Types</h3>
+        <ul>
+          <li>
+            <strong>Text-Based PDFs (Digital):</strong> PDFs created from Word,
+            PowerPoint, or other office software. Text is extracted with exact
+            positioning, formatting, and font information preserved. Editable
+            text boxes in PowerPoint maintain the original layout.
+          </li>
+          <li>
+            <strong>Scanned PDFs (Image-Based):</strong> PDFs created by
+            scanning paper documents. Our Google AI Vision OCR technology reads
+            text from images and places it as editable text in PowerPoint.
+          </li>
+          <li>
+            <strong>Mixed Content:</strong> PDFs with both selectable text and
+            images are handled intelligently — text is extracted as editable
+            elements, while text inside images stays as part of the image layer.
+          </li>
+        </ul>
+
+        <h3>Common Use Cases for PDF to PowerPoint Conversion</h3>
+        <ul>
+          <li>
+            <strong>Business Presentations:</strong> Convert report PDFs into
+            editable slides for team meetings and client presentations.
+          </li>
+          <li>
+            <strong>Training Materials:</strong> Transform training manuals and
+            handbooks into PowerPoint slides for employee training.
+          </li>
+          <li>
+            <strong>Academic Lectures:</strong> Convert research papers, lecture
+            notes, and study materials into presentation slides.
+          </li>
+          <li>
+            <strong>Marketing Content:</strong> Repurpose brochures, case
+            studies, and white papers into sales presentations.
+          </li>
+          <li>
+            <strong>Proposal Edits:</strong> Convert proposal PDFs back to
+            PowerPoint for last-minute changes and customization.
+          </li>
+          <li>
+            <strong>Conference Slides:</strong> Extract slides from PDF versions
+            of conference presentations for reuse.
+          </li>
+          <li>
+            <strong>E-learning Content:</strong> Transform course materials into
+            PowerPoint-based e-learning modules.
+          </li>
+        </ul>
+
+        <h3>How to Use This PDF to PowerPoint Converter</h3>
+        <ol>
+          <li>
+            <strong>Upload</strong> - Click "Choose PDF File" and select the PDF
+            document you want to convert.
+          </li>
+          <li>
+            <strong>Wait for Detection</strong> - Our system automatically
+            detects if your PDF has selectable text or needs OCR.
+          </li>
+          <li>
+            <strong>For Scanned PDFs</strong> - If scanned, choose between
+            Google AI OCR (editable text) or Image-Only (fast, no text editing).
+          </li>
+          <li>
+            <strong>Select Languages (Optional)</strong> - For scanned PDFs,
+            select document languages to improve OCR accuracy.
+          </li>
+          <li>
+            <strong>Convert</strong> - Click "Convert to PowerPoint" to process
+            your document.
+          </li>
+          <li>
+            <strong>Download</strong> - Save your PPTX file instantly. No
+            registration required.
+          </li>
+        </ol>
+
+        <h3>Key Features of Our PDF to PPTX Converter</h3>
+        <ul>
+          <li>
+            <strong>Google AI OCR:</strong> State-of-the-art text recognition
+            for scanned documents in 14+ languages.
+          </li>
+          <li>
+            <strong>Exact Text Positioning:</strong> Text is placed at original
+            coordinates, preserving layout.
+          </li>
+          <li>
+            <strong>Editable Text:</strong> All recognized text can be edited
+            directly in PowerPoint.
+          </li>
+          <li>
+            <strong>Image Preservation:</strong> Photos, graphics, and
+            illustrations are preserved as images.
+          </li>
+          <li>
+            <strong>Font Detection:</strong> Font families, sizes, colors, and
+            styles are maintained where possible.
+          </li>
+          <li>
+            <strong>Multi-Language Support:</strong> OCR supports English,
+            Spanish, French, German, Chinese, Arabic, Hindi, and more.
+          </li>
+          <li>
+            <strong>No Watermark:</strong> Your output PPTX is clean with no
+            added branding.
+          </li>
+          <li>
+            <strong>Secure Processing:</strong> Files are automatically deleted
+            from our servers within 60 minutes.
+          </li>
+        </ul>
+
+        <h3>Supported Languages for OCR</h3>
+        <ul>
+          <li>
+            <strong>European Languages:</strong> English, Spanish, French,
+            German, Italian, Portuguese, Russian
+          </li>
+          <li>
+            <strong>Asian Languages:</strong> Chinese (Simplified &
+            Traditional), Japanese, Korean, Hindi, Bengali, Thai, Vietnamese
+          </li>
+          <li><strong>Middle Eastern Languages:</strong> Arabic</li>
+        </ul>
+
+        <h3>PDF to PowerPoint vs. PDF to Other Formats</h3>
+        <ul>
+          <li>
+            <strong>PDF to PowerPoint:</strong> Best when you need to edit
+            content, customize slides, or present the material. Text is
+            editable, layout preserved.
+          </li>
+          <li>
+            <strong>PDF to Word:</strong> Best when you need to edit long-form
+            text content like reports, articles, or essays.
+          </li>
+          <li>
+            <strong>PDF to Excel:</strong> Best when you need to extract tabular
+            data for analysis.
+          </li>
+          <li>
+            <strong>PDF to Image:</strong> Best when you only need to display
+            pages as images without editing.
+          </li>
+        </ul>
+
+        <h3>Tips for Best Results</h3>
+        <ul>
+          <li>
+            <strong>High Quality Scans:</strong> For scanned PDFs, use 300 DPI
+            or higher for better OCR accuracy.
+          </li>
+          <li>
+            <strong>Clear Text:</strong> Ensure text is sharp and not distorted
+            for best recognition.
+          </li>
+          <li>
+            <strong>Select Correct Languages:</strong> Adding the document's
+            language improves OCR accuracy significantly.
+          </li>
+          <li>
+            <strong>For Digital PDFs:</strong> No special steps needed — text
+            extraction is automatic.
+          </li>
+        </ul>
+
+        <h3>Technical Specifications</h3>
+        <p>
+          Maximum file size: 50MB per PDF. Supports PDF versions 1.4 through
+          2.0. Output format: PPTX (PowerPoint 2007 and newer). For scanned
+          PDFs, Google AI Vision OCR provides state-of-the-art text recognition.
+          All processing occurs over secure HTTPS connections with TLS
+          encryption. Files are automatically deleted within 60 minutes.
         </p>
-        <p class="processing-step" id="processingStep"></p>
-        <p style="color: #9ca3af; font-size: 13px; margin-top: 12px">
-          Please don't close this page.
+
+        <h3>Privacy & Security</h3>
+        <p>
+          Your PDFs are never stored permanently. Files are automatically
+          deleted from our servers within 60 minutes of conversion. We do not
+          access, view, or analyze your document content beyond the conversion
+          process. No personal information is collected or required to use this
+          tool.
+        </p>
+
+        <h3>More Free Tools You Might Need</h3>
+        <div class="internal-tools-grid">
+          <a href="/compress-pdf" class="internal-tool-link">📦 Compress PDF</a>
+          <a href="/merge" class="internal-tool-link">🔗 Merge PDF</a>
+          <a href="/split" class="internal-tool-link">✂️ Split PDF</a>
+          <a href="/delete" class="internal-tool-link">🗑️ Delete Pages</a>
+          <a href="/extract" class="internal-tool-link">📄 Extract Pages</a>
+          <a href="/watermark" class="internal-tool-link">💧 Add Watermark</a>
+          <a href="/crop" class="internal-tool-link">✂️ Crop PDF</a>
+          <a href="/edit" class="internal-tool-link">✏️ Edit PDF</a>
+          <a href="/organize" class="internal-tool-link">📑 Organize Pages</a>
+          <a href="/add-page-numbers" class="internal-tool-link"
+            >🔢 Add Page Numbers</a
+          >
+          <a href="/jpg-to-pdf" class="internal-tool-link">📷 JPG to PDF</a>
+          <a href="/pdf-to-word" class="internal-tool-link">📄 PDF to Word</a>
+          <a href="/pdf-to-excel" class="internal-tool-link">📊 PDF to Excel</a>
+          <a href="/pdf-to-jpg" class="internal-tool-link">📸 PDF to JPG</a>
+          <a href="/pdf-to-image" class="internal-tool-link">🖼️ PDF to Image</a>
+          <a href="/unlock-pdf" class="internal-tool-link">🔓 Unlock PDF</a>
+          <a href="/rotate-pdf" class="internal-tool-link">🔄 Rotate PDF</a>
+          <a href="/excel-to-pdf" class="internal-tool-link">📊 Excel to PDF</a>
+          <a href="/html-to-pdf" class="internal-tool-link">🌐 HTML to PDF</a>
+          <a href="/image-to-pdf" class="internal-tool-link">🖼️ Image to PDF</a>
+          <a href="/pdfa-ocr" class="internal-tool-link">📝 PDF/A with OCR</a>
+        </div>
+        <p style="margin-top: 16px; font-size: 14px; color: #6b7280">
+          All tools are completely free, no registration required, with the same
+          privacy-first approach.
         </p>
       </div>
     </div>

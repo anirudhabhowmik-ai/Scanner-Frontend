@@ -942,7 +942,7 @@
           pdfFormData.append("format", "pdf");
           pdfFormData.append("enhance", "true");
 
-          const pdfRes = await fetch(`${BACKEND_URL}/scan-pdf`, {
+          const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
             method: "POST",
             body: pdfFormData,
           });

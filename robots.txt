@@ -18,4 +18,4 @@ User-agent: Google-Extended
 Disallow: /
 
 # Sitemap location
-Sitemap: https://nextopdf.com/sitemap.xml
+Sitemap: https://www.nextopdf.com/sitemap.xml

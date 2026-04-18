@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      AI Application Writer - Generate Formal Applications Online Free
+    </title>
+    <meta
+      name="description"
+      content="Generate professional applications instantly using AI. Create leave applications, complaint letters, bank requests and more — free, fast, no login needed."
+    />
+    <meta
+      name="keywords"
+      content="application writer, dorkhasto generator, AI letter writer, leave application format, complaint letter AI, formal letter generator"
+    />
+    <meta name="author" content="NextoPDF" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.nextopdf.com/application-writer" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:url"
+      content="https://www.nextopdf.com/application-writer"
+    />
+    <meta
+      property="og:title"
+      content="AI Application Writer - Generate Formal Applications Online Free"
+    />
+    <meta
+      property="og:description"
+      content="Generate professional applications instantly using AI. Free, fast, no login needed."
+    />
+    <meta property="og:site_name" content="NextoPDF" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./images/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./images/apple-touch-icon.png"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="./css/style.css" />
+
+    <style>
+      /* ═══ DESIGN SYSTEM — Ink & Paper ═══
+         Warm cream · Deep navy · Gold accent  */
+      :root {
+        --ink: #1a1a2e;
+        --ink-light: #3d3d5c;
+        --cream: #faf8f3;
+        --paper: #ffffff;
+        --gold: #c9933a;
+        --gold-lt: #f5e6cc;
+        --indigo: #4338ca;
+        --indigo-lt: #eef2ff;
+        --red: #dc2626;
+        --red-lt: #fef2f2;
+        --green: #059669;
+        --green-lt: #ecfdf5;
+        --border: #e8e4dc;
+        --muted: #8a8577;
+        --shadow-sm: 0 2px 8px rgba(26, 26, 46, 0.06);
+        --shadow-md: 0 8px 32px rgba(26, 26, 46, 0.1);
+        --r-sm: 10px;
+        --r-md: 16px;
+        --r-lg: 24px;
+        --ff-display: "Playfair Display", Georgia, serif;
+        --ff-body: "DM Sans", system-ui, sans-serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--ff-body);
+        background: var(--cream);
+        color: var(--ink);
+        min-height: 100vh;
+        line-height: 1.5;
+      }
+
+      .aw-wrap {
+        max-width: 820px;
+        margin: 0 auto;
+        padding: 0 16px 80px;
+      }
+
+      /* ═══ HERO ═══ */
+      .hero {
+        text-align: center;
+        margin-top: 30px;
+        padding: 52px 20px 38px;
+        position: relative;
+        background: transparent;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 280px;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: var(--gold-lt);
+        color: var(--gold);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 5px 16px;
+        border-radius: 999px;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 18px;
+        border: 1px solid rgba(201, 147, 58, 0.28);
+      }
+
+      .hero h1 {
+        font-family: var(--ff-display);
+        font-size: clamp(26px, 6vw, 44px);
+        font-weight: 800;
+        color: var(--ink);
+        line-height: 1.15;
+        margin-bottom: 14px;
+        letter-spacing: -0.5px;
+      }
+
+      .hero h1 em {
+        font-style: normal;
+        color: var(--gold);
+      }
+
+      .hero p {
+        color: var(--muted);
+        font-size: 15.5px;
+        max-width: 500px;
+        margin: 0 auto;
+        line-height: 1.7;
+      }
+
+      /* ═══ STEPS ═══ */
+      .steps {
+        display: flex;
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        overflow: hidden;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 28px;
+      }
+
+      .step {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 16px;
+        font-size: 13px;
+        color: var(--muted);
+        position: relative;
+        transition: color 0.2s;
+      }
+
+      .step:not(:last-child)::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: 20%;
+        height: 60%;
+        width: 1px;
+        background: var(--border);
+      }
+
+      .step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--indigo-lt);
+        color: var(--indigo);
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        transition:
+          background 0.2s,
+          color 0.2s;
+      }
+
+      .step.active {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .step.active .step-num {
+        background: var(--indigo);
+        color: #fff;
+      }
+      .step.done .step-num {
+        background: var(--green-lt);
+        color: var(--green);
+      }
+
+      /* ═══ FORM CARD ═══ */
+      .form-card {
+        background: var(--paper);
+        padding: 36px 32px 30px;
+        border-radius: var(--r-lg);
+        box-shadow: var(--shadow-md);
+        border: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .form-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--indigo) 0%, var(--gold) 100%);
+      }
+
+      .sec-label {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 18px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        flex-wrap: wrap;
+      }
+
+      .sec-label i {
+        color: var(--indigo);
+      }
+      .sec-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: var(--border);
+        min-width: 20px;
+      }
+
+      .ai-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: var(--indigo);
+        background: var(--indigo-lt);
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        order: 3;
+      }
+
+      /* ── Grid ── */
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 580px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 18px;
+      }
+
+      .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink-light);
+        margin-bottom: 7px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .form-group label i {
+        color: var(--indigo);
+        opacity: 0.7;
+      }
+      .req {
+        color: var(--red);
+        margin-left: 2px;
+      }
+
+      /* ── Inputs ── */
+      .input-field {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        font-size: 14px;
+        font-family: var(--ff-body);
+        color: var(--ink);
+        background: var(--cream);
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s,
+          background 0.18s;
+        appearance: none;
+      }
+
+      .input-field::placeholder {
+        color: #bbb5a8;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: var(--indigo);
+        background: var(--paper);
+        box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+      }
+
+      .input-field.error {
+        border-color: var(--red);
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+      }
+
+      textarea.input-field {
+        resize: vertical;
+        min-height: 105px;
+        line-height: 1.65;
+      }
+
+      select.input-field {
+        cursor: pointer;
+      }
+
+      .char-wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 5px;
+        gap: 8px;
+      }
+
+      .char-hint {
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+      .char-count {
+        font-size: 11.5px;
+        color: #bbb5a8;
+        flex-shrink: 0;
+      }
+      .char-count.warn {
+        color: #d97706;
+      }
+      .char-count.limit {
+        color: var(--red);
+      }
+
+      /* ── Error box ── */
+      .error-box {
+        background: var(--red-lt);
+        border: 1.5px solid #fca5a5;
+        color: var(--red);
+        padding: 11px 14px;
+        border-radius: var(--r-sm);
+        font-size: 13.5px;
+        margin-bottom: 18px;
+        display: none;
+        align-items: center;
+        gap: 9px;
+      }
+
+      /* ── Generate button ── */
+      .btn-generate {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: var(--ink);
+        color: #fff;
+        padding: 14px 28px;
+        border: none;
+        border-radius: var(--r-sm);
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: var(--ff-body);
+        width: 100%;
+        transition:
+          background 0.2s,
+          transform 0.12s,
+          box-shadow 0.2s;
+        margin-top: 4px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-generate::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.07) 0%,
+          transparent 60%
+        );
+      }
+
+      .btn-generate:hover:not(:disabled) {
+        background: var(--indigo);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(67, 56, 202, 0.3);
+      }
+
+      .btn-generate:active:not(:disabled) {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+      .btn-generate:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* ═══ OUTPUT ═══ */
+      .output-section {
+        margin-top: 36px;
+        display: none;
+        animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .output-card {
+        background: var(--paper);
+        border-radius: var(--r-lg);
+        border: 1.5px solid var(--border);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+      }
+
+      /* toolbar */
+      .output-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 20px;
+        background: var(--cream);
+        border-bottom: 1px solid var(--border);
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .output-title {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .status-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--green);
+        box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+        animation: pulse 2s infinite;
+        flex-shrink: 0;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+        }
+        50% {
+          box-shadow: 0 0 0 6px rgba(5, 150, 105, 0.06);
+        }
+      }
+
+      .edit-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+        background: #fff3cd;
+        color: #856404;
+        border-radius: 999px;
+        font-weight: 600;
+        border: 1px solid #ffc107;
+        align-items: center;
+        gap: 5px;
+        display: none;
+      }
+
+      .output-actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* icon btn */
+      .btn-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 13px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 600;
+        font-family: var(--ff-body);
+        cursor: pointer;
+        border: 1.5px solid var(--border);
+        background: var(--paper);
+        color: var(--ink-light);
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+
+      .btn-icon:hover {
+        background: var(--indigo-lt);
+        border-color: var(--indigo);
+        color: var(--indigo);
+      }
+      .btn-icon.success {
+        background: var(--green-lt);
+        border-color: #6ee7b7;
+        color: var(--green);
+      }
+
+      /* download dropdown */
+      .dl-wrap {
+        position: relative;
+      }
+
+      .btn-dl {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 7px 14px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        font-family: var(--ff-body);
+        cursor: pointer;
+        border: 1.5px solid var(--indigo);
+        background: var(--indigo);
+        color: #fff;
+        transition: all 0.18s;
+        white-space: nowrap;
+      }
+
+      .btn-dl:hover {
+        background: #3730a3;
+        border-color: #3730a3;
+      }
+
+      .dl-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        background: var(--paper);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        box-shadow: var(--shadow-md);
+        min-width: 185px;
+        z-index: 200;
+        overflow: hidden;
+        display: none;
+        animation: menuIn 0.15s ease;
+      }
+
+      .dl-menu.open {
+        display: block;
+      }
+
+      @keyframes menuIn {
+        from {
+          opacity: 0;
+          transform: translateY(-6px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .dl-item {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        padding: 11px 16px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--ink);
+        cursor: pointer;
+        transition: background 0.12s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: var(--ff-body);
+      }
+
+      .dl-item:hover {
+        background: var(--indigo-lt);
+        color: var(--indigo);
+      }
+      .dl-item:not(:last-child) {
+        border-bottom: 1px solid var(--border);
+      }
+      .dl-item i {
+        width: 18px;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      /* editable output area */
+      .output-body {
+        padding: 22px 24px;
+      }
+
+      .edit-info {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .output-textarea {
+        width: 100%;
+        min-height: 400px;
+        padding: 24px 26px;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        font-size: 14.5px;
+        line-height: 1.95;
+        font-family: "Georgia", "Times New Roman", serif;
+        color: var(--ink);
+        background: #fffef9;
+        resize: vertical;
+        transition:
+          border-color 0.18s,
+          box-shadow 0.18s;
+        box-sizing: border-box;
+      }
+
+      .output-textarea:focus {
+        outline: none;
+        border-color: var(--gold);
+        box-shadow: 0 0 0 3px rgba(201, 147, 58, 0.12);
+      }
+
+      /* skeleton overlay */
+      #skelOverlay {
+        padding: 24px 26px;
+        background: var(--cream);
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-sm);
+        min-height: 400px;
+      }
+
+      .skel {
+        background: linear-gradient(
+          90deg,
+          #ede9e0 25%,
+          #e0dbd0 50%,
+          #ede9e0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 5px;
+        height: 14px;
+        margin-bottom: 13px;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* ═══ TIPS ═══ */
+      .tips {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-top: 32px;
+      }
+
+      @media (max-width: 600px) {
+        .tips {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .tip {
+        background: var(--paper);
+        border: 1px solid var(--border);
+        border-radius: var(--r-md);
+        padding: 16px 18px;
+        font-size: 13px;
+        color: var(--muted);
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        transition: box-shadow 0.2s;
+      }
+
+      .tip:hover {
+        box-shadow: var(--shadow-sm);
+      }
+      .tip-icon {
+        font-size: 18px;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .tip strong {
+        color: var(--ink);
+        display: block;
+        margin-bottom: 3px;
+      }
+
+      @media (max-width: 640px) {
+        .form-card {
+          padding: 24px 18px 22px;
+        }
+        .output-body {
+          padding: 16px;
+        }
+        .output-toolbar {
+          padding: 12px 14px;
+        }
+        .output-textarea {
+          padding: 16px 18px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <section id="header-placeholder"></section>
+
+    <main>
+      <div class="aw-wrap">
+        <!-- Hero -->
+        <div class="hero">
+          <div class="badge">
+            <i class="fa fa-feather-pointed"></i> AI Powered
+          </div>
+          <h1>Write Any <em>Formal Application</em><br />in Seconds</h1>
+          <p>
+            Just describe your situation — the AI understands the context, picks
+            the right format, and crafts a polished letter instantly.
+          </p>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps" id="stepsBar">
+          <div class="step active" id="step1">
+            <div class="step-num">1</div>
+            <span>Fill Details</span>
+          </div>
+          <div class="step" id="step2">
+            <div class="step-num">2</div>
+            <span>AI Writes</span>
+          </div>
+          <div class="step" id="step3">
+            <div class="step-num">3</div>
+            <span>Edit &amp; Download</span>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-card">
+          <div class="sec-label">
+            <i class="fa fa-circle-user"></i> Who is writing &amp; to whom?
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name"
+                ><i class="fa fa-user fa-xs"></i> Your Full Name<span
+                  class="req"
+                  >*</span
+                ></label
+              >
+              <input
+                id="name"
+                class="input-field"
+                placeholder="e.g. Rahul Kumar"
+                maxlength="100"
+                autocomplete="name"
+              />
+            </div>
+            <div class="form-group">
+              <label for="receiver"
+                ><i class="fa fa-building fa-xs"></i> Receiver / Authority<span
+                  class="req"
+                  >*</span
+                ></label
+              >
+              <input
+                id="receiver"
+                class="input-field"
+                placeholder="e.g. The Principal, ABC School"
+                maxlength="150"
+              />
+            </div>
+          </div>
+
+          <div class="sec-label"><i class="fa fa-sliders"></i> Preferences</div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="language"
+                ><i class="fa fa-globe fa-xs"></i> Language</label
+              >
+              <select id="language" class="input-field">
+                <option value="English">🇬🇧 English</option>
+                <option value="Bengali">🇧🇩 Bengali (বাংলা)</option>
+                <option value="Hindi">🇮🇳 Hindi (हिंदी)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tone"><i class="fa fa-sliders fa-xs"></i> Tone</label>
+              <select id="tone" class="input-field">
+                <option value="formal">📋 Formal &amp; Professional</option>
+                <option value="polite">🤝 Polite &amp; Humble</option>
+                <option value="urgent">⚡ Urgent &amp; Direct</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sec-label">
+            <i class="fa fa-pen-to-square"></i> What's your reason?
+            <span class="ai-pill"
+              ><i class="fa fa-wand-magic-sparkles"></i> AI auto-detects
+              application type</span
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="reason"
+              ><i class="fa fa-align-left fa-xs"></i> Describe your
+              situation<span class="req">*</span></label
+            >
+            <textarea
+              id="reason"
+              class="input-field"
+              placeholder="e.g. I need 3 days leave from 10th to 12th July due to high fever. My doctor has advised complete bed rest and given me a medical certificate."
+              maxlength="600"
+            ></textarea>
+            <div class="char-wrap">
+              <span class="char-hint"
+                >More detail = better letter. Include dates, context &amp;
+                purpose.</span
+              >
+              <span class="char-count" id="charCount">0 / 600</span>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div class="error-box" id="errorBox">
+            <i class="fa fa-circle-exclamation"></i>
+            <span id="errorMsg"></span>
+          </div>
+
+          <button
+            class="btn-generate"
+            id="generateBtn"
+            onclick="generateApplication()"
+          >
+            <i class="fa fa-wand-magic-sparkles" id="btnIcon"></i>
+            <span id="btnText">Generate My Application</span>
+          </button>
+        </div>
+
+        <!-- Output -->
+        <div class="output-section" id="outputSection">
+          <div class="output-card">
+            <!-- Toolbar -->
+            <div class="output-toolbar">
+              <div class="output-title">
+                <span class="status-dot"></span>
+                Application Ready
+                <span class="edit-badge" id="editBadge"
+                  ><i class="fa fa-pencil"></i> Edited</span
+                >
+              </div>
+              <div class="output-actions">
+                <button class="btn-icon" id="copyBtn" onclick="copyText()">
+                  <i class="fa fa-copy"></i> Copy
+                </button>
+                <button class="btn-icon" onclick="regenerate()">
+                  <i class="fa fa-rotate-right"></i> Regenerate
+                </button>
+                <!-- Download dropdown -->
+                <div class="dl-wrap">
+                  <button
+                    class="btn-dl"
+                    id="dlBtn"
+                    onclick="toggleDlMenu(event)"
+                  >
+                    <i class="fa fa-download"></i> Download
+                    <i class="fa fa-chevron-down fa-xs"></i>
+                  </button>
+                  <div class="dl-menu" id="dlMenu">
+                    <button class="dl-item" onclick="downloadTxt()">
+                      <i class="fa fa-file-lines" style="color: #6b7280"></i>
+                      Plain Text (.txt)
+                    </button>
+                    <button class="dl-item" onclick="downloadDocx()">
+                      <i class="fa fa-file-word" style="color: #2b579a"></i>
+                      Word Document (.doc)
+                    </button>
+                    <button class="dl-item" onclick="downloadPdf()">
+                      <i class="fa fa-file-pdf" style="color: #dc2626"></i> PDF
+                      (Print to save)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Body -->
+            <div class="output-body">
+              <div class="edit-info">
+                <i class="fa fa-circle-info" style="color: var(--indigo)"></i>
+                You can directly edit the application below before downloading.
+              </div>
+              <!-- Skeleton or textarea -->
+              <div id="skelOverlay" style="display: none">
+                <div class="skel" style="width: 60%"></div>
+                <div class="skel" style="width: 45%"></div>
+                <div class="skel" style="width: 75%; margin-top: 18px"></div>
+                <div class="skel" style="width: 95%"></div>
+                <div class="skel" style="width: 88%"></div>
+                <div class="skel" style="width: 80%"></div>
+                <div class="skel" style="width: 65%"></div>
+                <div class="skel" style="width: 95%; margin-top: 18px"></div>
+                <div class="skel" style="width: 82%"></div>
+                <div class="skel" style="width: 50%"></div>
+                <div class="skel" style="width: 72%; margin-top: 18px"></div>
+                <div class="skel" style="width: 40%"></div>
+              </div>
+              <textarea
+                class="output-textarea"
+                id="output"
+                spellcheck="true"
+                placeholder="Your generated application will appear here…"
+                oninput="onOutputEdit()"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tips -->
+        <div class="tips">
+          <div class="tip">
+            <div class="tip-icon">✍️</div>
+            <div>
+              <strong>Be descriptive</strong>Include dates, names &amp; full
+              context for a more accurate letter.
+            </div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">🌐</div>
+            <div>
+              <strong>3 languages</strong>Full support for English, Bengali
+              (বাংলা) and Hindi (हिंदी).
+            </div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">✏️</div>
+            <div>
+              <strong>Always editable</strong>Tweak the generated text directly
+              before downloading.
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <section id="footer-placeholder"></section>
+
+    <script src="./js/app.js"></script>
+    <script>
+      const GENERATE_URL = `http://127.0.0.1:8080/generate-application`;
+
+      /* ── Character counter ──────────────────────── */
+      const reasonEl = document.getElementById("reason");
+      const ccEl = document.getElementById("charCount");
+
+      reasonEl.addEventListener("input", () => {
+        const n = reasonEl.value.length;
+        ccEl.textContent = `${n} / 600`;
+        ccEl.className =
+          "char-count" + (n > 540 ? " limit" : n > 420 ? " warn" : "");
+      });
+
+      /* ── UI helpers ─────────────────────────────── */
+      function showError(msg) {
+        const box = document.getElementById("errorBox");
+        document.getElementById("errorMsg").textContent = msg;
+        box.style.display = "flex";
+        box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function hideError() {
+        document.getElementById("errorBox").style.display = "none";
+      }
+
+      function markField(id, err) {
+        document.getElementById(id).classList.toggle("error", err);
+      }
+
+      function setStep(n) {
+        [1, 2, 3].forEach((i) => {
+          const s = document.getElementById("step" + i);
+          s.className = "step" + (i < n ? " done" : i === n ? " active" : "");
+          const num = s.querySelector(".step-num");
+          num.innerHTML =
+            i < n ? '<i class="fa fa-check" style="font-size:10px"></i>' : i;
+        });
+      }
+
+      function setLoading(on) {
+        const btn = document.getElementById("generateBtn");
+        document.getElementById("btnIcon").className = on
+          ? "fa fa-spinner fa-spin"
+          : "fa fa-wand-magic-sparkles";
+        document.getElementById("btnText").textContent = on
+          ? "Generating…"
+          : "Generate My Application";
+        btn.disabled = on;
+      }
+
+      function showSkeleton() {
+        document.getElementById("output").style.display = "none";
+        document.getElementById("skelOverlay").style.display = "block";
+        document.getElementById("outputSection").style.display = "block";
+      }
+
+      function hideSkeleton() {
+        document.getElementById("skelOverlay").style.display = "none";
+        document.getElementById("output").style.display = "block";
+      }
+
+      function onOutputEdit() {
+        const val = document.getElementById("output").value.trim();
+        document.getElementById("editBadge").style.display = val
+          ? "inline-flex"
+          : "none";
+      }
+
+      /* ── Download dropdown ──────────────────────── */
+      function toggleDlMenu(e) {
+        e.stopPropagation();
+        document.getElementById("dlMenu").classList.toggle("open");
+      }
+      document.addEventListener("click", () =>
+        document.getElementById("dlMenu")?.classList.remove("open"),
+      );
+
+      /* ── Generate ───────────────────────────────── */
+      async function generateApplication() {
+        hideError();
+        ["name", "receiver", "reason"].forEach((id) => markField(id, false));
+
+        const name = document.getElementById("name").value.trim();
+        const receiver = document.getElementById("receiver").value.trim();
+        const reason = document.getElementById("reason").value.trim();
+        const language = document.getElementById("language").value;
+        const tone = document.getElementById("tone").value;
+
+        if (!name) {
+          markField("name", true);
+          showError("Please enter your full name.");
+          document.getElementById("name").focus();
+          return;
+        }
+        if (!receiver) {
+          markField("receiver", true);
+          showError("Please enter the receiver/authority.");
+          document.getElementById("receiver").focus();
+          return;
+        }
+        if (!reason) {
+          markField("reason", true);
+          showError("Please describe your reason.");
+          document.getElementById("reason").focus();
+          return;
+        }
+
+        setLoading(true);
+        setStep(2);
+        showSkeleton();
+
+        try {
+          const res = await fetch(GENERATE_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, receiver, reason, language, tone }),
+          });
+
+          if (!res.ok) {
+            let msg = `Server error (${res.status})`;
+            try {
+              const e = await res.json();
+              msg = e.error || msg;
+            } catch (_) {}
+            throw new Error(msg);
+          }
+
+          const data = await res.json();
+
+          if (data.success) {
+            hideSkeleton();
+            document.getElementById("output").value = data.result;
+            document.getElementById("editBadge").style.display = "none";
+            setStep(3);
+            document
+              .getElementById("outputSection")
+              .scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            hideSkeleton();
+            showError(data.error || "Something went wrong. Please try again.");
+            setStep(1);
+          }
+        } catch (err) {
+          hideSkeleton();
+          showError("❌ " + err.message);
+          setStep(1);
+        } finally {
+          setLoading(false);
+        }
+      }
+
+      function regenerate() {
+        generateApplication();
+      }
+
+      /* ── Copy ───────────────────────────────────── */
+      function copyText() {
+        const text = document.getElementById("output").value;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+          const btn = document.getElementById("copyBtn");
+          btn.classList.add("success");
+          btn.innerHTML = '<i class="fa fa-check"></i> Copied!';
+          setTimeout(() => {
+            btn.classList.remove("success");
+            btn.innerHTML = '<i class="fa fa-copy"></i> Copy';
+          }, 2200);
+        });
+      }
+
+      /* ── File name helper ───────────────────────── */
+      function fileName() {
+        return (
+          (document.getElementById("name").value.trim().replace(/\s+/g, "_") ||
+            "application") + "_application"
+        );
+      }
+
+      function esc(s) {
+        return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      function triggerDl(blob, name) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      /* ── Download TXT ───────────────────────────── */
+      function downloadTxt() {
+        const text = document.getElementById("output").value;
+        if (!text) return;
+        triggerDl(
+          new Blob([text], { type: "text/plain;charset=utf-8" }),
+          fileName() + ".txt",
+        );
+        document.getElementById("dlMenu").classList.remove("open");
+      }
+
+      /* ── Download DOCX (Word-compatible HTML) ───── */
+      function downloadDocx() {
+        const text = document.getElementById("output").value;
+        if (!text) return;
+
+        const paras = text
+          .split("\n")
+          .map(
+            (l) =>
+              `<p style="margin:0 0 6pt;font-family:Georgia,serif;font-size:12pt;line-height:1.85;">${esc(l) || "&nbsp;"}</p>`,
+          )
+          .join("");
+
+        const wordHtml = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8">
+<style>
+  body { font-family:Georgia,serif;font-size:12pt;margin:72pt 90pt;color:#1a1a2e; }
+  p { margin:0 0 6pt;line-height:1.85; }
+</style>
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
+</head><body>${paras}</body></html>`;
+
+        triggerDl(
+          new Blob(["\ufeff", wordHtml], {
+            type: "application/msword;charset=utf-8",
+          }),
+          fileName() + ".doc",
+        );
+        document.getElementById("dlMenu").classList.remove("open");
+      }
+
+      /* ── Download PDF (open print dialog) ──────── */
+      function downloadPdf() {
+        const text = document.getElementById("output").value;
+        if (!text) return;
+
+        const paras = text
+          .split("\n")
+          .map((l) => `<p>${esc(l) || "&nbsp;"}</p>`)
+          .join("");
+
+        const html = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<style>
+  @page { margin:72pt 90pt; }
+  body  { font-family:Georgia,serif;font-size:12pt;color:#1a1a2e;line-height:1.9; }
+  p     { margin:0 0 5pt; }
+</style></head><body>${paras}
+<script>window.onload=function(){window.print();setTimeout(window.close,1200);};<\/script></body></html>`;
+
+        const win = window.open("", "_blank", "width=900,height=720");
+        if (win) {
+          win.document.write(html);
+          win.document.close();
+        } else {
+          // popup blocked fallback — download as HTML
+          triggerDl(
+            new Blob([html], { type: "text/html;charset=utf-8" }),
+            fileName() + ".html",
+          );
+        }
+        document.getElementById("dlMenu").classList.remove("open");
+      }
+
+      /* ── Enter key shortcut ─────────────────────── */
+      document.querySelectorAll(".input-field").forEach((el) => {
+        el.addEventListener("keydown", (e) => {
+          if (
+            e.key === "Enter" &&
+            el.tagName !== "TEXTAREA" &&
+            el.tagName !== "SELECT"
+          ) {
+            generateApplication();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

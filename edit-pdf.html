@@ -57,7 +57,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://www.nextopdf.com/images/edit-pdf-pdf-twitter.png"
+      content="https://www.nextopdf.com/images/edit-pdf-twitter.png"
     />
 
     <!-- Structured Data / Schema.org -->
@@ -127,7 +127,7 @@
     />
 
     <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/edit-pdf.css" />
+    <link rel="stylesheet" href="./css/edit.css" />
 
     <!-- Favicon -->
     <link
@@ -1937,7 +1937,7 @@
             fd.append("file", pdfFile);
             fd.append("pageNum", pageNum);
 
-            const res = await fetch(`${API}/extract-pdf-edit-content`, {
+            const res = await fetch(`${API}/extract-edit-content`, {
               method: "POST",
               body: fd,
             });
@@ -2158,7 +2158,7 @@
 
           fd.append("annotations", JSON.stringify(annData));
 
-          const res = await fetch(`${API}/edit-pdf-pdf`, {
+          const res = await fetch(`${API}/edit-pdf`, {
             method: "POST",
             body: fd,
           });

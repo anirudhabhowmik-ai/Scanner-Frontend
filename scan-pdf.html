@@ -926,7 +926,7 @@
           jpgFormData.append("format", "jpg");
           jpgFormData.append("enhance", "true");
 
-          const jpgRes = await fetch(`${BACKEND_URL}/scan-pdf`, {
+          const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
             method: "POST",
             body: jpgFormData,
           });

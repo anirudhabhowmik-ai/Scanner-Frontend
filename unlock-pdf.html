@@ -328,7 +328,6 @@
                   accept=".pdf"
                   hidden
                   aria-label="Upload PDF files to unlock"
-                  multiple
                 />
               </label>
             </div>
@@ -710,9 +709,13 @@
           <a href="/split-pdf" class="internal-tool-link">✂️ Split PDF</a>
           <a href="/delete-pdf" class="internal-tool-link">🗑️ Delete Pages</a>
           <a href="/extract-pdf" class="internal-tool-link">📄 Extract Pages</a>
-          <a href="/organize-pdf" class="internal-tool-link">📑 Organize Pages</a>
+          <a href="/organize-pdf" class="internal-tool-link"
+            >📑 Organize Pages</a
+          >
           <a href="/rotate-pdf" class="internal-tool-link">🔄 Rotate PDF</a>
-          <a href="/add-watermark-pdf" class="internal-tool-link">💧 Add Watermark</a>
+          <a href="/add-watermark-pdf" class="internal-tool-link"
+            >💧 Add Watermark</a
+          >
           <a href="/crop-pdf" class="internal-tool-link">✂️ Crop PDF</a>
           <a href="/edit-pdf" class="internal-tool-link">✏️ Edit PDF</a>
           <a href="/page-number" class="internal-tool-link"
@@ -753,7 +756,7 @@
 
     <script src="./js/app.js"></script>
     <script>
-      const BACKEND_UNPROTECT_URL = `${BACKEND_BASE_URL}/unprotect-pdf`;
+      const BACKEND_UNPROTECT_URL = `http://127.0.0.1:8080/unprotect-pdf`;
 
       const pdfInput = document.getElementById("pdfUpload");
       const unlockBtn = document.getElementById("unlockBtn");
@@ -773,6 +776,8 @@
 
       let selectedFiles = [];
       let passwordRequired = false;
+      let currentFileIndex = 0;
+      let downloadUrls = [];
 
       // Toggle password visibility
       togglePassword.addEventListener("click", () => {
@@ -782,7 +787,6 @@
         togglePassword.classList.toggle("fa-eye-slash");
       });
 
-      // Keyboard support for toggle password
       togglePassword.addEventListener("keypress", (e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
@@ -817,12 +821,10 @@
           const fileNameSpan =
             e.target.previousElementSibling.querySelector("span:last-child");
           const fileName = fileNameSpan ? fileNameSpan.textContent.trim() : "";
-
           selectedFiles = selectedFiles.filter(
             (file) => file.name !== fileName,
           );
           e.target.closest("li").remove();
-
           if (selectedFiles.length === 0) {
             fileList.style.display = "none";
             passwordContainer.style.display = "none";
@@ -830,7 +832,6 @@
         }
       });
 
-      // Keyboard support for delete
       fileList.addEventListener("keypress", (e) => {
         if (
           (e.key === "Enter" || e.key === " ") &&
@@ -841,7 +842,50 @@
         }
       });
 
-      // Unlock PDFs
+      // ✅ Process one file at a time, trigger downloads individually as plain PDFs
+      async function unlockFile(file, password) {
+        const formData = new FormData();
+        formData.append("files", file);
+        if (password) {
+          formData.append("password", password);
+        }
+
+        const response = await fetch(BACKEND_UNPROTECT_URL, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (response.status === 401) {
+          const errorData = await response.json();
+          if (errorData.error === "password_required") {
+            return { needsPassword: true, message: errorData.message };
+          }
+        }
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || errorData.error || "Failed to unlock PDF",
+          );
+        }
+
+        // ✅ Get filename from Content-Disposition header
+        const contentDisposition = response.headers.get("Content-Disposition");
+        let fileName = `unlocked_${file.name}`;
+        if (contentDisposition) {
+          const matches = contentDisposition.match(
+            /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
+          );
+          if (matches && matches[1]) {
+            fileName = matches[1].replace(/['"]/g, "");
+          }
+        }
+
+        const blob = await response.blob();
+        return { blob, fileName, needsPassword: false };
+      }
+
+      // Unlock button click
       unlockBtn.addEventListener("click", async () => {
         if (selectedFiles.length === 0) {
           errorMsg.textContent = "Please select at least one PDF file.";
@@ -849,7 +893,6 @@
           return;
         }
 
-        // If password is required but not provided
         if (passwordRequired && !passwordInput.value.trim()) {
           errorMsg.textContent = "Please enter the PDF password.";
           errorMsg.style.display = "block";
@@ -862,75 +905,60 @@
         loader.style.display = "inline-block";
         unlockBtn.disabled = true;
 
-        const formData = new FormData();
-        selectedFiles.forEach((file) => formData.append("files", file));
-
-        // Add password if provided
         const password = passwordInput.value.trim();
-        if (password) {
-          formData.append("password", password);
-        }
+        downloadUrls = [];
 
         try {
-          const response = await fetch(BACKEND_UNPROTECT_URL, {
-            method: "POST",
-            body: formData,
-          });
+          for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            const result = await unlockFile(file, password);
 
-          // Check if password is required (401 status)
-          if (response.status === 401) {
-            const errorData = await response.json();
-
-            if (errorData.error === "password_required") {
-              // Show password input
+            if (result.needsPassword) {
+              // Show password prompt and stop
               passwordContainer.style.display = "block";
               passwordRequired = true;
-              passwordWarning.innerHTML = `<strong>Password Required:</strong> ${errorData.message}`;
+              passwordWarning.innerHTML = `<strong>Password Required:</strong> ${result.message}`;
               errorMsg.textContent = "Please enter the password and try again.";
               errorMsg.style.display = "block";
               passwordInput.focus();
               return;
             }
-          }
 
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(
-              errorData.message || errorData.error || "Failed to unlock PDFs",
-            );
-          }
+            // ✅ Trigger download immediately as PDF
+            const url = URL.createObjectURL(result.blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = result.fileName; // always .pdf filename
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
 
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
+            // Store last URL for the download button
+            downloadUrls.push({ url, fileName: result.fileName });
 
-          // Hide upload section and show results
-          uploadWrapper.style.display = "none";
-          resultSection.style.display = "block";
-
-          const contentDisposition = response.headers.get(
-            "Content-Disposition",
-          );
-          let fileName = "unlocked_pdfs.zip";
-
-          if (contentDisposition) {
-            const matches = contentDisposition.match(
-              /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
-            );
-            if (matches && matches[1]) {
-              fileName = matches[1].replace(/['"]/g, "");
+            // Small delay between multiple downloads so browser doesn't block them
+            if (selectedFiles.length > 1 && i < selectedFiles.length - 1) {
+              await new Promise((resolve) => setTimeout(resolve, 800));
             }
           }
 
-          downloadBtn.href = url;
-          downloadBtn.download = fileName;
+          // Show success UI
+          uploadWrapper.style.display = "none";
+          resultSection.style.display = "block";
 
+          // ✅ Point download button to last file (or first if only one)
+          const lastDownload = downloadUrls[downloadUrls.length - 1];
+          downloadBtn.href = lastDownload.url;
+          downloadBtn.download = lastDownload.fileName;
+
+          // Show share button
           shareBtn.style.display = "inline-flex";
           shareBtn.onclick = () => {
             if (navigator.share) {
               navigator.share({
-                title: "Unlocked PDF(s)",
-                text: "Here are your unlocked PDFs.",
-                url: url,
+                title: "Unlocked PDF",
+                text: "Here is your unlocked PDF.",
+                url: lastDownload.url,
               });
             } else {
               alert("Sharing is not supported on this device.");
@@ -938,7 +966,7 @@
           };
         } catch (err) {
           errorMsg.textContent =
-            err.message || "Error unlocking PDFs. Please try again.";
+            err.message || "Error unlocking PDF. Please try again.";
           errorMsg.style.display = "block";
         } finally {
           unlockBtnText.style.display = "inline";
@@ -947,12 +975,13 @@
         }
       });
 
-      // Reset form
+      // Reset
       resetBtn.addEventListener("click", () => {
         pdfInput.value = "";
         passwordInput.value = "";
         selectedFiles = [];
         passwordRequired = false;
+        downloadUrls = [];
         fileList.style.display = "none";
         passwordContainer.style.display = "none";
         uploadWrapper.style.display = "flex";

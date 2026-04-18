@@ -24,11 +24,11 @@
     <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://nextopdf.com/edit" />
+    <link rel="canonical" href="https://www.nextopdf.com/edit-pdf-pages" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://nextopdf.com/edit" />
+    <meta property="og:url" content="https://nextopdf.com/edit-pdf-pages" />
     <meta
       property="og:title"
       content="Edit PDF Online Free - Add Text, Shapes, Drawings | NextoPDF"
@@ -39,14 +39,14 @@
     />
     <meta
       property="og:image"
-      content="https://nextopdf.com/images/edit-pdf-og.png"
+      content="https://nextopdf.com/images/edit-pdf-pages-pdf-og.png"
     />
     <meta property="og:site_name" content="NextoPDF" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://nextopdf.com/edit" />
+    <meta name="twitter:url" content="https://nextopdf.com/edit-pdf-pages" />
     <meta
       name="twitter:title"
       content="Edit PDF Online Free - Add Text, Shapes, Drawings | NextoPDF"
@@ -57,7 +57,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://nextopdf.com/images/edit-pdf-twitter.png"
+      content="https://nextopdf.com/images/edit-pdf-pages-pdf-twitter.png"
     />
 
     <!-- Structured Data / Schema.org -->
@@ -66,7 +66,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "NextoPDF - Edit PDF Online",
-        "url": "https://nextopdf.com/edit",
+        "url": "https://nextopdf.com/edit-pdf-pages",
         "description": "Free online PDF editor to add text, shapes, drawings, and images. Extract and edit existing content.",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
@@ -111,7 +111,7 @@
             "@type": "ListItem",
             "position": 2,
             "name": "Edit PDF",
-            "item": "https://nextopdf.com/edit"
+            "item": "https://nextopdf.com/edit-pdf-pages"
           }
         ]
       }
@@ -127,7 +127,7 @@
     />
 
     <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/edit.css" />
+    <link rel="stylesheet" href="./css/edit-pdf-pages.css" />
 
     <!-- Favicon -->
     <link
@@ -814,10 +814,10 @@
         <h3>More Free PDF Tools You Might Need</h3>
         <div class="internal-tools-grid">
           <a href="/compress-pdf" class="internal-tool-link">📦 Compress PDF</a>
-          <a href="/merge" class="internal-tool-link">🔗 Merge PDF</a>
-          <a href="/watermark" class="internal-tool-link">💧 Add Watermark</a>
-          <a href="/crop" class="internal-tool-link">✂️ Crop PDF</a>
-          <a href="/delete" class="internal-tool-link">🗑️ Delete Pages</a>
+          <a href="/merge-pdf-online" class="internal-tool-link">🔗 Merge PDF</a>
+          <a href="/add-watermark-pdf" class="internal-tool-link">💧 Add Watermark</a>
+          <a href="/crop-pdf-pages" class="internal-tool-link">✂️ Crop PDF</a>
+          <a href="/delete-pdf-pages" class="internal-tool-link">🗑️ Delete Pages</a>
           <a href="/compress-image" class="internal-tool-link"
             >🖼️ Compress Image</a
           >
@@ -825,8 +825,8 @@
           <a href="/pdf-to-word" class="internal-tool-link">📄 PDF to Word</a>
           <a href="/pdf-to-jpg" class="internal-tool-link">📸 PDF to JPG</a>
           <a href="/unlock-pdf" class="internal-tool-link">🔓 Unlock PDF</a>
-          <a href="/rotate-pdf" class="internal-tool-link">🔄 Rotate PDF</a>
-          <a href="/split" class="internal-tool-link">✂️ Split PDF</a>
+          <a href="/rotate-pdf-pages-pdf" class="internal-tool-link">🔄 Rotate PDF</a>
+          <a href="/split-pdf-pages" class="internal-tool-link">✂️ Split PDF</a>
         </div>
         <p style="margin-top: 16px; font-size: 14px; color: #6b7280">
           All tools are completely free, no registration required, with the same
@@ -1937,7 +1937,7 @@
             fd.append("file", pdfFile);
             fd.append("pageNum", pageNum);
 
-            const res = await fetch(`${API}/extract-edit-content`, {
+            const res = await fetch(`${API}/extract-pdf-pages-edit-content`, {
               method: "POST",
               body: fd,
             });
@@ -2158,7 +2158,7 @@
 
           fd.append("annotations", JSON.stringify(annData));
 
-          const res = await fetch(`${API}/edit-pdf`, {
+          const res = await fetch(`${API}/edit-pdf-pages-pdf`, {
             method: "POST",
             body: fd,
           });

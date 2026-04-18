@@ -26,11 +26,11 @@
     <meta name="google-adsense-account" content="ca-pub-5797619165090350" />
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://nextopdf.com/scan" />
+    <link rel="canonical" href="https://www.nextopdf.com/scan-document-to-pdf" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://nextopdf.com/scan" />
+    <meta property="og:url" content="https://nextopdf.com/scan-document-to-pdf" />
     <meta
       property="og:title"
       content="Free Online Document Scanner - Scan to PDF with OCR | NextoPDF"
@@ -41,12 +41,12 @@
     />
     <meta
       property="og:image"
-      content="https://nextopdf.com/images/scanner-og.png"
+      content="https://nextopdf.com/images/scan-document-to-pdfner-og.png"
     />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://nextopdf.com/scan" />
+    <meta name="twitter:url" content="https://nextopdf.com/scan-document-to-pdf" />
     <meta
       name="twitter:title"
       content="Free Online Document Scanner - Scan to PDF with OCR"
@@ -57,7 +57,7 @@
     />
     <meta
       name="twitter:image"
-      content="https://nextopdf.com/images/scanner-twitter.png"
+      content="https://nextopdf.com/images/scan-document-to-pdfner-twitter.png"
     />
 
     <!-- Structured Data / Schema.org -->
@@ -66,7 +66,7 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "NextoPDF Document Scanner",
-        "url": "https://nextopdf.com/scan",
+        "url": "https://nextopdf.com/scan-document-to-pdf",
         "description": "Free online document scanner with automatic edge detection, OCR text extraction, and PDF conversion",
         "applicationCategory": "UtilitiesApplication",
         "operatingSystem": "Any",
@@ -89,7 +89,7 @@
 
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/crop-pdf-pagesperjs/1.5.13/crop-pdf-pagesper.min.css"
     />
     <!-- Google Fonts -->
     <link
@@ -105,7 +105,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="./css/style.css" />
-    <link rel="stylesheet" href="./css/scan.css" />
+    <link rel="stylesheet" href="./css/scan-document-to-pdf.css" />
 
     <!-- Favicon -->
     <link
@@ -567,15 +567,15 @@
         <h3>More Free Tools You Might Need</h3>
         <div class="internal-tools-grid">
           <a href="/compress-pdf" class="internal-tool-link">📦 Compress PDF</a>
-          <a href="/merge" class="internal-tool-link">🔗 Merge PDF</a>
-          <a href="/split" class="internal-tool-link">✂️ Split PDF</a>
-          <a href="/delete" class="internal-tool-link">🗑️ Delete Pages</a>
-          <a href="/extract" class="internal-tool-link">📄 Extract Pages</a>
-          <a href="/organize" class="internal-tool-link">📑 Organize Pages</a>
-          <a href="/rotate" class="internal-tool-link">🔄 Rotate PDF</a>
-          <a href="/watermark" class="internal-tool-link">💧 Add Watermark</a>
-          <a href="/crop" class="internal-tool-link">✂️ Crop PDF</a>
-          <a href="/edit" class="internal-tool-link">✏️ Edit PDF</a>
+          <a href="/merge-pdf-online" class="internal-tool-link">🔗 Merge PDF</a>
+          <a href="/split-pdf-pages" class="internal-tool-link">✂️ Split PDF</a>
+          <a href="/delete-pdf-pages" class="internal-tool-link">🗑️ Delete Pages</a>
+          <a href="/extract-pdf-pages" class="internal-tool-link">📄 Extract Pages</a>
+          <a href="/rearrange-pdf-pages" class="internal-tool-link">📑 Organize Pages</a>
+          <a href="/rotate-pdf-pages" class="internal-tool-link">🔄 Rotate PDF</a>
+          <a href="/add-watermark-pdf" class="internal-tool-link">💧 Add Watermark</a>
+          <a href="/crop-pdf-pages" class="internal-tool-link">✂️ Crop PDF</a>
+          <a href="/edit-pdf-pages" class="internal-tool-link">✏️ Edit PDF</a>
           <a href="/add-page-numbers" class="internal-tool-link"
             >🔢 Add Page Numbers</a
           >
@@ -596,10 +596,10 @@
           <a href="/html-to-pdf" class="internal-tool-link">🌐 HTML to PDF</a>
           <a href="/image-to-pdf" class="internal-tool-link">🖼️ Image to PDF</a>
           <a href="/pdfa-ocr" class="internal-tool-link">📝 PDF/A with OCR</a>
-          <a href="/remove-watermark" class="internal-tool-link"
+          <a href="/remove-watermark-pdf" class="internal-tool-link"
             >🚫 Remove Watermark</a
           >
-          <a href="/resume-builder" class="internal-tool-link"
+          <a href="/resume-builder-online" class="internal-tool-link"
             >📝 AI Resume Builder</a
           >
         </div>
@@ -612,7 +612,7 @@
 
     <section id="footer-placeholder"></section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crop-pdf-pagesperjs/1.5.13/crop-pdf-pagesper.min.js"></script>
     <!-- JS -->
     <script src="./js/app.js"></script>
     <script>
@@ -920,7 +920,7 @@
           jpgFormData.append("format", "jpg");
           jpgFormData.append("enhance", "true");
 
-          const jpgRes = await fetch(`${BACKEND_URL}/scan`, {
+          const jpgRes = await fetch(`${BACKEND_URL}/scan-document-to-pdf`, {
             method: "POST",
             body: jpgFormData,
           });
@@ -936,7 +936,7 @@
           pdfFormData.append("format", "pdf");
           pdfFormData.append("enhance", "true");
 
-          const pdfRes = await fetch(`${BACKEND_URL}/scan`, {
+          const pdfRes = await fetch(`${BACKEND_URL}/scan-document-to-pdf`, {
             method: "POST",
             body: pdfFormData,
           });
